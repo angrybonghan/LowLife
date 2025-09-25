@@ -16,14 +16,18 @@ public class PlayerController : MonoBehaviour
 
     private float moveInput = 0;    // 현재 방향 입력 (A : -1 , D : 1)
     private float lastMoveInput = 1;    // 마지막으로 누른 방향키
-    private float currentMoveSpeed = 1; // 현재 움직임 속도 (가속도 반영)
+    private float currentMoveSpeed = 0; // 현재 움직임 속도 (가속도 반영)
+    private float normalizedSpeed = 0;  // 정규화된 속도
     private float layerCheckRadius = 0.05f;  // 감지 위치 반경
 
     private bool isFacingRight = true;  // 오른쪽을 바라보고 있는가? (방향 전환에 필요함)
     private bool isRunning = false; // 움직이는 중인가?
     private bool hasInput = false; // 입력이 있는가? (A 또는 D를 눌렀을 때 true. 단, 동시에 누르는 것을 제외함.)
     private bool isGrounded = false;    // 땅에 닿았는가? (점프, 월런 해제에 이용)
+    private bool isFalling = false; // 떨어지고 있는가? (올라가는 중이라면 false)
 
+
+    // 속성 참조
     private Rigidbody2D rb;
     private Animator anim;
 
@@ -94,6 +98,8 @@ public class PlayerController : MonoBehaviour
         }
 
         rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
+
+        normalizedSpeed = currentMoveSpeed / maxSpeed;
     }
 
     void JumpHandler()
@@ -103,6 +109,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            anim.SetTrigger("trigger_jump");
         }
     }
 
@@ -117,7 +124,10 @@ public class PlayerController : MonoBehaviour
         {
             isRunning = true;
         }
-        
+
+        // 하강 중인지 (가속 y가 0 이하라면 하강)
+        isFalling = (rb.velocity.y < 0);
+
 
         // 지상인지 확인
         bool leftFoot = Physics2D.OverlapCircle(groundCheckLeft.position, layerCheckRadius, groundLayer);
@@ -128,8 +138,11 @@ public class PlayerController : MonoBehaviour
 
     void UpdateAnimation()
     {
-        anim.SetBool("isRunning", isRunning);
-        anim.SetFloat("moveSpeed", currentMoveSpeed / maxSpeed);
+        anim.SetBool("bool_isRunning", isRunning);
+        anim.SetBool("bool_isFalling", isFalling);
+        anim.SetBool("bool_isGrounded", isGrounded);
+
+        anim.SetFloat("float_moveSpeed", normalizedSpeed);
     }
 
     void OnDrawGizmosSelected()
