@@ -4,15 +4,24 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float acceleration = 5;
+    public float decelerationMultiplier = 5;
     public float maxSpeed = 15;
     public float jumpForce = 16;
 
+    [Header("지상 감지 위치")]
+    public Transform groundCheckLeft;
+    public Transform groundCheckCenter;
+    public Transform groundCheckRight;
+    public LayerMask groundLayer;
 
-    private float moveInput = 0;
-    private float currentMoveSpeed = 1;
+    private float moveInput = 0;    // 현재 방향 입력 (A : -1 , D : 1)
+    private float lastMoveInput = 1;    // 마지막으로 누른 방향키
+    private float currentMoveSpeed = 1; // 현재 움직임 속도 (가속도 반영)
+    private float layerCheckRadius = 0.05f;  // 감지 위치 반경
 
-    private bool isFacingRight = true;
-    private bool isRunning = false;
+    private bool isFacingRight = true;  // 오른쪽을 바라보고 있는가? (방향 전환에 필요함)
+    private bool isRunning = false; // 움직이는 중인가? (속도 상관 없음)
+    private bool isGrounded = false;    // 땅에 닿았는가? (점프, 월런 해제에 이용)
 
     private Rigidbody2D rb;
 
@@ -25,14 +34,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        InputHandler();
+        UpdateStates();
+        MoveInputHandler();
         CheckFlip();
         HandleMovement();
-    }
-
-    void DirectionHandler()
-    {
-
+        JumpHandler();
     }
 
     void CheckFlip()
@@ -46,13 +52,14 @@ public class PlayerController : MonoBehaviour
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
     }
 
-    void InputHandler()
+    void MoveInputHandler()
     {
         if (IsSingleInput())
         {
             if (Input.GetKey(KeyCode.A)) moveInput = -1;
             else moveInput = 1;
 
+            lastMoveInput = moveInput;
             isRunning = true;
         }
         else
@@ -79,9 +86,35 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            currentMoveSpeed = Mathf.Max(currentMoveSpeed - acceleration * Time.deltaTime, 1);
+            currentMoveSpeed = Mathf.Max(currentMoveSpeed - (acceleration * Time.deltaTime) * decelerationMultiplier, 0);
         }
 
-        rb.velocity = new Vector2(moveInput * currentMoveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
+    }
+
+    void JumpHandler()
+    {
+        if (!isGrounded) return;
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        }
+    }
+
+    void UpdateStates()
+    {
+        bool leftFoot = Physics2D.OverlapCircle(groundCheckLeft.position, layerCheckRadius, groundLayer);
+        bool centerFoot = Physics2D.OverlapCircle(groundCheckCenter.position, layerCheckRadius, groundLayer);
+        bool rightFoot = Physics2D.OverlapCircle(groundCheckRight.position, layerCheckRadius, groundLayer);
+        isGrounded = leftFoot || centerFoot || rightFoot;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(groundCheckLeft.position, layerCheckRadius);
+        Gizmos.DrawWireSphere(groundCheckCenter.position, layerCheckRadius);
+        Gizmos.DrawWireSphere(groundCheckRight.position, layerCheckRadius);
     }
 }
