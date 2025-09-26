@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -19,12 +20,16 @@ public class PlayerController : MonoBehaviour
     private float currentMoveSpeed = 0; // 현재 움직임 속도 (가속도 반영)
     private float normalizedSpeed = 0;  // 정규화된 속도
     private float layerCheckRadius = 0.05f;  // 감지 위치 반경
+    private float quickTrunDuration = 0.15f;    // 퀵턴 최대 길이
+    private float quickTrunTime = 0; // 현재 퀵턴 길이
+    private float quickTurnDirection = 1;   // 퀵 턴의 방향
 
     private bool isFacingRight = true;  // 오른쪽을 바라보고 있는가? (방향 전환에 필요함)
     private bool isRunning = false; // 움직이는 중인가?
     private bool hasInput = false; // 입력이 있는가? (A 또는 D를 눌렀을 때 true. 단, 동시에 누르는 것을 제외함.)
     private bool isGrounded = false;    // 땅에 닿았는가? (점프, 월런 해제에 이용)
     private bool isFalling = false; // 떨어지고 있는가? (올라가는 중이라면 false)
+    private bool isQuickTurning = false;    // 퀵 턴 도중인가?
 
 
     // 속성 참조
@@ -44,7 +49,7 @@ public class PlayerController : MonoBehaviour
         UpdateStates(); // 상태 업데이트
         MoveInputHandler(); // 조작 키 감지
 
-        CheckFlip();    // 캐릭터 좌우 회전
+        CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 기능
         HandleMovement();   // 감지된 키를 기반으로 움직임
         JumpHandler();  // 점프
         UpdateAnimation(); // 애니메이션 업데이트
@@ -88,6 +93,8 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
+        if (isQuickTurning) return;
+
         if (hasInput)
         {
             currentMoveSpeed = Mathf.Min(currentMoveSpeed + acceleration * Time.deltaTime, maxSpeed);
@@ -112,6 +119,7 @@ public class PlayerController : MonoBehaviour
             anim.SetTrigger("trigger_jump");
         }
     }
+
 
     void UpdateStates()
     {
