@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -29,7 +30,10 @@ public class PlayerController : MonoBehaviour
     private float quickTurnDirection = 1;   // 퀵 턴의 방향
     private float coyoteTimeDuration = 0.1f; // 코요테 타임 길이
     private float coyoteTime = 0; // 현재 코요테타임
+    private float timeSinceLastJump = 0; // 마지막 점프로부터 지난 시간
+    private float controlDisableDuration = 0;   // 조작 비활성화 유지 시간 (0보다 작거나 같으면 비활성화)
 
+    private bool isControlDisabled = false; // 조작을 비활성화할지 여부 (월킥에 사용)
     private bool isFacingRight = true;  // 오른쪽을 바라보고 있는가? (방향 전환에 필요함)
     private bool isRunning = false; // 움직이는 중인가?
     private bool hasInput = false; // 입력이 있는가? (A 또는 D를 눌렀을 때 true. 단, 동시에 누르는 것을 제외함.)
@@ -38,6 +42,7 @@ public class PlayerController : MonoBehaviour
     private bool isQuickTurning = false;    // 퀵 턴 도중인가?
     private bool isTouchingClimbableWall = false;   // 붙을 수 있는 벽에 닿아 있는가?
     private bool isTouchingAnyWall = false; // 벽에 닿아 있는가? (아무 벽이나 붙어있으면 true. 붙을 수 있는 벽 포함)
+    private bool isWallSliding = false; // 월 슬라이딩 도중인가?
 
 
     // 속성 참조
@@ -53,11 +58,13 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         UpdateStates(); // 상태 업데이트
+        PlayerControlDisableHandler();  // 조작 중단 시간 계산
         CoyoteTimeHandler(); // 코요테 타임 시간 계산
         MoveInputHandler(); // 조작 키 감지
 
         CheckFlip();    // 캐릭터 좌우 회전
         QuickTurn(); // 퀵턴 (기본 이동 도중 작동하지 않음)
+        WallSlidingHandler(); // 월 슬라이딩
         HandleMovement();   // 감지된 키를 기반으로 움직임
         JumpHandler();  // 점프, 점프 애니메이션 트리거
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
@@ -81,6 +88,13 @@ public class PlayerController : MonoBehaviour
 
     void MoveInputHandler()
     {
+        if (isControlDisabled)
+        {
+            moveInput = 0;
+            hasInput = false;
+            return;
+        }
+
         if (IsSingleInput())
         {
             if (Input.GetKey(KeyCode.A)) moveInput = -1;
@@ -106,29 +120,37 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        if (isQuickTurning) return;
+        if (isControlDisabled || isQuickTurning) return;
 
-        if (hasInput)
+        if (!isWallSliding)
         {
-            currentMoveSpeed = Mathf.Min(currentMoveSpeed + acceleration * Time.deltaTime, maxSpeed);
+            if (hasInput)
+            {
+                currentMoveSpeed = Mathf.Min(currentMoveSpeed + acceleration * Time.deltaTime, maxSpeed);
+            }
+            else
+            {
+                currentMoveSpeed = Mathf.Max(currentMoveSpeed - (acceleration * Time.deltaTime) * decelerationMultiplier, 0);
+            }
+
+            if (isTouchingAnyWall)
+            {
+                currentMoveSpeed = 0;
+            }
+            rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
         }
         else
         {
-            currentMoveSpeed = Mathf.Max(currentMoveSpeed - (acceleration * Time.deltaTime) * decelerationMultiplier, 0);
+            rb.velocity = new Vector2(0, -0.1f);
         }
-
-        if (isTouchingAnyWall)
-        {
-            currentMoveSpeed = 0;
-        }
-
-        rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
 
         normalizedSpeed = currentMoveSpeed / maxSpeed;
     }
 
     void JumpHandler()
     {
+        timeSinceLastJump += Time.deltaTime;
+
         if (!isGrounded) return;
 
         if (Input.GetKey(KeyCode.Space))
@@ -136,6 +158,7 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             anim.SetTrigger("trigger_jump");
             coyoteTime = coyoteTimeDuration;
+            timeSinceLastJump = 0;
         }
     }
 
@@ -164,6 +187,43 @@ public class PlayerController : MonoBehaviour
         {
             isQuickTurning = false;
             currentMoveSpeed *= 0.5f;
+        }
+    }
+
+    void WallSlidingHandler()
+    {
+        if (!isWallSliding)
+        {
+            if (!isGrounded && isTouchingClimbableWall)
+            {
+                isWallSliding = true;
+                currentMoveSpeed = 0;
+                anim.SetTrigger("trigger_wallSliding");
+            }
+        }
+        else
+        {
+            if (isGrounded)
+            {
+                isWallSliding = false;
+                Flip();
+            }
+
+            if (!isTouchingClimbableWall)
+            {
+                isWallSliding = false;
+            }
+        }
+    }
+
+    void PlayerControlDisableHandler()
+    {
+        if (!isControlDisabled) return;
+
+        controlDisableDuration -= Time.deltaTime;
+        if (controlDisableDuration <= 0)
+        {
+            isControlDisabled = false;
         }
     }
 
@@ -224,6 +284,7 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("bool_isFalling", isFalling);
         anim.SetBool("bool_isGrounded", isGrounded);
         anim.SetBool("bool_isQuickTurning", isQuickTurning);
+        anim.SetBool("bool_isWallSliding", isWallSliding);
 
         anim.SetFloat("float_moveSpeed", normalizedSpeed);
     }
