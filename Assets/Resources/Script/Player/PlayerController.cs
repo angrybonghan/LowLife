@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     private float quickTrunDuration = 0.3f;    // 퀵턴 최대 길이
     private float quickTrunTime = 0; // 현재 퀵턴 길이
     private float quickTurnDirection = 1;   // 퀵 턴의 방향
+    private float coyoteTimeDuration = 0.1f; // 코요테 타임 길이
+    private float coyoteTime = 0; // 현재 코요테타임
 
     private bool isFacingRight = true;  // 오른쪽을 바라보고 있는가? (방향 전환에 필요함)
     private bool isRunning = false; // 움직이는 중인가?
@@ -52,8 +54,8 @@ public class PlayerController : MonoBehaviour
         CheckFlip();    // 캐릭터 좌우 회전
         QuickTurn(); // 퀵턴 (기본 이동 도중 작동하지 않음)
         HandleMovement();   // 감지된 키를 기반으로 움직임
-        JumpHandler();  // 점프
-        UpdateAnimation(); // 애니메이션 업데이트
+        JumpHandler();  // 점프, 점프 애니메이션 트리거
+        UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
     }
 
     void CheckFlip()
@@ -123,6 +125,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             anim.SetTrigger("trigger_jump");
+            coyoteTime = coyoteTimeDuration;
         }
     }
 
@@ -174,7 +177,20 @@ public class PlayerController : MonoBehaviour
         bool leftFoot = Physics2D.OverlapCircle(groundCheckLeft.position, layerCheckRadius, groundLayer);
         bool centerFoot = Physics2D.OverlapCircle(groundCheckCenter.position, layerCheckRadius, groundLayer);
         bool rightFoot = Physics2D.OverlapCircle(groundCheckRight.position, layerCheckRadius, groundLayer);
-        isGrounded = leftFoot || centerFoot || rightFoot;
+
+        if (leftFoot || centerFoot || rightFoot)
+        {
+            coyoteTime = 0;
+            isGrounded = true;
+        }
+        else
+        {
+            coyoteTime += Time.deltaTime;
+            if (coyoteTime >= coyoteTimeDuration)
+            {
+                isGrounded = false;
+            }
+        }
     }
 
     void UpdateAnimation()
