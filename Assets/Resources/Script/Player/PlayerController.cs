@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     public float maxSpeed = 15; // 최고 속도
     public float jumpForce = 10;    // 점프 힘
 
-    [Header("지상 감지 위치")]
+    [Header("지상 감지 위치")]    // Transform 3개 중 하나라도 groundLayer에 닿았으면 땅인 것으로 봄
     public Transform groundCheckLeft;
     public Transform groundCheckCenter;
     public Transform groundCheckRight;
@@ -49,7 +49,8 @@ public class PlayerController : MonoBehaviour
         UpdateStates(); // 상태 업데이트
         MoveInputHandler(); // 조작 키 감지
 
-        CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 기능
+        CheckFlip();    // 캐릭터 좌우 회전
+        QuickTurn(); // 퀵턴 (기본 이동 도중 작동하지 않음)
         HandleMovement();   // 감지된 키를 기반으로 움직임
         JumpHandler();  // 점프
         UpdateAnimation(); // 애니메이션 업데이트
@@ -64,6 +65,11 @@ public class PlayerController : MonoBehaviour
     {
         isFacingRight = !isFacingRight;
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+
+        if (normalizedSpeed >= 0.7f && isGrounded && !isQuickTurning)    // 최고 속도 기준 70% 이상의 속도에서 퀵턴이 작동할 수 있음
+        {
+            StartQuickTurn();
+        }
     }
 
     void MoveInputHandler()
@@ -120,6 +126,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void StartQuickTurn()
+    {
+        isQuickTurning = true;
+        quickTrunTime = 0;
+        quickTurnDirection = -moveInput;
+    }
+
+    void QuickTurn()
+    {
+        if (!isQuickTurning) return;
+
+        quickTrunTime += Time.deltaTime;
+        rb.velocity = new Vector2(quickTurnDirection * currentMoveSpeed * (1 - (quickTrunTime / quickTrunDuration)), rb.velocity.y);
+        
+        // 퀵 턴 해제 조건
+        // 퀵턴 시간 초과 || 퀵턴 도중 방향을 다시 전환 || 추락 (땅에서 떨어짐)
+        if ((quickTrunTime >= quickTrunDuration) || !isGrounded || (quickTurnDirection == moveInput))
+        {
+            isQuickTurning = false;
+        }
+    }
 
     void UpdateStates()
     {
@@ -149,6 +176,7 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("bool_isRunning", isRunning);
         anim.SetBool("bool_isFalling", isFalling);
         anim.SetBool("bool_isGrounded", isGrounded);
+        anim.SetBool("bool_isQuickTurning", isQuickTurning);
 
         anim.SetFloat("float_moveSpeed", normalizedSpeed);
     }
