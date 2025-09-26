@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -72,6 +73,8 @@ public class PlayerController : MonoBehaviour
 
     void CheckFlip()
     {
+        if (isControlDisabled) return;
+
         if ((moveInput > 0 && !isFacingRight) || (moveInput < 0 && isFacingRight)) Flip();
     }
 
@@ -88,13 +91,6 @@ public class PlayerController : MonoBehaviour
 
     void MoveInputHandler()
     {
-        if (isControlDisabled)
-        {
-            moveInput = 0;
-            hasInput = false;
-            return;
-        }
-
         if (IsSingleInput())
         {
             if (Input.GetKey(KeyCode.A)) moveInput = -1;
@@ -194,7 +190,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isWallSliding)
         {
-            if (!isGrounded && isTouchingClimbableWall)
+            if (!isGrounded && isTouchingClimbableWall && timeSinceLastJump > 0.3f)
             {
                 isWallSliding = true;
                 currentMoveSpeed = 0;
@@ -203,15 +199,29 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+
             if (isGrounded)
             {
                 isWallSliding = false;
                 Flip();
+
+                return;
             }
 
             if (!isTouchingClimbableWall)
             {
                 isWallSliding = false;
+
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                currentMoveSpeed = maxSpeed;
+                rb.velocity = new Vector2(jumpForce * -lastMoveInput, jumpForce);
+                Flip();
+                lastMoveInput = - lastMoveInput;
+                SetPlayerControlDisableDuration(0.15f);
             }
         }
     }
@@ -220,11 +230,27 @@ public class PlayerController : MonoBehaviour
     {
         if (!isControlDisabled) return;
 
+        if (isTouchingAnyWall)
+        {
+            currentMoveSpeed = 0;
+            isControlDisabled = false;
+            return;
+        }
+
         controlDisableDuration -= Time.deltaTime;
         if (controlDisableDuration <= 0)
         {
-            isControlDisabled = false;
+            if (hasInput || isGrounded)
+            {
+                isControlDisabled = false;
+            }
         }
+    }
+
+    void SetPlayerControlDisableDuration(float time)
+    {
+        isControlDisabled = true;
+        controlDisableDuration = time;
     }
 
     void UpdateStates()
