@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -14,6 +13,11 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheckCenter;
     public Transform groundCheckRight;
     public LayerMask groundLayer;
+
+    [Header("벽 감지 위치")]
+    public Transform wallCheckTop;
+    public Transform wallCheckBottom;
+    public LayerMask wallLayer;
 
     private float moveInput = 0;    // 현재 방향 입력 (A : -1 , D : 1)
     private float lastMoveInput = 1;    // 마지막으로 누른 방향키
@@ -32,6 +36,8 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded = false;    // 땅에 닿았는가? (점프, 월런 해제에 이용)
     private bool isFalling = false; // 떨어지고 있는가? (올라가는 중이라면 false)
     private bool isQuickTurning = false;    // 퀵 턴 도중인가?
+    private bool isTouchingClimbableWall = false;   // 붙을 수 있는 벽에 닿아 있는가?
+    private bool isTouchingAnyWall = false; // 벽에 닿아 있는가? (아무 벽이나 붙어있으면 true. 붙을 수 있는 벽 포함)
 
 
     // 속성 참조
@@ -44,11 +50,10 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
-
-
     void Update()
     {
         UpdateStates(); // 상태 업데이트
+        CoyoteTimeHandler(); // 코요테 타임 시간 계산
         MoveInputHandler(); // 조작 키 감지
 
         CheckFlip();    // 캐릭터 좌우 회전
@@ -110,6 +115,11 @@ public class PlayerController : MonoBehaviour
         else
         {
             currentMoveSpeed = Mathf.Max(currentMoveSpeed - (acceleration * Time.deltaTime) * decelerationMultiplier, 0);
+        }
+
+        if (isTouchingAnyWall)
+        {
+            currentMoveSpeed = 0;
         }
 
         rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
@@ -174,22 +184,37 @@ public class PlayerController : MonoBehaviour
 
 
         // 지상인지 확인
-        bool leftFoot = Physics2D.OverlapCircle(groundCheckLeft.position, layerCheckRadius, groundLayer);
-        bool centerFoot = Physics2D.OverlapCircle(groundCheckCenter.position, layerCheckRadius, groundLayer);
-        bool rightFoot = Physics2D.OverlapCircle(groundCheckRight.position, layerCheckRadius, groundLayer);
+        bool isGroundedLeftFoot = Physics2D.OverlapCircle(groundCheckLeft.position, layerCheckRadius, groundLayer);
+        bool isGroundedCenterFoot = Physics2D.OverlapCircle(groundCheckCenter.position, layerCheckRadius, groundLayer);
+        bool isGroundedRightFoot = Physics2D.OverlapCircle(groundCheckRight.position, layerCheckRadius, groundLayer);
 
-        if (leftFoot || centerFoot || rightFoot)
+        if (isGroundedLeftFoot || isGroundedCenterFoot || isGroundedRightFoot)
         {
             coyoteTime = 0;
             isGrounded = true;
         }
-        else
+
+        // 탈 수 있는 벽에 붙어있는지 확인
+        bool isClimbableWallDetectedTop = Physics2D.OverlapCircle(wallCheckTop.position, layerCheckRadius, wallLayer);
+        bool isClimbableWallDetectedBottom = Physics2D.OverlapCircle(wallCheckBottom.position, layerCheckRadius, wallLayer);
+        isTouchingClimbableWall = isClimbableWallDetectedTop || isClimbableWallDetectedBottom;
+
+        // 아무 벽에 붙어있는지 확인
+        bool isWallDetectedTop = Physics2D.OverlapCircle(wallCheckTop.position, layerCheckRadius, groundLayer);
+        bool isWallDetectedBottom = Physics2D.OverlapCircle(wallCheckBottom.position, layerCheckRadius, groundLayer);
+        isTouchingAnyWall = isWallDetectedTop || isWallDetectedBottom || isTouchingClimbableWall;
+
+    }
+
+    void CoyoteTimeHandler()
+    {
+        if (!isGrounded) return;
+
+        coyoteTime += Time.deltaTime;
+
+        if (coyoteTime >= coyoteTimeDuration)
         {
-            coyoteTime += Time.deltaTime;
-            if (coyoteTime >= coyoteTimeDuration)
-            {
-                isGrounded = false;
-            }
+            isGrounded = false;
         }
     }
 
@@ -209,5 +234,9 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireSphere(groundCheckLeft.position, layerCheckRadius);
         Gizmos.DrawWireSphere(groundCheckCenter.position, layerCheckRadius);
         Gizmos.DrawWireSphere(groundCheckRight.position, layerCheckRadius);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(wallCheckTop.position, layerCheckRadius);
+        Gizmos.DrawWireSphere(wallCheckBottom.position, layerCheckRadius);
     }
 }
