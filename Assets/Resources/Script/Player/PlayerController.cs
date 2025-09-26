@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private float currentMoveSpeed = 0; // 현재 움직임 속도 (가속도 반영)
     private float normalizedSpeed = 0;  // 정규화된 속도
     private float layerCheckRadius = 0.05f;  // 감지 위치 반경
-    private float quickTrunDuration = 0.15f;    // 퀵턴 최대 길이
+    private float quickTrunDuration = 0.3f;    // 퀵턴 최대 길이
     private float quickTrunTime = 0; // 현재 퀵턴 길이
     private float quickTurnDirection = 1;   // 퀵 턴의 방향
 
@@ -141,10 +141,16 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(quickTurnDirection * currentMoveSpeed * (1 - (quickTrunTime / quickTrunDuration)), rb.velocity.y);
         
         // 퀵 턴 해제 조건
-        // 퀵턴 시간 초과 || 퀵턴 도중 방향을 다시 전환 || 추락 (땅에서 떨어짐)
-        if ((quickTrunTime >= quickTrunDuration) || !isGrounded || (quickTurnDirection == moveInput))
+        // 퀵턴 시간 초과, 퀵턴 도중 방향을 다시 전환, 추락 (땅에서 떨어짐)
+        if ((quickTrunTime >= quickTrunDuration) || !isGrounded)
         {
             isQuickTurning = false;
+        }
+        // 방향을 다시 전환했을 때에는, 현재 속도를 절반 감소
+        if (quickTurnDirection == moveInput)
+        {
+            isQuickTurning = false;
+            currentMoveSpeed *= 0.5f;
         }
     }
 
