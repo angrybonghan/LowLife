@@ -19,6 +19,10 @@ public class PlayerController : MonoBehaviour
     public Transform wallCheckBottom;
     public LayerMask wallLayer;
 
+    [Header("이펙트 위치 / 프리팹")]
+    public GameObject wallKickEffect;
+    public Transform wallKickEffectPos;
+
     private float moveInput = 0;    // 현재 방향 입력 (A : -1 , D : 1)
     private float lastMoveInput = 1;    // 마지막으로 누른 방향키
     private float currentMoveSpeed = 0; // 현재 움직임 속도 (가속도 반영)
@@ -215,6 +219,12 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))    // 월 킥 작동
             {
+                GameObject newWallKickEffect = Instantiate(wallKickEffect, wallKickEffectPos.position, Quaternion.identity);
+                newWallKickEffect.transform.localScale = new Vector3(
+                    newWallKickEffect.transform.localScale.x * lastMoveInput,
+                    newWallKickEffect.transform.localScale.y,
+                    newWallKickEffect.transform.localScale.z);
+                
                 currentMoveSpeed = maxSpeed;
                 rb.velocity = new Vector2(jumpForce * -lastMoveInput, jumpForce);
                 Flip();
@@ -324,5 +334,8 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(wallCheckTop.position, layerCheckRadius);
         Gizmos.DrawWireSphere(wallCheckBottom.position, layerCheckRadius);
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(wallKickEffectPos.position, layerCheckRadius);
     }
 }
