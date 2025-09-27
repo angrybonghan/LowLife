@@ -1,3 +1,5 @@
+using Unity.Mathematics;
+using Unity.Properties;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -8,10 +10,12 @@ public class PlayerController : MonoBehaviour
     public float deceleration = 25;    // 플레이어 감속도
     public float maxSpeed = 15; // 최고 속도
     public float jumpForce = 10;    // 점프 힘
+    public float quickTrunDuration = 0.3f;    // 퀵턴 최대 길이
     [Header("대쉬 설정")]
     public float dashDuration = 0.25f;  // 대쉬 유지 시간
-    public float dashSpeedMultiplier = 0.35f;   // 현재 속도에서 배수로 가속할 대쉬 속도
+    public float dashSpeedMultiplier = 1.5f;   // 현재 속도에서 배수로 가속할 대쉬 속도
     public float dashCooldown = 0.75f;  // 대쉬 재사용 대기시간
+    public GameObject dashEffect;   // 대쉬 잔상 이펙트 프리팹
 
 
     [Header("지상 감지 위치")]    // Transform 3개 중 하나라도 groundLayer에 닿았으면 땅인 것으로 봄
@@ -26,15 +30,14 @@ public class PlayerController : MonoBehaviour
     public LayerMask wallLayer;
 
     [Header("이펙트 위치 / 프리팹")]
-    public GameObject wallKickEffect;
-    public Transform wallKickEffectPos;
+    public GameObject wallKickEffect;   // 이펙트 생성 위치
+    public Transform wallKickEffectPos; // 이펙트 프리팹
 
     private float moveInput = 0;    // 현재 방향 입력 (A : -1 , D : 1)
     private float lastMoveInput = 1;    // 마지막으로 누른 방향키
     private float currentMoveSpeed = 0; // 현재 움직임 속도 (가속도 반영)
     private float normalizedSpeed = 0;  // 정규화된 속도
     private float layerCheckRadius = 0.05f;  // 감지 위치 반경
-    private float quickTrunDuration = 0.3f;    // 퀵턴 최대 길이
     private float quickTrunTime = 0; // 현재 퀵턴 길이
     private float quickTurnDirection = 1;   // 퀵 턴의 방향
     private float coyoteTimeDuration = 0.1f; // 코요테 타임 길이
@@ -43,7 +46,11 @@ public class PlayerController : MonoBehaviour
     private float controlDisableDuration = 0;   // 조작 비활성화 유지 시간 (0보다 작거나 같으면 비활성화)
     private float currentWallSlidingSpeed = 0;  // 현재 월 슬라이딩 속도
     private float WallSlidingSpeed = -0.1f;  // 목표 월 슬라이딩 속도
+    private float dashSpeed;    // 대쉬 속도 (대쉬한 시점의 속도에 비례하여 빨라짐)
     private float dashDirection = 0;    // 대쉬 방향 (대쉬할 때마다 업데이트)
+    private float currentDashDuration = 0;  // 현재 대쉬 시간
+    private float currentDashCooldown = 0;  // 대쉬 이후 흐른 시간 (쿨다운 계산용)
+    private float dashVerticalVelocity = 0; // 대쉬 수직 속도
 
 
     private bool isControlDisabled = false; // 조작을 비활성화할지 여부 (월킥에 사용)
@@ -76,17 +83,17 @@ public class PlayerController : MonoBehaviour
         CoyoteTimeHandler(); // 코요테 타임 시간 계산
         MoveInputHandler(); // 조작 키 감지
 
-        CheckFlip();    // 캐릭터 좌우 회전
-        QuickTurn(); // 퀵턴 (기본 이동 도중 작동하지 않음)
+        CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
         WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
-        HandleMovement();   // 감지된 키를 기반으로 움직임
-        JumpHandler();  // 점프, 점프 애니메이션 트리거
+        JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
+        DashHandler(); // 대쉬 트리거
+        HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴)
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
     }
 
     void CheckFlip()
     {
-        if (isControlDisabled) return;
+        if (isControlDisabled || isDashing) return;
 
         if ((moveInput > 0 && !isFacingRight) || (moveInput < 0 && isFacingRight)) Flip();
     }
@@ -96,9 +103,12 @@ public class PlayerController : MonoBehaviour
         isFacingRight = !isFacingRight;
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
 
-        if (normalizedSpeed >= 0.7f && isGrounded && !isQuickTurning)    // 최고 속도 기준 70% 이상의 속도에서 퀵턴이 작동할 수 있음
+        if (normalizedSpeed >= 0.7f && isGrounded && !isQuickTurning)
         {
-            StartQuickTurn();
+            // 최고 속도 기준 70% 이상의 속도에서 퀵턴이 작동할 수 있음
+            isQuickTurning = true;
+            quickTrunTime = 0;
+            quickTurnDirection = -moveInput;
         }
     }
 
@@ -129,42 +139,133 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        if (isControlDisabled || isQuickTurning) return;
+        DashMovement();
 
-        if (!isWallSliding)
+        if (isControlDisabled) return;
+
+        QuickTurnMovement();
+        WallSlidingMovement();
+        DefaultMovement();
+    }
+
+    void QuickTurnMovement()
+    {
+        if (!isQuickTurning) return;
+
+        quickTrunTime += Time.deltaTime;
+        rb.velocity = new Vector2(quickTurnDirection * currentMoveSpeed * (1 - (quickTrunTime / quickTrunDuration)), rb.velocity.y);
+
+        // 퀵 턴 해제 조건
+        // 퀵턴 시간 초과, 퀵턴 도중 방향을 다시 전환, 추락 (땅에서 떨어짐)
+        if ((quickTrunTime >= quickTrunDuration) || !isGrounded)
         {
-            if (hasInput)
-            {
-                currentMoveSpeed = Mathf.Min(currentMoveSpeed + acceleration * Time.deltaTime, maxSpeed);
-            }
-            else
-            {
-                currentMoveSpeed = Mathf.Max(currentMoveSpeed - deceleration * Time.deltaTime, 0);
-            }
-
-            if (isTouchingAnyWall)
-            {
-                currentMoveSpeed = 0;
-            }
-            rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
+            isQuickTurning = false;
         }
-        else    // 월 슬라이딩 관성 계산
+        // 방향을 다시 전환했을 때에는, 현재 속도를 절반 감소
+        if (quickTurnDirection == moveInput)
         {
-            if (currentWallSlidingSpeed > WallSlidingSpeed)
-            {
-                currentWallSlidingSpeed = rb.velocity.y;
-            }
-            else
-            {
-                if (currentWallSlidingSpeed < WallSlidingSpeed)
-                {
-                    currentWallSlidingSpeed += (Mathf.Abs(currentWallSlidingSpeed) * Time.deltaTime * deceleration) / 2;
-                    currentWallSlidingSpeed = Mathf.Min(currentWallSlidingSpeed, WallSlidingSpeed);
-                }
-
-                rb.velocity = new Vector2(0, currentWallSlidingSpeed);
-            }
+            isQuickTurning = false;
+            currentMoveSpeed *= 0.5f;
         }
+    }
+
+    void DashMovement()
+    {
+        if (!isDashing) return;
+
+        if (isTouchingAnyWall)
+        {
+            isDashing = false;
+            return;
+        }
+
+        rb.velocity = new Vector2(dashDirection * dashSpeed, dashVerticalVelocity);
+        currentDashDuration += Time.deltaTime;
+
+        if (currentDashDuration >= dashDuration || isTouchingAnyWall)
+        {
+            isDashing = false;
+        }
+        else
+        {
+            GameObject newDashEffect = Instantiate(dashEffect, transform.position, quaternion.identity);
+            newDashEffect.transform.localScale = new Vector3(
+                newDashEffect.transform.localScale.x * dashDuration,
+                newDashEffect.transform.localScale.y,
+                newDashEffect.transform.localScale.z);
+        }
+    }
+
+    void WallSlidingMovement()
+    {
+        if (!isWallSliding) return;
+
+        if (isGrounded)
+        {
+            isWallSliding = false;
+            Flip();
+
+            return;
+        }
+
+        if (!isTouchingClimbableWall)
+        {
+            isWallSliding = false;
+
+            return;
+        }
+
+        if (currentWallSlidingSpeed > WallSlidingSpeed)
+        {
+            currentWallSlidingSpeed = rb.velocity.y;
+        }
+        else
+        {
+            if (currentWallSlidingSpeed < WallSlidingSpeed)
+            {
+                currentWallSlidingSpeed += (Mathf.Abs(currentWallSlidingSpeed) * Time.deltaTime * deceleration) / 2;
+                currentWallSlidingSpeed = Mathf.Min(currentWallSlidingSpeed, WallSlidingSpeed);
+            }
+
+            rb.velocity = new Vector2(0, currentWallSlidingSpeed);
+        }
+
+
+        if (Input.GetKey(KeyCode.Space) && !isControlDisabled)    // 월 킥 작동
+        {
+            GameObject newWallKickEffect = Instantiate(wallKickEffect, wallKickEffectPos.position, Quaternion.identity);
+            newWallKickEffect.transform.localScale = new Vector3(
+                newWallKickEffect.transform.localScale.x * lastMoveInput,
+                newWallKickEffect.transform.localScale.y,
+                newWallKickEffect.transform.localScale.z);
+
+            currentMoveSpeed = maxSpeed;
+            rb.velocity = new Vector2(jumpForce * -lastMoveInput, jumpForce);
+            Flip();
+            lastMoveInput = -lastMoveInput;
+            SetPlayerControlDisableDuration(0.15f);
+            anim.SetTrigger("trigger_wallKick");
+        }
+    }
+
+    void DefaultMovement()
+    {
+        if (isQuickTurning || isDashing || isWallSliding) return;
+
+        if (hasInput)   // 입력에 의한 가속
+        {
+            currentMoveSpeed = Mathf.Min(currentMoveSpeed + acceleration * Time.deltaTime, maxSpeed);
+        }
+        else  // 입력 없으면 감속
+        {
+            currentMoveSpeed = Mathf.Max(currentMoveSpeed - deceleration * Time.deltaTime, 0);
+        }
+
+        if (isTouchingAnyWall)  // 벽과 충돌하면 속도 없어짐
+        {
+            currentMoveSpeed = 0;
+        }
+        rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
 
         normalizedSpeed = currentMoveSpeed / maxSpeed;
     }
@@ -184,80 +285,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void StartQuickTurn()
-    {
-        isQuickTurning = true;
-        quickTrunTime = 0;
-        quickTurnDirection = -moveInput;
-    }
-
-    void QuickTurn()
-    {
-        if (!isQuickTurning) return;
-
-        quickTrunTime += Time.deltaTime;
-        rb.velocity = new Vector2(quickTurnDirection * currentMoveSpeed * (1 - (quickTrunTime / quickTrunDuration)), rb.velocity.y);
-        
-        // 퀵 턴 해제 조건
-        // 퀵턴 시간 초과, 퀵턴 도중 방향을 다시 전환, 추락 (땅에서 떨어짐)
-        if ((quickTrunTime >= quickTrunDuration) || !isGrounded)
-        {
-            isQuickTurning = false;
-        }
-        // 방향을 다시 전환했을 때에는, 현재 속도를 절반 감소
-        if (quickTurnDirection == moveInput)
-        {
-            isQuickTurning = false;
-            currentMoveSpeed *= 0.5f;
-        }
-    }
-
     void WallSlidingHandler()
     {
-        if (!isWallSliding)
+        if (isWallSliding) return;
+
+        if (!isGrounded && isTouchingClimbableWall && timeSinceLastJump > 0.3f) // 월 슬라이딩 트리거
         {
-            if (!isGrounded && isTouchingClimbableWall && timeSinceLastJump > 0.3f) // 월 슬라이딩 트리거
-            {
-                SetPlayerControlDisableDuration(0.1f);
-                isWallSliding = true;
-                currentMoveSpeed = 0;
-                currentWallSlidingSpeed = rb.velocity.y;
-                anim.SetTrigger("trigger_wallSliding");
-            }
-        }
-        else
-        {
-
-            if (isGrounded)
-            {
-                isWallSliding = false;
-                Flip();
-
-                return;
-            }
-
-            if (!isTouchingClimbableWall)
-            {
-                isWallSliding = false;
-
-                return;
-            }
-
-            if (Input.GetKey(KeyCode.Space) && !isControlDisabled)    // 월 킥 작동
-            {
-                GameObject newWallKickEffect = Instantiate(wallKickEffect, wallKickEffectPos.position, Quaternion.identity);
-                newWallKickEffect.transform.localScale = new Vector3(
-                    newWallKickEffect.transform.localScale.x * lastMoveInput,
-                    newWallKickEffect.transform.localScale.y,
-                    newWallKickEffect.transform.localScale.z);
-                
-                currentMoveSpeed = maxSpeed;
-                rb.velocity = new Vector2(jumpForce * -lastMoveInput, jumpForce);
-                Flip();
-                lastMoveInput = - lastMoveInput;
-                SetPlayerControlDisableDuration(0.15f);
-                anim.SetTrigger("trigger_wallKick");
-            }
+            SetPlayerControlDisableDuration(0.1f);
+            isWallSliding = true;
+            currentMoveSpeed = 0;
+            currentWallSlidingSpeed = rb.velocity.y;
+            anim.SetTrigger("trigger_wallSliding");
         }
     }
 
@@ -269,6 +307,7 @@ public class PlayerController : MonoBehaviour
         {
             currentMoveSpeed = 0;
             isControlDisabled = false;
+            Debug.Log("P-1");
             return;
         }
 
@@ -278,6 +317,7 @@ public class PlayerController : MonoBehaviour
             if (hasInput || isGrounded || isWallSliding)
             {
                 isControlDisabled = false;
+                Debug.Log("P-2");
             }
         }
     }
@@ -290,16 +330,24 @@ public class PlayerController : MonoBehaviour
 
     void DashHandler()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && !isDashing)
+        if (currentDashCooldown < dashCooldown)
         {
-            isDashing = true;
-            dashDirection = lastMoveInput;
-            anim.SetTrigger("trigger_dash");
+            currentDashCooldown += Time.deltaTime;
+            return;
         }
 
-        if (isDashing)
-        {
+        if (isDashing || isTouchingAnyWall || isQuickTurning || isWallSliding || normalizedSpeed < 0.5f) return;
+        // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 속도가 전체의 50%를 넘지 못함
 
+        if (Input.GetKey(KeyCode.LeftShift))    // 대쉬 작동
+        {
+            isDashing = true;
+            anim.SetTrigger("trigger_dash");
+            dashDirection = lastMoveInput;
+            currentDashDuration = 0;
+            currentDashCooldown = 0;
+            currentMoveSpeed = dashSpeed = currentMoveSpeed * dashSpeedMultiplier;
+            dashVerticalVelocity = rb.velocity.y;
         }
     }
 
@@ -361,6 +409,7 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("bool_isGrounded", isGrounded);
         anim.SetBool("bool_isQuickTurning", isQuickTurning);
         anim.SetBool("bool_isWallSliding", isWallSliding);
+        anim.SetBool("bool_isDashing", isDashing);
 
         anim.SetFloat("float_moveSpeed", normalizedSpeed);
     }
