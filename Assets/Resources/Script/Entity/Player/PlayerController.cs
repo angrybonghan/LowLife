@@ -357,7 +357,7 @@ public class PlayerController : MonoBehaviour
             dashDirection = lastMoveInput;
             currentDashDuration = 0;
             currentDashCooldown = 0;
-            currentMoveSpeed = dashSpeed = currentMoveSpeed * dashSpeedMultiplier;
+            currentMoveSpeed = dashSpeed = Mathf.Min(currentMoveSpeed * dashSpeedMultiplier, maxSpeed * dashSpeedMultiplier);
             dashVerticalVelocity = rb.velocity.y;
         }
     }
