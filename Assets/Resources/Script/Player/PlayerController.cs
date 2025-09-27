@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float acceleration = 5;  // 플레이어 가속도
-    public float decelerationMultiplier = 5;    // 가속도에 배수로 작용하는 감속도
+    public float deceleration = 25;    // 플레이어 감속도
     public float maxSpeed = 15; // 최고 속도
     public float jumpForce = 10;    // 점프 힘
 
@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
 
         CheckFlip();    // 캐릭터 좌우 회전
         QuickTurn(); // 퀵턴 (기본 이동 도중 작동하지 않음)
-        WallSlidingHandler(); // 월 슬라이딩
+        WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
         HandleMovement();   // 감지된 키를 기반으로 움직임
         JumpHandler();  // 점프, 점프 애니메이션 트리거
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
@@ -126,7 +126,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                currentMoveSpeed = Mathf.Max(currentMoveSpeed - (acceleration * Time.deltaTime) * decelerationMultiplier, 0);
+                currentMoveSpeed = Mathf.Max(currentMoveSpeed - deceleration * Time.deltaTime, 0);
             }
 
             if (isTouchingAnyWall)
@@ -215,13 +215,14 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))    // 월 킥 작동
             {
                 currentMoveSpeed = maxSpeed;
                 rb.velocity = new Vector2(jumpForce * -lastMoveInput, jumpForce);
                 Flip();
                 lastMoveInput = - lastMoveInput;
                 SetPlayerControlDisableDuration(0.15f);
+                anim.SetTrigger("trigger_wallKick");
             }
         }
     }

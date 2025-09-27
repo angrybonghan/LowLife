@@ -1945,8 +1945,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c9913fca0a337848bd59e467fee81d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 10
-  decelerationMultiplier: 5
+  acceleration: 12
+  deceleration: 50
   maxSpeed: 12
   jumpForce: 10
   groundCheckLeft: {fileID: 2083015833}
