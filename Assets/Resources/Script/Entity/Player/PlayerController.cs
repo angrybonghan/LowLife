@@ -141,11 +141,11 @@ public class PlayerController : MonoBehaviour
     {
         DashMovement();
 
-        if (isControlDisabled) return;
+        if (isControlDisabled || isDashing) return;
 
+        DefaultMovement();
         QuickTurnMovement();
         WallSlidingMovement();
-        DefaultMovement();
     }
 
     void QuickTurnMovement()
@@ -200,7 +200,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isWallSliding) return;
 
-        if (isGrounded)
+        if (isGrounded) // 땅에 닿았을 때 월 슬라이딩 해제
         {
             isWallSliding = false;
             Flip();
@@ -208,14 +208,14 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (!isTouchingClimbableWall)
+        if (!isTouchingClimbableWall)   // 벽이 사라졌을 때 월 슬라이딩 해제
         {
             isWallSliding = false;
 
             return;
         }
 
-        if (currentWallSlidingSpeed > WallSlidingSpeed)
+        if (currentWallSlidingSpeed > WallSlidingSpeed) // 월 슬라이딩 관성 계산
         {
             currentWallSlidingSpeed = rb.velocity.y;
         }
@@ -233,18 +233,20 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space) && !isControlDisabled)    // 월 킥 작동
         {
+            isWallSliding = false;
+            currentMoveSpeed = maxSpeed;
+            normalizedSpeed = currentMoveSpeed / maxSpeed;
+            Flip();
+            lastMoveInput = -lastMoveInput;
+            rb.velocity = new Vector2(jumpForce * lastMoveInput, jumpForce);
+            SetPlayerControlDisableDuration(0.15f);
+            anim.SetTrigger("trigger_wallKick");
+
             GameObject newWallKickEffect = Instantiate(wallKickEffect, wallKickEffectPos.position, Quaternion.identity);
             newWallKickEffect.transform.localScale = new Vector3(
                 newWallKickEffect.transform.localScale.x * lastMoveInput,
                 newWallKickEffect.transform.localScale.y,
                 newWallKickEffect.transform.localScale.z);
-
-            currentMoveSpeed = maxSpeed;
-            rb.velocity = new Vector2(jumpForce * -lastMoveInput, jumpForce);
-            Flip();
-            lastMoveInput = -lastMoveInput;
-            SetPlayerControlDisableDuration(0.15f);
-            anim.SetTrigger("trigger_wallKick");
         }
     }
 
@@ -307,7 +309,6 @@ public class PlayerController : MonoBehaviour
         {
             currentMoveSpeed = 0;
             isControlDisabled = false;
-            Debug.Log("P-1");
             return;
         }
 
@@ -317,7 +318,6 @@ public class PlayerController : MonoBehaviour
             if (hasInput || isGrounded || isWallSliding)
             {
                 isControlDisabled = false;
-                Debug.Log("P-2");
             }
         }
     }
