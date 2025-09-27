@@ -205,7 +205,7 @@ public class PlayerController : MonoBehaviour
         {
             GameObject newDashEffect = Instantiate(dashEffect, transform.position, quaternion.identity);
             newDashEffect.transform.localScale = new Vector3(
-                newDashEffect.transform.localScale.x * dashDuration,
+                newDashEffect.transform.localScale.x * dashDirection,
                 newDashEffect.transform.localScale.y,
                 newDashEffect.transform.localScale.z);
         }
