@@ -185,6 +185,7 @@ public class PlayerController : MonoBehaviour
         if (currentDashDuration >= dashDuration || isTouchingAnyWall)
         {
             isDashing = false;
+            SetPlayerControlDisableDuration(0);
         }
         else
         {
