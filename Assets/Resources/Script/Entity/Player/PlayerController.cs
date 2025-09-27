@@ -1,5 +1,4 @@
 using Unity.Mathematics;
-using Unity.Properties;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -139,19 +138,36 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        DashMovement();
+        // 대쉬가 가장 높은 우선순위를 가짐
+        if (isDashing)
+        {
+            DashMovement();
+            return;
+        }
 
-        if (isControlDisabled || isDashing) return;
+        // 조작 비활성화 상태에서 감속이나 가속하지 않음
+        if (isControlDisabled) return;
 
+        // 월 슬라이딩
+        if (isWallSliding)
+        {
+            WallSlidingMovement();
+            return;
+        }
+
+        // 퀵 턴
+        if (isQuickTurning)
+        {
+            QuickTurnMovement();
+            return;
+        }
+
+        // 모든 특수 이동이 아닐 때, 기본 이동 로직 실행
         DefaultMovement();
-        QuickTurnMovement();
-        WallSlidingMovement();
     }
 
     void QuickTurnMovement()
     {
-        if (!isQuickTurning) return;
-
         quickTrunTime += Time.deltaTime;
         rb.velocity = new Vector2(quickTurnDirection * currentMoveSpeed * (1 - (quickTrunTime / quickTrunDuration)), rb.velocity.y);
 
@@ -171,8 +187,6 @@ public class PlayerController : MonoBehaviour
 
     void DashMovement()
     {
-        if (!isDashing) return;
-
         if (isTouchingAnyWall)
         {
             isDashing = false;
@@ -199,8 +213,6 @@ public class PlayerController : MonoBehaviour
 
     void WallSlidingMovement()
     {
-        if (!isWallSliding) return;
-
         if (isGrounded) // 땅에 닿았을 때 월 슬라이딩 해제
         {
             isWallSliding = false;
@@ -253,8 +265,6 @@ public class PlayerController : MonoBehaviour
 
     void DefaultMovement()
     {
-        if (isQuickTurning || isDashing || isWallSliding) return;
-
         if (hasInput)   // 입력에 의한 가속
         {
             currentMoveSpeed = Mathf.Min(currentMoveSpeed + acceleration * Time.deltaTime, maxSpeed);
