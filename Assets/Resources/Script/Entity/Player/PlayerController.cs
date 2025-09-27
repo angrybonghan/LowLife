@@ -3,10 +3,16 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
+    [Header("기본 이동 설정")]
     public float acceleration = 5;  // 플레이어 가속도
     public float deceleration = 25;    // 플레이어 감속도
     public float maxSpeed = 15; // 최고 속도
     public float jumpForce = 10;    // 점프 힘
+    [Header("대쉬 설정")]
+    public float dashDuration = 0.25f;  // 대쉬 유지 시간
+    public float dashSpeedMultiplier = 0.35f;   // 현재 속도에서 배수로 가속할 대쉬 속도
+    public float dashCooldown = 0.75f;  // 대쉬 재사용 대기시간
+
 
     [Header("지상 감지 위치")]    // Transform 3개 중 하나라도 groundLayer에 닿았으면 땅인 것으로 봄
     public Transform groundCheckLeft;
@@ -37,6 +43,7 @@ public class PlayerController : MonoBehaviour
     private float controlDisableDuration = 0;   // 조작 비활성화 유지 시간 (0보다 작거나 같으면 비활성화)
     private float currentWallSlidingSpeed = 0;  // 현재 월 슬라이딩 속도
     private float WallSlidingSpeed = -0.1f;  // 목표 월 슬라이딩 속도
+    private float dashDirection = 0;    // 대쉬 방향 (대쉬할 때마다 업데이트)
 
 
     private bool isControlDisabled = false; // 조작을 비활성화할지 여부 (월킥에 사용)
@@ -49,6 +56,7 @@ public class PlayerController : MonoBehaviour
     private bool isTouchingClimbableWall = false;   // 붙을 수 있는 벽에 닿아 있는가?
     private bool isTouchingAnyWall = false; // 벽에 닿아 있는가? (아무 벽이나 붙어있으면 true. 붙을 수 있는 벽 포함)
     private bool isWallSliding = false; // 월 슬라이딩 도중인가?
+    private bool isDashing = false; // 대쉬 중인가?
 
 
     // 속성 참조
@@ -278,6 +286,21 @@ public class PlayerController : MonoBehaviour
     {
         isControlDisabled = true;
         controlDisableDuration = time;
+    }
+
+    void DashHandler()
+    {
+        if (Input.GetKey(KeyCode.LeftShift) && !isDashing)
+        {
+            isDashing = true;
+            dashDirection = lastMoveInput;
+            anim.SetTrigger("trigger_dash");
+        }
+
+        if (isDashing)
+        {
+
+        }
     }
 
     void UpdateStates()
