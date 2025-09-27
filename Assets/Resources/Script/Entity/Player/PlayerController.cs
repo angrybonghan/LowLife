@@ -35,6 +35,9 @@ public class PlayerController : MonoBehaviour
     private float coyoteTime = 0; // 현재 코요테타임
     private float timeSinceLastJump = 0; // 마지막 점프로부터 지난 시간
     private float controlDisableDuration = 0;   // 조작 비활성화 유지 시간 (0보다 작거나 같으면 비활성화)
+    private float currentWallSlidingSpeed = 0;  // 현재 월 슬라이딩 속도
+    private float WallSlidingSpeed = -0.1f;  // 목표 월 슬라이딩 속도
+
 
     private bool isControlDisabled = false; // 조작을 비활성화할지 여부 (월킥에 사용)
     private bool isFacingRight = true;  // 오른쪽을 바라보고 있는가? (방향 전환에 필요함)
@@ -98,8 +101,8 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKey(KeyCode.A)) moveInput = -1;
             else moveInput = 1;
 
-            lastMoveInput = moveInput;
             hasInput = true;
+            if (!isControlDisabled) lastMoveInput = moveInput;
         }
         else
         {
@@ -137,9 +140,22 @@ public class PlayerController : MonoBehaviour
             }
             rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
         }
-        else
+        else    // 월 슬라이딩 관성 계산
         {
-            rb.velocity = new Vector2(0, -0.1f);
+            if (currentWallSlidingSpeed > WallSlidingSpeed)
+            {
+                currentWallSlidingSpeed = rb.velocity.y;
+            }
+            else
+            {
+                if (currentWallSlidingSpeed < WallSlidingSpeed)
+                {
+                    currentWallSlidingSpeed += (Mathf.Abs(currentWallSlidingSpeed) * Time.deltaTime * deceleration) / 2;
+                    currentWallSlidingSpeed = Mathf.Min(currentWallSlidingSpeed, WallSlidingSpeed);
+                }
+
+                rb.velocity = new Vector2(0, currentWallSlidingSpeed);
+            }
         }
 
         normalizedSpeed = currentMoveSpeed / maxSpeed;
@@ -192,10 +208,12 @@ public class PlayerController : MonoBehaviour
     {
         if (!isWallSliding)
         {
-            if (!isGrounded && isTouchingClimbableWall && timeSinceLastJump > 0.3f)
+            if (!isGrounded && isTouchingClimbableWall && timeSinceLastJump > 0.3f) // 월 슬라이딩 트리거
             {
+                SetPlayerControlDisableDuration(0.1f);
                 isWallSliding = true;
                 currentMoveSpeed = 0;
+                currentWallSlidingSpeed = rb.velocity.y;
                 anim.SetTrigger("trigger_wallSliding");
             }
         }
@@ -217,7 +235,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))    // 월 킥 작동
+            if (Input.GetKey(KeyCode.Space) && !isControlDisabled)    // 월 킥 작동
             {
                 GameObject newWallKickEffect = Instantiate(wallKickEffect, wallKickEffectPos.position, Quaternion.identity);
                 newWallKickEffect.transform.localScale = new Vector3(
@@ -239,7 +257,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isControlDisabled) return;
 
-        if (isTouchingAnyWall)
+        if (isTouchingAnyWall && !isWallSliding)
         {
             currentMoveSpeed = 0;
             isControlDisabled = false;
@@ -249,7 +267,7 @@ public class PlayerController : MonoBehaviour
         controlDisableDuration -= Time.deltaTime;
         if (controlDisableDuration <= 0)
         {
-            if (hasInput || isGrounded)
+            if (hasInput || isGrounded || isWallSliding)
             {
                 isControlDisabled = false;
             }
