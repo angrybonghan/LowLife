@@ -1,71 +1,74 @@
-using Unity.Mathematics;
+ï»¿using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("±âº» ÀÌµ¿ ¼³Á¤")]
-    public float acceleration = 5;  // ÇÃ·¹ÀÌ¾î °¡¼Óµµ
-    public float deceleration = 25;    // ÇÃ·¹ÀÌ¾î °¨¼Óµµ
-    public float maxSpeed = 15; // ÃÖ°í ¼Óµµ
-    public float jumpForce = 10;    // Á¡ÇÁ Èû
-    public float quickTrunDuration = 0.3f;    // ÄüÅÏ ÃÖ´ë ±æÀÌ
-    [Header("´ë½¬ ¼³Á¤")]
-    public float dashDuration = 0.25f;  // ´ë½¬ À¯Áö ½Ã°£
-    public float dashSpeedMultiplier = 1.5f;   // ÇöÀç ¼Óµµ¿¡¼­ ¹è¼ö·Î °¡¼ÓÇÒ ´ë½¬ ¼Óµµ
-    public float dashCooldown = 0.75f;  // ´ë½¬ Àç»ç¿ë ´ë±â½Ã°£
-    public GameObject dashEffect;   // ´ë½¬ ÀÜ»ó ÀÌÆåÆ® ÇÁ¸®ÆÕ
+    [Header("ê¸°ë³¸ ì´ë™ ì„¤ì •")]
+    public float acceleration = 12;  // í”Œë ˆì´ì–´ ê°€ì†ë„
+    public float deceleration = 50;    // í”Œë ˆì´ì–´ ê°ì†ë„
+    public float maxSpeed = 12; // ìµœê³  ì†ë„
+    public float jumpForce = 10;    // ì í”„ í˜
+    public float quickTrunDuration = 0.3f;    // í€µí„´ ìµœëŒ€ ê¸¸ì´
+    public float shieldSpeedâ€‹Multiplier = 1;   // ë°©íŒ¨ë¡œ ì¸í•œ ê°ì†ë„ ë°°ìœ¨
+    [Header("ëŒ€ì‰¬ ì„¤ì •")]
+    public float dashDuration = 0.25f;  // ëŒ€ì‰¬ ìœ ì§€ ì‹œê°„
+    public float dashSpeedMultiplier = 1.4f;   // í˜„ì¬ ì†ë„ì—ì„œ ë°°ìˆ˜ë¡œ ê°€ì†í•  ëŒ€ì‰¬ ì†ë„
+    public float dashCooldown = 0.5f;  // ëŒ€ì‰¬ ì¬ì‚¬ìš© ëŒ€ê¸°ì‹œê°„
+    public GameObject dashEffect;   // ëŒ€ì‰¬ ì”ìƒ ì´í™íŠ¸ í”„ë¦¬íŒ¹
 
 
-    [Header("Áö»ó °¨Áö À§Ä¡")]    // Transform 3°³ Áß ÇÏ³ª¶óµµ groundLayer¿¡ ´ê¾ÒÀ¸¸é ¶¥ÀÎ °ÍÀ¸·Î º½
+    [Header("ì§€ìƒ ê°ì§€ ìœ„ì¹˜")]    // Transform 3ê°œ ì¤‘ í•˜ë‚˜ë¼ë„ groundLayerì— ë‹¿ì•˜ìœ¼ë©´ ë•…ì¸ ê²ƒìœ¼ë¡œ ë´„
     public Transform groundCheckLeft;
     public Transform groundCheckCenter;
     public Transform groundCheckRight;
     public LayerMask groundLayer;
 
-    [Header("º® °¨Áö À§Ä¡")]
+    [Header("ë²½ ê°ì§€ ìœ„ì¹˜")]
     public Transform wallCheckTop;
     public Transform wallCheckBottom;
     public LayerMask wallLayer;
 
-    [Header("ÀÌÆåÆ® À§Ä¡ / ÇÁ¸®ÆÕ")]
-    public GameObject wallKickEffect;   // ÀÌÆåÆ® »ı¼º À§Ä¡
-    public Transform wallKickEffectPos; // ÀÌÆåÆ® ÇÁ¸®ÆÕ
+    [Header("ì´í™íŠ¸ ìœ„ì¹˜ / í”„ë¦¬íŒ¹")]
+    public GameObject wallKickEffect;   // ì´í™íŠ¸ ìƒì„± ìœ„ì¹˜
+    public Transform wallKickEffectPos; // ì´í™íŠ¸ í”„ë¦¬íŒ¹
 
-    private float moveInput = 0;    // ÇöÀç ¹æÇâ ÀÔ·Â (A : -1 , D : 1)
-    private float lastMoveInput = 1;    // ¸¶Áö¸·À¸·Î ´©¸¥ ¹æÇâÅ°
-    private float currentMoveSpeed = 0; // ÇöÀç ¿òÁ÷ÀÓ ¼Óµµ (°¡¼Óµµ ¹İ¿µ)
-    private float normalizedSpeed = 0;  // Á¤±ÔÈ­µÈ ¼Óµµ
-    private float layerCheckRadius = 0.05f;  // °¨Áö À§Ä¡ ¹İ°æ
-    private float quickTrunTime = 0; // ÇöÀç ÄüÅÏ ±æÀÌ
-    private float quickTurnDirection = 1;   // Äü ÅÏÀÇ ¹æÇâ
-    private float coyoteTimeDuration = 0.1f; // ÄÚ¿äÅ× Å¸ÀÓ ±æÀÌ
-    private float coyoteTime = 0; // ÇöÀç ÄÚ¿äÅ×Å¸ÀÓ
-    private float timeSinceLastJump = 0; // ¸¶Áö¸· Á¡ÇÁ·ÎºÎÅÍ Áö³­ ½Ã°£
-    private float controlDisableDuration = 0;   // Á¶ÀÛ ºñÈ°¼ºÈ­ À¯Áö ½Ã°£ (0º¸´Ù ÀÛ°Å³ª °°À¸¸é ºñÈ°¼ºÈ­)
-    private float currentWallSlidingSpeed = 0;  // ÇöÀç ¿ù ½½¶óÀÌµù ¼Óµµ
-    private float WallSlidingSpeed = -0.1f;  // ¸ñÇ¥ ¿ù ½½¶óÀÌµù ¼Óµµ
-    private float dashSpeed;    // ´ë½¬ ¼Óµµ (´ë½¬ÇÑ ½ÃÁ¡ÀÇ ¼Óµµ¿¡ ºñ·ÊÇÏ¿© »¡¶óÁü)
-    private float dashDirection = 0;    // ´ë½¬ ¹æÇâ (´ë½¬ÇÒ ¶§¸¶´Ù ¾÷µ¥ÀÌÆ®)
-    private float currentDashDuration = 0;  // ÇöÀç ´ë½¬ ½Ã°£
-    private float currentDashCooldown = 0;  // ´ë½¬ ÀÌÈÄ Èå¸¥ ½Ã°£ (Äğ´Ù¿î °è»ê¿ë)
-    private float dashVerticalVelocity = 0; // ´ë½¬ ¼öÁ÷ ¼Óµµ
-
-
-    private bool isControlDisabled = false; // Á¶ÀÛÀ» ºñÈ°¼ºÈ­ÇÒÁö ¿©ºÎ (¿ùÅ±¿¡ »ç¿ë)
-    private bool isFacingRight = true;  // ¿À¸¥ÂÊÀ» ¹Ù¶óº¸°í ÀÖ´Â°¡? (¹æÇâ ÀüÈ¯¿¡ ÇÊ¿äÇÔ)
-    private bool isRunning = false; // ¿òÁ÷ÀÌ´Â ÁßÀÎ°¡?
-    private bool hasInput = false; // ÀÔ·ÂÀÌ ÀÖ´Â°¡? (A ¶Ç´Â D¸¦ ´­·¶À» ¶§ true. ´Ü, µ¿½Ã¿¡ ´©¸£´Â °ÍÀ» Á¦¿ÜÇÔ.)
-    private bool isGrounded = false;    // ¶¥¿¡ ´ê¾Ò´Â°¡? (Á¡ÇÁ, ¿ù·± ÇØÁ¦¿¡ ÀÌ¿ë)
-    private bool isFalling = false; // ¶³¾îÁö°í ÀÖ´Â°¡? (¿Ã¶ó°¡´Â ÁßÀÌ¶ó¸é false)
-    private bool isQuickTurning = false;    // Äü ÅÏ µµÁßÀÎ°¡?
-    private bool isTouchingClimbableWall = false;   // ºÙÀ» ¼ö ÀÖ´Â º®¿¡ ´ê¾Æ ÀÖ´Â°¡?
-    private bool isTouchingAnyWall = false; // º®¿¡ ´ê¾Æ ÀÖ´Â°¡? (¾Æ¹« º®ÀÌ³ª ºÙ¾îÀÖÀ¸¸é true. ºÙÀ» ¼ö ÀÖ´Â º® Æ÷ÇÔ)
-    private bool isWallSliding = false; // ¿ù ½½¶óÀÌµù µµÁßÀÎ°¡?
-    private bool isDashing = false; // ´ë½¬ ÁßÀÎ°¡?
+    private float moveInput = 0;    // í˜„ì¬ ë°©í–¥ ì…ë ¥ (A : -1 , D : 1)
+    private float lastMoveInput = 1;    // ë§ˆì§€ë§‰ìœ¼ë¡œ ëˆ„ë¥¸ ë°©í–¥í‚¤
+    private float currentMoveSpeed = 0; // í˜„ì¬ ì›€ì§ì„ ì†ë„ (ê°€ì†ë„ ë°˜ì˜)
+    private float normalizedSpeed = 0;  // ì •ê·œí™”ëœ ì†ë„
+    private float layerCheckRadius = 0.05f;  // ê°ì§€ ìœ„ì¹˜ ë°˜ê²½
+    private float quickTrunTime = 0; // í˜„ì¬ í€µí„´ ê¸¸ì´
+    private float quickTurnDirection = 1;   // í€µ í„´ì˜ ë°©í–¥
+    private float coyoteTimeDuration = 0.1f; // ì½”ìš”í…Œ íƒ€ì„ ê¸¸ì´
+    private float coyoteTime = 0; // í˜„ì¬ ì½”ìš”í…Œíƒ€ì„
+    private float timeSinceLastJump = 0; // ë§ˆì§€ë§‰ ì í”„ë¡œë¶€í„° ì§€ë‚œ ì‹œê°„
+    private float controlDisableDuration = 0;   // ì¡°ì‘ ë¹„í™œì„±í™” ìœ ì§€ ì‹œê°„ (0ë³´ë‹¤ ì‘ê±°ë‚˜ ê°™ìœ¼ë©´ ë¹„í™œì„±í™”)
+    private float currentWallSlidingSpeed = 0;  // í˜„ì¬ ì›” ìŠ¬ë¼ì´ë”© ì†ë„
+    private float WallSlidingSpeed = -0.1f;  // ëª©í‘œ ì›” ìŠ¬ë¼ì´ë”© ì†ë„
+    private float dashSpeed;    // ëŒ€ì‰¬ ì†ë„ (ëŒ€ì‰¬í•œ ì‹œì ì˜ ì†ë„ì— ë¹„ë¡€í•˜ì—¬ ë¹¨ë¼ì§)
+    private float dashDirection = 0;    // ëŒ€ì‰¬ ë°©í–¥ (ëŒ€ì‰¬í•  ë•Œë§ˆë‹¤ ì—…ë°ì´íŠ¸)
+    private float currentDashDuration = 0;  // í˜„ì¬ ëŒ€ì‰¬ ì‹œê°„
+    private float currentDashCooldown = 0;  // ëŒ€ì‰¬ ì´í›„ íë¥¸ ì‹œê°„ (ì¿¨ë‹¤ìš´ ê³„ì‚°ìš©)
+    private float dashVerticalVelocity = 0; // ëŒ€ì‰¬ ìˆ˜ì§ ì†ë„
 
 
-    // ¼Ó¼º ÂüÁ¶
+    private bool isControlDisabled = false; // ì¡°ì‘ì„ ë¹„í™œì„±í™”í• ì§€ ì—¬ë¶€ (ì›”í‚¥ì— ì‚¬ìš©)
+    private bool isFacingRight = true;  // ì˜¤ë¥¸ìª½ì„ ë°”ë¼ë³´ê³  ìˆëŠ”ê°€? (ë°©í–¥ ì „í™˜ì— í•„ìš”í•¨)
+    private bool isRunning = false; // ì›€ì§ì´ëŠ” ì¤‘ì¸ê°€?
+    private bool hasInput = false; // ì…ë ¥ì´ ìˆëŠ”ê°€? (A ë˜ëŠ” Dë¥¼ ëˆŒë €ì„ ë•Œ true. ë‹¨, ë™ì‹œì— ëˆ„ë¥´ëŠ” ê²ƒì„ ì œì™¸í•¨.)
+    private bool isGrounded = false;    // ë•…ì— ë‹¿ì•˜ëŠ”ê°€? (ì í”„, ì›”ëŸ° í•´ì œì— ì´ìš©)
+    private bool isFalling = false; // ë–¨ì–´ì§€ê³  ìˆëŠ”ê°€? (ì˜¬ë¼ê°€ëŠ” ì¤‘ì´ë¼ë©´ false)
+    private bool isQuickTurning = false;    // í€µ í„´ ë„ì¤‘ì¸ê°€?
+    private bool isTouchingClimbableWall = false;   // ë¶™ì„ ìˆ˜ ìˆëŠ” ë²½ì— ë‹¿ì•„ ìˆëŠ”ê°€?
+    private bool isTouchingAnyWall = false; // ë²½ì— ë‹¿ì•„ ìˆëŠ”ê°€? (ì•„ë¬´ ë²½ì´ë‚˜ ë¶™ì–´ìˆìœ¼ë©´ true. ë¶™ì„ ìˆ˜ ìˆëŠ” ë²½ í¬í•¨)
+    private bool isWallSliding = false; // ì›” ìŠ¬ë¼ì´ë”© ë„ì¤‘ì¸ê°€?
+    private bool isDashing = false; // ëŒ€ì‰¬ ì¤‘ì¸ê°€?
+    private bool canDash = false; // ëŒ€ì‰¬ ê°€ëŠ¥í•œê°€? (ë•…ì— ë‹¿ê±°ë‚˜ ì›” ìŠ¬ë¼ì´ë”© ì‹œ ì¬ì¶©ì „)
+    private bool isShielding = false; // ë°©íŒ¨ë¥¼ ë“¤ê³ ìˆëŠ” ì¤‘ì¸ê°€?
+
+
+    // ì†ì„±, ìŠ¤í¬ë¦½íŠ¸ ì°¸ì¡°
     private Rigidbody2D rb;
     private Animator anim;
 
@@ -77,17 +80,18 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        UpdateStates(); // »óÅÂ ¾÷µ¥ÀÌÆ®
-        PlayerControlDisableHandler();  // Á¶ÀÛ Áß´Ü ½Ã°£ °è»ê
-        CoyoteTimeHandler(); // ÄÚ¿äÅ× Å¸ÀÓ ½Ã°£ °è»ê
-        MoveInputHandler(); // Á¶ÀÛ Å° °¨Áö
+        UpdateStates(); // ìƒíƒœ ì—…ë°ì´íŠ¸
+        PlayerControlDisableHandler();  // ì¡°ì‘ ì¤‘ë‹¨ ì‹œê°„ ê³„ì‚°
+        CoyoteTimeHandler(); // ì½”ìš”í…Œ íƒ€ì„ ì‹œê°„ ê³„ì‚°
+        MoveInputHandler(); // ì¡°ì‘ í‚¤ ê°ì§€
 
-        CheckFlip();    // Ä³¸¯ÅÍ ÁÂ¿ì È¸Àü, ÄüÅÏ ÀÛµ¿
-        WallSlidingHandler(); // ¿ù ½½¶óÀÌµù, ¿ù Å± ¾Ö´Ï¸ŞÀÌ¼Ç Æ®¸®°Å
-        JumpHandler();  // Á¡ÇÁ ÀÛµ¿, Á¡ÇÁ ¾Ö´Ï¸ŞÀÌ¼Ç Æ®¸®°Å
-        DashHandler(); // ´ë½¬ Æ®¸®°Å
-        HandleMovement();   // °¨ÁöµÈ Å°¸¦ ±â¹İÀ¸·Î ¿òÁ÷ÀÓ (´Ş¸®±â, ¿ù ½½¶óÀÌµù, ´ë½¬, ÄüÅÏ)
-        UpdateAnimation(); // ¾Ö´Ï¸ŞÀÌ¼Ç ¾÷µ¥ÀÌÆ® (´Ş¸®±â, ÄüÅÏ, °øÁß »óÅÂ, ¿òÁ÷ÀÓ ¼Óµµ, Ãß¶ô °¨Áö)
+        CheckFlip();    // ìºë¦­í„° ì¢Œìš° íšŒì „, í€µí„´ ì‘ë™
+        WallSlidingHandler(); // ì›” ìŠ¬ë¼ì´ë”©, ì›” í‚¥ ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±°
+        JumpHandler();  // ì í”„ ì‘ë™, ì í”„ ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±°
+        DashHandler(); // ëŒ€ì‰¬ íŠ¸ë¦¬ê±°
+        // ë°©íŒ¨ ì „ê°œ, ë°©íŒ¨ í•´ì œ
+        HandleMovement();   // ê°ì§€ëœ í‚¤ë¥¼ ê¸°ë°˜ìœ¼ë¡œ ì›€ì§ì„ (ë‹¬ë¦¬ê¸°, ì›” ìŠ¬ë¼ì´ë”©, ëŒ€ì‰¬, í€µí„´, ë°©íŒ¨ ë“¤ê³  ì´ë™)
+        UpdateAnimation(); // ì• ë‹ˆë©”ì´ì…˜ ì—…ë°ì´íŠ¸ (ë‹¬ë¦¬ê¸°, í€µí„´, ê³µì¤‘ ìƒíƒœ, ì›€ì§ì„ ì†ë„, ì¶”ë½ ê°ì§€)
     }
 
     void CheckFlip()
@@ -104,7 +108,7 @@ public class PlayerController : MonoBehaviour
 
         if (normalizedSpeed >= 0.7f && isGrounded && !isQuickTurning)
         {
-            // ÃÖ°í ¼Óµµ ±âÁØ 70% ÀÌ»óÀÇ ¼Óµµ¿¡¼­ ÄüÅÏÀÌ ÀÛµ¿ÇÒ ¼ö ÀÖÀ½
+            // ìµœê³  ì†ë„ ê¸°ì¤€ 70% ì´ìƒì˜ ì†ë„ì—ì„œ í€µí„´ì´ ì‘ë™í•  ìˆ˜ ìˆìŒ
             isQuickTurning = true;
             quickTrunTime = 0;
             quickTurnDirection = -moveInput;
@@ -138,31 +142,31 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        // ´ë½¬°¡ °¡Àå ³ôÀº ¿ì¼±¼øÀ§¸¦ °¡Áü
+        // ëŒ€ì‰¬ê°€ ê°€ì¥ ë†’ì€ ìš°ì„ ìˆœìœ„ë¥¼ ê°€ì§
         if (isDashing)
         {
             DashMovement();
             return;
         }
 
-        // Á¶ÀÛ ºñÈ°¼ºÈ­ »óÅÂ¿¡¼­ °¨¼ÓÀÌ³ª °¡¼ÓÇÏÁö ¾ÊÀ½
+        // ì¡°ì‘ ë¹„í™œì„±í™” ìƒíƒœì—ì„œ ê°ì†ì´ë‚˜ ê°€ì†í•˜ì§€ ì•ŠìŒ
         if (isControlDisabled) return;
 
-        // ¿ù ½½¶óÀÌµù
+        // ì›” ìŠ¬ë¼ì´ë”©
         if (isWallSliding)
         {
             WallSlidingMovement();
             return;
         }
 
-        // Äü ÅÏ
+        // í€µ í„´
         if (isQuickTurning)
         {
             QuickTurnMovement();
             return;
         }
 
-        // ¸ğµç Æ¯¼ö ÀÌµ¿ÀÌ ¾Æ´Ò ¶§, ±âº» ÀÌµ¿ ·ÎÁ÷ ½ÇÇà
+        // ëª¨ë“  íŠ¹ìˆ˜ ì´ë™ì´ ì•„ë‹ ë•Œ, ê¸°ë³¸ ì´ë™ ë¡œì§ ì‹¤í–‰
         DefaultMovement();
     }
 
@@ -171,13 +175,13 @@ public class PlayerController : MonoBehaviour
         quickTrunTime += Time.deltaTime;
         rb.velocity = new Vector2(quickTurnDirection * currentMoveSpeed * (1 - (quickTrunTime / quickTrunDuration)), rb.velocity.y);
 
-        // Äü ÅÏ ÇØÁ¦ Á¶°Ç
-        // ÄüÅÏ ½Ã°£ ÃÊ°ú, ÄüÅÏ µµÁß ¹æÇâÀ» ´Ù½Ã ÀüÈ¯, Ãß¶ô (¶¥¿¡¼­ ¶³¾îÁü)
+        // í€µ í„´ í•´ì œ ì¡°ê±´
+        // í€µí„´ ì‹œê°„ ì´ˆê³¼, í€µí„´ ë„ì¤‘ ë°©í–¥ì„ ë‹¤ì‹œ ì „í™˜, ì¶”ë½ (ë•…ì—ì„œ ë–¨ì–´ì§)
         if ((quickTrunTime >= quickTrunDuration) || !isGrounded)
         {
             isQuickTurning = false;
         }
-        // ¹æÇâÀ» ´Ù½Ã ÀüÈ¯ÇßÀ» ¶§¿¡´Â, ÇöÀç ¼Óµµ¸¦ Àı¹İ °¨¼Ò
+        // ë°©í–¥ì„ ë‹¤ì‹œ ì „í™˜í–ˆì„ ë•Œì—ëŠ”, í˜„ì¬ ì†ë„ë¥¼ ì ˆë°˜ ê°ì†Œ
         if (quickTurnDirection == moveInput)
         {
             isQuickTurning = false;
@@ -187,48 +191,18 @@ public class PlayerController : MonoBehaviour
 
     void DashMovement()
     {
-        if (isTouchingAnyWall)
-        {
-            isDashing = false;
-            return;
-        }
-
         rb.velocity = new Vector2(dashDirection * dashSpeed, dashVerticalVelocity);
-        currentDashDuration += Time.deltaTime;
-
-        if (currentDashDuration >= dashDuration || isTouchingAnyWall)
-        {
-            isDashing = false;
-            SetPlayerControlDisableDuration(0);
-        }
-        else
-        {
-            GameObject newDashEffect = Instantiate(dashEffect, transform.position, quaternion.identity);
-            newDashEffect.transform.localScale = new Vector3(
-                newDashEffect.transform.localScale.x * dashDirection,
-                newDashEffect.transform.localScale.y,
-                newDashEffect.transform.localScale.z);
-        }
+        
+        GameObject newDashEffect = Instantiate(dashEffect, transform.position, quaternion.identity);
+        newDashEffect.transform.localScale = new Vector3(
+            newDashEffect.transform.localScale.x * dashDirection,
+            newDashEffect.transform.localScale.y,
+            newDashEffect.transform.localScale.z);
     }
 
     void WallSlidingMovement()
     {
-        if (isGrounded) // ¶¥¿¡ ´ê¾ÒÀ» ¶§ ¿ù ½½¶óÀÌµù ÇØÁ¦
-        {
-            isWallSliding = false;
-            Flip();
-
-            return;
-        }
-
-        if (!isTouchingClimbableWall)   // º®ÀÌ »ç¶óÁ³À» ¶§ ¿ù ½½¶óÀÌµù ÇØÁ¦
-        {
-            isWallSliding = false;
-
-            return;
-        }
-
-        if (currentWallSlidingSpeed > WallSlidingSpeed) // ¿ù ½½¶óÀÌµù °ü¼º °è»ê
+        if (currentWallSlidingSpeed > WallSlidingSpeed) // ì›” ìŠ¬ë¼ì´ë”© ê´€ì„± ê³„ì‚°
         {
             currentWallSlidingSpeed = rb.velocity.y;
         }
@@ -242,39 +216,20 @@ public class PlayerController : MonoBehaviour
 
             rb.velocity = new Vector2(0, currentWallSlidingSpeed);
         }
-
-
-        if (Input.GetKey(KeyCode.Space) && !isControlDisabled)    // ¿ù Å± ÀÛµ¿
-        {
-            isWallSliding = false;
-            currentMoveSpeed = maxSpeed;
-            normalizedSpeed = currentMoveSpeed / maxSpeed;
-            Flip();
-            lastMoveInput = -lastMoveInput;
-            rb.velocity = new Vector2(jumpForce * lastMoveInput, jumpForce);
-            SetPlayerControlDisableDuration(0.15f);
-            anim.SetTrigger("trigger_wallKick");
-
-            GameObject newWallKickEffect = Instantiate(wallKickEffect, wallKickEffectPos.position, Quaternion.identity);
-            newWallKickEffect.transform.localScale = new Vector3(
-                newWallKickEffect.transform.localScale.x * lastMoveInput,
-                newWallKickEffect.transform.localScale.y,
-                newWallKickEffect.transform.localScale.z);
-        }
     }
 
     void DefaultMovement()
     {
-        if (hasInput)   // ÀÔ·Â¿¡ ÀÇÇÑ °¡¼Ó
+        if (hasInput)   // ì…ë ¥ì— ì˜í•œ ê°€ì†
         {
             currentMoveSpeed = Mathf.Min(currentMoveSpeed + acceleration * Time.deltaTime, maxSpeed);
         }
-        else  // ÀÔ·Â ¾øÀ¸¸é °¨¼Ó
+        else  // ì…ë ¥ ì—†ìœ¼ë©´ ê°ì†
         {
             currentMoveSpeed = Mathf.Max(currentMoveSpeed - deceleration * Time.deltaTime, 0);
         }
 
-        if (isTouchingAnyWall)  // º®°ú Ãæµ¹ÇÏ¸é ¼Óµµ ¾ø¾îÁü
+        if (isTouchingAnyWall)  // ë²½ê³¼ ì¶©ëŒí•˜ë©´ ì†ë„ ì—†ì–´ì§
         {
             currentMoveSpeed = 0;
         }
@@ -300,15 +255,52 @@ public class PlayerController : MonoBehaviour
 
     void WallSlidingHandler()
     {
-        if (isWallSliding) return;
-
-        if (!isGrounded && isTouchingClimbableWall && timeSinceLastJump > 0.3f) // ¿ù ½½¶óÀÌµù Æ®¸®°Å
+        if (isWallSliding)
         {
-            SetPlayerControlDisableDuration(0.1f);
-            isWallSliding = true;
-            currentMoveSpeed = 0;
-            currentWallSlidingSpeed = rb.velocity.y;
-            anim.SetTrigger("trigger_wallSliding");
+            if (isGrounded) // ë•…ì— ë‹¿ì•˜ì„ ë•Œ ì›” ìŠ¬ë¼ì´ë”© í•´ì œ
+            {
+                isWallSliding = false;
+                Flip();
+
+                return;
+            }
+
+            if (!isTouchingClimbableWall)   // ë²½ì´ ì‚¬ë¼ì¡Œì„ ë•Œ ì›” ìŠ¬ë¼ì´ë”© í•´ì œ
+            {
+                isWallSliding = false;
+
+                return;
+            }
+
+            if (Input.GetKey(KeyCode.Space) && !isControlDisabled)    // ì›” í‚¥ ì‘ë™
+            {
+                isWallSliding = false;
+                currentMoveSpeed = maxSpeed;
+                normalizedSpeed = currentMoveSpeed / maxSpeed;
+                lastMoveInput = -lastMoveInput;
+                rb.velocity = new Vector2(jumpForce * lastMoveInput, jumpForce);
+                SetPlayerControlDisableDuration(0.15f);
+                anim.SetTrigger("trigger_wallKick");
+
+                GameObject newWallKickEffect = Instantiate(wallKickEffect, wallKickEffectPos.position, Quaternion.identity);
+                newWallKickEffect.transform.localScale = new Vector3(
+                    newWallKickEffect.transform.localScale.x * lastMoveInput,
+                    newWallKickEffect.transform.localScale.y,
+                    newWallKickEffect.transform.localScale.z);
+
+                Flip();
+            }
+        }
+        else
+        {
+            if (!isGrounded && isTouchingClimbableWall && timeSinceLastJump > 0.3f) // ì›” ìŠ¬ë¼ì´ë”© íŠ¸ë¦¬ê±°
+            {
+                SetPlayerControlDisableDuration(0.1f);
+                isWallSliding = true;
+                currentMoveSpeed = 0;
+                currentWallSlidingSpeed = rb.velocity.y;
+                anim.SetTrigger("trigger_wallSliding");
+            }
         }
     }
 
@@ -341,30 +333,67 @@ public class PlayerController : MonoBehaviour
 
     void DashHandler()
     {
-        if (currentDashCooldown < dashCooldown)
+        if (!isDashing)
         {
-            currentDashCooldown += Time.deltaTime;
-            return;
+            if (currentDashCooldown < dashCooldown)
+            {
+                currentDashCooldown += Time.deltaTime;
+                return;
+            }
+
+            if (isTouchingAnyWall || isQuickTurning || isWallSliding || normalizedSpeed < 0.5f) return;
+            // ëŒ€ì‰¬ ë¶ˆê°€ëŠ¥ ì¡°ê±´ : ë²½ì— ë‹¿ìŒ, ì›” ìŠ¬ë¼ì´ë”© ë„ì¤‘, í€µí„´ ë„ì¤‘, ì†ë„ê°€ ì „ì²´ì˜ 50%ë¥¼ ë„˜ì§€ ëª»í•¨
+
+            if (Input.GetKey(KeyCode.LeftShift))    // ëŒ€ì‰¬ ì‘ë™
+            {
+                isDashing = true;
+                anim.SetTrigger("trigger_dash");
+                dashDirection = lastMoveInput;
+                currentDashDuration = 0;
+                currentDashCooldown = 0;
+                currentMoveSpeed = dashSpeed = Mathf.Min(currentMoveSpeed * dashSpeedMultiplier, maxSpeed * dashSpeedMultiplier);
+                dashVerticalVelocity = rb.velocity.y;
+            }
         }
-
-        if (isDashing || isTouchingAnyWall || isQuickTurning || isWallSliding || normalizedSpeed < 0.5f) return;
-        // ´ë½¬ ºÒ°¡´É Á¶°Ç : º®¿¡ ´êÀ½, ¿ù ½½¶óÀÌµù µµÁß, ÄüÅÏ µµÁß, ¼Óµµ°¡ ÀüÃ¼ÀÇ 50%¸¦ ³ÑÁö ¸øÇÔ
-
-        if (Input.GetKey(KeyCode.LeftShift))    // ´ë½¬ ÀÛµ¿
+        else
         {
-            isDashing = true;
-            anim.SetTrigger("trigger_dash");
-            dashDirection = lastMoveInput;
-            currentDashDuration = 0;
-            currentDashCooldown = 0;
-            currentMoveSpeed = dashSpeed = Mathf.Min(currentMoveSpeed * dashSpeedMultiplier, maxSpeed * dashSpeedMultiplier);
-            dashVerticalVelocity = rb.velocity.y;
+            currentDashDuration += Time.deltaTime;
+
+            if (currentDashDuration >= dashDuration || isTouchingAnyWall)
+            {
+                isDashing = false;
+                SetPlayerControlDisableDuration(0);
+            }
+
+            if (isTouchingAnyWall)
+            {
+                isDashing = false;
+                return;
+            }
+        }
+    }
+
+    void ShildHandler()
+    {
+        if (isShielding)
+        {
+            if (Input.GetMouseButtonUp(1) || !isGrounded)
+            {
+                isShielding = true;
+            }
+        }
+        else if (!isDashing && isGrounded)
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+
+            }
         }
     }
 
     void UpdateStates()
     {
-        // ¿òÁ÷ÀÌ´ÂÁö È®ÀÎ
+        // ì›€ì§ì´ëŠ”ì§€ í™•ì¸
         if (currentMoveSpeed <= 0)
         {
             isRunning = false;
@@ -374,11 +403,11 @@ public class PlayerController : MonoBehaviour
             isRunning = true;
         }
 
-        // ÇÏ°­ ÁßÀÎÁö (°¡¼Ó y°¡ 0 ÀÌÇÏ¶ó¸é ÇÏ°­)
+        // í•˜ê°• ì¤‘ì¸ì§€ (ê°€ì† yê°€ 0 ì´í•˜ë¼ë©´ í•˜ê°•)
         isFalling = (rb.velocity.y < 0);
 
 
-        // Áö»óÀÎÁö È®ÀÎ
+        // ì§€ìƒì¸ì§€ í™•ì¸
         bool isGroundedLeftFoot = Physics2D.OverlapCircle(groundCheckLeft.position, layerCheckRadius, groundLayer);
         bool isGroundedCenterFoot = Physics2D.OverlapCircle(groundCheckCenter.position, layerCheckRadius, groundLayer);
         bool isGroundedRightFoot = Physics2D.OverlapCircle(groundCheckRight.position, layerCheckRadius, groundLayer);
@@ -389,16 +418,15 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
         }
 
-        // Å» ¼ö ÀÖ´Â º®¿¡ ºÙ¾îÀÖ´ÂÁö È®ÀÎ
+        // íƒˆ ìˆ˜ ìˆëŠ” ë²½ì— ë¶™ì–´ìˆëŠ”ì§€ í™•ì¸
         bool isClimbableWallDetectedTop = Physics2D.OverlapCircle(wallCheckTop.position, layerCheckRadius, wallLayer);
         bool isClimbableWallDetectedBottom = Physics2D.OverlapCircle(wallCheckBottom.position, layerCheckRadius, wallLayer);
         isTouchingClimbableWall = isClimbableWallDetectedTop || isClimbableWallDetectedBottom;
 
-        // ¾Æ¹« º®¿¡ ºÙ¾îÀÖ´ÂÁö È®ÀÎ
+        // ì•„ë¬´ ë²½ì— ë¶™ì–´ìˆëŠ”ì§€ í™•ì¸
         bool isWallDetectedTop = Physics2D.OverlapCircle(wallCheckTop.position, layerCheckRadius, groundLayer);
         bool isWallDetectedBottom = Physics2D.OverlapCircle(wallCheckBottom.position, layerCheckRadius, groundLayer);
         isTouchingAnyWall = isWallDetectedTop || isWallDetectedBottom || isTouchingClimbableWall;
-
     }
 
     void CoyoteTimeHandler()
@@ -438,5 +466,10 @@ public class PlayerController : MonoBehaviour
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(wallKickEffectPos.position, layerCheckRadius);
+    }
+
+    public void SetShieldSpeedâ€‹Multiplier(float value)
+    {
+        shieldSpeedMultiplier = value;
     }
 }
