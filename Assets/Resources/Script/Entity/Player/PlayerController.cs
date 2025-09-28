@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour
 
     void CheckFlip()
     {
-        if (isControlDisabled || isDashing) return;
+        if (isControlDisabled || isDashing || isParrying) return;
 
         if ((moveInput > 0 && !isFacingRight) || (moveInput < 0 && isFacingRight)) Flip();
     }
@@ -266,7 +266,7 @@ public class PlayerController : MonoBehaviour
             currentMoveSpeed = 0;
         }
 
-        if (isTouchingAnyWall)  // 벽과 충돌하면 속도 없어짐
+        if (isTouchingAnyWall || isParrying)  // 벽과 충돌하거나 패링하면 멈춤
         {
             currentMoveSpeed = 0;
         }
@@ -448,6 +448,8 @@ public class PlayerController : MonoBehaviour
 
         if (isShielding)
         {
+            if (isParrying) return;
+
             if (Input.GetMouseButtonUp(1) || !isGrounded)
             {
                 isShielding = isEquippingShield = false;
@@ -468,14 +470,25 @@ public class PlayerController : MonoBehaviour
 
     void ParryHandler()
     {
-        if (!isShielding || isEquippingShield) return;
-
-        if (Input.GetMouseButtonDown(0))
+        if (isParrying)
         {
-            isParrying = true;
-            isShielding = false;
-            currentParryDuration = 0;
+            currentParryDuration += Time.deltaTime;
+            if (currentParryDuration >= parryDuration)
+            {
+                isParrying = false;
+                isShielding = false;
+            }
+        }
+        else
+        {
+            if (!isShielding || isEquippingShield) return;
 
+            if (Input.GetMouseButtonDown(0))
+            {
+                isParrying = true;
+                currentParryDuration = 0;
+                anim.SetTrigger("trigger_parry");
+            }
         }
     }
 
