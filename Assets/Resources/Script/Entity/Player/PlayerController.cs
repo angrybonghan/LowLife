@@ -1,5 +1,7 @@
-﻿using Unity.Mathematics;
+﻿using System;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -54,6 +56,7 @@ public class PlayerController : MonoBehaviour
     private float currentDashDuration = 0;  // 현재 대쉬 시간
     private float currentDashCooldown = 0;  // 대쉬 이후 흐른 시간 (쿨다운 계산용)
     private float dashVerticalVelocity = 0; // 대쉬 수직 속도
+    private float currentShieldEquipTime = 0; // 현재 방패 든 시간 (쿨다운 계산용)
 
 
     private bool isControlDisabled = false; // 조작을 비활성화할지 여부 (월킥에 사용)
@@ -93,7 +96,8 @@ public class PlayerController : MonoBehaviour
         WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
         JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
         DashHandler(); // 대쉬 트리거
-        // 방패 전개, 방패 해제
+        ParryHandler(); // 패링 작동, 애니메이션 트리거
+        ShildHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
         HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴, 방패 들고 이동)
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
     }
@@ -146,7 +150,13 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        // 대쉬가 가장 높은 우선순위를 가짐
+        if (isShielding)
+        {
+            ShildMovement();
+            return;
+        }
+        
+        // 기본 이동 도중에는 대쉬가 가장 높은 우선순위를 가짐
         if (isDashing)
         {
             DashMovement();
@@ -237,6 +247,27 @@ public class PlayerController : MonoBehaviour
         {
             currentMoveSpeed = 0;
         }
+        rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
+
+        normalizedSpeed = currentMoveSpeed / maxSpeed;
+    }
+
+    void ShildMovement()
+    {
+        if (hasInput && !isEquippingShield)
+        {
+            currentMoveSpeed = maxSpeed * shieldSpeedMultiplier;
+        }
+        else
+        {
+            currentMoveSpeed = 0;
+        }
+
+        if (isTouchingAnyWall)  // 벽과 충돌하면 속도 없어짐
+        {
+            currentMoveSpeed = 0;
+        }
+
         rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
 
         normalizedSpeed = currentMoveSpeed / maxSpeed;
@@ -364,8 +395,8 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            if (isTouchingAnyWall || isQuickTurning || isWallSliding || normalizedSpeed < 0.5f || !canDash) return;
-            // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 속도가 전체의 50%를 넘지 못함, 공중에서 이미 대쉬 씀
+            if (isTouchingAnyWall || isQuickTurning || isWallSliding || normalizedSpeed < 0.5f || !canDash || isShielding) return;
+            // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 속도가 전체의 50%를 넘지 못함, 공중에서 이미 대쉬 씀, 방패 사용 도중
 
             if (Input.GetKey(KeyCode.LeftShift))    // 대쉬 작동
             {
@@ -399,22 +430,45 @@ public class PlayerController : MonoBehaviour
 
     void ShildHandler()
     {
+        if (isEquippingShield)
+        {
+            if (currentShieldEquipTime >= shieldEquipDuration)
+            {
+                isEquippingShield = false;
+            }
+            else
+            {
+                currentShieldEquipTime += Time.deltaTime;
+            }
+        }
+
         if (isShielding)
         {
             if (Input.GetMouseButtonUp(1) || !isGrounded)
             {
-                isShielding = false;
+                isShielding = isEquippingShield = false;
+                currentShieldEquipTime = shieldEquipDuration;
             }
         }
         else if (!isDashing && !isQuickTurning && isGrounded)
         {
             if (Input.GetMouseButtonDown(1))
             {
-                isShielding = true;
-                isEquippingShield = true;
+                isShielding = isEquippingShield = true;
+                currentShieldEquipTime = 0;
 
                 anim.SetTrigger("trigger_shieldOn");
             }
+        }
+    }
+
+    void ParryHandler()
+    {
+        if (!isShielding || isEquippingShield) return;
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("PARRY!");
         }
     }
 
@@ -476,6 +530,7 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("bool_isQuickTurning", isQuickTurning);
         anim.SetBool("bool_isWallSliding", isWallSliding);
         anim.SetBool("bool_isDashing", isDashing);
+        anim.SetBool("bool_isShielding", isShielding);
 
         anim.SetFloat("float_moveSpeed", normalizedSpeed);
     }

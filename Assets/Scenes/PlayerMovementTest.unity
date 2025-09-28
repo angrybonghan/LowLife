@@ -2468,11 +2468,12 @@ MonoBehaviour:
   maxSpeed: 12
   jumpForce: 10
   quickTrunDuration: 0.3
-  shieldSpeedMultiplier: 1
+  shieldSpeedMultiplier: 0.35
   dashDuration: 0.25
   dashSpeedMultiplier: 1.4
   dashCooldown: 0.5
   dashEffect: {fileID: 4884746810583467436, guid: 6ce6585cebde2574094d62cf63f5adfc, type: 3}
+  shieldEquipDuration: 0.35
   groundCheckLeft: {fileID: 2083015833}
   groundCheckCenter: {fileID: 1434157450}
   groundCheckRight: {fileID: 429403378}
