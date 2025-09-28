@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     public float dashSpeedMultiplier = 1.4f;   // 현재 속도에서 배수로 가속할 대쉬 속도
     public float dashCooldown = 0.5f;  // 대쉬 재사용 대기시간
     public GameObject dashEffect;   // 대쉬 잔상 이펙트 프리팹
+    [Header("방패 설정")]
+    public float shieldEquipDuration = 0.35f;
 
 
     [Header("지상 감지 위치")]    // Transform 3개 중 하나라도 groundLayer에 닿았으면 땅인 것으로 봄
@@ -46,6 +48,7 @@ public class PlayerController : MonoBehaviour
     private float controlDisableDuration = 0;   // 조작 비활성화 유지 시간 (0보다 작거나 같으면 비활성화)
     private float currentWallSlidingSpeed = 0;  // 현재 월 슬라이딩 속도
     private float WallSlidingSpeed = -0.1f;  // 목표 월 슬라이딩 속도
+    private float WallKickDisableDuration = 0;
     private float dashSpeed;    // 대쉬 속도 (대쉬한 시점의 속도에 비례하여 빨라짐)
     private float dashDirection = 0;    // 대쉬 방향 (대쉬할 때마다 업데이트)
     private float currentDashDuration = 0;  // 현재 대쉬 시간
@@ -66,6 +69,7 @@ public class PlayerController : MonoBehaviour
     private bool isDashing = false; // 대쉬 중인가?
     private bool canDash = false; // 대쉬 가능한가? (땅에 닿거나 월 슬라이딩 시 재충전)
     private bool isShielding = false; // 방패를 들고있는 중인가?
+    private bool isEquippingShield = false; // 방패를 꺼내는 중인가?
 
 
     // 속성, 스크립트 참조
@@ -255,6 +259,11 @@ public class PlayerController : MonoBehaviour
 
     void WallSlidingHandler()
     {
+        if (WallKickDisableDuration > 0)
+        {
+            WallKickDisableDuration -= Time.deltaTime;
+        }
+
         if (isWallSliding)
         {
             if (isGrounded) // 땅에 닿았을 때 월 슬라이딩 해제
@@ -272,7 +281,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            if (Input.GetKey(KeyCode.Space) && !isControlDisabled)    // 월 킥 작동
+            if (Input.GetKey(KeyCode.Space) && !isControlDisabled && WallKickDisableDuration <= 0)    // 월 킥 작동
             {
                 isWallSliding = false;
                 currentMoveSpeed = maxSpeed;
@@ -295,7 +304,7 @@ public class PlayerController : MonoBehaviour
         {
             if (!isGrounded && isTouchingClimbableWall && timeSinceLastJump > 0.3f) // 월 슬라이딩 트리거
             {
-                SetPlayerControlDisableDuration(0.1f);
+                WallKickDisableDuration = 0.15f;
                 isWallSliding = true;
                 currentMoveSpeed = 0;
                 currentWallSlidingSpeed = rb.velocity.y;
@@ -333,6 +342,20 @@ public class PlayerController : MonoBehaviour
 
     void DashHandler()
     {
+        if (!canDash)
+        {
+            if (isWallSliding)
+            {
+                canDash = true;
+                currentDashCooldown = dashCooldown;
+            }
+
+            if (isGrounded)
+            {
+                canDash=true;
+            }
+        }
+
         if (!isDashing)
         {
             if (currentDashCooldown < dashCooldown)
@@ -341,12 +364,13 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            if (isTouchingAnyWall || isQuickTurning || isWallSliding || normalizedSpeed < 0.5f) return;
-            // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 속도가 전체의 50%를 넘지 못함
+            if (isTouchingAnyWall || isQuickTurning || isWallSliding || normalizedSpeed < 0.5f || !canDash) return;
+            // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 속도가 전체의 50%를 넘지 못함, 공중에서 이미 대쉬 씀
 
             if (Input.GetKey(KeyCode.LeftShift))    // 대쉬 작동
             {
                 isDashing = true;
+                canDash = false;
                 anim.SetTrigger("trigger_dash");
                 dashDirection = lastMoveInput;
                 currentDashDuration = 0;
@@ -379,14 +403,17 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetMouseButtonUp(1) || !isGrounded)
             {
-                isShielding = true;
+                isShielding = false;
             }
         }
-        else if (!isDashing && isGrounded)
+        else if (!isDashing && !isQuickTurning && isGrounded)
         {
             if (Input.GetMouseButtonDown(1))
             {
+                isShielding = true;
+                isEquippingShield = true;
 
+                anim.SetTrigger("trigger_shieldOn");
             }
         }
     }
