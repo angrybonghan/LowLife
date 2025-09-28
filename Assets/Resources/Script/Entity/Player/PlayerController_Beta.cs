@@ -260,7 +260,7 @@ public class PlayerController_Beta : MonoBehaviour
             }
         }
 
-        // 슬라이딩
+        // 월 슬라이딩
         if (!disableSlide)
         {
             if (isSliding)

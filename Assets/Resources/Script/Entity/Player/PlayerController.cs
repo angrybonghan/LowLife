@@ -341,6 +341,7 @@ public class PlayerController : MonoBehaviour
                 WallKickDisableDuration = 0.15f;
                 isWallSliding = true;
                 currentMoveSpeed = 0;
+                normalizedSpeed = currentMoveSpeed / maxSpeed;
                 currentWallSlidingSpeed = rb.velocity.y;
                 anim.SetTrigger("trigger_wallSliding");
             }
