@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     public GameObject dashEffect;   // 대쉬 잔상 이펙트 프리팹
     [Header("방패 설정")]
     public float shieldEquipDuration = 0.35f;
+    public float parryDuration = 0.4f;
 
 
     [Header("지상 감지 위치")]    // Transform 3개 중 하나라도 groundLayer에 닿았으면 땅인 것으로 봄
@@ -57,6 +58,7 @@ public class PlayerController : MonoBehaviour
     private float currentDashCooldown = 0;  // 대쉬 이후 흐른 시간 (쿨다운 계산용)
     private float dashVerticalVelocity = 0; // 대쉬 수직 속도
     private float currentShieldEquipTime = 0; // 현재 방패 든 시간 (쿨다운 계산용)
+    private float currentParryDuration = 0; // 현재 패링 시간 (지속시간 계산용)
 
 
     private bool isControlDisabled = false; // 조작을 비활성화할지 여부 (월킥에 사용)
@@ -73,6 +75,7 @@ public class PlayerController : MonoBehaviour
     private bool canDash = false; // 대쉬 가능한가? (땅에 닿거나 월 슬라이딩 시 재충전)
     private bool isShielding = false; // 방패를 들고있는 중인가?
     private bool isEquippingShield = false; // 방패를 꺼내는 중인가?
+    private bool isParrying = false; // 패링 중인가?
 
 
     // 속성, 스크립트 참조
@@ -468,7 +471,10 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("PARRY!");
+            isParrying = true;
+            isShielding = false;
+            currentParryDuration = 0;
+
         }
     }
 
@@ -548,10 +554,5 @@ public class PlayerController : MonoBehaviour
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(wallKickEffectPos.position, layerCheckRadius);
-    }
-
-    public void SetShieldSpeed​Multiplier(float value)
-    {
-        shieldSpeedMultiplier = value;
     }
 }
