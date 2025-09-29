@@ -280,7 +280,7 @@ public class PlayerController : MonoBehaviour
     {
         timeSinceLastJump += Time.deltaTime;
 
-        if (!isGrounded) return;
+        if (!isGrounded || isDashing) return;
 
         if (Input.GetKey(KeyCode.Space))
         {
