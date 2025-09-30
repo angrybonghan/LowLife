@@ -397,26 +397,8 @@ public class PlayerController : MonoBehaviour
 
         if (!isDashing)
         {
-            if (currentDashCooldown < dashCooldown)
-            {
-                currentDashCooldown += Time.deltaTime;
-                return;
-            }
-
-            if (isTouchingAnyWall || isQuickTurning || isWallSliding || normalizedSpeed < 0.5f || !canDash || isShielding) return;
-            // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 속도가 전체의 50%를 넘지 못함, 공중에서 이미 대쉬 씀, 방패 사용 도중
-
-            if (Input.GetKey(KeyCode.LeftShift))    // 대쉬 작동
-            {
-                isDashing = true;
-                canDash = false;
-                anim.SetTrigger("trigger_dash");
-                dashDirection = lastMoveInput;
-                currentDashDuration = 0;
-                currentDashCooldown = 0;
-                currentMoveSpeed = dashSpeed = Mathf.Min(currentMoveSpeed * dashSpeedMultiplier, maxSpeed * dashSpeedMultiplier);
-                dashVerticalVelocity = rb.velocity.y;
-            }
+            //DashOperation1();
+            DashOperation2();
         }
         else
         {
@@ -433,6 +415,55 @@ public class PlayerController : MonoBehaviour
                 isDashing = false;
                 return;
             }
+        }
+    }
+
+    void DashOperation1()
+    {
+        if (currentDashCooldown < dashCooldown)
+        {
+            currentDashCooldown += Time.deltaTime;
+            return;
+        }
+
+        if (isTouchingAnyWall || isQuickTurning || isWallSliding || normalizedSpeed < 0.5f || !canDash || isShielding) return;
+        // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 속도가 전체의 50%를 넘지 못함, 공중에서 이미 대쉬 씀, 방패 사용 도중
+
+        if (Input.GetKey(KeyCode.LeftShift))    // 대쉬 작동
+        {
+            isDashing = true;
+            canDash = false;
+            anim.SetTrigger("trigger_dash");
+            dashDirection = lastMoveInput;
+            currentDashDuration = 0;
+            currentDashCooldown = 0;
+            currentMoveSpeed = dashSpeed = Mathf.Min(currentMoveSpeed * dashSpeedMultiplier, maxSpeed * dashSpeedMultiplier);
+            dashVerticalVelocity = rb.velocity.y;
+        }
+    }
+
+    void DashOperation2()
+    {
+        if (currentDashCooldown < dashCooldown)
+        {
+            currentDashCooldown += Time.deltaTime;
+            return;
+        }
+
+        if (isTouchingAnyWall || isQuickTurning || isWallSliding || !canDash || isShielding) return;
+        // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 공중에서 이미 대쉬 씀, 방패 사용 도중
+
+        if (Input.GetKey(KeyCode.LeftShift))    // 대쉬 작동
+        {
+            isDashing = true;
+            canDash = false;
+            anim.SetTrigger("trigger_dash");
+            dashDirection = lastMoveInput;
+            currentDashDuration = 0;
+            currentDashCooldown = 0;
+            dashSpeed = Mathf.Min(currentMoveSpeed * dashSpeedMultiplier, maxSpeed * dashSpeedMultiplier);  // 최고 속도 제한
+            currentMoveSpeed = dashSpeed = Mathf.Max(dashSpeed, maxSpeed * 0.7f);   // 최소 속도 제한
+            dashVerticalVelocity = rb.velocity.y;
         }
     }
 
