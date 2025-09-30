@@ -1,7 +1,5 @@
-﻿using System;
-using Unity.Mathematics;
+﻿using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -98,7 +96,7 @@ public class PlayerController : MonoBehaviour
         CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
         WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
         JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
-        DashHandler(); // 대쉬 트리거
+        DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
         ParryHandler(); // 패링 작동, 애니메이션 트리거
         ShildHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
         HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴, 방패 들고 이동)
@@ -215,6 +213,12 @@ public class PlayerController : MonoBehaviour
             newDashEffect.transform.localScale.x * dashDirection,
             newDashEffect.transform.localScale.y,
             newDashEffect.transform.localScale.z);
+
+        GradientAfterimagePlayer gradientDashEffect = newDashEffect.GetComponent<GradientAfterimagePlayer>();
+        if (gradientDashEffect != null)
+        {
+            gradientDashEffect.SetColorLevel(currentDashDuration / dashDuration);
+        }
     }
 
     void WallSlidingMovement()

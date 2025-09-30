@@ -2603,7 +2603,7 @@ MonoBehaviour:
   dashDuration: 0.25
   dashSpeedMultiplier: 1.4
   dashCooldown: 0.5
-  dashEffect: {fileID: 4884746810583467436, guid: 6ce6585cebde2574094d62cf63f5adfc, type: 3}
+  dashEffect: {fileID: 1877804497623792628, guid: 9940f587270c27942bd0c53f0127c84a, type: 3}
   shieldEquipDuration: 0.2
   parryDuration: 0.4
   groundCheckLeft: {fileID: 2083015833}
