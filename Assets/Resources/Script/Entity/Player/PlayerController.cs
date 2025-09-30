@@ -381,7 +381,7 @@ public class PlayerController : MonoBehaviour
 
     void DashHandler()
     {
-        if (!canDash)
+        if (!canDash && !isDashing)
         {
             if (isWallSliding)
             {
