@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
     public Transform wallKickEffectPos; // 이펙트 프리팹
 
     [Header("공격 - 히트박스")]
-    private LayerMask attackableLayer;  // 히트박스가 감지할 레이어
+    public LayerMask attackableLayer;  // 히트박스가 감지할 레이어
     public Vector2 hitBoxCenter;    // 히트박스의 중심. 위치는 현재 위치 기준 오프셋으로 작동
     public float hitBoxSize;    // 정사각형 히트박스의 한 변의 길이
 
@@ -284,7 +284,7 @@ public class PlayerController : MonoBehaviour
 
     void AttackingMovement()
     {
-        currentMoveSpeed = Mathf.Max(currentMoveSpeed - deceleration * Time.deltaTime, 0);
+        currentMoveSpeed = Mathf.Max(currentMoveSpeed - (deceleration * Time.deltaTime * 0.75f), 0);
 
         rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
 
@@ -611,14 +611,15 @@ public class PlayerController : MonoBehaviour
 
     void AttackHandler()
     {
-        if (isDashing)
+        if (ShouldCancelAttack())
         {
+            isAttacking = false;
             return;
         }
 
         if (isAttacking)
         {
-            if (isDashing)
+            if (ShouldCancelAttack())
             {
                 isAttacking = false;
                 return;
@@ -663,7 +664,13 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    
+
+    bool ShouldCancelAttack()
+    {
+        return isDashing || isQuickTurning || isWallSliding || isShielding;
+    }
+
+
     void Attack()
     {
         Vector2 actualCenter = (Vector2)transform.position + hitBoxCenter;
