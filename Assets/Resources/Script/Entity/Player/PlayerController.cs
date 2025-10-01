@@ -36,6 +36,20 @@ public class PlayerController : MonoBehaviour
     public GameObject wallKickEffect;   // 이펙트 생성 위치
     public Transform wallKickEffectPos; // 이펙트 프리팹
 
+    [Header("공격 - 히트박스")]
+    private LayerMask attackableLayer;  // 히트박스가 감지할 레이어
+    public Vector2 hitBoxCenter;    // 히트박스의 중심. 위치는 현재 위치 기준 오프셋으로 작동
+    public float hitBoxSize;    // 정사각형 히트박스의 한 변의 길이
+
+    [Header("공격 - 설정")]
+    public float attackCooldown = 0.35f;
+    public float comboMaxDuration = 0.3f;
+    public int maxAttackMotions = 2;
+
+
+    private int currentAttackMotionNumber = 1;  // 공격 애니메이션 번호
+    
+
     private float moveInput = 0;    // 현재 방향 입력 (A : -1 , D : 1)
     private float lastMoveInput = 1;    // 마지막으로 누른 방향키
     private float currentMoveSpeed = 0; // 현재 움직임 속도 (가속도 반영)
@@ -57,6 +71,7 @@ public class PlayerController : MonoBehaviour
     private float dashVerticalVelocity = 0; // 대쉬 수직 속도
     private float currentShieldEquipTime = 0; // 현재 방패 든 시간 (쿨다운 계산용)
     private float currentParryDuration = 0; // 현재 패링 시간 (지속시간 계산용)
+    private float timeSinceLastAttack = 0; // 마지막 공격으로부터 흐른 시간 (콤보 시간 계산용)
 
 
     private bool isControlDisabled = false; // 조작을 비활성화할지 여부 (월킥에 사용)
@@ -153,6 +168,12 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
+        if (isAttacking)
+        {
+            AttackingMovement();
+            return;
+        }
+
         if (isShielding)
         {
             ShildMovement();
@@ -256,6 +277,15 @@ public class PlayerController : MonoBehaviour
         {
             currentMoveSpeed = 0;
         }
+        rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
+
+        normalizedSpeed = currentMoveSpeed / maxSpeed;
+    }
+
+    void AttackingMovement()
+    {
+        currentMoveSpeed = Mathf.Max(currentMoveSpeed - deceleration * Time.deltaTime, 0);
+
         rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
 
         normalizedSpeed = currentMoveSpeed / maxSpeed;
@@ -581,12 +611,75 @@ public class PlayerController : MonoBehaviour
 
     void AttackHandler()
     {
-        if (isAttacking)
+        if (isDashing)
         {
-
+            return;
         }
 
+        if (isAttacking)
+        {
+            if (isDashing)
+            {
+                isAttacking = false;
+                return;
+            }
 
+
+            timeSinceLastAttack += Time.deltaTime;
+
+            if (timeSinceLastAttack >= attackCooldown)
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    isAttacking = true;
+                    timeSinceLastAttack = 0;
+
+                    currentAttackMotionNumber ++;
+                    if (currentAttackMotionNumber > maxAttackMotions)
+                    {
+                        currentAttackMotionNumber = 1;
+                    }
+
+                    Attack();
+                    anim.SetTrigger("trigger_attack");
+                }
+                else if (timeSinceLastAttack >= attackCooldown + comboMaxDuration)
+                {
+                    isAttacking = false;
+                    anim.SetTrigger("trigger_attackEnd");
+                }
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                isAttacking = true;
+                currentAttackMotionNumber = 1;
+                timeSinceLastAttack = 0;
+
+                Attack();
+                anim.SetTrigger("trigger_attack");
+            }
+        }
+    }
+    
+    void Attack()
+    {
+        Vector2 actualCenter = (Vector2)transform.position + hitBoxCenter;
+
+        Collider2D[] hitColliders = Physics2D.OverlapBoxAll(
+            actualCenter,
+            new Vector2(hitBoxSize, hitBoxSize),
+            0f,
+            attackableLayer // 공격 가능한 객체만 감지하도록 LayerMask 사용
+        );
+
+        foreach (Collider2D hit in hitColliders)
+        {
+            GameObject target = hit.gameObject;
+            target.SendMessage("Attacked", SendMessageOptions.DontRequireReceiver);
+        }
     }
 
     void UpdateAnimation()
@@ -598,6 +691,8 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("bool_isWallSliding", isWallSliding);
         anim.SetBool("bool_isDashing", isDashing);
         anim.SetBool("bool_isShielding", isShielding);
+
+        anim.SetInteger("int_attackType", currentAttackMotionNumber);
 
         anim.SetFloat("float_moveSpeed", normalizedSpeed);
     }
@@ -615,5 +710,9 @@ public class PlayerController : MonoBehaviour
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(wallKickEffectPos.position, layerCheckRadius);
+
+        Gizmos.color = Color.red;
+        Vector3 actualCenter = transform.position + (Vector3)hitBoxCenter;
+        Gizmos.DrawWireCube(actualCenter, new Vector3(hitBoxSize, hitBoxSize, 0.1f));
     }
 }

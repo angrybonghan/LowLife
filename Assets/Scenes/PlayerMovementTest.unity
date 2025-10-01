@@ -2619,6 +2619,11 @@ MonoBehaviour:
     m_Bits: 512
   wallKickEffect: {fileID: 4075624708730450522, guid: f1c30cf1d56dfdf4b806291b64619206, type: 3}
   wallKickEffectPos: {fileID: 1777373062}
+  hitBoxCenter: {x: 1.126, y: 0}
+  hitBoxSize: 1.25
+  attackCooldown: 0.35
+  comboMaxDuration: 0.3
+  maxAttackMotions: 2
 --- !u!61 &1462005287
 BoxCollider2D:
   m_ObjectHideFlags: 0
