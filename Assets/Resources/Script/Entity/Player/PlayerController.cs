@@ -139,6 +139,8 @@ public class PlayerController : MonoBehaviour
             quickTrunTime = 0;
             quickTurnDirection = -moveInput;
         }
+
+        hitBoxCenter.x = -hitBoxCenter.x;
     }
 
     void MoveInputHandler()

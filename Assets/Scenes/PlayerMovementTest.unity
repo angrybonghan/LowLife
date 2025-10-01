@@ -2621,7 +2621,7 @@ MonoBehaviour:
   wallKickEffectPos: {fileID: 1777373062}
   attackableLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   hitBoxCenter: {x: 1.126, y: 0}
   hitBoxSize: 1.25
   attackCooldown: 0.35
