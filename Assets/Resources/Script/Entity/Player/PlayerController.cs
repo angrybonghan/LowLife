@@ -74,6 +74,7 @@ public class PlayerController : MonoBehaviour
     private bool isShielding = false; // 방패를 들고있는 중인가?
     private bool isEquippingShield = false; // 방패를 꺼내는 중인가?
     private bool isParrying = false; // 패링 중인가?
+    private bool isAttacking = false; // 공격 중인가?
 
 
     // 속성, 스크립트 참조
@@ -94,6 +95,7 @@ public class PlayerController : MonoBehaviour
         MoveInputHandler(); // 조작 키 감지
 
         CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
+        AttackHandler(); // 공격 작동, 공격 애니메이션 트리거
         WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
         JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
         DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
@@ -575,6 +577,16 @@ public class PlayerController : MonoBehaviour
         {
             isGrounded = false;
         }
+    }
+
+    void AttackHandler()
+    {
+        if (isAttacking)
+        {
+
+        }
+
+
     }
 
     void UpdateAnimation()
