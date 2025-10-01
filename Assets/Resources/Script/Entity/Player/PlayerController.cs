@@ -134,7 +134,7 @@ public class PlayerController : MonoBehaviour
             else moveInput = 1;
 
             hasInput = true;
-            if (!isControlDisabled) lastMoveInput = moveInput;
+            if (!isControlDisabled && !isDashing) lastMoveInput = moveInput;
         }
         else
         {
