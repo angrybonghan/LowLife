@@ -91,6 +91,7 @@ public class PlayerController : MonoBehaviour
     private bool isEquippingShield = false; // 방패를 꺼내는 중인가?
     private bool isParrying = false; // 패링 중인가?
     private bool isAttacking = false; // 공격 중인가?
+    private bool allowDashCancel = false;   // 공격 도중 대쉬로 공격을 취소할 수 있는지 여부
 
 
     // 속성, 스크립트 참조
@@ -111,10 +112,10 @@ public class PlayerController : MonoBehaviour
         MoveInputHandler(); // 조작 키 감지
 
         CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
-        AttackHandler(); // 공격 작동, 공격 애니메이션 트리거
         WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
-        JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
         DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
+        AttackHandler(); // 공격 작동, 공격 애니메이션 트리거
+        JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
         ParryHandler(); // 패링 작동, 애니메이션 트리거
         ShildHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
         HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴, 방패 들고 이동, 공격 중 이동)
@@ -486,8 +487,8 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (isTouchingAnyWall || isQuickTurning || isWallSliding || !canDash || isShielding) return;
-        // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 공중에서 이미 대쉬 씀, 방패 사용 도중
+        if (isTouchingAnyWall || isQuickTurning || isWallSliding || !canDash || isShielding || (isAttacking && !allowDashCancel)) return;
+        // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 공중에서 이미 대쉬 씀, 방패 사용 도중, 공격 중
 
         if (Input.GetKey(KeyCode.LeftShift))    // 대쉬 작동
         {
@@ -634,9 +635,10 @@ public class PlayerController : MonoBehaviour
 
             if (timeSinceLastAttack >= attackCooldown)
             {
+                allowDashCancel = true;
                 if (Input.GetMouseButton(0))
                 {
-                    isAttacking = true;
+                    allowDashCancel = false;
                     timeSinceLastAttack = 0;
 
                     currentAttackMotionNumber ++;
@@ -660,6 +662,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 isAttacking = true;
+                allowDashCancel = false;
                 currentAttackMotionNumber = 1;
                 timeSinceLastAttack = 0;
                 attackStartDirection = lastMoveInput;
