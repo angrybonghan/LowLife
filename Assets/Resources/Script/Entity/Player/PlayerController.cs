@@ -630,7 +630,6 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-
             timeSinceLastAttack += Time.deltaTime;
 
             if (timeSinceLastAttack >= attackCooldown)
