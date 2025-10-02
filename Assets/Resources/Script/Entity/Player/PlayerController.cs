@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour
     private float currentShieldEquipTime = 0; // 현재 방패 든 시간 (쿨다운 계산용)
     private float currentParryDuration = 0; // 현재 패링 시간 (지속시간 계산용)
     private float timeSinceLastAttack = 0; // 마지막 공격으로부터 흐른 시간 (콤보 시간 계산용)
+    private float attackStartDirection = 0; // 공격을 시작한 시점의 방향
 
 
     private bool isControlDisabled = false; // 조작을 비활성화할지 여부 (월킥에 사용)
@@ -116,7 +117,7 @@ public class PlayerController : MonoBehaviour
         DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
         ParryHandler(); // 패링 작동, 애니메이션 트리거
         ShildHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
-        HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴, 방패 들고 이동)
+        HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴, 방패 들고 이동, 공격 중 이동)
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
     }
 
@@ -132,9 +133,10 @@ public class PlayerController : MonoBehaviour
         isFacingRight = !isFacingRight;
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
 
-        if (normalizedSpeed >= 0.7f && isGrounded && !isQuickTurning)
+        if (normalizedSpeed >= 0.7f && isGrounded && !isQuickTurning && !isAttacking)
         {
             // 최고 속도 기준 70% 이상의 속도에서 퀵턴이 작동할 수 있음
+            // 비활성화 조건 : 공격 중일 때
             isQuickTurning = true;
             quickTrunTime = 0;
             quickTurnDirection = -moveInput;
@@ -288,7 +290,7 @@ public class PlayerController : MonoBehaviour
     {
         currentMoveSpeed = Mathf.Max(currentMoveSpeed - (deceleration * Time.deltaTime * 0.75f), 0);
 
-        rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(currentMoveSpeed * attackStartDirection, rb.velocity.y);
 
         normalizedSpeed = currentMoveSpeed / maxSpeed;
     }
@@ -660,6 +662,7 @@ public class PlayerController : MonoBehaviour
                 isAttacking = true;
                 currentAttackMotionNumber = 1;
                 timeSinceLastAttack = 0;
+                attackStartDirection = lastMoveInput;
 
                 Attack();
                 anim.SetTrigger("trigger_attack");
