@@ -5,9 +5,10 @@ public class CrosshairController : MonoBehaviour
     [Header("조준점 설정")]
     public float mouseSensitivity = 10f;
     public float maxMovementRange = 5f;
-    public float ZposcurrentZ = 0;
+    public float currentZ = 0;
 
     private Transform cameraPosition;
+    private Vector2 finalCameraPosition;
 
     void Start()
     {
@@ -19,21 +20,28 @@ public class CrosshairController : MonoBehaviour
 
     void Update()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-
-        Vector3 newPosition = transform.position;
-        newPosition.x += mouseX;
-        newPosition.y += mouseY;
-
-        float distance = Vector3.Distance(cameraPosition.position, newPosition);
-
-        if (distance > maxMovementRange)
+        if (Cursor.lockState == CursorLockMode.Locked)
         {
-            Vector3 direction = (newPosition - cameraPosition.position).normalized;
-            newPosition = cameraPosition.position + direction * maxMovementRange;
-        }
+            finalCameraPosition = new Vector3(cameraPosition.position.x, cameraPosition.position.y, currentZ);
 
-        transform.position = newPosition;
+            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+            Vector3 newPosition = transform.position;
+            newPosition.x += mouseX;
+            newPosition.y += mouseY;
+
+            float distance = Vector3.Distance(finalCameraPosition, newPosition);
+
+            if (distance > maxMovementRange)
+            {
+                Vector2 direction = (newPosition - (Vector3)finalCameraPosition).normalized;
+                newPosition = finalCameraPosition + direction * maxMovementRange;
+            }
+
+            newPosition.z = currentZ;
+
+            transform.position = newPosition;
+        }
     }
 }

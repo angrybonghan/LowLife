@@ -47,6 +47,8 @@ public class PlayerController : MonoBehaviour
     public int maxAttackMotions = 2;
 
     [Header("원거리 공격 - 설정")]
+    public GameObject crosshairPrefabs; // 조준점 프리팹
+    public GameObject ShildPrefabs; // 방패 프리팹
     public Transform crosshairSummonPos;    // 원거리 모드를 켰을 때 크로스헤어(조준점) 이 소환될 위치.
     public GameObject shildSprite;  // 방패 스프라이트
     public GameObject postProcessVolumeObject;  // 원거리 모드에서 켜질 화면 필터 (Post-process Volume) 오브젝트
@@ -98,7 +100,7 @@ public class PlayerController : MonoBehaviour
     private bool IsRangedAttackMode = false;   // 투척 모드인지 여부
     private bool hasShild = true;   // 방패를 가지고 있는지 여부
 
-    private Transform crosshairPosition;    // 조준점 위치
+    private GameObject crosshairInstance;    // 조준점 게임오브젝트
 
 
     // 속성, 스크립트 참조
@@ -660,14 +662,21 @@ public class PlayerController : MonoBehaviour
             if (IsRangedAttackMode) // 원거리 모드 킴, 조준점 생성
             {
                 postProcessVolumeObject.SetActive(true);
-
-                
+                crosshairInstance = Instantiate(crosshairPrefabs, crosshairSummonPos.position, quaternion.identity);
             }
             else    // 원거리 모드 끔, 조준점 제거
             {
                 postProcessVolumeObject.SetActive(false);
+                Destroy(crosshairInstance);
             }
         }
+    }
+
+    void CatchShildHandler()
+    {
+        if (hasShild) return;
+
+
     }
 
     void VicinityAttackHandler()
@@ -735,7 +744,12 @@ public class PlayerController : MonoBehaviour
 
     void RangedAttackHandler()
     {
+        if (!hasShild) return;
 
+        if (Input.GetMouseButton(0))
+        {
+            ThrowShield();
+        }
     }
 
     void ThrowShield()
