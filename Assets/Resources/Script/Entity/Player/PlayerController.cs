@@ -92,6 +92,7 @@ public class PlayerController : MonoBehaviour
     private bool isParrying = false; // 패링 중인가?
     private bool isAttacking = false; // 공격 중인가?
     private bool allowDashCancel = false;   // 공격 도중 대쉬로 공격을 취소할 수 있는지 여부
+    private bool IsThrowMode = false;   // 투척 모드인지 여부
 
 
     // 속성, 스크립트 참조
