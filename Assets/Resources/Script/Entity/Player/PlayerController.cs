@@ -1,6 +1,5 @@
 ﻿using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -46,9 +45,12 @@ public class PlayerController : MonoBehaviour
     public float attackCooldown = 0.35f;
     public float comboMaxDuration = 0.3f;
     public int maxAttackMotions = 2;
-    //[Header("원거리 공격 - 설정")]
 
-    
+    [Header("원거리 공격 - 설정")]
+    public Transform crosshairSummonPos;    // 원거리 모드를 켰을 때 크로스헤어(조준점) 이 소환될 위치.
+    public GameObject shildSprite;  // 방패 스프라이트
+    public GameObject postProcessVolumeObject;  // 원거리 모드에서 켜질 화면 필터 (Post-process Volume) 오브젝트
+
 
     private int currentAttackMotionNumber = 1;  // 공격 애니메이션 번호
     private float moveInput = 0;    // 현재 방향 입력 (A : -1 , D : 1)
@@ -93,7 +95,10 @@ public class PlayerController : MonoBehaviour
     private bool isParrying = false; // 패링 중인가?
     private bool isAttacking = false; // 공격 중인가?
     private bool allowDashCancel = false;   // 공격 도중 대쉬로 공격을 취소할 수 있는지 여부
-    private bool IsThrowMode = false;   // 투척 모드인지 여부
+    private bool IsRangedAttackMode = false;   // 투척 모드인지 여부
+    private bool hasShild = true;   // 방패를 가지고 있는지 여부
+
+    private Transform crosshairPosition;    // 조준점 위치
 
 
     // 속성, 스크립트 참조
@@ -104,6 +109,18 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+    }
+
+    private void Start()
+    {
+        if (IsRangedAttackMode)
+        {
+            postProcessVolumeObject.SetActive(true);
+        }
+        else
+        {
+            postProcessVolumeObject.SetActive(false);
+        }
     }
 
     void Update()
@@ -622,7 +639,9 @@ public class PlayerController : MonoBehaviour
 
     void AttackHandler()
     {
-        if (IsThrowMode)
+        ChangeAttackMode();
+
+        if (IsRangedAttackMode)
         {
             RangedAttackHandler();
         }
@@ -634,7 +653,21 @@ public class PlayerController : MonoBehaviour
 
     void ChangeAttackMode()
     {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            IsRangedAttackMode = !IsRangedAttackMode;
 
+            if (IsRangedAttackMode) // 원거리 모드 킴, 조준점 생성
+            {
+                postProcessVolumeObject.SetActive(true);
+
+                
+            }
+            else    // 원거리 모드 끔, 조준점 제거
+            {
+                postProcessVolumeObject.SetActive(false);
+            }
+        }
     }
 
     void VicinityAttackHandler()
@@ -705,6 +738,18 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    void ThrowShield()
+    {
+        hasShild = false;
+        shildSprite.SetActive(false);
+    }
+
+    void CatchShield()
+    {
+        hasShild = true;
+        shildSprite.SetActive(true);
+    }
+
 
     void Attack()
     {
@@ -760,6 +805,6 @@ public class PlayerController : MonoBehaviour
 
         Gizmos.color = Color.red;
         Vector3 actualCenter = transform.position + (Vector3)hitBoxCenter;
-        Gizmos.DrawWireCube(actualCenter, new Vector3(hitBoxSize, hitBoxSize, 0.1f));
+        Gizmos.DrawWireCube(actualCenter, new Vector3(hitBoxSize, hitBoxSize, 0.001f));
     }
 }

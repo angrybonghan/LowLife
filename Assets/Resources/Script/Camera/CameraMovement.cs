@@ -3,28 +3,28 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    public bool isRotating { get; private set; } = false;
-    public bool isMoving { get; private set; } = false;
-    public bool isTrackingRotation { get; private set; } = false;
-    public bool isTrackingPosition { get; private set; } = false;
+    public bool isRotating { get; private set; } = false;   // 회전 중인지에 대한 여부
+    public bool isMoving { get; private set; } = false;     // 움직이고 있는 중인지에 대한 여부
+    public bool isTrackingRotation { get; private set; } = false;   // 회전 추적 중인지에 대한 여부
+    public bool isTrackingPosition { get; private set; } = false;   // 위치 추적 중인지에 대한 여부
 
-    public static CameraMovement Instance { get; private set; }
-    public static float Threshold = 0.05f;
-    public static float cameraTrackingSpeed = 8f;
-    public static float toleranceY = 3.5f;
-    public static float yTrackingDampening = 2.25f;
-    public static bool normalizeRotation = true;
+    public static CameraMovement Instance { get; private set; } // 싱글톤용 인스턴스 변수
+    public static float Threshold = 0.05f;  // 목표에 가까워질 수 있는 한계점
+    public static float cameraTrackingSpeed = 8f;   // 카메라 추적 속도 (회전 포함)
+    public static float yTrackingDampening = 2.25f; // Y축 추적에 나눠질 수 (Y축은 더 낮은 추적성을 보임)
+    public static bool normalizeRotation = true;    // 회전을 정규화할지 여부
 
 
-    private float currentZ;
-    private float shakeRotationOffset = 0f;
-    private float mainFOV = 60f;
-    private float ExplodingFovOffset = 0;
-    private Vector3 mainPosition;
-    private Vector2 shakePositionOffset = Vector2.zero;
-    private Vector3 mainRotation;
-    private Transform positionTrackingTarget;
-    private Transform rotationTrackingTarget;
+    private float currentZ;     // 현재 Z값
+    private float shakeRotationOffset = 0f;     // 회전 흔들림에 대한 오프셋
+    private float mainFOV = 60f;    // FOV 값
+    private float ExplodingFovOffset = 0;   // FOV 흔들림에 대한 오프셋
+    private Vector3 mainPosition;   // 위치
+    private Vector2 shakePositionOffset = Vector2.zero; // 위치 흔들림에 대한 오프셋
+    private Vector3 mainRotation;   // 회전값
+    private Transform positionTrackingTarget;   // 위치 추적 대상
+    private Transform rotationTrackingTarget;   // 회전 추적 대상
+    // 코루틴 저장 변수
     private Coroutine panCoroutine;
     private Coroutine zoomCoroutine;
     private Coroutine rotationCoroutine;
@@ -32,6 +32,8 @@ public class CameraMovement : MonoBehaviour
     private Coroutine rotationShakingCoroutine;
     private Coroutine fovCoroutine;
     private Coroutine explodingFovCoroutine;
+
+    // 컴포넌트 참조
     private Camera cam;
 
     private void Awake()
@@ -144,20 +146,10 @@ public class CameraMovement : MonoBehaviour
             Vector2 targetPosition = positionTrackingTarget.transform.position + offset;
             if ((mainPosition - new Vector3(targetPosition.x, targetPosition.y, currentZ)).sqrMagnitude > Threshold * Threshold)
             {
-                float posX = Mathf.Lerp(mainPosition.x, targetPosition.x, cameraTrackingSpeed * Time.deltaTime);
+                // float posX = Mathf.Lerp(mainPosition.x, targetPosition.x, cameraTrackingSpeed * Time.deltaTime);
+                float posX = targetPosition.x;
 
                 float posY;
-                //if (
-                //    Mathf.Lerp(mainPosition.y, targetPosition.y, (cameraTrackingSpeed / yTrackingDampening) * Time.deltaTime)
-                //    !=
-                //    Mathf.Clamp(Mathf.Lerp(mainPosition.y, targetPosition.y, (cameraTrackingSpeed / yTrackingDampening) * Time.deltaTime), targetPosition.y - toleranceY, targetPosition.y + toleranceY))
-                //{
-                //    posY = Mathf.Lerp(mainPosition.y, targetPosition.y, Mathf.Max(cameraTrackingSpeed) * Time.deltaTime);
-                //}
-                //else
-                //{
-                //    posY = Mathf.Lerp(mainPosition.y, targetPosition.y, (cameraTrackingSpeed / yTrackingDampening) * Time.deltaTime);
-                //}
 
                 posY = Mathf.Lerp(mainPosition.y, targetPosition.y, (cameraTrackingSpeed / yTrackingDampening) * Time.deltaTime);
 
