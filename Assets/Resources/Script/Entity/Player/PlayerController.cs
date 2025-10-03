@@ -1,5 +1,6 @@
 ﻿using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -41,14 +42,15 @@ public class PlayerController : MonoBehaviour
     public Vector2 hitBoxCenter;    // 히트박스의 중심. 위치는 현재 위치 기준 오프셋으로 작동
     public float hitBoxSize;    // 정사각형 히트박스의 한 변의 길이
 
-    [Header("공격 - 설정")]
+    [Header("근접 공격 - 설정")]
     public float attackCooldown = 0.35f;
     public float comboMaxDuration = 0.3f;
     public int maxAttackMotions = 2;
+    //[Header("원거리 공격 - 설정")]
 
-    private int currentAttackMotionNumber = 1;  // 공격 애니메이션 번호
     
 
+    private int currentAttackMotionNumber = 1;  // 공격 애니메이션 번호
     private float moveInput = 0;    // 현재 방향 입력 (A : -1 , D : 1)
     private float lastMoveInput = 1;    // 마지막으로 누른 방향키
     private float currentMoveSpeed = 0; // 현재 움직임 속도 (가속도 반영)
@@ -113,9 +115,9 @@ public class PlayerController : MonoBehaviour
 
         CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
         WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
-        DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
-        AttackHandler(); // 공격 작동, 공격 애니메이션 트리거
+        AttackHandler(); // 근접 공격 작동, 근접 공격 애니메이션 트리거
         JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
+        DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
         ParryHandler(); // 패링 작동, 애니메이션 트리거
         ShildHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
         HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴, 방패 들고 이동, 공격 중 이동)
@@ -620,6 +622,23 @@ public class PlayerController : MonoBehaviour
 
     void AttackHandler()
     {
+        if (IsThrowMode)
+        {
+            RangedAttackHandler();
+        }
+        else
+        {
+            VicinityAttackHandler();
+        }
+    }
+
+    void ChangeAttackMode()
+    {
+
+    }
+
+    void VicinityAttackHandler()
+    {
         if (ShouldCancelAttack())
         {
             isAttacking = false;
@@ -644,14 +663,14 @@ public class PlayerController : MonoBehaviour
                     allowDashCancel = false;
                     timeSinceLastAttack = 0;
 
-                    currentAttackMotionNumber ++;
+                    currentAttackMotionNumber++;
                     if (currentAttackMotionNumber > maxAttackMotions)
                     {
                         currentAttackMotionNumber = 1;
                     }
 
                     Attack();
-                    anim.SetTrigger("trigger_attack");
+                    anim.SetTrigger("trigger_attack_vicinity");
                 }
                 else if (timeSinceLastAttack >= attackCooldown + comboMaxDuration)
                 {
@@ -671,7 +690,7 @@ public class PlayerController : MonoBehaviour
                 attackStartDirection = lastMoveInput;
 
                 Attack();
-                anim.SetTrigger("trigger_attack");
+                anim.SetTrigger("trigger_attack_vicinity");
             }
         }
     }
@@ -679,6 +698,11 @@ public class PlayerController : MonoBehaviour
     bool ShouldCancelAttack()
     {
         return isDashing || isQuickTurning || isWallSliding || isShielding;
+    }
+
+    void RangedAttackHandler()
+    {
+
     }
 
 
@@ -698,6 +722,11 @@ public class PlayerController : MonoBehaviour
             GameObject target = hit.gameObject;
             target.SendMessage("Attacked", SendMessageOptions.DontRequireReceiver);
         }
+    }
+
+    void ThrowModeHandler()
+    {
+
     }
 
     void UpdateAnimation()
