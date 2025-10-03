@@ -46,7 +46,6 @@ public class PlayerController : MonoBehaviour
     public float comboMaxDuration = 0.3f;
     public int maxAttackMotions = 2;
 
-
     private int currentAttackMotionNumber = 1;  // 공격 애니메이션 번호
     
 
@@ -174,13 +173,13 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        if (isAttacking)
+        if (isAttacking)    // 공격 감속 (+ 에어브레이크)
         {
             AttackingMovement();
             return;
         }
 
-        if (isShielding)
+        if (isShielding)    // 방패 도중 움직임
         {
             ShildMovement();
             return;
@@ -221,12 +220,16 @@ public class PlayerController : MonoBehaviour
 
         // 퀵 턴 해제 조건
         // 퀵턴 시간 초과, 퀵턴 도중 방향을 다시 전환, 추락 (땅에서 떨어짐)
-        if ((quickTrunTime >= quickTrunDuration) || !isGrounded)
+        if (quickTrunTime >= quickTrunDuration)
         {
             isQuickTurning = false;
+            if (!hasInput)   // 입력하지 않으면 정지
+            {
+                currentMoveSpeed = 0;
+            }
         }
-        // 방향을 다시 전환했을 때에는, 현재 속도를 절반 감소
-        if (quickTurnDirection == moveInput)
+        // 방향을 다시 전환하거나 땅에서 떨어지면, 현재 속도를 절반 감소
+        if (quickTurnDirection == moveInput || !isGrounded)
         {
             isQuickTurning = false;
             currentMoveSpeed *= 0.5f;
