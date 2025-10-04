@@ -188,7 +188,7 @@ public class PlayerController : MonoBehaviour
 
     void CheckFlip()
     {
-        if (isControlDisabled || isDashing || isParrying) return;
+        if (isControlDisabled || isDashing || isParrying || isThrowingShield) return;
 
         if ((moveInput > 0 && !isFacingRight) || (moveInput < 0 && isFacingRight)) Flip();
     }
@@ -240,6 +240,12 @@ public class PlayerController : MonoBehaviour
         if (isAttacking)    // 공격 감속 (+ 에어브레이크)
         {
             AttackingMovement();
+            return;
+        }
+
+        if (isThrowingShield)   // 방패 던지는 도중 가속 방지
+        {
+            ThrowingMovement();
             return;
         }
 
@@ -365,6 +371,22 @@ public class PlayerController : MonoBehaviour
         currentMoveSpeed = Mathf.Max(currentMoveSpeed - (deceleration * Time.deltaTime * 0.75f), 0);
 
         rb.velocity = new Vector2(currentMoveSpeed * attackStartDirection, rb.velocity.y);
+
+        normalizedSpeed = currentMoveSpeed / maxSpeed;
+    }
+
+    void ThrowingMovement()
+    {
+        if (moveInput != attackStartDirection)   // 방향과 다른 키거나 키가 없으면 감속 (원래의 0.2 배로 감속함)
+        {
+            currentMoveSpeed = Mathf.Max(currentMoveSpeed - (deceleration * Time.deltaTime * 0.2f), 0);
+        }
+
+        if (isTouchingAnyWall)  // 벽과 충돌하면 속도 없어짐
+        {
+            currentMoveSpeed = 0;
+        }
+        rb.velocity = new Vector2(attackStartDirection * currentMoveSpeed, rb.velocity.y);
 
         normalizedSpeed = currentMoveSpeed / maxSpeed;
     }
@@ -814,9 +836,9 @@ public class PlayerController : MonoBehaviour
         anim.SetFloat("float_shieldPitchNormalized", shieldPitchNormalized);
         anim.SetTrigger("trigger_attack_ranged");
 
-
         isThrowingShield = true;
         currentShieldThrowDuration = 0;
+        attackStartDirection = lastMoveInput;
     }
 
     public float GetNormalizedShieldPitch(Vector2 shootDirection)
