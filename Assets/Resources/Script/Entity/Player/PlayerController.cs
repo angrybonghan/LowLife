@@ -74,6 +74,7 @@ public class PlayerController : MonoBehaviour
     private float currentDashDuration = 0;  // 현재 대쉬 시간
     private float currentDashCooldown = 0;  // 대쉬 이후 흐른 시간 (쿨다운 계산용)
     private float dashVerticalVelocity = 0; // 대쉬 수직 속도
+    private float dashFixedYPosition = 0;   // 수평 대쉬 도중 고정될 Y좌표
     private float currentShieldEquipTime = 0; // 현재 방패 든 시간 (쿨다운 계산용)
     private float currentParryDuration = 0; // 현재 패링 시간 (지속시간 계산용)
     private float timeSinceLastAttack = 0; // 마지막 공격으로부터 흐른 시간 (콤보 시간 계산용)
@@ -272,6 +273,11 @@ public class PlayerController : MonoBehaviour
         {
             gradientDashEffect.SetColorLevel(currentDashDuration / dashDuration);
         }
+
+        if (dashVerticalVelocity == 0)
+        {
+            transform.position = new Vector2(transform.position.x, dashFixedYPosition);
+        }
     }
 
     void WallSlidingMovement()
@@ -459,8 +465,7 @@ public class PlayerController : MonoBehaviour
 
         if (!isDashing)
         {
-            //DashOperation1();
-            DashOperation2();
+            DashOperation();
         }
         else
         {
@@ -480,31 +485,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void DashOperation1()
-    {
-        if (currentDashCooldown < dashCooldown)
-        {
-            currentDashCooldown += Time.deltaTime;
-            return;
-        }
-
-        if (isTouchingAnyWall || isQuickTurning || isWallSliding || normalizedSpeed < 0.5f || !canDash || isShielding) return;
-        // 대쉬 불가능 조건 : 벽에 닿음, 월 슬라이딩 도중, 퀵턴 도중, 속도가 전체의 50%를 넘지 못함, 공중에서 이미 대쉬 씀, 방패 사용 도중
-
-        if (Input.GetKey(KeyCode.LeftShift))    // 대쉬 작동
-        {
-            isDashing = true;
-            canDash = false;
-            anim.SetTrigger("trigger_dash");
-            dashDirection = lastMoveInput;
-            currentDashDuration = 0;
-            currentDashCooldown = 0;
-            currentMoveSpeed = dashSpeed = Mathf.Min(currentMoveSpeed * dashSpeedMultiplier, maxSpeed * dashSpeedMultiplier);
-            dashVerticalVelocity = rb.velocity.y;
-        }
-    }
-
-    void DashOperation2()
+    void DashOperation()
     {
         if (currentDashCooldown < dashCooldown)
         {
@@ -525,7 +506,13 @@ public class PlayerController : MonoBehaviour
             currentDashCooldown = 0;
             dashSpeed = Mathf.Min(currentMoveSpeed * dashSpeedMultiplier, maxSpeed * dashSpeedMultiplier);  // 최고 속도 제한
             currentMoveSpeed = dashSpeed = Mathf.Max(dashSpeed, maxSpeed * 0.7f);   // 최소 속도 제한
+            dashFixedYPosition = transform.position.y;  // 대쉬가 시작된 Y좌표 저장
+
             dashVerticalVelocity = rb.velocity.y;
+            if (Mathf.Abs(dashVerticalVelocity) < 4)    // 일정한 수직 가속이 없다면 수평 대쉬로 강제함
+            {
+                dashVerticalVelocity = 0;
+            }
         }
     }
 
@@ -642,6 +629,7 @@ public class PlayerController : MonoBehaviour
     void AttackHandler()
     {
         ChangeAttackMode();
+        CatchShildHandler();
 
         if (IsRangedAttackMode)
         {
@@ -781,11 +769,6 @@ public class PlayerController : MonoBehaviour
             GameObject target = hit.gameObject;
             target.SendMessage("Attacked", SendMessageOptions.DontRequireReceiver);
         }
-    }
-
-    void ThrowModeHandler()
-    {
-
     }
 
     void UpdateAnimation()
