@@ -557,6 +557,8 @@ public class PlayerController : MonoBehaviour
 
     void ShildHandler()
     {
+        if (!hasShild) return;
+
         if (isEquippingShield)
         {
             if (currentShieldEquipTime >= shieldEquipDuration)
@@ -670,14 +672,8 @@ public class PlayerController : MonoBehaviour
         ChangeAttackMode();
         ThrowCooldownHandler();
 
-        if (IsRangedAttackMode)
-        {
-            RangedAttackHandler();
-        }
-        else
-        {
-            VicinityAttackHandler();
-        }
+        RangedAttackHandler();
+        VicinityAttackHandler();
     }
 
     void ChangeAttackMode()
@@ -733,6 +729,8 @@ public class PlayerController : MonoBehaviour
                 allowDashCancel = true;
                 if (Input.GetMouseButton(0))
                 {
+                    if (!hasShild || IsRangedAttackMode) return;
+
                     allowDashCancel = false;
                     timeSinceLastAttack = 0;
 
@@ -756,6 +754,8 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
+                if (!hasShild || IsRangedAttackMode) return;
+
                 isAttacking = true;
                 allowDashCancel = false;
                 currentAttackMotionNumber = 1;
@@ -770,8 +770,8 @@ public class PlayerController : MonoBehaviour
 
     void RangedAttackHandler()
     {
-        if (!hasShild || isThrowingShield) return;
-        // 방패 투척 불가능 조건 : 방패 없음, 방패 던지는 중
+        if (!IsRangedAttackMode || !hasShild || isThrowingShield || isWallSliding || isParrying || isShielding) return;
+        // 방패 투척 불가능 조건 : 근접 모드임, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중
 
         if (Input.GetMouseButton(0))
         {

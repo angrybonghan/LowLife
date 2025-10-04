@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5810235755271514897}
   - component: {fileID: 6437546367220238736}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: ShildSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 8832889182749839318}
   - component: {fileID: 318854487923840362}
   - component: {fileID: 8663214315899638827}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Shild
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,9 +132,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f73900bcd9fcfc44bbe12cc2ebdf6a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwSpeed: 30
-  returnSpeed: 25
-  shieldRecallDistance: 1
+  throwSpeed: 40
+  returnSpeed: 60
+  catchDistance: 0.75
   playerPostion: {fileID: 0}
   throwDirection: {x: 0, y: 0, z: 0}
   isShieldDropped: 0
