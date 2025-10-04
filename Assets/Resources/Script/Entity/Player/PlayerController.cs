@@ -36,23 +36,26 @@ public class PlayerController : MonoBehaviour
     public GameObject wallKickEffect;   // 이펙트 생성 위치
     public Transform wallKickEffectPos; // 이펙트 프리팹
 
-    [Header("공격 - 히트박스")]
+    [Header("공격 히트박스")]
     public LayerMask attackableLayer;  // 히트박스가 감지할 레이어
     public Vector2 hitBoxCenter;    // 히트박스의 중심. 위치는 현재 위치 기준 오프셋으로 작동
     public float hitBoxSize;    // 정사각형 히트박스의 한 변의 길이
 
-    [Header("근접 공격 - 설정")]
+    [Header("근접 공격 설정")]
     public float attackCooldown = 0.35f;
     public float comboMaxDuration = 0.3f;
     public int maxAttackMotions = 2;
 
-    [Header("원거리 공격 - 설정")]
+    [Header("원거리 공격 모드 설정")]
     public GameObject crosshairPrefabs; // 조준점 프리팹
-    public GameObject ShildPrefabs; // 방패 프리팹
     public Transform crosshairSummonPos;    // 원거리 모드를 켰을 때 크로스헤어(조준점) 이 소환될 위치.
     public GameObject shildSprite;  // 방패 스프라이트
     public GameObject postProcessVolumeObject;  // 원거리 모드에서 켜질 화면 필터 (Post-process Volume) 오브젝트
 
+    [Header("원거리 공격 설정")]
+    public Transform shildSummonPos;    // 방패 소환 위치
+    public GameObject ShildPrefabs;     // 방패 프리팹
+    
 
     // =========================================================================
     // 1. 이동 및 방향 상태 (Movement & Direction)
@@ -771,9 +774,33 @@ public class PlayerController : MonoBehaviour
     {
         hasShild = false;
         shildSprite.SetActive(false);
+
+        GameObject newShild = Instantiate(ShildPrefabs, shildSummonPos.position, quaternion.identity);
+        ShildMovement shildScript = newShild.GetComponent<ShildMovement>();
+
+        Vector2 shootDirection = crosshairInstance.transform.position - transform.position;
+        shildScript.InitializeThrow(shootDirection, this);
+
+        shieldPitchNormalized = GetNormalizedShieldPitch(shootDirection);
+        anim.SetFloat("float_shieldPitchNormalized", shieldPitchNormalized);
+        anim.SetTrigger("trigger_attack_ranged");
     }
 
-    void CatchShield()
+    public float GetNormalizedShieldPitch(Vector2 shootDirection)
+    {
+        float magnitude = shootDirection.magnitude;
+
+        if (magnitude == 0)
+        {
+            return 0.5f;
+        }
+
+        float yRatio = shootDirection.y / magnitude;
+
+        return (yRatio + 1f) / 2f;
+    }
+
+    public void CatchShield()   // 이 스크립트는 던져진 방패에서 호출됨
     {
         hasShild = true;
         shildSprite.SetActive(true);

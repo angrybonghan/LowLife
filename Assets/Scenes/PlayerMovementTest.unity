@@ -392,7 +392,7 @@ Transform:
   m_GameObject: {fileID: 73123343}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 0, z: 0}
+  m_LocalPosition: {x: 0.4, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1239,7 +1239,7 @@ Transform:
   m_GameObject: {fileID: 704433898}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 40.52, y: 17.96, z: -10}
+  m_LocalPosition: {x: 33.23, y: 17.1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2814,7 +2814,7 @@ Transform:
   m_GameObject: {fileID: 1462005283}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 35.88, y: 17.35, z: 0}
+  m_LocalPosition: {x: 33.23, y: 17.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2897,10 +2897,11 @@ MonoBehaviour:
   comboMaxDuration: 0.3
   maxAttackMotions: 2
   crosshairPrefabs: {fileID: 5711959972963249622, guid: 81fdf19a5e0e988499d4f5534c223c56, type: 3}
-  ShildPrefabs: {fileID: 0}
   crosshairSummonPos: {fileID: 1332856313}
   shildSprite: {fileID: 1526907943}
   postProcessVolumeObject: {fileID: 952459148}
+  shildSummonPos: {fileID: 73123344}
+  ShildPrefabs: {fileID: 3792225553167996052, guid: da7b4a41f559e7f42a3a741cde7f72b3, type: 3}
 --- !u!61 &1462005287
 BoxCollider2D:
   m_ObjectHideFlags: 0

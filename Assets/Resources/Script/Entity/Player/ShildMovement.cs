@@ -6,7 +6,7 @@ public class ShildMovement : MonoBehaviour
     [Header("참조 및 설정")]
     public float throwSpeed = 25f;  // 방패가 날아가는 속도
     public float returnSpeed = 20f; // 방패가 플레이어에게 돌아오는 속도
-    public float shieldRecallDistance = 2f; // 목표 위치로부터 떨어짐 상태로 전환될 방패 위치 거리.
+    public float catchDistance = 0.75f; // 플레이어에게 잡혀질 거리
     [Header("외부 조작 설정")]
     public Transform playerPostion;    // 방패를 던진 플레이어 위치
     public Vector3 throwDirection; // 던지는 방향
@@ -21,6 +21,7 @@ public class ShildMovement : MonoBehaviour
     private Rigidbody2D rb;
     private CircleCollider2D boxCol;
     private Animator anim;
+    private PlayerController playerController;
 
     private void Awake()
     {
@@ -43,20 +44,22 @@ public class ShildMovement : MonoBehaviour
             Vector3 directionToPlayer = (playerPostion.position - transform.position).normalized;
             rb.velocity = directionToPlayer * returnSpeed;
 
-            if (Vector2.Distance(playerPostion.position, transform.position) <= shieldRecallDistance)
+            if (Vector2.Distance(playerPostion.position, transform.position) <= catchDistance)
             {
-                SetState(ShieldState.DROPPED);
+                playerController.CatchShield();
+                Destroy(gameObject);
             }
         }
     }
 
     /// <summary>
-    /// 인수 : 방향 - 플레이어 트랜스폼
+    /// 인수 : 방향 - 플레이어 스크립트
     /// </summary>
-    public void InitializeThrow(Vector3 direction, Transform playerTr)
+    public void InitializeThrow(Vector3 direction, PlayerController script)
     {
         throwDirection = direction.normalized;
-        playerPostion = playerTr;
+        playerPostion = script.transform;
+        playerController = script;
     }
 
     private void SetState(ShieldState newState)
@@ -92,10 +95,6 @@ public class ShildMovement : MonoBehaviour
         if (currentState == ShieldState.THROWN)
         {
             SetState(ShieldState.RETURN);
-        }
-        else if (currentState == ShieldState.RETURN)
-        {
-            SetState(ShieldState.DROPPED);
         }
     }
 }
