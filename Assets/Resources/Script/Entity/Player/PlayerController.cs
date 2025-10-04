@@ -439,6 +439,7 @@ public class PlayerController : MonoBehaviour
             if (isGrounded) // 땅에 닿았을 때 월 슬라이딩 해제
             {
                 isWallSliding = false;
+                lastMoveInput = -lastMoveInput;
                 Flip();
 
                 return;
@@ -447,7 +448,6 @@ public class PlayerController : MonoBehaviour
             if (!isTouchingClimbableWall)   // 벽이 사라졌을 때 월 슬라이딩 해제
             {
                 isWallSliding = false;
-
                 return;
             }
 
