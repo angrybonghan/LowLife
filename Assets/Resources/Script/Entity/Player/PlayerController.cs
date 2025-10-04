@@ -54,54 +54,84 @@ public class PlayerController : MonoBehaviour
     public GameObject postProcessVolumeObject;  // 원거리 모드에서 켜질 화면 필터 (Post-process Volume) 오브젝트
 
 
-    private int currentAttackMotionNumber = 1;  // 공격 애니메이션 번호
-    private float moveInput = 0;    // 현재 방향 입력 (A : -1 , D : 1)
-    private float lastMoveInput = 1;    // 마지막으로 누른 방향키
-    private float currentMoveSpeed = 0; // 현재 움직임 속도 (가속도 반영)
-    private float normalizedSpeed = 0;  // 정규화된 속도
-    private float layerCheckRadius = 0.05f;  // 감지 위치 반경
-    private float quickTrunTime = 0; // 현재 퀵턴 길이
-    private float quickTurnDirection = 1;   // 퀵 턴의 방향
+    // =========================================================================
+    // 1. 이동 및 방향 상태 (Movement & Direction)
+    // =========================================================================
+    private float moveInput = 0;             // 현재 방향 입력 (A: -1, D: 1)
+    private float lastMoveInput = 1;         // 마지막으로 누른 방향키
+    private float currentMoveSpeed = 0;      // 현재 움직임 속도 (가속도 반영)
+    private float normalizedSpeed = 0;       // 정규화된 속도 (0~1)
+
+    private bool isFacingRight = true;      // 오른쪽을 바라보고 있는가? (방향 전환)
+    private bool isRunning = false;         // 움직이는 중인가?
+    private bool hasInput = false;          // 유효한 입력이 있는가? (A 또는 D)
+
+    // =========================================================================
+    // 2. 점프 및 공중 상태 (Jump & Air)
+    // =========================================================================
     private float coyoteTimeDuration = 0.1f; // 코요테 타임 길이
-    private float coyoteTime = 0; // 현재 코요테타임
-    private float timeSinceLastJump = 0; // 마지막 점프로부터 지난 시간
-    private float controlDisableDuration = 0;   // 조작 비활성화 유지 시간 (0보다 작거나 같으면 비활성화)
-    private float currentWallSlidingSpeed = 0;  // 현재 월 슬라이딩 속도
-    private float WallSlidingSpeed = -0.1f;  // 목표 월 슬라이딩 속도
-    private float WallKickDisableDuration = 0;
-    private float dashSpeed;    // 대쉬 속도 (대쉬한 시점의 속도에 비례하여 빨라짐)
-    private float dashDirection = 0;    // 대쉬 방향 (대쉬할 때마다 업데이트)
-    private float currentDashDuration = 0;  // 현재 대쉬 시간
+    private float coyoteTime = 0;            // 현재 코요테타임 잔여 시간
+    private float timeSinceLastJump = 0;     // 마지막 점프로부터 지난 시간
+
+    private bool isGrounded = false;        // 땅에 닿았는가?
+    private bool isFalling = false;         // 떨어지고 있는가? (상승 중이라면 false)
+
+    // =========================================================================
+    // 3. 대쉬 상태 (Dash)
+    // =========================================================================
+    private float dashSpeed;                // 대쉬 속도
+    private float dashDirection = 0;        // 대쉬 방향
+    private float currentDashDuration = 0;  // 현재 대쉬 진행 시간
     private float currentDashCooldown = 0;  // 대쉬 이후 흐른 시간 (쿨다운 계산용)
     private float dashVerticalVelocity = 0; // 대쉬 수직 속도
     private float dashFixedYPosition = 0;   // 수평 대쉬 도중 고정될 Y좌표
-    private float currentShieldEquipTime = 0; // 현재 방패 든 시간 (쿨다운 계산용)
-    private float currentParryDuration = 0; // 현재 패링 시간 (지속시간 계산용)
-    private float timeSinceLastAttack = 0; // 마지막 공격으로부터 흐른 시간 (콤보 시간 계산용)
-    private float attackStartDirection = 0; // 공격을 시작한 시점의 방향
 
+    private bool isDashing = false;         // 대쉬 중인가?
+    private bool canDash = false;           // 대쉬 가능한가? (재충전 여부)
 
-    private bool isControlDisabled = false; // 조작을 비활성화할지 여부 (월킥에 사용)
-    private bool isFacingRight = true;  // 오른쪽을 바라보고 있는가? (방향 전환에 필요함)
-    private bool isRunning = false; // 움직이는 중인가?
-    private bool hasInput = false; // 입력이 있는가? (A 또는 D를 눌렀을 때 true. 단, 동시에 누르는 것을 제외함.)
-    private bool isGrounded = false;    // 땅에 닿았는가? (점프, 월런 해제에 이용)
-    private bool isFalling = false; // 떨어지고 있는가? (올라가는 중이라면 false)
+    // =========================================================================
+    // 4. 벽 관련 상태 (Wall Interaction)
+    // =========================================================================
+    private float currentWallSlidingSpeed = 0; // 현재 월 슬라이딩 속도
+    private float WallSlidingSpeed = -0.1f;    // 목표 월 슬라이딩 속도
+    private float WallKickDisableDuration = 0; // 월 킥 비활성화 잔여 시간
+
+    private bool isTouchingClimbableWall = false; // 붙을 수 있는 벽에 닿아 있는가?
+    private bool isTouchingAnyWall = false;     // 벽에 닿아 있는가? (모든 벽)
+    private bool isWallSliding = false;         // 월 슬라이딩 도중인가?
+
+    // =========================================================================
+    // 5. 공격 및 방패 상태 (Attack & Shield)
+    // =========================================================================
+    private float currentShieldEquipTime = 0;  // 현재 방패 든 시간 (쿨다운 계산용)
+    private float currentParryDuration = 0;    // 현재 패링 시간 (지속시간 계산용)
+    private float timeSinceLastAttack = 0;     // 마지막 공격으로부터 흐른 시간
+    private float attackStartDirection = 0;    // 공격을 시작한 시점의 방향
+    private int currentAttackMotionNumber = 1; // 공격 애니메이션 번호
+
+    private bool isShielding = false;         // 방패를 들고있는 중인가?
+    private bool isEquippingShield = false;   // 방패를 꺼내는 중인가?
+    private bool isParrying = false;          // 패링 중인가?
+    private bool isAttacking = false;         // 공격 중인가?
+    private bool allowDashCancel = false;     // 공격 도중 대쉬로 취소 가능 여부
+    private bool IsRangedAttackMode = false;  // 투척 모드인지 여부
+    private bool hasShild = true;             // 방패를 가지고 있는지 여부
+
+    // =========================================================================
+    // 6. 특수 동작 및 제어 (Special & Control)
+    // =========================================================================
+    private float quickTrunTime = 0;         // 현재 퀵턴 길이
+    private float quickTurnDirection = 1;    // 퀵 턴의 방향
+    private float layerCheckRadius = 0.05f;  // 감지 위치 반경
+    private float controlDisableDuration = 0;  // 조작 비활성화 유지 잔여 시간
+
+    private bool isControlDisabled = false; // 조작을 비활성화할지 여부
     private bool isQuickTurning = false;    // 퀵 턴 도중인가?
-    private bool isTouchingClimbableWall = false;   // 붙을 수 있는 벽에 닿아 있는가?
-    private bool isTouchingAnyWall = false; // 벽에 닿아 있는가? (아무 벽이나 붙어있으면 true. 붙을 수 있는 벽 포함)
-    private bool isWallSliding = false; // 월 슬라이딩 도중인가?
-    private bool isDashing = false; // 대쉬 중인가?
-    private bool canDash = false; // 대쉬 가능한가? (땅에 닿거나 월 슬라이딩 시 재충전)
-    private bool isShielding = false; // 방패를 들고있는 중인가?
-    private bool isEquippingShield = false; // 방패를 꺼내는 중인가?
-    private bool isParrying = false; // 패링 중인가?
-    private bool isAttacking = false; // 공격 중인가?
-    private bool allowDashCancel = false;   // 공격 도중 대쉬로 공격을 취소할 수 있는지 여부
-    private bool IsRangedAttackMode = false;   // 투척 모드인지 여부
-    private bool hasShild = true;   // 방패를 가지고 있는지 여부
 
-    private GameObject crosshairInstance;    // 조준점 게임오브젝트
+    // =========================================================================
+    // 7. 기타 오브젝트 레퍼런스 (References)
+    // =========================================================================
+    private GameObject crosshairInstance;     // 조준점 게임오브젝트 레퍼런스
 
 
     // 속성, 스크립트 참조
