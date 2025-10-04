@@ -1,9 +1,11 @@
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D), typeof(Animator))]
 public class ShildMovement : MonoBehaviour
 {
     [Header("참조 및 설정")]
+    public float maxShieldFlightTime = 1;    // 방패가 날아갈 수 있는 최대 시간
     public float throwSpeed = 25f;  // 방패가 날아가는 속도
     public float returnSpeed = 20f; // 방패가 플레이어에게 돌아오는 속도
     public float catchDistance = 0.75f; // 플레이어에게 잡혀질 거리
@@ -12,6 +14,8 @@ public class ShildMovement : MonoBehaviour
     public Vector3 throwDirection; // 던지는 방향
     public bool isShieldDropped = false;
     public bool isReturning = false;
+
+    private float currentFlightTime = 0;    // 현재 날아가는 시간 (시간 계산용)
 
     // 상태 확인용 열거형
     private enum ShieldState { THROWN, RETURN, DROPPED }
@@ -38,6 +42,12 @@ public class ShildMovement : MonoBehaviour
         if (currentState == ShieldState.THROWN)
         {
             rb.velocity = throwDirection * throwSpeed;
+
+            currentFlightTime += Time.deltaTime;
+            if (currentFlightTime >= maxShieldFlightTime)
+            {
+                SetState(ShieldState.RETURN);
+            }
         }
         else if (currentState == ShieldState.RETURN)
         {

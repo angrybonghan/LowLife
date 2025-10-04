@@ -132,6 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f73900bcd9fcfc44bbe12cc2ebdf6a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxShieldFlightTime: 0.5
   throwSpeed: 40
   returnSpeed: 60
   catchDistance: 0.75
