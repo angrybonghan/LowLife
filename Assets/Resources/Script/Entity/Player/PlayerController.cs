@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("원거리 공격 설정")]
     public float shieldThrowDuration = 0.25f;   // 방패를 던지는 시간
+    public float shieldThrowInterval = 0.45f;   // 방패를 잡고 다시 던지기까지의 시간
     public Transform shildSummonPos;    // 방패 소환 위치
     public GameObject ShildPrefabs;     // 방패 프리팹
 
@@ -114,6 +115,7 @@ public class PlayerController : MonoBehaviour
     private float attackStartDirection = 0;    // 공격을 시작한 시점의 방향
     private float shieldPitchNormalized = 0;   // 방패의 수직 각도(Pitch) 정규화 값
     private float currentShieldThrowDuration = 0;     // 현재 방패를 던지고 있는 시간 (쿨다운 계산용)
+    private float currentShieldThrowInterval = 0;      // 방패를 잡은 직후 지난 시간 (쿨다운 계산용)
 
     private int currentAttackMotionNumber = 1; // 공격 애니메이션 번호
 
@@ -125,6 +127,7 @@ public class PlayerController : MonoBehaviour
     private bool allowDashCancel = false;     // 공격 도중 대쉬로 취소 가능 여부
     private bool IsRangedAttackMode = false;  // 투척 모드인지 여부
     private bool hasShild = true;             // 방패를 가지고 있는지 여부
+    private bool canThrow = true;             // 방패를 던질 수 있는지 여부
 
     // =========================================================================
     // 6. 특수 동작 및 제어 (Special & Control)
@@ -510,7 +513,7 @@ public class PlayerController : MonoBehaviour
         {
             currentDashDuration += Time.deltaTime;
 
-            if (currentDashDuration >= dashDuration || isTouchingAnyWall)
+            if (currentDashDuration >= dashDuration || isTouchingAnyWall || isThrowingShield)
             {
                 isDashing = false;
                 SetPlayerControlDisableDuration(0);
@@ -697,12 +700,29 @@ public class PlayerController : MonoBehaviour
 
     void ThrowCooldownHandler()
     {
-        if (!isThrowingShield) return;
-
-        currentShieldThrowDuration += Time.deltaTime;
-        if (currentShieldThrowDuration >= shieldThrowDuration)
+        if (!canThrow)
         {
-            isThrowingShield = false;
+            currentShieldThrowInterval += Time.deltaTime;
+
+            if (currentShieldThrowInterval >= shieldThrowInterval)
+            {
+                canThrow = true;
+            }
+        }
+
+        if (isThrowingShield)
+        {
+            if (isDashing)
+            {
+                isThrowingShield = false;
+                return;
+            }
+
+            currentShieldThrowDuration += Time.deltaTime;
+            if (currentShieldThrowDuration >= shieldThrowDuration)
+            {
+                isThrowingShield = false;
+            }
         }
     }
 
@@ -770,8 +790,8 @@ public class PlayerController : MonoBehaviour
 
     void RangedAttackHandler()
     {
-        if (!IsRangedAttackMode || !hasShild || isThrowingShield || isWallSliding || isParrying || isShielding) return;
-        // 방패 투척 불가능 조건 : 근접 모드임, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중
+        if (!IsRangedAttackMode || !canThrow || !hasShild || isThrowingShield || isWallSliding || isParrying || isShielding) return;
+        // 방패 투척 불가능 조건 : 근접 모드임, 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중
 
         if (Input.GetMouseButton(0))
         {
@@ -782,8 +802,6 @@ public class PlayerController : MonoBehaviour
     void ThrowShield()
     {
         hasShild = false;
-        isThrowingShield = true;
-        currentShieldThrowDuration = 0;
         shildSprite.SetActive(false);
 
         GameObject newShild = Instantiate(ShildPrefabs, shildSummonPos.position, quaternion.identity);
@@ -795,6 +813,10 @@ public class PlayerController : MonoBehaviour
         shieldPitchNormalized = GetNormalizedShieldPitch(shootDirection);
         anim.SetFloat("float_shieldPitchNormalized", shieldPitchNormalized);
         anim.SetTrigger("trigger_attack_ranged");
+
+
+        isThrowingShield = true;
+        currentShieldThrowDuration = 0;
     }
 
     public float GetNormalizedShieldPitch(Vector2 shootDirection)
@@ -815,6 +837,9 @@ public class PlayerController : MonoBehaviour
     {
         hasShild = true;
         shildSprite.SetActive(true);
+
+        canThrow = false;
+        currentShieldThrowInterval = 0;
     }
 
 
