@@ -42,9 +42,14 @@ public class PlayerController : MonoBehaviour
     public float hitBoxSize;    // 정사각형 히트박스의 한 변의 길이
 
     [Header("근접 공격 설정")]
-    public float attackCooldown = 0.35f;
-    public float comboMaxDuration = 0.3f;
-    public int maxAttackMotions = 2;
+    public float attackCooldown = 0.35f;    // 공격 주기
+    public float comboMaxDuration = 0.3f;   // 공격 이후 콤보 유지 최대 시간
+    public int maxAttackMotions = 2;    // 공격 모션 갯수
+
+    [Header("원거리 공격 설정")]
+    public float shieldThrowDuration = 0.25f;   // 방패를 던지는 시간
+    public Transform shildSummonPos;    // 방패 소환 위치
+    public GameObject ShildPrefabs;     // 방패 프리팹
 
     [Header("원거리 공격 모드 설정")]
     public GameObject crosshairPrefabs; // 조준점 프리팹
@@ -52,9 +57,6 @@ public class PlayerController : MonoBehaviour
     public GameObject shildSprite;  // 방패 스프라이트
     public GameObject postProcessVolumeObject;  // 원거리 모드에서 켜질 화면 필터 (Post-process Volume) 오브젝트
 
-    [Header("원거리 공격 설정")]
-    public Transform shildSummonPos;    // 방패 소환 위치
-    public GameObject ShildPrefabs;     // 방패 프리팹
     
 
     // =========================================================================
@@ -111,11 +113,13 @@ public class PlayerController : MonoBehaviour
     private float timeSinceLastAttack = 0;     // 마지막 공격으로부터 흐른 시간
     private float attackStartDirection = 0;    // 공격을 시작한 시점의 방향
     private float shieldPitchNormalized = 0;   // 방패의 수직 각도(Pitch) 정규화 값
+    private float currentShieldThrowDuration = 0;     // 현재 방패를 던지고 있는 시간 (쿨다운 계산용)
 
     private int currentAttackMotionNumber = 1; // 공격 애니메이션 번호
 
     private bool isShielding = false;         // 방패를 들고있는 중인가?
     private bool isEquippingShield = false;   // 방패를 꺼내는 중인가?
+    private bool isThrowingShield = false;    // 방패를 던지는 중인가?
     private bool isParrying = false;          // 패링 중인가?
     private bool isAttacking = false;         // 공격 중인가?
     private bool allowDashCancel = false;     // 공격 도중 대쉬로 취소 가능 여부
@@ -664,7 +668,7 @@ public class PlayerController : MonoBehaviour
     void AttackHandler()
     {
         ChangeAttackMode();
-        CatchShildHandler();
+        ThrowCooldownHandler();
 
         if (IsRangedAttackMode)
         {
@@ -695,11 +699,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void CatchShildHandler()
+    void ThrowCooldownHandler()
     {
-        if (hasShild) return;
+        if (!isThrowingShield) return;
 
-
+        currentShieldThrowDuration += Time.deltaTime;
+        if (currentShieldThrowDuration >= shieldThrowDuration)
+        {
+            isThrowingShield = false;
+        }
     }
 
     void VicinityAttackHandler()
@@ -762,7 +770,8 @@ public class PlayerController : MonoBehaviour
 
     void RangedAttackHandler()
     {
-        if (!hasShild) return;
+        if (!hasShild || isThrowingShield) return;
+        // 방패 투척 불가능 조건 : 방패 없음, 방패 던지는 중
 
         if (Input.GetMouseButton(0))
         {
@@ -773,6 +782,8 @@ public class PlayerController : MonoBehaviour
     void ThrowShield()
     {
         hasShild = false;
+        isThrowingShield = true;
+        currentShieldThrowDuration = 0;
         shildSprite.SetActive(false);
 
         GameObject newShild = Instantiate(ShildPrefabs, shildSummonPos.position, quaternion.identity);

@@ -2896,12 +2896,13 @@ MonoBehaviour:
   attackCooldown: 0.35
   comboMaxDuration: 0.3
   maxAttackMotions: 2
+  shieldThrowDuration: 0.25
+  shildSummonPos: {fileID: 73123344}
+  ShildPrefabs: {fileID: 3792225553167996052, guid: da7b4a41f559e7f42a3a741cde7f72b3, type: 3}
   crosshairPrefabs: {fileID: 5711959972963249622, guid: 81fdf19a5e0e988499d4f5534c223c56, type: 3}
   crosshairSummonPos: {fileID: 1332856313}
   shildSprite: {fileID: 1526907943}
   postProcessVolumeObject: {fileID: 952459148}
-  shildSummonPos: {fileID: 73123344}
-  ShildPrefabs: {fileID: 3792225553167996052, guid: da7b4a41f559e7f42a3a741cde7f72b3, type: 3}
 --- !u!61 &1462005287
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3124,7 +3125,7 @@ Transform:
   m_GameObject: {fileID: 1526907943}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.176, y: -0.106, z: 0}
+  m_LocalPosition: {x: -0.367, y: 0.499, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
