@@ -507,7 +507,7 @@ public class PlayerController : MonoBehaviour
                 SetPlayerControlDisableDuration(0);
             }
 
-            if (isTouchingAnyWall)
+            if (isTouchingAnyWall || isAttacking)
             {
                 isDashing = false;
                 return;
@@ -699,7 +699,7 @@ public class PlayerController : MonoBehaviour
 
     void VicinityAttackHandler()
     {
-        if (ShouldCancelAttack())
+        if (isQuickTurning || isWallSliding || isShielding)
         {
             isAttacking = false;
             return;
@@ -707,7 +707,7 @@ public class PlayerController : MonoBehaviour
 
         if (isAttacking)
         {
-            if (ShouldCancelAttack())
+            if (isDashing || isQuickTurning || isWallSliding || isShielding)
             {
                 isAttacking = false;
                 return;
@@ -753,11 +753,6 @@ public class PlayerController : MonoBehaviour
                 anim.SetTrigger("trigger_attack_vicinity");
             }
         }
-    }
-
-    bool ShouldCancelAttack()
-    {
-        return isDashing || isQuickTurning || isWallSliding || isShielding;
     }
 
     void RangedAttackHandler()
