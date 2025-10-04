@@ -1,7 +1,7 @@
 ﻿using Unity.Mathematics;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
     [Header("기본 이동 설정")]
@@ -107,6 +107,8 @@ public class PlayerController : MonoBehaviour
     private float currentParryDuration = 0;    // 현재 패링 시간 (지속시간 계산용)
     private float timeSinceLastAttack = 0;     // 마지막 공격으로부터 흐른 시간
     private float attackStartDirection = 0;    // 공격을 시작한 시점의 방향
+    private float shieldPitchNormalized = 0;   // 방패의 수직 각도(Pitch) 정규화 값
+
     private int currentAttackMotionNumber = 1; // 공격 애니메이션 번호
 
     private bool isShielding = false;         // 방패를 들고있는 중인가?
