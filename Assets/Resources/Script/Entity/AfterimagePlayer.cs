@@ -6,7 +6,6 @@ public class AfterimagePlayer : MonoBehaviour
 {
     public float duration = 0.2f;
 
-
     private float startTransparency;
     private float targetTransparency;
 

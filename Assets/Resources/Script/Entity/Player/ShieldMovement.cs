@@ -13,8 +13,12 @@ public class ShieldMovement : MonoBehaviour
     public Transform playerPostion;    // 방패를 던진 플레이어 위치
     public Vector3 throwDirection;  // 던지는 방향
     public bool isReturning = false; // 현재 방패가 돌아오는 중인가?
+    [Header("이펙트")]
+    public GameObject afterEffect;
+    public float afterEffectInterval;
 
     private float currentFlightTime = 0; // 현재 날아가는 시간 (시간 계산용)
+    private float LastAfterEffect = 0;  // 마지막 잔상 시간  (시간 계산용)
 
     // 참조용 변수
     private Rigidbody2D rb;
@@ -32,6 +36,7 @@ public class ShieldMovement : MonoBehaviour
         boxCol.isTrigger = true;
         rb.gravityScale = 0f;
         isReturning = false;
+        LastAfterEffect = Time.time;
     }
 
     void Update()
@@ -39,8 +44,18 @@ public class ShieldMovement : MonoBehaviour
         if (!isReturning)
         {
             rb.velocity = throwDirection * throwSpeed;
-
             currentFlightTime += Time.deltaTime;
+
+            if (LastAfterEffect + afterEffectInterval <= Time.time)
+            {
+                LastAfterEffect = Time.time;
+                GradientAfterimagePlayer afterImageScript = Instantiate(afterEffect, transform.position, Quaternion.identity).GetComponent<GradientAfterimagePlayer>();
+                if (afterImageScript != null)
+                {
+                    afterImageScript.SetColorLevel(currentFlightTime / maxShieldFlightTime);
+                }
+            }
+
             if (currentFlightTime >= maxShieldFlightTime)
             {
                 SetReturnState(); // 복귀 상태로 전환

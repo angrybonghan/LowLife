@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4743797341698025945}
   - component: {fileID: 2517835201806633391}
   m_Layer: 0
-  m_Name: BlackDashAfterImage
+  m_Name: GradientDashAfterImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
