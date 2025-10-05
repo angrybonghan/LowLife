@@ -727,6 +727,8 @@ public class PlayerController : MonoBehaviour
     {
         if (!canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding) return;
         // 방패 투척 불가능 조건 : 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중
+        if (crosshairInstance == null) return;
+        // 또는 조준점 없음
 
         if (Input.GetMouseButton(0))
         {
@@ -777,9 +779,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void AimOn()
+    public void AimOn()
     {
         crosshairInstance = Instantiate(crosshairPrefabs, crosshairSummonPos.position, quaternion.identity);
+    }
+
+    public void AimOff()
+    {
+        Destroy(crosshairInstance);
+        crosshairInstance = null;
     }
 
     public float GetNormalizedShieldPitch(Vector2 shootDirection)
