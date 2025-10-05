@@ -769,6 +769,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                lastMoveInput = -lastMoveInput;
                 Flip();
             }
         }
