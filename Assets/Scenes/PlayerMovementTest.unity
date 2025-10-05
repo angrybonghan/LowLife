@@ -1159,7 +1159,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 704433901}
-  - component: {fileID: 704433905}
   - component: {fileID: 704433904}
   - component: {fileID: 704433903}
   - component: {fileID: 704433900}
@@ -1332,19 +1331,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ebd85882e203ac48b02d6ccdca7b936, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &704433905
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 704433898}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cfc7bdfce0bd214089b5b53b48e75bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetPosition: {fileID: 1462005284}
 --- !u!1 &793502645
 GameObject:
   m_ObjectHideFlags: 0
@@ -2902,14 +2888,6 @@ MonoBehaviour:
     m_Bits: 512
   wallKickEffect: {fileID: 4075624708730450522, guid: f1c30cf1d56dfdf4b806291b64619206, type: 3}
   wallKickEffectPos: {fileID: 1777373062}
-  attackableLayer:
-    serializedVersion: 2
-    m_Bits: 1024
-  hitBoxCenter: {x: 1.005, y: 0}
-  hitBoxSize: 1.25
-  attackCooldown: 0.35
-  comboMaxDuration: 0.3
-  maxAttackMotions: 2
   shieldThrowDuration: 0.25
   shieldThrowInterval: 0.25
   shieldSummonPos: {fileID: 73123344}

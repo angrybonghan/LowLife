@@ -1,5 +1,6 @@
 ﻿using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Animations;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
 public class PlayerController : MonoBehaviour
@@ -35,16 +36,6 @@ public class PlayerController : MonoBehaviour
     [Header("이펙트 위치 / 프리팹")]
     public GameObject wallKickEffect;   // 이펙트 생성 위치
     public Transform wallKickEffectPos; // 이펙트 프리팹
-
-    [Header("공격 히트박스")]
-    public LayerMask attackableLayer;  // 히트박스가 감지할 레이어
-    public Vector2 hitBoxCenter;    // 히트박스의 중심. 위치는 현재 위치 기준 오프셋으로 작동
-    public float hitBoxSize;    // 정사각형 히트박스의 한 변의 길이
-
-    [Header("근접 공격")]
-    public float attackCooldown = 0.35f;    // 공격 주기
-    public float comboMaxDuration = 0.3f;   // 공격 이후 콤보 유지 최대 시간
-    public int maxAttackMotions = 2;    // 공격 모션 갯수
 
     [Header("원거리 공격")]
     public float shieldThrowDuration = 0.25f;   // 방패를 던지는 시간
@@ -117,13 +108,10 @@ public class PlayerController : MonoBehaviour
     // =========================================================================
     private float currentShieldEquipTime = 0;  // 현재 방패 든 시간 (쿨다운 계산용)
     private float currentParryDuration = 0;    // 현재 패링 시간 (지속시간 계산용)
-    private float timeSinceLastAttack = 0;     // 마지막 공격으로부터 흐른 시간
     private float attackStartDirection = 0;    // 공격을 시작한 시점의 방향
     private float shieldPitchNormalized = 0;   // 방패의 수직 각도(Pitch) 정규화 값
     private float currentShieldThrowDuration = 0;     // 현재 방패를 던지고 있는 시간 (쿨다운 계산용)
     private float currentShieldThrowInterval = 0;      // 방패를 잡은 직후 지난 시간 (쿨다운 계산용)
-
-    private int currentAttackMotionNumber = 1; // 공격 애니메이션 번호
 
     private bool isShielding = false;         // 방패를 들고있는 중인가?
     private bool isEquippingShield = false;   // 방패를 꺼내는 중인가?
@@ -131,9 +119,9 @@ public class PlayerController : MonoBehaviour
     private bool isParrying = false;          // 패링 중인가?
     private bool isAttacking = false;         // 공격 중인가?
     private bool allowDashCancel = false;     // 공격 도중 대쉬로 취소 가능 여부
-    private bool IsRangedAttackMode = false;  // 투척 모드인지 여부
     private bool hasShield = true;             // 방패를 가지고 있는지 여부
     private bool canThrow = true;             // 방패를 던질 수 있는지 여부
+    private bool isFlippedAfterThrowShield = false; // 방패를 투척했을 때, 뒤로 던졌는지에 대한 여부
 
     private GameObject shieldInstance;     // 조준점 게임오브젝트 레퍼런스
     private ShieldMovement shieldScript;
@@ -167,14 +155,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        if (IsRangedAttackMode)
-        {
-            postProcessVolumeObject.SetActive(true);
-        }
-        else
-        {
-            postProcessVolumeObject.SetActive(false);
-        }
+        AimOn();
     }
 
     void Update()
@@ -184,9 +165,9 @@ public class PlayerController : MonoBehaviour
         CoyoteTimeHandler(); // 코요테 타임 시간 계산
         MoveInputHandler(); // 조작 키 감지
 
+        AttackHandler(); // 근접 공격 작동, 근접 공격 애니메이션 트리거
         CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
         WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
-        AttackHandler(); // 근접 공격 작동, 근접 공격 애니메이션 트리거
         JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
         DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
         ParryHandler(); // 패링 작동, 애니메이션 트리거
@@ -219,8 +200,6 @@ public class PlayerController : MonoBehaviour
             quickTrunTime = 0;
             quickTurnDirection = -moveInput;
         }
-
-        hitBoxCenter.x = -hitBoxCenter.x;
     }
 
     void MoveInputHandler()
@@ -706,32 +685,12 @@ public class PlayerController : MonoBehaviour
 
     void AttackHandler()
     {
-        ChangeAttackMode();
         ThrowCooldownHandler();
 
-        VicinityAttackHandler();
         ShieldLeapHandler();
         RangedAttackHandler();
     }
 
-    void ChangeAttackMode()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            IsRangedAttackMode = !IsRangedAttackMode;
-
-            if (IsRangedAttackMode) // 원거리 모드 킴, 조준점 생성
-            {
-                postProcessVolumeObject.SetActive(true);
-                crosshairInstance = Instantiate(crosshairPrefabs, crosshairSummonPos.position, quaternion.identity);
-            }
-            else    // 원거리 모드 끔, 조준점 제거
-            {
-                postProcessVolumeObject.SetActive(false);
-                Destroy(crosshairInstance);
-            }
-        }
-    }
 
     void ThrowCooldownHandler()
     {
@@ -747,86 +706,23 @@ public class PlayerController : MonoBehaviour
 
         if (isThrowingShield)
         {
-            if (isDashing)
-            {
-                isThrowingShield = false;
-                return;
-            }
-
             currentShieldThrowDuration += Time.deltaTime;
-            if (currentShieldThrowDuration >= shieldThrowDuration)
+
+            if (isDashing || currentShieldThrowDuration >= shieldThrowDuration)
             {
                 isThrowingShield = false;
-            }
-        }
-    }
-
-    void VicinityAttackHandler()
-    {
-        if (isQuickTurning || isWallSliding || isShielding)
-        {
-            isAttacking = false;
-            return;
-        }
-
-        if (isAttacking)
-        {
-            if (isDashing || isQuickTurning || isWallSliding || isShielding)
-            {
-                isAttacking = false;
+                if (isFlippedAfterThrowShield)
+                {
+                    transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                }
                 return;
             }
-
-            timeSinceLastAttack += Time.deltaTime;
-
-            if (timeSinceLastAttack >= attackCooldown)
-            {
-                allowDashCancel = true;
-                if (Input.GetMouseButton(0))
-                {
-                    if (!hasShield || IsRangedAttackMode) return;
-
-                    allowDashCancel = false;
-                    timeSinceLastAttack = 0;
-
-                    currentAttackMotionNumber++;
-                    if (currentAttackMotionNumber > maxAttackMotions)
-                    {
-                        currentAttackMotionNumber = 1;
-                    }
-
-                    Attack();
-                    anim.SetTrigger("trigger_attack_vicinity");
-                }
-                else if (timeSinceLastAttack >= attackCooldown + comboMaxDuration)
-                {
-                    isAttacking = false;
-                    anim.SetTrigger("trigger_attackEnd");
-                }
-            }
-        }
-        else
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (!hasShield || IsRangedAttackMode) return;
-
-                isAttacking = true;
-                allowDashCancel = false;
-                currentAttackMotionNumber = 1;
-                timeSinceLastAttack = 0;
-                attackStartDirection = lastMoveInput;
-
-                Attack();
-                anim.SetTrigger("trigger_attack_vicinity");
-            }
         }
     }
-
     void RangedAttackHandler()
     {
-        if (!IsRangedAttackMode || !canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding) return;
-        // 방패 투척 불가능 조건 : 근접 모드임, 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중
+        if (!canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding) return;
+        // 방패 투척 불가능 조건 : 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중
 
         if (Input.GetMouseButton(0))
         {
@@ -852,6 +748,29 @@ public class PlayerController : MonoBehaviour
         isThrowingShield = true;
         currentShieldThrowDuration = 0;
         attackStartDirection = lastMoveInput;
+
+        isFlippedAfterThrowShield = false;
+
+        bool shouldFlip = (shootDirection.x >= 0 && !isFacingRight) ||
+                  (shootDirection.x < 0 && isFacingRight);
+
+        if (shouldFlip)
+        {
+            if (isRunning)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                isFlippedAfterThrowShield = true;
+            }
+            else
+            {
+                Flip();
+            }
+        }
+    }
+
+    void AimOn()
+    {
+        crosshairInstance = Instantiate(crosshairPrefabs, crosshairSummonPos.position, quaternion.identity);
     }
 
     public float GetNormalizedShieldPitch(Vector2 shootDirection)
@@ -879,25 +798,6 @@ public class PlayerController : MonoBehaviour
 
         canThrow = false;
         currentShieldThrowInterval = 0;
-    }
-
-
-    void Attack()
-    {
-        Vector2 actualCenter = (Vector2)transform.position + hitBoxCenter;
-
-        Collider2D[] hitColliders = Physics2D.OverlapBoxAll(
-            actualCenter,
-            new Vector2(hitBoxSize, hitBoxSize),
-            0f,
-            attackableLayer // 공격 가능한 객체만 감지하도록 LayerMask 사용
-        );
-
-        foreach (Collider2D hit in hitColliders)
-        {
-            GameObject target = hit.gameObject;
-            target.SendMessage("Attacked", SendMessageOptions.DontRequireReceiver);
-        }
     }
 
     void ShieldLeapHandler()
@@ -944,8 +844,6 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("bool_isDashing", isDashing);
         anim.SetBool("bool_isShielding", isShielding);
 
-        anim.SetInteger("int_attackType", currentAttackMotionNumber);
-
         anim.SetFloat("float_moveSpeed", normalizedSpeed);
     }
 
@@ -962,9 +860,5 @@ public class PlayerController : MonoBehaviour
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(wallKickEffectPos.position, layerCheckRadius);
-
-        Gizmos.color = Color.red;
-        Vector3 actualCenter = transform.position + (Vector3)hitBoxCenter;
-        Gizmos.DrawWireCube(actualCenter, new Vector3(hitBoxSize, hitBoxSize, 0.001f));
     }
 }
