@@ -187,7 +187,6 @@ public class PlayerController : MonoBehaviour
         CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
         WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
         AttackHandler(); // 근접 공격 작동, 근접 공격 애니메이션 트리거
-        ShieldLeapHandler();    // 방패 도약 작동
         JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
         DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
         ParryHandler(); // 패링 작동, 애니메이션 트리거
@@ -707,8 +706,9 @@ public class PlayerController : MonoBehaviour
         ChangeAttackMode();
         ThrowCooldownHandler();
 
-        RangedAttackHandler();
         VicinityAttackHandler();
+        ShieldLeapHandler();
+        RangedAttackHandler();
     }
 
     void ChangeAttackMode()
