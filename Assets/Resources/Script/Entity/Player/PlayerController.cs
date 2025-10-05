@@ -191,8 +191,12 @@ public class PlayerController : MonoBehaviour
         DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
         ParryHandler(); // 패링 작동, 애니메이션 트리거
         ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
-        HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴, 방패 들고 이동, 공격 중 이동)
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
+    }
+
+    private void FixedUpdate()
+    {
+        HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴, 방패 들고 이동, 공격 중 이동)
     }
 
     void CheckFlip()
@@ -314,11 +318,10 @@ public class PlayerController : MonoBehaviour
             currentMoveSpeed *= 0.5f;
         }
     }
-
     void DashMovement()
     {
         rb.velocity = new Vector2(dashDirection * dashSpeed, dashVerticalVelocity);
-        
+
         GameObject newDashEffect = Instantiate(dashEffect, transform.position, quaternion.identity);
         newDashEffect.transform.localScale = new Vector3(
             newDashEffect.transform.localScale.x * dashDirection,
@@ -904,6 +907,8 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            isDashing = false;
+
             GameObject newEffect;
             if (isGrounded)
             {
