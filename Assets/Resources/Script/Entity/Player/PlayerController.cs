@@ -4,19 +4,19 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("기본 이동 설정")]
+    [Header("기본 이동")]
     public float acceleration = 12;  // 플레이어 가속도
     public float deceleration = 50;    // 플레이어 감속도
     public float maxSpeed = 12; // 최고 속도
     public float jumpForce = 10;    // 점프 힘
     public float quickTrunDuration = 0.3f;    // 퀵턴 최대 길이
     public float shieldSpeed​Multiplier = 1;   // 방패로 인한 감속도 배율
-    [Header("대쉬 설정")]
+    [Header("대쉬")]
     public float dashDuration = 0.25f;  // 대쉬 유지 시간
     public float dashSpeedMultiplier = 1.4f;   // 현재 속도에서 배수로 가속할 대쉬 속도
     public float dashCooldown = 0.5f;  // 대쉬 재사용 대기시간
     public GameObject dashEffect;   // 대쉬 잔상 이펙트 프리팹
-    [Header("방패 설정")]
+    [Header("방패")]
     public float shieldEquipDuration = 0.35f;
     public float parryDuration = 0.4f;
 
@@ -41,24 +41,30 @@ public class PlayerController : MonoBehaviour
     public Vector2 hitBoxCenter;    // 히트박스의 중심. 위치는 현재 위치 기준 오프셋으로 작동
     public float hitBoxSize;    // 정사각형 히트박스의 한 변의 길이
 
-    [Header("근접 공격 설정")]
+    [Header("근접 공격")]
     public float attackCooldown = 0.35f;    // 공격 주기
     public float comboMaxDuration = 0.3f;   // 공격 이후 콤보 유지 최대 시간
     public int maxAttackMotions = 2;    // 공격 모션 갯수
 
-    [Header("원거리 공격 설정")]
+    [Header("원거리 공격")]
     public float shieldThrowDuration = 0.25f;   // 방패를 던지는 시간
     public float shieldThrowInterval = 0.45f;   // 방패를 잡고 다시 던지기까지의 시간
-    public Transform shildSummonPos;    // 방패 소환 위치
-    public GameObject ShildPrefabs;     // 방패 프리팹
+    public Transform shieldSummonPos;    // 방패 소환 위치
+    public GameObject shieldPrefabs;     // 방패 프리팹
 
-    [Header("원거리 공격 모드 설정")]
+    [Header("원거리 공격 모드")]
     public GameObject crosshairPrefabs; // 조준점 프리팹
     public Transform crosshairSummonPos;    // 원거리 모드를 켰을 때 크로스헤어(조준점) 이 소환될 위치.
-    public GameObject shildSprite;  // 방패 스프라이트
+    public GameObject ShieldSprite;  // 방패 스프라이트
     public GameObject postProcessVolumeObject;  // 원거리 모드에서 켜질 화면 필터 (Post-process Volume) 오브젝트
 
-    
+    [Header("방패 도약")]
+    public GameObject shieldLeapAirEffectPrefab; // 방패 도약 이펙트 프리팹 - 공중
+    public GameObject shieldLeapGroundImpactPrefab; // 방패 도약 이펙트 프리팹 - 지상
+    public GameObject shieldLeapWallSlideEffectPrefab; // 방패 도약 이펙트 프리팹 - 월 슬라이딩
+
+
+
 
     // =========================================================================
     // 1. 이동 및 방향 상태 (Movement & Direction)
@@ -126,8 +132,11 @@ public class PlayerController : MonoBehaviour
     private bool isAttacking = false;         // 공격 중인가?
     private bool allowDashCancel = false;     // 공격 도중 대쉬로 취소 가능 여부
     private bool IsRangedAttackMode = false;  // 투척 모드인지 여부
-    private bool hasShild = true;             // 방패를 가지고 있는지 여부
+    private bool hasShield = true;             // 방패를 가지고 있는지 여부
     private bool canThrow = true;             // 방패를 던질 수 있는지 여부
+
+    private GameObject shieldInstance;     // 조준점 게임오브젝트 레퍼런스
+    private ShieldMovement shieldScript;
 
     // =========================================================================
     // 6. 특수 동작 및 제어 (Special & Control)
@@ -178,10 +187,11 @@ public class PlayerController : MonoBehaviour
         CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
         WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
         AttackHandler(); // 근접 공격 작동, 근접 공격 애니메이션 트리거
+        ShieldLeapHandler();    // 방패 도약 작동
         JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
         DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
         ParryHandler(); // 패링 작동, 애니메이션 트리거
-        ShildHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
+        ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
         HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴, 방패 들고 이동, 공격 중 이동)
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
     }
@@ -251,7 +261,7 @@ public class PlayerController : MonoBehaviour
 
         if (isShielding)    // 방패 도중 움직임
         {
-            ShildMovement();
+            ShieldMovement();
             return;
         }
         
@@ -391,7 +401,7 @@ public class PlayerController : MonoBehaviour
         normalizedSpeed = currentMoveSpeed / maxSpeed;
     }
 
-    void ShildMovement()
+    void ShieldMovement()
     {
         if (hasInput && !isEquippingShield)
         {
@@ -580,9 +590,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void ShildHandler()
+    void ShieldHandler()
     {
-        if (!hasShild) return;
+        if (!hasShield) return;
 
         if (isEquippingShield)
         {
@@ -771,7 +781,7 @@ public class PlayerController : MonoBehaviour
                 allowDashCancel = true;
                 if (Input.GetMouseButton(0))
                 {
-                    if (!hasShild || IsRangedAttackMode) return;
+                    if (!hasShield || IsRangedAttackMode) return;
 
                     allowDashCancel = false;
                     timeSinceLastAttack = 0;
@@ -796,7 +806,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (!hasShild || IsRangedAttackMode) return;
+                if (!hasShield || IsRangedAttackMode) return;
 
                 isAttacking = true;
                 allowDashCancel = false;
@@ -812,7 +822,7 @@ public class PlayerController : MonoBehaviour
 
     void RangedAttackHandler()
     {
-        if (!IsRangedAttackMode || !canThrow || !hasShild || isThrowingShield || isWallSliding || isParrying || isShielding) return;
+        if (!IsRangedAttackMode || !canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding) return;
         // 방패 투척 불가능 조건 : 근접 모드임, 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중
 
         if (Input.GetMouseButton(0))
@@ -823,14 +833,14 @@ public class PlayerController : MonoBehaviour
 
     void ThrowShield()
     {
-        hasShild = false;
-        shildSprite.SetActive(false);
+        hasShield = false;
+        ShieldSprite.SetActive(false);
 
-        GameObject newShild = Instantiate(ShildPrefabs, shildSummonPos.position, quaternion.identity);
-        ShildMovement shildScript = newShild.GetComponent<ShildMovement>();
+        shieldInstance = Instantiate(shieldPrefabs, shieldSummonPos.position, quaternion.identity);
+        shieldScript = shieldInstance.GetComponent<ShieldMovement>();
 
         Vector2 shootDirection = crosshairInstance.transform.position - transform.position;
-        shildScript.InitializeThrow(shootDirection, this);
+        shieldScript.InitializeThrow(shootDirection, this);
 
         shieldPitchNormalized = GetNormalizedShieldPitch(shootDirection);
         anim.SetFloat("float_shieldPitchNormalized", shieldPitchNormalized);
@@ -857,8 +867,12 @@ public class PlayerController : MonoBehaviour
 
     public void CatchShield()   // 이 스크립트는 던져진 방패에서 호출됨
     {
-        hasShild = true;
-        shildSprite.SetActive(true);
+        Destroy(shieldInstance);
+        shieldInstance = null;
+        
+
+        hasShield = true;
+        ShieldSprite.SetActive(true);
 
         canThrow = false;
         currentShieldThrowInterval = 0;
@@ -880,6 +894,38 @@ public class PlayerController : MonoBehaviour
         {
             GameObject target = hit.gameObject;
             target.SendMessage("Attacked", SendMessageOptions.DontRequireReceiver);
+        }
+    }
+
+    void ShieldLeapHandler()
+    {
+        if (shieldScript == null) return;
+        if (hasShield || shieldScript.isReturning) return;
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject newEffect;
+            if (isGrounded)
+            {
+                newEffect = Instantiate(shieldLeapGroundImpactPrefab);
+            }
+            else if (isWallSliding)
+            {
+                newEffect = Instantiate(shieldLeapWallSlideEffectPrefab);
+            }
+            else
+            {
+                newEffect = Instantiate(shieldLeapAirEffectPrefab);
+            }
+
+            newEffect.transform.position = transform.position;
+            newEffect.transform.localScale = new Vector3(
+                newEffect.transform.localScale.x * lastMoveInput,
+                newEffect.transform.localScale.y,
+                newEffect.transform.localScale.z);
+
+            transform.position = shieldInstance.transform.position;
+            CatchShield();
         }
     }
 

@@ -2897,12 +2897,16 @@ MonoBehaviour:
   comboMaxDuration: 0.3
   maxAttackMotions: 2
   shieldThrowDuration: 0.25
-  shildSummonPos: {fileID: 73123344}
-  ShildPrefabs: {fileID: 3792225553167996052, guid: da7b4a41f559e7f42a3a741cde7f72b3, type: 3}
+  shieldThrowInterval: 0.25
+  shieldSummonPos: {fileID: 73123344}
+  shieldPrefabs: {fileID: 3792225553167996052, guid: da7b4a41f559e7f42a3a741cde7f72b3, type: 3}
   crosshairPrefabs: {fileID: 5711959972963249622, guid: 81fdf19a5e0e988499d4f5534c223c56, type: 3}
   crosshairSummonPos: {fileID: 1332856313}
-  shildSprite: {fileID: 1526907943}
+  ShieldSprite: {fileID: 1526907943}
   postProcessVolumeObject: {fileID: 952459148}
+  shieldLeapAirEffectPrefab: {fileID: 4021274216835747486, guid: 218c4e81d9baa014b945b995954b5d7e, type: 3}
+  shieldLeapGroundImpactPrefab: {fileID: 5902937327030398573, guid: d274f043070a1e94ab54ab8bef84ce82, type: 3}
+  shieldLeapWallSlideEffectPrefab: {fileID: 3255466628281366065, guid: 4f01e12eb07b0204aa5e048e91971aa9, type: 3}
 --- !u!61 &1462005287
 BoxCollider2D:
   m_ObjectHideFlags: 0

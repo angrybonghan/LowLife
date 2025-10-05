@@ -1,0 +1,94 @@
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D), typeof(Animator))]
+public class ShieldMovement : MonoBehaviour
+{
+    [Header("참조 및 설정")]
+    public float maxShieldFlightTime = 1;      // 방패가 날아갈 수 있는 최대 시간
+    public float throwSpeed = 25f;     // 방패가 날아가는 속도
+    public float returnSpeed = 20f;    // 방패가 플레이어에게 돌아오는 속도
+    public float catchDistance = 0.75f; // 플레이어에게 잡혀질 거리
+
+    [Header("외부 조작 설정")]
+    public Transform playerPostion;    // 방패를 던진 플레이어 위치
+    public Vector3 throwDirection;  // 던지는 방향
+    public bool isReturning = false; // 현재 방패가 돌아오는 중인가?
+
+    private float currentFlightTime = 0; // 현재 날아가는 시간 (시간 계산용)
+
+    // 참조용 변수
+    private Rigidbody2D rb;
+    private CircleCollider2D boxCol;
+    private Animator anim;
+    private PlayerController playerController;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        boxCol = rb.GetComponent<CircleCollider2D>();
+        anim = rb.GetComponent<Animator>();
+
+        // 초기 설정
+        boxCol.isTrigger = true;
+        rb.gravityScale = 0f;
+        isReturning = false;
+    }
+
+    void Update()
+    {
+        if (!isReturning)
+        {
+            rb.velocity = throwDirection * throwSpeed;
+
+            currentFlightTime += Time.deltaTime;
+            if (currentFlightTime >= maxShieldFlightTime)
+            {
+                SetReturnState(); // 복귀 상태로 전환
+            }
+        }
+        else // 되돌아오는 상태
+        {
+            if (playerPostion != null)
+            {
+                Vector3 directionToPlayer = (playerPostion.position - transform.position).normalized;
+                rb.velocity = directionToPlayer * returnSpeed;
+
+                // 플레이어에게 잡힘
+                if (Vector2.Distance(playerPostion.position, transform.position) <= catchDistance)
+                {
+                    playerController.CatchShield();
+                    Destroy(gameObject);
+                }
+            }
+            else
+            {
+                // 플레이어 참조가 사라졌다면, 방패 파괴
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 인수 : 방향 - 플레이어 스크립트
+    /// </summary>
+    public void InitializeThrow(Vector3 direction, PlayerController script)
+    {
+        throwDirection = direction.normalized;
+        playerPostion = script.transform;
+        playerController = script;
+    }
+
+    private void SetReturnState()
+    {
+        isReturning = true;
+        rb.gravityScale = 0f;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!isReturning)
+        {
+            SetReturnState(); // 뭔가에 충돌 시 복귀 상태로 전환
+        }
+    }
+}
