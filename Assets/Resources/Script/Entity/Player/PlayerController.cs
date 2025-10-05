@@ -138,9 +138,10 @@ public class PlayerController : MonoBehaviour
     private bool isQuickTurning = false;    // 퀵 턴 도중인가?
 
     // =========================================================================
-    // 7. 기타 오브젝트 레퍼런스 (References)
+    // 7. 기타 오브젝트 레퍼런스, 변수
     // =========================================================================
     private GameObject crosshairInstance;     // 조준점 게임오브젝트 레퍼런스
+    private float startGravityScale;
 
 
     // 속성, 스크립트 참조
@@ -151,6 +152,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        startGravityScale = rb.gravityScale;
     }
 
     private void Start()
@@ -711,6 +713,8 @@ public class PlayerController : MonoBehaviour
             if (isDashing || currentShieldThrowDuration >= shieldThrowDuration)
             {
                 isThrowingShield = false;
+                rb.gravityScale = startGravityScale;
+
                 if (isFlippedAfterThrowShield)
                 {
                     transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
@@ -765,6 +769,11 @@ public class PlayerController : MonoBehaviour
             {
                 Flip();
             }
+        }
+
+        if (!isGrounded)
+        {
+            rb.gravityScale = startGravityScale * 0.5f;
         }
     }
 
