@@ -348,11 +348,6 @@ public class PlayerController : MonoBehaviour, I_Attackable
         {
             gradientDashEffect.SetColorLevel(currentDashDuration / dashDuration);
         }
-
-        if (dashVerticalVelocity == 0)
-        {
-            transform.position = new Vector2(transform.position.x, dashFixedYPosition);
-        }
     }
 
     void WallSlidingMovement()
@@ -566,11 +561,13 @@ public class PlayerController : MonoBehaviour, I_Attackable
             {
                 isDashing = false;
                 SetPlayerControlDisableDuration(0);
+                NoGravityOff();
             }
 
             if (isTouchingAnyWall || isAttacking)
             {
                 isDashing = false;
+                NoGravityOff();
                 return;
             }
         }
@@ -604,7 +601,19 @@ public class PlayerController : MonoBehaviour, I_Attackable
             {
                 dashVerticalVelocity = 0;
             }
+
+            NoGravityOn();
         }
+    }
+
+    void NoGravityOn()
+    {
+        rb.gravityScale = 0;
+    }
+
+    void NoGravityOff()
+    {
+        rb.gravityScale = startGravityScale;
     }
 
     void ShieldHandler()
@@ -864,6 +873,7 @@ public class PlayerController : MonoBehaviour, I_Attackable
         if (Input.GetMouseButtonDown(0))
         {
             isDashing = false;
+            NoGravityOff();
 
             GameObject newEffect;
             if (isGrounded)
