@@ -1,9 +1,9 @@
 ﻿using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Animations;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, I_Attackable
 {
     [Header("기본 이동")]
     public float acceleration = 12;  // 플레이어 가속도
@@ -13,13 +13,22 @@ public class PlayerController : MonoBehaviour
     public float quickTrunDuration = 0.3f;    // 퀵턴 최대 길이
     public float shieldSpeed​Multiplier = 1;   // 방패로 인한 감속도 배율
     [Header("대쉬")]
+
     public float dashDuration = 0.25f;  // 대쉬 유지 시간
     public float dashSpeedMultiplier = 1.4f;   // 현재 속도에서 배수로 가속할 대쉬 속도
     public float dashCooldown = 0.5f;  // 대쉬 재사용 대기시간
     public GameObject dashEffect;   // 대쉬 잔상 이펙트 프리팹
+
     [Header("방패")]
-    public float shieldEquipDuration = 0.35f;
-    public float parryDuration = 0.4f;
+    public float shieldEquipDuration = 0.35f;   // 방패를 꺼내는 시간
+    public float parryDuration = 0.4f;  // 방패로 튕겨내는 시간
+    
+    [Header("방패 게이지")]
+    public float shieldRechargeDuration = 3;    // 방패가 완전 방전에서 완전 충전으로 회복되는 시간
+    public Color maxShieldGaugeColor = Color.green; // 방패 완충에서 방패 게이지 색상
+    public Color minShieldGaugeColor = Color.red; // 방패 방전에서 방패 게이지 색상
+    public GameObject shieldGaugeUI;    // 방패 게이지 UI 게임오브젝트
+    public float defaultShieldUIFadeDelay = 1f;
 
 
     [Header("지상 감지 위치")]    // Transform 3개 중 하나라도 groundLayer에 닿았으면 땅인 것으로 봄
@@ -54,7 +63,8 @@ public class PlayerController : MonoBehaviour
     public GameObject shieldLeapGroundImpactPrefab; // 방패 도약 이펙트 프리팹 - 지상
     public GameObject shieldLeapWallSlideEffectPrefab; // 방패 도약 이펙트 프리팹 - 월 슬라이딩
 
-
+    [Header("test")]
+    public GameObject testBlackScreenUI;
 
 
     // =========================================================================
@@ -112,6 +122,8 @@ public class PlayerController : MonoBehaviour
     private float shieldPitchNormalized = 0;   // 방패의 수직 각도(Pitch) 정규화 값
     private float currentShieldThrowDuration = 0;     // 현재 방패를 던지고 있는 시간 (쿨다운 계산용)
     private float currentShieldThrowInterval = 0;      // 방패를 잡은 직후 지난 시간 (쿨다운 계산용)
+    private float shieldGauge = 1; //방패 게이지 값
+    private float shieldUIFadeDelay = 0;    // 방패가 투명해지기 시작할 때까지 지연 시간
 
     private bool isShielding = false;         // 방패를 들고있는 중인가?
     private bool isEquippingShield = false;   // 방패를 꺼내는 중인가?
@@ -122,9 +134,13 @@ public class PlayerController : MonoBehaviour
     private bool hasShield = true;             // 방패를 가지고 있는지 여부
     private bool canThrow = true;             // 방패를 던질 수 있는지 여부
     private bool isFlippedAfterThrowShield = false; // 방패를 투척했을 때, 뒤로 던졌는지에 대한 여부
+    private bool isShieldGaugeFadingOut = false;  // 방패 UI가 페이드 아웃 중인지에 대한 여부
+    private bool isShieldGaugeHidden = true;    // 방패 게이지가 숨겨져 있는지에 대한 여부
 
     private GameObject shieldInstance;     // 조준점 게임오브젝트 레퍼런스
-    private ShieldMovement shieldScript;
+    private ShieldMovement shieldScript;    // 방패 움직임 스크립트
+    private SpriteRenderer shieldGaugeRenderer;  // 방패 게이지 UI 이미지 스프라이트 렌더러
+    private Coroutine shieldGaugeFadeoutCoroutine;  // 쉴드 게이지 페이드 아웃 코루틴
 
     // =========================================================================
     // 6. 특수 동작 및 제어 (Special & Control)
@@ -158,6 +174,18 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         AimOn();
+        if (shieldGaugeUI != null)
+        {
+            shieldGaugeRenderer = shieldGaugeUI.GetComponent<SpriteRenderer>();
+
+            if (shieldGaugeRenderer == null)
+            {
+                Debug.LogError("방패 게이지가 스프라이트 렌더러가 달려 있지 않음");
+            }
+        }
+        else Debug.LogError("방패 게이지가 없음");
+
+        ShieldGaugeHide();
     }
 
     void Update()
@@ -175,6 +203,12 @@ public class PlayerController : MonoBehaviour
         ParryHandler(); // 패링 작동, 애니메이션 트리거
         ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
+
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            DepleteShieldGauge(0.1f);
+        }
     }
 
     private void FixedUpdate()
@@ -592,6 +626,7 @@ public class PlayerController : MonoBehaviour
         if (isShielding)
         {
             if (isParrying) return;
+            SetShieldUIFadeOutDelay();
 
             if (Input.GetMouseButtonUp(1) || !isGrounded)
             {
@@ -607,8 +642,11 @@ public class PlayerController : MonoBehaviour
                 currentShieldEquipTime = 0;
 
                 anim.SetTrigger("trigger_shieldOn");
+                SetShieldUIFadeOutDelay();
             }
         }
+
+        ShieldGaugeHandler();
     }
 
     void ParryHandler()
@@ -878,5 +916,121 @@ public class PlayerController : MonoBehaviour
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(wallKickEffectPos.position, layerCheckRadius);
+    }
+
+    void ShieldGaugeHandler()
+    {
+        if (!isShielding && hasShield && shieldGauge != 1)
+        {
+            float rechargeLevel = Time.deltaTime / shieldRechargeDuration;
+            DepleteShieldGauge(-rechargeLevel);
+            SetShieldUIFadeOutDelay();
+        }
+
+        if (shieldUIFadeDelay <= 0)
+        {
+            if (!isShieldGaugeHidden && !isShieldGaugeFadingOut)
+            {
+                isShieldGaugeFadingOut = true;
+                shieldGaugeFadeoutCoroutine = StartCoroutine(FadeOutShieldUICoroutine(1f));
+            }
+        }
+        else
+        {
+            shieldUIFadeDelay -= Time.deltaTime;
+        }
+
+        ShieldGaugeColorHandler();
+    }
+
+    void ShieldGaugeColorHandler()
+    {
+        Color targetColor = Color.Lerp(minShieldGaugeColor, maxShieldGaugeColor, shieldGauge);
+
+        targetColor.a = shieldGaugeRenderer.color.a;
+        shieldGaugeRenderer.color = targetColor;
+    }
+
+    IEnumerator FadeOutShieldUICoroutine(float duration)
+    {
+        float elapsedTime = 0f;
+        float startAlpha = 1f;
+        float targetAlpha = 0f;
+        Color currentColor = shieldGaugeRenderer.color;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            currentColor = shieldGaugeRenderer.color;
+            float currentAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / duration);
+
+            currentColor.a = currentAlpha;
+            shieldGaugeRenderer.color = currentColor;
+
+            yield return null;
+        }
+
+        ShieldGaugeHide();
+    }
+
+    void ShieldGaugeHide()
+    {
+        Color currentColor = shieldGaugeRenderer.color;
+        currentColor.a = 0f;
+        shieldGaugeRenderer.color = currentColor;
+
+        shieldGaugeFadeoutCoroutine = null;
+
+        isShieldGaugeFadingOut = false;
+        isShieldGaugeHidden = true;
+    }
+
+    void SetShieldUIFadeOutDelay()
+    {
+        shieldUIFadeDelay = defaultShieldUIFadeDelay;
+
+        isShieldGaugeHidden = false;
+
+        Color currentColor = shieldGaugeRenderer.color;
+        currentColor.a = 1f;
+        shieldGaugeRenderer.color = currentColor;
+
+        if (isShieldGaugeFadingOut)
+        {
+            StopCoroutine(shieldGaugeFadeoutCoroutine);
+            shieldGaugeFadeoutCoroutine = null;
+
+            isShieldGaugeFadingOut = false;
+        }
+    }
+
+    public void OnAttack(float damage, Transform attackerPos)
+    {
+        if (isShielding)
+        {
+            Vector3 localPosOfAttacker = transform.InverseTransformPoint(attackerPos.position);
+            bool attackOnRight = localPosOfAttacker.x > 0;
+
+            if (attackOnRight == isFacingRight) ApplyDamageToShield(damage);
+            else Death();
+        }
+        else Death();
+    }
+
+    void ApplyDamageToShield(float damage)
+    {
+        shieldGauge -= damage;
+        shieldGauge = Mathf.Clamp01(shieldGauge);
+    }
+
+    void DepleteShieldGauge(float damage)
+    {
+        shieldGauge -= damage;
+        shieldGauge = Mathf.Clamp01(shieldGauge);
+    }
+
+    void Death()
+    {
+        testBlackScreenUI.SetActive(true);
     }
 }
