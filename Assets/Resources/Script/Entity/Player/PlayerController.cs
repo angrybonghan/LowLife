@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour, I_Attackable
     public GameObject postProcessVolumeObject;  // 원거리 모드에서 켜질 화면 필터 (Post-process Volume) 오브젝트
 
     [Header("방패 도약")]
+    public float shieldLeapShieldGaugeDecrease = 0.5f;
     public GameObject shieldLeapAirEffectPrefab; // 방패 도약 이펙트 프리팹 - 공중
     public GameObject shieldLeapGroundImpactPrefab; // 방패 도약 이펙트 프리팹 - 지상
     public GameObject shieldLeapWallSlideEffectPrefab; // 방패 도약 이펙트 프리팹 - 월 슬라이딩
@@ -869,6 +870,7 @@ public class PlayerController : MonoBehaviour, I_Attackable
     {
         if (shieldScript == null) return;
         if (hasShield || shieldScript.isReturning) return;
+        if (shieldGauge < shieldLeapShieldGaugeDecrease) return;
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -897,6 +899,7 @@ public class PlayerController : MonoBehaviour, I_Attackable
 
             transform.position = shieldInstance.transform.position;
             CatchShield();
+            DepleteShieldGauge(shieldLeapShieldGaugeDecrease);
         }
     }
 
