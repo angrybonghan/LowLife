@@ -101,6 +101,11 @@ public class ShieldMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
+        {
+            targetAttackable.OnAttack(transform);
+        }
+
         if (!isReturning)
         {
             SetReturnState(); // 뭔가에 충돌 시 복귀 상태로 전환
