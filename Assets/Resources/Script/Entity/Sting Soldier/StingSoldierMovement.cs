@@ -124,6 +124,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         {
             currentState = state.idle;
             idleStartPos = transform.position;
+            rb.velocity = Vector2.zero;
 
             if (IdleMovementCoroutine != null)
             {
@@ -135,6 +136,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         else if (targetState == state.track)
         {
             currentState = state.track;
+            rb.velocity = Vector2.zero;
         }
         else
         {
