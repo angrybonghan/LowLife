@@ -225,6 +225,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
                 yield return null;
             }
 
+            rb.velocity = Vector2.zero;
             yield return new WaitForSeconds(idleMovingStepDelay);
         }
     }

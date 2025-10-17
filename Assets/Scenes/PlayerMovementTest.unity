@@ -2578,7 +2578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 216ce9d5d56325641aadc316b4a0158a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 7.5
+  maxSpeed: 12
   accelerationRate: 4
   STOPPING_DISTANCE: 0.1
   moveRange: 6
@@ -2622,7 +2622,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
