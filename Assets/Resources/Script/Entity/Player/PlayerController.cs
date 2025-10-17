@@ -1023,8 +1023,9 @@ public class PlayerController : MonoBehaviour
     {
         if (isShielding)
         {
-            Vector3 localPosOfAttacker = transform.InverseTransformPoint(attackerPos.position);
-            bool attackOnRight = localPosOfAttacker.x > 0;
+            float myX = transform.position.x;
+            float attackerX = attackerPos.position.x;
+            bool attackOnRight = attackerX > myX;
 
             if (attackOnRight == isFacingRight) ApplyDamageToShield(damage);
             else Death();

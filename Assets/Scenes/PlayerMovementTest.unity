@@ -2476,6 +2476,7 @@ GameObject:
   - component: {fileID: 772068513}
   - component: {fileID: 772068509}
   - component: {fileID: 772068512}
+  - component: {fileID: 772068514}
   m_Layer: 10
   m_Name: Sting Soldier
   m_TagString: Entity
@@ -2535,7 +2536,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -2577,22 +2578,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 216ce9d5d56325641aadc316b4a0158a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  maxSpeed: 10
+  accelerationRate: 60
+  STOPPING_DISTANCE: 0.1
   moveRange: 6
   obstacleMask:
     serializedVersion: 2
     m_Bits: 768
   entityRadius: 0.3
-  attackRange: 0
-  detectionRange: 0
-  attackCooldown: 0
-  attackDuration: 0
-  "\u3141": 0
+  attackRange: 0.25
+  detectionRange: 10
+  attackChargeTime: 0.5
+  attackDuration: 0.2
+  attackCooldown: 0.25
+  attackLength: 1
   hitboxOffset: {x: 0.54, y: -0.06}
   hitboxSize: {x: 1, y: 0.4}
   targetLayer:
     serializedVersion: 2
     m_Bits: 2048
+  deathDuration: 1
+--- !u!50 &772068514
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772068508}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 1
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!1001 &783895421
 PrefabInstance:
   m_ObjectHideFlags: 0

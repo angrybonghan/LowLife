@@ -1,10 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
-public class StingSoldierMovement : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
+public class StingSoldierMovement : MonoBehaviour, I_Attackable
 {
     [Header("움직임")]
-    public float moveSpeed = 5; // 움직임 속도
+    public float maxSpeed = 5; // 최대 움직임 속도
+    public float accelerationRate = 50f; // 가속도
+    public float STOPPING_DISTANCE = 0.1f;
+
     public float moveRange; // 대기 상태에 들어간 위치로부터 최대 이동할 수 있는 범위
     public LayerMask obstacleMask;  // 장애물을 감지할 레이어
     public float entityRadius;  // 엔티티의 크기 (CircleCast 용도)
@@ -12,47 +16,118 @@ public class StingSoldierMovement : MonoBehaviour
     [Header("공격")]
     public float attackRange;   // 공격의 범위
     public float detectionRange;    // 감지의 범위
+    public float attackChargeTime;  // 공격의 준비 시간
+    public float attackDuration;    // 공격의 유지 시간
     public float attackCooldown;    // 공격 대기시간 (공격 쿨타임)
-    public float attackDuration;    // 공격 모션의 유지 시간
-    public float ㅁ;    // 공격 모션 이후 대기 시간
+    public float attackLength;  // 공격의 길이
 
     [Header("히트박스")]
     public Vector2 hitboxOffset = Vector2.zero;    // 히트박스 오프셋
     public Vector2 hitboxSize = new Vector2(1.0f, 1.0f); // 크기 (width, height)
     public LayerMask targetLayer;   // 감지 레이어
 
+    [Header("죽음")]
+    public float deathDuration; // 죽는 시간
 
-    float idleMovingStepDelay = 0.75f;
+
+    float idleMovingStepDelay = 0.75f;  // Idle 상태에서 이동의 주기
 
     bool isFacingRight = true;  // 오른쪽을 바라보고 있는지 여부
+    bool isDead = false;    // 죽었는지 여부
+    bool wasHitPlayer;  // 플레이어를 한번 쳐봤는지 여부 (공격 1번 당 리셋)
 
     Coroutine IdleMovementCoroutine;
+    Coroutine AttackMovementCoroutine;
+    
+    GameObject playerObject;    // 플레이어 오브젝트
 
+
+    Vector2 currentVelocity = Vector2.zero; // 현재 가속
     Vector2 idleStartPos;   // 대기가 시작된 위치
     public enum state { idle, track, attack }
     state currentState;
 
+    private Rigidbody2D rb;
+    private Animator anim;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+    }
+
 
     void Start()
     {
+        playerObject = GameObject.FindWithTag("Player");
+
+        if (playerObject == null)
+        {
+            Debug.LogError("플레이어 없음");
+        }
+
         SetState(state.idle);
     }
 
     void Update()
     {
-        
+        if (isDead) return;
+
+        if (currentState == state.idle)
+        {
+            float distanceToPlayer = Vector3.Distance(transform.position, playerObject.transform.position);
+
+            if (distanceToPlayer <= detectionRange)
+            {
+                SetState(state.track);
+            }
+        }
+        else if (currentState == state.track)
+        {
+            Vector2 trackTargetPos = GetOptimalAttackPosition();
+            float distanceToTargetPos = Vector3.Distance(transform.position, trackTargetPos);
+            float distanceToPlayer = Vector3.Distance(transform.position, playerObject.transform.position);
+
+            TrackPos(playerObject.transform.position);
+
+            if (distanceToTargetPos <= attackRange)
+            {
+                SetState(state.attack);
+            }
+            else if (distanceToPlayer > detectionRange)
+            {
+                SetState(state.idle);
+            }
+        }
+        else if (currentState == state.attack)
+        {
+            Vector2 trackTargetPos = GetOptimalAttackPosition();
+            float distanceToTargetPos = Vector3.Distance(transform.position, trackTargetPos);
+
+            if (distanceToTargetPos > attackRange)
+            {
+                SetState(state.track);
+            }
+        }
     }
 
     void SetState(state targetState)
     {
         StopAllCoroutines();
         IdleMovementCoroutine = null;
+        AttackMovementCoroutine = null;
 
         if (targetState == state.idle)
         {
             currentState = state.idle;
             idleStartPos = transform.position;
-            StartIdleMovement();
+
+            if (IdleMovementCoroutine != null)
+            {
+                StopCoroutine(IdleMovementCoroutine);
+            }
+
+            IdleMovementCoroutine = StartCoroutine(IdleMovement());
         }
         else if (targetState == state.track)
         {
@@ -61,17 +136,28 @@ public class StingSoldierMovement : MonoBehaviour
         else
         {
             currentState = state.attack;
+            rb.velocity = Vector2.zero;
+
+            if (AttackMovementCoroutine != null)
+            {
+                StopCoroutine(IdleMovementCoroutine);
+            }
+
+            AttackMovementCoroutine = StartCoroutine(AttackMovement());
         }
     }
 
-    void StartIdleMovement()
+    public void TrackPos(Vector2 targetPos)
     {
-        if (IdleMovementCoroutine != null)
-        {
-            StopCoroutine(IdleMovementCoroutine);
-        }
+        LookPos(targetPos);
 
-        IdleMovementCoroutine = StartCoroutine(IdleMovement());
+        Vector2 targetDirection = (targetPos - (Vector2)transform.position).normalized;
+        rb.AddForce(targetDirection, ForceMode2D.Force);
+
+        if (rb.velocity.sqrMagnitude > maxSpeed * maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
     }
 
     IEnumerator IdleMovement()
@@ -129,13 +215,59 @@ public class StingSoldierMovement : MonoBehaviour
                 transform.position = Vector2.MoveTowards(
                     transform.position,
                     targetPos,
-                    moveSpeed * Time.deltaTime
+                    maxSpeed * Time.deltaTime
                 );
 
                 yield return null;
             }
 
             yield return new WaitForSeconds(idleMovingStepDelay);
+        }
+    }
+
+    IEnumerator AttackMovement()
+    {
+        while (true)
+        {
+            anim.SetTrigger("attack");
+            wasHitPlayer = false;
+            yield return new WaitForSeconds(attackChargeTime);
+
+            float attackEndTime = Time.time + attackDuration;
+            while (Time.time < attackEndTime)
+            {
+                if (!wasHitPlayer)
+                {
+                    Attack();
+                    LookPos(playerObject.transform.position);
+                }
+                
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(attackCooldown);
+        }
+    }
+
+    public Vector2 GetOptimalAttackPosition()
+    {   
+        Vector2 myPos = transform.position;
+        Vector2 playerPos = playerObject.transform.position;
+
+        
+        Vector2 leftAttackPos = new Vector2(playerPos.x - attackLength, playerPos.y);
+        Vector2 rightAttackPos = new Vector2(playerPos.x + attackLength, playerPos.y);
+
+        float distanceToLeft = Vector2.Distance(myPos, leftAttackPos);
+        float distanceToRight = Vector2.Distance(myPos, rightAttackPos);
+
+        if (distanceToLeft < distanceToRight)
+        {
+            return leftAttackPos;
+        }
+        else
+        {
+            return rightAttackPos;
         }
     }
 
@@ -157,7 +289,15 @@ public class StingSoldierMovement : MonoBehaviour
 
     void Attack()
     {
-        Vector2 worldCenter = (Vector2)transform.position + hitboxOffset;
+        float offsetX = hitboxOffset.x;
+
+        if (!isFacingRight)
+        {
+            offsetX *= -1;
+        }
+
+        Vector2 localAdjustedOffset = new Vector2(offsetX, hitboxOffset.y);
+        Vector2 worldCenter = (Vector2)transform.position + localAdjustedOffset;
 
         Collider2D[] hitTargets = Physics2D.OverlapBoxAll(
             worldCenter,            // 중심 위치
@@ -174,6 +314,7 @@ public class StingSoldierMovement : MonoBehaviour
                 {
                     if (targetCollider.TryGetComponent<PlayerController>(out PlayerController playerScript))
                     {
+                        wasHitPlayer = true;
                         playerScript.OnAttack(0.35f, 1, transform);
                     }
                     else
@@ -204,5 +345,19 @@ public class StingSoldierMovement : MonoBehaviour
     float GetRandom(float min, float max)
     {
         return Random.Range(min, max);
+    }
+
+    public void OnAttack(Transform attackerTransform)
+    {
+        isDead = true;
+        anim.SetTrigger("die");
+        StopAllCoroutines();
+        StartCoroutine(Dead());
+    }
+
+    IEnumerator Dead()
+    {
+        yield return new WaitForSeconds(deathDuration);
+        Destroy(gameObject);
     }
 }
