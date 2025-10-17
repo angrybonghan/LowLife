@@ -1016,7 +1016,9 @@ public class PlayerController : MonoBehaviour
             isShieldGaugeFadingOut = false;
         }
     }
-
+    /// <summary>
+    /// 인수 : 방패 대미지 - 넉백 정도 - 공격자 위치
+    /// </summary>
     public void OnAttack(float damage, float knockbackPower, Transform attackerPos)
     {
         if (isShielding)
