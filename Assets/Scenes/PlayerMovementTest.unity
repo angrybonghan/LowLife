@@ -2579,7 +2579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 10
-  accelerationRate: 60
+  accelerationRate: 2.5
   STOPPING_DISTANCE: 0.1
   moveRange: 6
   obstacleMask:

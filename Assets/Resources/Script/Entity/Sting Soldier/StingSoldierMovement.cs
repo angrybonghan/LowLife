@@ -42,8 +42,6 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     
     GameObject playerObject;    // 플레이어 오브젝트
 
-
-    Vector2 currentVelocity = Vector2.zero; // 현재 가속
     Vector2 idleStartPos;   // 대기가 시작된 위치
     public enum state { idle, track, attack }
     state currentState;
@@ -156,7 +154,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     {
         LookPos(targetPos);
 
-        Vector2 targetDirection = (targetPos - (Vector2)transform.position).normalized;
+        Vector2 targetDirection = accelerationRate * (targetPos - (Vector2)transform.position).normalized;
         rb.AddForce(targetDirection, ForceMode2D.Force);
 
         if (rb.velocity.sqrMagnitude > maxSpeed * maxSpeed)
