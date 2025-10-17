@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
-public class PlayerController : MonoBehaviour, I_Attackable
+public class PlayerController : MonoBehaviour
 {
     [Header("기본 이동")]
     public float acceleration = 12;  // 플레이어 가속도
@@ -1017,7 +1017,7 @@ public class PlayerController : MonoBehaviour, I_Attackable
         }
     }
 
-    public void OnAttack(float damage, Transform attackerPos)
+    public void OnAttack(float damage, float knockbackPower, Transform attackerPos)
     {
         if (isShielding)
         {

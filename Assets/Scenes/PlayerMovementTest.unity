@@ -4826,6 +4826,7 @@ MonoBehaviour:
   crosshairSummonPos: {fileID: 1332856313}
   ShieldSprite: {fileID: 1526907943}
   postProcessVolumeObject: {fileID: 952459148}
+  shieldLeapShieldGaugeDecrease: 0.5
   shieldLeapAirEffectPrefab: {fileID: 4021274216835747486, guid: 218c4e81d9baa014b945b995954b5d7e, type: 3}
   shieldLeapGroundImpactPrefab: {fileID: 5902937327030398573, guid: d274f043070a1e94ab54ab8bef84ce82, type: 3}
   shieldLeapWallSlideEffectPrefab: {fileID: 3255466628281366065, guid: 4f01e12eb07b0204aa5e048e91971aa9, type: 3}
