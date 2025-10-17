@@ -7,7 +7,6 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     [Header("움직임")]
     public float maxSpeed = 5; // 최대 움직임 속도
     public float accelerationRate = 50f; // 가속도
-    public float STOPPING_DISTANCE = 0.1f;
 
     public float moveRange; // 대기 상태에 들어간 위치로부터 최대 이동할 수 있는 범위
     public LayerMask obstacleMask;  // 장애물을 감지할 레이어
@@ -75,7 +74,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
 
         if (currentState == state.idle)
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, playerObject.transform.position);
+            float distanceToPlayer = Vector3.Distance(idleStartPos, playerObject.transform.position);
 
             if (distanceToPlayer <= detectionRange)
             {
@@ -209,6 +208,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
 
             if (!foundTarget)
             {
+                IdleMovementCoroutine = null;
                 yield break;
             }
 
@@ -343,8 +343,11 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         Vector2 gizmoCenter = (Vector2)transform.position + hitboxOffset;
         Gizmos.DrawWireCube(gizmoCenter, new Vector3(hitboxSize.x, hitboxSize.y, 0f));
 
+        Gizmos.DrawWireSphere(idleStartPos, detectionRange);
+
+        Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
-        
+
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, moveRange);
