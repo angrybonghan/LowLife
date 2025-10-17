@@ -373,7 +373,21 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
 
     IEnumerator Dead()
     {
-        yield return new WaitForSeconds(deathDuration);
+        float timer = 0f;
+        Vector3 initialScale = transform.localScale;
+        Vector3 targetScale = Vector3.zero;
+
+        while (timer < deathDuration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / deathDuration;
+
+            transform.localScale = Vector3.Lerp(initialScale, targetScale, t);
+
+            yield return null;
+        }
+
         Destroy(gameObject);
     }
 }
