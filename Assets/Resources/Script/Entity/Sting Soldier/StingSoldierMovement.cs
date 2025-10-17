@@ -36,6 +36,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     bool isFacingRight = true;  // 오른쪽을 바라보고 있는지 여부
     bool isDead = false;    // 죽었는지 여부
     bool wasHitPlayer;  // 플레이어를 한번 쳐봤는지 여부 (공격 1번 당 리셋)
+    bool isAttacking = false;   // 공격 중인지 여부
 
     Coroutine IdleMovementCoroutine;
     Coroutine AttackMovementCoroutine;
@@ -104,7 +105,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
             Vector2 trackTargetPos = GetOptimalAttackPosition();
             float distanceToTargetPos = Vector3.Distance(transform.position, trackTargetPos);
 
-            if (distanceToTargetPos > attackRange)
+            if (distanceToTargetPos > attackRange && !isAttacking)
             {
                 SetState(state.track);
             }
@@ -234,6 +235,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         {
             anim.SetTrigger("attack");
             wasHitPlayer = false;
+            isAttacking = true;
             LookPos(playerObject.transform.position);
             yield return new WaitForSeconds(attackChargeTime);
 
@@ -249,6 +251,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
                 yield return null;
             }
 
+            isAttacking = false;
             yield return new WaitForSeconds(attackCooldown);
         }
     }
