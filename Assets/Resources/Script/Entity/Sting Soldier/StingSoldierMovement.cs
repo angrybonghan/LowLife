@@ -88,7 +88,8 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
             float distanceToTargetPos = Vector3.Distance(transform.position, trackTargetPos);
             float distanceToPlayer = Vector3.Distance(transform.position, playerObject.transform.position);
 
-            TrackPos(playerObject.transform.position);
+            TrackPos(trackTargetPos);
+            LookPos(playerObject.transform.position);
 
             if (distanceToTargetPos <= attackRange)
             {
@@ -110,6 +111,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
             }
         }
     }
+
 
     void SetState(state targetState)
     {
