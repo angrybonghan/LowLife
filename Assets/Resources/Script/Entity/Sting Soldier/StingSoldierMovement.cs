@@ -28,6 +28,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
 
     [Header("죽음")]
     public float deathDuration; // 죽는 시간
+    public float fallingOutPower; // 죽었을 때 날아갈 힘
 
 
     float idleMovingStepDelay = 0.75f;  // Idle 상태에서 이동의 주기
@@ -233,6 +234,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         {
             anim.SetTrigger("attack");
             wasHitPlayer = false;
+            LookPos(playerObject.transform.position);
             yield return new WaitForSeconds(attackChargeTime);
 
             float attackEndTime = Time.time + attackDuration;
@@ -243,13 +245,14 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
                     Attack();
                     LookPos(playerObject.transform.position);
                 }
-                
+
                 yield return null;
             }
 
             yield return new WaitForSeconds(attackCooldown);
         }
     }
+
 
     public Vector2 GetOptimalAttackPosition()
     {   
@@ -352,6 +355,14 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     public void OnAttack(Transform attackerTransform)
     {
         isDead = true;
+
+        Vector2 direction = (transform.position - attackerTransform.position).normalized;
+        rb.velocity = Vector2.zero;
+        rb.AddForce(direction * fallingOutPower, ForceMode2D.Impulse);
+        rb.freezeRotation = false;
+        rb.gravityScale = 1f;
+        rb.AddTorque(GetRandom(-20, 20));
+
         anim.SetTrigger("die");
         StopAllCoroutines();
         StartCoroutine(Dead());
