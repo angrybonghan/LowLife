@@ -361,6 +361,8 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
 
     public void OnAttack(Transform attackerTransform)
     {
+        if (isDead) return;
+
         isDead = true;
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;

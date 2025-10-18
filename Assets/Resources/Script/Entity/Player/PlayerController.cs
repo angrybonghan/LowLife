@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
     public GameObject shieldLeapWallSlideEffectPrefab; // 방패 도약 이펙트 프리팹 - 월 슬라이딩
 
     [Header("test")]
-    public GameObject testBlackScreenUI;
+    public GameObject testBlackScreenUI;    // (테스트용) 사망 시 보여줄 검정색 UI 패널
 
 
     // =========================================================================
@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour
     // 7. 기타 오브젝트 레퍼런스, 변수
     // =========================================================================
     private GameObject crosshairInstance;     // 조준점 게임오브젝트 레퍼런스
-    private float startGravityScale;
+    private float startGravityScale;    // 시작 당시의 중력 값
 
 
     // 속성, 스크립트 참조
