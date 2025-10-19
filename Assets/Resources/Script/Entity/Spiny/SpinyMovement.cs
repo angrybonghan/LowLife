@@ -1,8 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider2D), typeof(Animator))]
-public class SpinyMovement : MonoBehaviour
+[RequireComponent(typeof(BoxCollider2D), typeof(Animator), typeof(Rigidbody2D))]
+public class SpinyMovement : MonoBehaviour, I_Attackable
 {
 
     [Header("움직임")]
@@ -21,12 +21,17 @@ public class SpinyMovement : MonoBehaviour
     public Vector2 hitboxSize = new Vector2(1.0f, 1.0f); // 크기 (width, height)
     public LayerMask targetLayer;   // 감지 레이어
 
+    [Header("죽음")]
+    public float deathDuration; // 죽는 시간
+    public float fallingOutPower; // 죽었을 때 날아갈 힘
+
     public enum state { move, turn , attack}
     private state currentState;
 
     bool isGoingUp; // 위쪽으로 움직이는지 여부
     bool isMoving;  // 움직이고 있는지 여부
     bool isAttacking; // 공격하고 있는지 여부
+    bool isDead;    // 죽었는지 여부
 
     float currentAttackCooldown;    // 현재 공격 대기시간 (쿨타임 계산용)
 
@@ -38,10 +43,14 @@ public class SpinyMovement : MonoBehaviour
     Coroutine attackCoroutine;
 
     Animator anim;
+    Rigidbody2D rb;
+    BoxCollider2D boxCol;
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        boxCol = GetComponent<BoxCollider2D>();
     }
 
     void Start()
@@ -57,11 +66,14 @@ public class SpinyMovement : MonoBehaviour
         targetPos = movePosUp;
         isGoingUp = true;
         isAttacking = false;
+        isDead = false;
     }
 
 
     void Update()
     {
+        if (isDead) return;
+
         switch (currentState)
         {
             case state.move:
@@ -175,6 +187,11 @@ public class SpinyMovement : MonoBehaviour
         return Random.Range(0, 2) == 0;
     }
 
+    float GetRandom(float min, float max)
+    {
+        return Random.Range(min, max);
+    }
+
     private void UpdateAnimation()
     {
         anim.SetBool("isMoving", isMoving);
@@ -208,6 +225,42 @@ public class SpinyMovement : MonoBehaviour
             Gizmos.DrawLine(gizmosMovePosUp, gizmosMovePosDown);
         }
 
-        
+    }
+
+    public void OnAttack(Transform attackerTransform)
+    {
+        if (isAttacking || isDead) return;
+
+        Vector2 direction = (transform.position - attackerTransform.position).normalized;
+        rb.velocity = Vector2.zero;
+        rb.AddForce(direction * fallingOutPower, ForceMode2D.Impulse);
+        rb.freezeRotation = false;
+        rb.gravityScale = 1f;
+        boxCol.isTrigger = false;
+        rb.AddTorque(GetRandom(-20, 20));
+
+        anim.SetTrigger("die");
+        StopAllCoroutines();
+        StartCoroutine(Dead());
+    }
+
+    IEnumerator Dead()
+    {
+        float timer = 0f;
+        Vector3 initialScale = transform.localScale;
+        Vector3 targetScale = Vector3.zero;
+
+        while (timer < deathDuration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / deathDuration;
+
+            transform.localScale = Vector3.Lerp(initialScale, targetScale, t);
+
+            yield return null;
+        }
+
+        Destroy(gameObject);
     }
 }
