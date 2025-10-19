@@ -13,6 +13,7 @@ public class SpinyMovement : MonoBehaviour
     [Header("공격")]
     public float attackChargeTime;  // 공격의 준비 시간
     public float attackDuration;    // 공격의 유지 시간
+    public float attackOutTime;    // 공격 이후 다시 움직일 시간
     public float attackCooldown;    // 공격 대기시간 (공격 쿨타임)
 
     [Header("히트박스")]
@@ -27,11 +28,14 @@ public class SpinyMovement : MonoBehaviour
     bool isMoving;  // 움직이고 있는지 여부
     bool isAttacking; // 공격하고 있는지 여부
 
+    float currentAttackCooldown;    // 현재 공격 대기시간 (쿨타임 계산용)
+
     Vector3 movePosUp;
     Vector3 movePosDown;
     Vector3 targetPos;
 
-    Coroutine TurnCoroutine;
+    Coroutine turnCoroutine;
+    Coroutine attackCoroutine;
 
     Animator anim;
 
@@ -80,14 +84,18 @@ public class SpinyMovement : MonoBehaviour
                 currentState = state.move;
                 isMoving = true;
                 break;
+
             case state.turn:
                 currentState = state.turn;
                 isMoving = false;
                 Turn();
                 break;
+
             case state.attack:
                 currentState = state.attack;
                 isMoving = false;
+                currentAttackCooldown = 0;
+                Attack();
                 break;
         }
     }
@@ -101,6 +109,15 @@ public class SpinyMovement : MonoBehaviour
         {
             SetState(state.turn);
         }
+        else
+        {
+            currentAttackCooldown += Time.deltaTime;
+
+            if (currentAttackCooldown >= attackCooldown)
+            {
+                SetState(state.attack);
+            }
+        }
     }
 
     void Turn()
@@ -111,8 +128,8 @@ public class SpinyMovement : MonoBehaviour
         if (isGoingUp) targetPos = movePosUp;
         else targetPos = movePosDown;
 
-        if (TurnCoroutine != null) StopCoroutine(TurnCoroutine);
-        TurnCoroutine = StartCoroutine(WaitToTurn());
+        if (turnCoroutine != null) StopCoroutine(turnCoroutine);
+        turnCoroutine = StartCoroutine(WaitToTurn());
     }
 
     IEnumerator WaitToTurn()
@@ -123,7 +140,7 @@ public class SpinyMovement : MonoBehaviour
         SetState(state.move);
         UpdateAnimation();
         Flip();
-        TurnCoroutine = null;
+        turnCoroutine = null;
     }
 
     void Flip()
@@ -131,6 +148,25 @@ public class SpinyMovement : MonoBehaviour
         Vector3 currentScale = transform.localScale;
         currentScale.y *= -1f;
         transform.localScale = currentScale;
+    }
+
+    void Attack()
+    {
+        if (attackCoroutine != null) StopCoroutine(attackCoroutine);
+        attackCoroutine = StartCoroutine(AttackStep());
+    }
+
+    IEnumerator AttackStep()
+    {
+        anim.SetTrigger("startAttack");
+        yield return new WaitForSeconds(attackChargeTime);
+        isAttacking = true;
+        yield return new WaitForSeconds(attackDuration);
+        isAttacking = false;
+        yield return new WaitForSeconds(attackOutTime);
+
+        SetState(state.move);
+        attackCoroutine = null;
     }
 
 

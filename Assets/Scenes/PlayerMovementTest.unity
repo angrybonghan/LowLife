@@ -2376,11 +2376,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  moveRadius: 0
+  moveRadius: 5.24
   rotationTime: 0.5
-  attackChargeTime: 0
-  attackDuration: 0
-  attackCooldown: 0
+  attackChargeTime: 1
+  attackDuration: 2
+  attackOutTime: 0.5
+  attackCooldown: 3
   hitboxOffset: {x: 0.5, y: 0}
   hitboxSize: {x: 0.5, y: 1}
   targetLayer:
