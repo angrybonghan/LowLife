@@ -1,0 +1,177 @@
+using System.Collections;
+using UnityEngine;
+
+[RequireComponent(typeof(BoxCollider2D), typeof(Animator))]
+public class SpinyMovement : MonoBehaviour
+{
+
+    [Header("움직임")]
+    public float moveSpeed = 5; // 움직임 속도
+    public float moveRadius;    // 움직일 수 있는 반경
+    public float rotationTime = 0.5f;   // 회전 시간
+
+    [Header("공격")]
+    public float attackChargeTime;  // 공격의 준비 시간
+    public float attackDuration;    // 공격의 유지 시간
+    public float attackCooldown;    // 공격 대기시간 (공격 쿨타임)
+
+    [Header("히트박스")]
+    public Vector2 hitboxOffset = Vector2.zero;    // 히트박스 오프셋
+    public Vector2 hitboxSize = new Vector2(1.0f, 1.0f); // 크기 (width, height)
+    public LayerMask targetLayer;   // 감지 레이어
+
+    public enum state { move, turn , attack}
+    private state currentState;
+
+    bool isGoingUp; // 위쪽으로 움직이는지 여부
+    bool isMoving;  // 움직이고 있는지 여부
+    bool isAttacking; // 공격하고 있는지 여부
+
+    Vector3 movePosUp;
+    Vector3 movePosDown;
+    Vector3 targetPos;
+
+    Coroutine TurnCoroutine;
+
+    Animator anim;
+
+    private void Awake()
+    {
+        anim = GetComponent<Animator>();
+    }
+
+    void Start()
+    {
+        SetState(state.move);
+        
+        if (moveRadius < 0) moveRadius *= -1;
+
+        movePosUp = movePosDown = transform.position;
+        movePosUp.y += moveRadius;
+        movePosDown.y -= moveRadius;
+
+        targetPos = movePosUp;
+        isGoingUp = true;
+        isAttacking = false;
+    }
+
+
+    void Update()
+    {
+        switch (currentState)
+        {
+            case state.move:
+                MoveHandler();
+                break;
+            
+            case state.turn:
+
+                break;
+        }
+
+        UpdateAnimation();
+    }
+
+    void SetState(state targetState)
+    {
+        switch (targetState)
+        {
+            case state.move:
+                currentState = state.move;
+                isMoving = true;
+                break;
+            case state.turn:
+                currentState = state.turn;
+                isMoving = false;
+                Turn();
+                break;
+            case state.attack:
+                currentState = state.attack;
+                isMoving = false;
+                break;
+        }
+    }
+
+    void MoveHandler()
+    {
+        float step = moveSpeed * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, step);
+
+        if (transform.position == targetPos)
+        {
+            SetState(state.turn);
+        }
+    }
+
+    void Turn()
+    {
+        isGoingUp = !isGoingUp;
+
+
+        if (isGoingUp) targetPos = movePosUp;
+        else targetPos = movePosDown;
+
+        if (TurnCoroutine != null) StopCoroutine(TurnCoroutine);
+        TurnCoroutine = StartCoroutine(WaitToTurn());
+    }
+
+    IEnumerator WaitToTurn()
+    {
+        anim.SetTrigger("trun");
+        yield return new WaitForSeconds(rotationTime);
+
+        SetState(state.move);
+        UpdateAnimation();
+        Flip();
+        TurnCoroutine = null;
+    }
+
+    void Flip()
+    {
+        Vector3 currentScale = transform.localScale;
+        currentScale.y *= -1f;
+        transform.localScale = currentScale;
+    }
+
+
+    public bool GetRandomBool()
+    {
+        return Random.Range(0, 2) == 0;
+    }
+
+    private void UpdateAnimation()
+    {
+        anim.SetBool("isMoving", isMoving);
+        anim.SetBool("isAttacking", isAttacking);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+
+        Vector2 gizmoCenter = (Vector2)transform.position + hitboxOffset;
+        Gizmos.DrawWireCube(gizmoCenter, new Vector3(hitboxSize.x, hitboxSize.y, 0f));
+
+        Gizmos.color = Color.cyan;
+
+        if (Application.isPlaying)
+        {
+            Gizmos.DrawWireSphere(movePosUp, 0.25f);
+            Gizmos.DrawWireSphere(movePosDown, 0.25f);
+            Gizmos.DrawLine(movePosUp, movePosDown);
+        }
+        else
+        {
+            Vector3 gizmosMovePosUp = transform.position;
+            Vector3 gizmosMovePosDown = transform.position;
+            gizmosMovePosUp.y += moveRadius;
+            gizmosMovePosDown.y -= moveRadius;
+
+            Gizmos.DrawWireSphere(gizmosMovePosUp, 0.25f);
+            Gizmos.DrawWireSphere(gizmosMovePosDown, 0.25f);
+            Gizmos.DrawLine(gizmosMovePosUp, gizmosMovePosDown);
+        }
+
+        
+    }
+}

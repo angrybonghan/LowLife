@@ -7,8 +7,9 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     [Header("움직임")]
     public float maxSpeed = 5; // 최대 움직임 속도
     public float accelerationRate = 50f; // 가속도
-
     public float moveRange; // 대기 상태에 들어간 위치로부터 최대 이동할 수 있는 범위
+
+    [Header("레이어, 캐스트")]
     public LayerMask obstacleMask;  // 장애물을 감지할 레이어
     public float entityRadius;  // 엔티티의 크기 (CircleCast 용도)
 
