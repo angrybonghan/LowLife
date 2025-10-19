@@ -2334,7 +2334,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -2387,7 +2387,7 @@ MonoBehaviour:
   hitboxSize: {x: 0.5, y: 1}
   targetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   deathDuration: 2
   fallingOutPower: 15
 --- !u!50 &419371490

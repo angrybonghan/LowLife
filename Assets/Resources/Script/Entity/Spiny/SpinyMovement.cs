@@ -85,6 +85,8 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
                 break;
         }
 
+        if (isAttacking) Attack();
+
         UpdateAnimation();
     }
 
@@ -100,14 +102,14 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
             case state.turn:
                 currentState = state.turn;
                 isMoving = false;
-                Turn();
+                StartTurn();
                 break;
 
             case state.attack:
                 currentState = state.attack;
                 isMoving = false;
                 currentAttackCooldown = 0;
-                Attack();
+                StartAttack();
                 break;
         }
     }
@@ -132,7 +134,7 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
         }
     }
 
-    void Turn()
+    void StartTurn()
     {
         isGoingUp = !isGoingUp;
 
@@ -162,7 +164,7 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
         transform.localScale = currentScale;
     }
 
-    void Attack()
+    void StartAttack()
     {
         if (attackCoroutine != null) StopCoroutine(attackCoroutine);
         attackCoroutine = StartCoroutine(AttackStep());
@@ -196,6 +198,52 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
     {
         anim.SetBool("isMoving", isMoving);
         anim.SetBool("isAttacking", isAttacking);
+    }
+
+    void Attack()
+    {
+        Vector2 worldCenter = (Vector2)transform.position + hitboxOffset;
+
+        Collider2D[] hitTargets = Physics2D.OverlapBoxAll(
+            worldCenter,            // 중심 위치
+            hitboxSize,             // 크기
+            0f,                     // 회전 각도
+            targetLayer             // 감지할 레이어
+        );
+
+        if (hitTargets.Length > 0)
+        {
+            foreach (Collider2D targetCollider in hitTargets)
+            {
+                if (targetCollider.CompareTag("Player"))
+                {
+                    if (targetCollider.TryGetComponent<PlayerController>(out PlayerController playerScript))
+                    {
+                        playerScript.OnAttack(1, 0, transform);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"플레이어 태그를 가졌지만 스크립트가 없는 대상: {targetCollider.gameObject.name}");
+                    }
+
+                }
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            if (other.TryGetComponent<PlayerController>(out PlayerController playerScript))
+            {
+                playerScript.OnAttack(1, 0, transform);
+            }
+            else
+            {
+                Debug.LogWarning($"플레이어 태그를 가졌지만 스크립트가 없는 대상: {other.gameObject.name}");
+            }
+        }
     }
 
     private void OnDrawGizmosSelected()
