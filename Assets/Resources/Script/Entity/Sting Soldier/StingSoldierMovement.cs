@@ -320,7 +320,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
                     if (targetCollider.TryGetComponent<PlayerController>(out PlayerController playerScript))
                     {
                         wasHitPlayer = true;
-                        playerScript.OnAttack(0.35f, 1, transform);
+                        playerScript.OnAttack(0.35f, 1, 0.1f, transform);
                     }
                     else
                     {

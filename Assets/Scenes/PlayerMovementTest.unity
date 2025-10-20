@@ -3399,7 +3399,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 768
   entityRadius: 0.3
-  attackRange: 0.25
+  attackRange: 0.4
   detectionRange: 10
   attackChargeTime: 0.6
   attackDuration: 0.2
@@ -8126,13 +8126,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2098091058}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.00000008568167, y: -0.00000022351739, z: -0.00000026822093, w: -1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 772068510}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 360}
 --- !u!212 &2098091060
 SpriteRenderer:
   m_ObjectHideFlags: 0

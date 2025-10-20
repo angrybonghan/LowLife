@@ -75,10 +75,13 @@ public class PlayerController : MonoBehaviour
     private float lastMoveInput = 1;         // 마지막으로 누른 방향키
     private float currentMoveSpeed = 0;      // 현재 움직임 속도 (가속도 반영)
     private float normalizedSpeed = 0;       // 정규화된 속도 (0~1)
+    private float knockbackPower = 0;       // 넉백의 밀림 정도
+    private float currentKnockbacktime = 0; // 넉백의 길이 (시간)
 
     private bool isFacingRight = true;      // 오른쪽을 바라보고 있는가? (방향 전환)
     private bool isRunning = false;         // 움직이는 중인가?
     private bool hasInput = false;          // 유효한 입력이 있는가? (A 또는 D)
+    private bool hasKnockback = false;      // 넉백 값이 있는지
 
     // =========================================================================
     // 2. 점프 및 공중 상태 (Jump & Air)
@@ -214,7 +217,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleMovement();   // 감지된 키를 기반으로 움직임 (달리기, 월 슬라이딩, 대쉬, 퀵턴, 방패 들고 이동, 공격 중 이동)
+        HandleMovement();   // 모든 상태에 대한 움직임
     }
 
     void CheckFlip()
@@ -266,6 +269,12 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
+        if (hasKnockback)
+        {
+            KnockbackHandler();
+            return;
+        }
+
         if (isAttacking)    // 공격 감속 (+ 에어브레이크)
         {
             AttackingMovement();
@@ -1016,10 +1025,40 @@ public class PlayerController : MonoBehaviour
             isShieldGaugeFadingOut = false;
         }
     }
+
+    void KnockbackHandler()
+    {
+        float sign = isFacingRight ? -1 : 1;
+        float knockbackLevel = 3f;
+
+        rb.velocity = new Vector2(sign * knockbackPower * knockbackLevel, rb.velocity.y);
+        currentKnockbacktime -= Time.deltaTime;
+        if (currentKnockbacktime <= 0)
+        {
+            StopKnockback();
+        }
+    }
+
+    void AddKnockback(float power, float time)
+    {
+        if (time >= 0) hasKnockback = true;
+        else StopKnockback();
+        knockbackPower = power;
+        currentKnockbacktime = time;
+    }
+
+    void StopKnockback()
+    {
+        hasKnockback = false;
+        knockbackPower = 0;
+        currentKnockbacktime = 0;
+    }
+
+
     /// <summary>
     /// 인수 : 방패 대미지 - 넉백 정도 - 공격자 위치
     /// </summary>
-    public void OnAttack(float damage, float knockbackPower, Transform attackerPos)
+    public void OnAttack(float damage, float knockbackPower, float knockbacktime, Transform attackerPos)
     {
         if (isShielding)
         {
@@ -1027,7 +1066,12 @@ public class PlayerController : MonoBehaviour
             float attackerX = attackerPos.position.x;
             bool attackOnRight = attackerX > myX;
 
-            if (attackOnRight == isFacingRight) ApplyDamageToShield(damage);
+            if (attackOnRight == isFacingRight)
+            {
+                ApplyDamageToShield(damage);
+                AddKnockback(knockbackPower, knockbacktime);
+
+            }
             else Death();
         }
         else Death();

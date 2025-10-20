@@ -219,7 +219,7 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
                 {
                     if (targetCollider.TryGetComponent<PlayerController>(out PlayerController playerScript))
                     {
-                        playerScript.OnAttack(1, 0, transform);
+                        playerScript.OnAttack(1, 0, 0, transform);
                     }
                     else
                     {
@@ -237,7 +237,7 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
         {
             if (other.TryGetComponent<PlayerController>(out PlayerController playerScript))
             {
-                playerScript.OnAttack(1, 0, transform);
+                playerScript.OnAttack(1, 0, 0, transform);
             }
             else
             {
