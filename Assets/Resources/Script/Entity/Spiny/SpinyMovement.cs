@@ -278,6 +278,7 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
     public void OnAttack(Transform attackerTransform)
     {
         if (isAttacking || isDead) return;
+        isDead = true;
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;
