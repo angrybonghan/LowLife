@@ -2379,7 +2379,7 @@ MonoBehaviour:
   moveSpeed: 5
   moveRadius: 2.09
   rotationTime: 0.5
-  attackChargeTime: 3
+  attackChargeTime: 1
   attackDuration: 2
   attackOutTime: 0.5
   attackCooldown: 3

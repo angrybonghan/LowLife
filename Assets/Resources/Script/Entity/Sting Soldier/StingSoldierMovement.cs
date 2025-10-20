@@ -300,12 +300,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     void Attack()
     {
         float offsetX = hitboxOffset.x;
-
-        if (!isFacingRight)
-        {
-            offsetX *= -1;
-        }
-
+        if (!isFacingRight) offsetX *= -1;
         Vector2 localAdjustedOffset = new Vector2(offsetX, hitboxOffset.y);
         Vector2 worldCenter = (Vector2)transform.position + localAdjustedOffset;
 
@@ -341,17 +336,38 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     {
         Gizmos.color = Color.red;
 
-        Vector2 gizmoCenter = (Vector2)transform.position + hitboxOffset;
+        float offsetX = hitboxOffset.x;
+        if (!isFacingRight) offsetX *= -1;
+        Vector2 localAdjustedOffset = new Vector2(offsetX, hitboxOffset.y);
+        Vector2 gizmoCenter = (Vector2)transform.position + localAdjustedOffset;
+
         Gizmos.DrawWireCube(gizmoCenter, new Vector3(hitboxSize.x, hitboxSize.y, 0f));
 
-        Gizmos.DrawWireSphere(idleStartPos, detectionRange);
-
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
+        if (Application.isPlaying)
+        {
+            if (currentState == state.idle)
+            {
+                Gizmos.DrawWireSphere(idleStartPos, detectionRange);
+
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(idleStartPos, moveRange);
+            }
+            else
+            {
+                Gizmos.DrawWireSphere(transform.position, detectionRange);
+            }
+            
+        }
+        else
+        {
+            Gizmos.DrawWireSphere(transform.position, detectionRange);
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, moveRange);
+        }
 
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, moveRange);
     }
 
     
