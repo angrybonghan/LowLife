@@ -1060,6 +1060,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void OnAttack(float damage, float knockbackPower, float knockbacktime, Transform attackerPos)
     {
+        if (isDashing) return;
+
         if (isShielding)
         {
             float myX = transform.position.x;
