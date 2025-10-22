@@ -95,7 +95,8 @@ public class PlayerController : MonoBehaviour
     private float coyoteTime = 0;            // 현재 코요테타임 잔여 시간
     private float timeSinceLastJump = 0;     // 마지막 점프로부터 지난 시간
 
-    private bool isGrounded = false;        // 땅에 닿았는가?
+    private bool isGrounded = false;        // 땅에 닿았는가? (코요테 타임 도중에도 true)
+    private bool isCoyote = false;          // 코요테 타임 중인지
     private bool isFalling = false;         // 떨어지고 있는가? (상승 중이라면 false)
 
     // =========================================================================
@@ -206,9 +207,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        UpdateStates(); // 상태 업데이트
+        UpdateStates(); // 상태 업데이트 (코요테 포함)
         PlayerControlDisableHandler();  // 조작 중단 시간 계산
-        CoyoteTimeHandler(); // 코요테 타임 시간 계산
 
         if (!isStunned)
         {
@@ -472,7 +472,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             anim.SetTrigger("trigger_jump");
-            coyoteTime = coyoteTimeDuration;
+            SetCoyote(0);
             timeSinceLastJump = 0;
         }
     }
@@ -709,6 +709,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void SetCoyote(float duration)
+    {
+        if (duration <= 0) isCoyote = false;
+        else
+        {
+            isCoyote = true;
+            coyoteTime = duration;
+        }
+    }
+
     void UpdateStates()
     {
         // 움직이는지 확인
@@ -721,20 +731,12 @@ public class PlayerController : MonoBehaviour
             isRunning = true;
         }
 
-        // 하강 중인지 (가속 y가 0 이하라면 하강)
+        // 하강 중인지 (가속 y가 0 미만이라면 하강)
         isFalling = (rb.velocity.y < 0);
 
 
         // 지상인지 확인
-        bool isGroundedLeftFoot = Physics2D.OverlapCircle(groundCheckLeft.position, layerCheckRadius, groundLayer);
-        bool isGroundedCenterFoot = Physics2D.OverlapCircle(groundCheckCenter.position, layerCheckRadius, groundLayer);
-        bool isGroundedRightFoot = Physics2D.OverlapCircle(groundCheckRight.position, layerCheckRadius, groundLayer);
-
-        if (isGroundedLeftFoot || isGroundedCenterFoot || isGroundedRightFoot)
-        {
-            coyoteTime = 0;
-            isGrounded = true;
-        }
+        isGrounded = CheckisGrounded();
 
         // 탈 수 있는 벽에 붙어있는지 확인
         bool isClimbableWallDetectedTop = Physics2D.OverlapCircle(wallCheckTop.position, layerCheckRadius, wallLayer);
@@ -747,16 +749,25 @@ public class PlayerController : MonoBehaviour
         isTouchingAnyWall = isWallDetectedTop || isWallDetectedBottom || isTouchingClimbableWall;
     }
 
-    void CoyoteTimeHandler()
+    bool CheckisGrounded()
     {
-        if (!isGrounded) return;
+        bool isGroundedLeftFoot = Physics2D.OverlapCircle(groundCheckLeft.position, layerCheckRadius, groundLayer);
+        bool isGroundedCenterFoot = Physics2D.OverlapCircle(groundCheckCenter.position, layerCheckRadius, groundLayer);
+        bool isGroundedRightFoot = Physics2D.OverlapCircle(groundCheckRight.position, layerCheckRadius, groundLayer);
 
-        coyoteTime += Time.deltaTime;
+        bool isRealGrounded = isGroundedLeftFoot || isGroundedCenterFoot || isGroundedRightFoot;
 
-        if (coyoteTime >= coyoteTimeDuration)
+        if (isRealGrounded)
         {
-            isGrounded = false;
+            SetCoyote(0.1f);
         }
+        else if (isCoyote)
+        {
+            coyoteTime -= Time.deltaTime;
+            if (coyoteTime <= 0) isCoyote = false;
+        }
+
+        return isCoyote || isRealGrounded;
     }
 
     void AttackHandler()
