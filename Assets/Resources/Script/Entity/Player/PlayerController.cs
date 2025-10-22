@@ -277,7 +277,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public bool IsSingleInput()
+    bool IsSingleInput()
     {
         bool notBothKeys = !(Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D));
         bool atLeastOneKey = (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D));
