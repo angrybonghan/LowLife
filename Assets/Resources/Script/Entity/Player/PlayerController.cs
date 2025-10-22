@@ -77,6 +77,7 @@ public class PlayerController : MonoBehaviour
     private float normalizedSpeed = 0;       // 정규화된 속도 (0~1)
     private float knockbackPower = 0;       // 넉백의 밀림 정도
     private float currentKnockbacktime = 0; // 넉백의 길이 (시간)
+    private float knockbackDirection = 1;   // 넉백 방향
 
     private bool isFacingRight = true;      // 오른쪽을 바라보고 있는가? (방향 전환)
     private bool isRunning = false;         // 움직이는 중인가?
@@ -269,7 +270,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        if (hasKnockback)
+        if (hasKnockback)   // 넉백 움직임
         {
             KnockbackHandler();
             return;
@@ -1028,10 +1029,9 @@ public class PlayerController : MonoBehaviour
 
     void KnockbackHandler()
     {
-        float sign = isFacingRight ? -1 : 1;
         float knockbackLevel = 3f;
 
-        rb.velocity = new Vector2(sign * knockbackPower * knockbackLevel, rb.velocity.y);
+        rb.velocity = new Vector2(knockbackDirection * knockbackPower * knockbackLevel, rb.velocity.y);
         currentKnockbacktime -= Time.deltaTime;
         if (currentKnockbacktime <= 0)
         {
@@ -1041,10 +1041,16 @@ public class PlayerController : MonoBehaviour
 
     void AddKnockback(float power, float time)
     {
-        if (time >= 0) hasKnockback = true;
-        else StopKnockback();
+        if (time < 0)
+        {
+            StopKnockback();
+            return;
+        }
+
+        hasKnockback = true;
         knockbackPower = power;
         currentKnockbacktime = time;
+        knockbackDirection = isFacingRight ? -1 : 1;
     }
 
     void StopKnockback()
@@ -1052,11 +1058,12 @@ public class PlayerController : MonoBehaviour
         hasKnockback = false;
         knockbackPower = 0;
         currentKnockbacktime = 0;
+        knockbackDirection = 0;
     }
 
 
     /// <summary>
-    /// 인수 : 방패 대미지 - 넉백 정도 - 공격자 위치
+    /// 인수 : 방패 대미지 - 넉백 정도 - 넉백 시간 - 공격자 위치
     /// </summary>
     public void OnAttack(float damage, float knockbackPower, float knockbacktime, Transform attackerPos)
     {
@@ -1072,7 +1079,6 @@ public class PlayerController : MonoBehaviour
             {
                 ApplyDamageToShield(damage);
                 AddKnockback(knockbackPower, knockbacktime);
-
             }
             else Death();
         }
@@ -1083,6 +1089,11 @@ public class PlayerController : MonoBehaviour
     {
         shieldGauge -= damage;
         shieldGauge = Mathf.Clamp01(shieldGauge);
+
+        if (shieldGauge == 0)
+        {
+
+        }
     }
 
     void DepleteShieldGauge(float damage)
