@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 10;    // 점프 힘
     public float quickTrunDuration = 0.3f;    // 퀵턴 최대 길이
     public float shieldSpeed​Multiplier = 1;   // 방패로 인한 감속도 배율
-    [Header("대쉬")]
 
+    [Header("대쉬")]
     public float dashDuration = 0.25f;  // 대쉬 유지 시간
     public float dashSpeedMultiplier = 1.4f;   // 현재 속도에서 배수로 가속할 대쉬 속도
     public float dashCooldown = 0.5f;  // 대쉬 재사용 대기시간
@@ -30,6 +30,10 @@ public class PlayerController : MonoBehaviour
     public GameObject shieldGaugeUI;    // 방패 게이지 UI 게임오브젝트
     public float defaultShieldUIFadeDelay = 1f;
 
+    [Header("기절")]
+    public float stunDuration = 0.5f;
+    public float stunRecoveryTime = 0.2f;
+    public float stunImpactStrength = 0.35f;
 
     [Header("지상 감지 위치")]    // Transform 3개 중 하나라도 groundLayer에 닿았으면 땅인 것으로 봄
     public Transform groundCheckLeft;
@@ -69,7 +73,7 @@ public class PlayerController : MonoBehaviour
 
 
     // =========================================================================
-    // 1. 이동 및 방향 상태 (Movement & Direction)
+    // 이동 및 방향 상태 (Movement & Direction)
     // =========================================================================
     private float moveInput = 0;             // 현재 방향 입력 (A: -1, D: 1)
     private float lastMoveInput = 1;         // 마지막으로 누른 방향키
@@ -85,7 +89,7 @@ public class PlayerController : MonoBehaviour
     private bool hasKnockback = false;      // 넉백 값이 있는지
 
     // =========================================================================
-    // 2. 점프 및 공중 상태 (Jump & Air)
+    // 점프 및 공중 상태 (Jump & Air)
     // =========================================================================
     private float coyoteTimeDuration = 0.1f; // 코요테 타임 길이
     private float coyoteTime = 0;            // 현재 코요테타임 잔여 시간
@@ -95,20 +99,19 @@ public class PlayerController : MonoBehaviour
     private bool isFalling = false;         // 떨어지고 있는가? (상승 중이라면 false)
 
     // =========================================================================
-    // 3. 대쉬 상태 (Dash)
+    // 대쉬 상태 (Dash)
     // =========================================================================
     private float dashSpeed;                // 대쉬 속도
     private float dashDirection = 0;        // 대쉬 방향
     private float currentDashDuration = 0;  // 현재 대쉬 진행 시간
     private float currentDashCooldown = 0;  // 대쉬 이후 흐른 시간 (쿨다운 계산용)
     private float dashVerticalVelocity = 0; // 대쉬 수직 속도
-    private float dashFixedYPosition = 0;   // 수평 대쉬 도중 고정될 Y좌표
 
     private bool isDashing = false;         // 대쉬 중인가?
     private bool canDash = false;           // 대쉬 가능한가? (재충전 여부)
 
     // =========================================================================
-    // 4. 벽 관련 상태 (Wall Interaction)
+    // 벽 관련 상태 (Wall Interaction)
     // =========================================================================
     private float currentWallSlidingSpeed = 0; // 현재 월 슬라이딩 속도
     private float WallSlidingSpeed = -0.1f;    // 목표 월 슬라이딩 속도
@@ -119,7 +122,7 @@ public class PlayerController : MonoBehaviour
     private bool isWallSliding = false;         // 월 슬라이딩 도중인가?
 
     // =========================================================================
-    // 5. 공격 및 방패 상태 (Attack & Shield)
+    // 공격 및 방패 상태 (Attack & Shield)
     // =========================================================================
     private float currentShieldEquipTime = 0;  // 현재 방패 든 시간 (쿨다운 계산용)
     private float currentParryDuration = 0;    // 현재 패링 시간 (지속시간 계산용)
@@ -148,7 +151,15 @@ public class PlayerController : MonoBehaviour
     private Coroutine shieldGaugeFadeoutCoroutine;  // 쉴드 게이지 페이드 아웃 코루틴
 
     // =========================================================================
-    // 6. 특수 동작 및 제어 (Special & Control)
+    // 기절 관련 (Stun)
+    // =========================================================================
+
+    private bool isStunned = false; // 기절했는지 여부
+    private Coroutine stunCoroutine;    // 기절 시간 코루틴
+
+
+    // =========================================================================
+    // 특수 동작 및 제어 (Special & Control)
     // =========================================================================
     private float quickTrunTime = 0;         // 현재 퀵턴 길이
     private float quickTurnDirection = 1;    // 퀵 턴의 방향
@@ -159,7 +170,7 @@ public class PlayerController : MonoBehaviour
     private bool isQuickTurning = false;    // 퀵 턴 도중인가?
 
     // =========================================================================
-    // 7. 기타 오브젝트 레퍼런스, 변수
+    // 기타 오브젝트 레퍼런스, 변수
     // =========================================================================
     private GameObject crosshairInstance;     // 조준점 게임오브젝트 레퍼런스
     private float startGravityScale;    // 시작 당시의 중력 값
@@ -198,15 +209,18 @@ public class PlayerController : MonoBehaviour
         UpdateStates(); // 상태 업데이트
         PlayerControlDisableHandler();  // 조작 중단 시간 계산
         CoyoteTimeHandler(); // 코요테 타임 시간 계산
-        MoveInputHandler(); // 조작 키 감지
 
-        AttackHandler(); // 근접 공격 작동, 근접 공격 애니메이션 트리거
-        CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
-        WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
-        JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
-        DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
-        ParryHandler(); // 패링 작동, 애니메이션 트리거
-        ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
+        if (!isStunned)
+        {
+            MoveInputHandler(); // 조작 키 감지
+            AttackHandler(); // 근접 공격 작동, 근접 공격 애니메이션 트리거
+            CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
+            WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
+            JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
+            DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
+            ParryHandler(); // 패링 작동, 애니메이션 트리거
+            ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
+        }
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
 
 
@@ -218,7 +232,10 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleMovement();   // 모든 상태에 대한 움직임
+        if (!isStunned)
+        {
+            HandleMovement();   // 모든 상태에 대한 움직임
+        }
     }
 
     void CheckFlip()
@@ -605,7 +622,6 @@ public class PlayerController : MonoBehaviour
             currentDashCooldown = 0;
             dashSpeed = Mathf.Min(currentMoveSpeed * dashSpeedMultiplier, maxSpeed * dashSpeedMultiplier);  // 최고 속도 제한
             currentMoveSpeed = dashSpeed = Mathf.Max(dashSpeed, maxSpeed * 0.7f);   // 최소 속도 제한
-            dashFixedYPosition = transform.position.y;  // 대쉬가 시작된 Y좌표 저장
 
             dashVerticalVelocity = rb.velocity.y;
             if (Mathf.Abs(dashVerticalVelocity) < 4)    // 일정한 수직 가속이 없다면 수평 대쉬로 강제함
@@ -1090,10 +1106,34 @@ public class PlayerController : MonoBehaviour
         shieldGauge -= damage;
         shieldGauge = Mathf.Clamp01(shieldGauge);
 
-        if (shieldGauge == 0)
-        {
+        if (shieldGauge == 0) Stun();
+    }
 
-        }
+    void Stun()
+    {
+        isStunned = true;
+        isShielding = false;
+
+        float sign = isFacingRight ? -1 : 1;
+        rb.velocity = new Vector3(stunImpactStrength * sign, stunImpactStrength, 0f);
+
+        anim.SetTrigger("trigger_flyAway_start");
+
+        if (stunCoroutine != null) StopCoroutine(stunCoroutine);
+        stunCoroutine = StartCoroutine(StunCoroutine());
+    }
+
+    IEnumerator StunCoroutine()
+    {
+        yield return new WaitUntil( () => !isGrounded );
+        yield return new WaitUntil( () => isGrounded );
+        rb.velocity = Vector3.zero;
+        yield return new WaitForSeconds(stunDuration);
+        anim.SetTrigger("trigger_flyAway_end");
+        yield return new WaitForSeconds(stunRecoveryTime);
+
+        stunCoroutine = null;
+        isStunned = false;
     }
 
     void DepleteShieldGauge(float damage)
