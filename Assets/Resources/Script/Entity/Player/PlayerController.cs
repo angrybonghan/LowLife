@@ -213,7 +213,7 @@ public class PlayerController : MonoBehaviour
         if (!isStunned)
         {
             MoveInputHandler(); // 조작 키 감지
-            AttackHandler(); // 근접 공격 작동, 근접 공격 애니메이션 트리거
+            AttackHandler(); // 방패 투척, 방패 도약 작동, 애니메이션 트리거
             CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
             WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
             JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
@@ -722,14 +722,7 @@ public class PlayerController : MonoBehaviour
     void UpdateStates()
     {
         // 움직이는지 확인
-        if (currentMoveSpeed <= 0)
-        {
-            isRunning = false;
-        }
-        else
-        {
-            isRunning = true;
-        }
+        isRunning = currentMoveSpeed > 0;
 
         // 하강 중인지 (가속 y가 0 미만이라면 하강)
         isFalling = (rb.velocity.y < 0);
