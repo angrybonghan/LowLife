@@ -7,41 +7,41 @@ public class CrosshairController : MonoBehaviour
     public float maxMovementRange = 5f;
     public float currentZ = 0;
 
-    private Transform cameraPosition;
-    private Vector2 finalCameraPosition;
+    private Transform anchorPosition;
+    private Vector3 offset;
 
     void Start()
     {
-        GameObject mainCameraObject = GameObject.FindWithTag("MainCamera");
-        this.transform.SetParent(mainCameraObject.transform);
-
-        cameraPosition = mainCameraObject.transform;
+        GameObject anchorObject = GameObject.FindWithTag("Player");
+        anchorPosition = anchorObject.transform;
     }
 
-    void Update()
+    private void Update()
     {
-        if (Cursor.lockState == CursorLockMode.Locked)
+        if (Cursor.lockState != CursorLockMode.Locked) return;
+
+        Vector3 currentAnchorPosition = anchorPosition.position;
+
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+        Vector3 newoffset = offset;
+        newoffset.x += mouseX;
+        newoffset.y += mouseY;
+
+        Vector3 finalCrosshairPos = currentAnchorPosition + newoffset;
+
+        float distance = Vector3.Distance(currentAnchorPosition, finalCrosshairPos);
+
+        if (distance > maxMovementRange)
         {
-            finalCameraPosition = new Vector3(cameraPosition.position.x, cameraPosition.position.y, currentZ);
-
-            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-
-            Vector3 newPosition = transform.position;
-            newPosition.x += mouseX;
-            newPosition.y += mouseY;
-
-            float distance = Vector3.Distance(finalCameraPosition, newPosition);
-
-            if (distance > maxMovementRange)
-            {
-                Vector2 direction = (newPosition - (Vector3)finalCameraPosition).normalized;
-                newPosition = finalCameraPosition + direction * maxMovementRange;
-            }
-
-            newPosition.z = currentZ;
-
-            transform.position = newPosition;
+            Vector3 direction = (finalCrosshairPos - currentAnchorPosition).normalized;
+            finalCrosshairPos = currentAnchorPosition + direction * maxMovementRange;
         }
+
+        finalCrosshairPos.z = currentZ;
+        offset = finalCrosshairPos - currentAnchorPosition;
+
+        transform.position = finalCrosshairPos;
     }
 }
