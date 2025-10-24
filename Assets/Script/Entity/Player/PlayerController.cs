@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public float maxSpeed = 12; // 최고 속도
     public float jumpForce = 10;    // 점프 힘
     public float quickTrunDuration = 0.3f;    // 퀵턴 최대 길이
-    public float shieldSpeed​Multiplier = 1;   // 방패로 인한 감속도 배율
+    public float shieldSpeed​Multiplier = 0.35f;   // 방패로 인한 감속도 배율
 
     [Header("대쉬")]
     public float dashDuration = 0.25f;  // 대쉬 유지 시간
@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     public GameObject dashEffect;   // 대쉬 잔상 이펙트 프리팹
 
     [Header("방패")]
-    public float shieldEquipDuration = 0.35f;   // 방패를 꺼내는 시간
+    public float shieldEquipDuration = 0.2f;   // 방패를 꺼내는 시간
     public float parryDuration = 0.4f;  // 방패로 튕겨내는 시간
     
     [Header("방패 게이지")]
@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     [Header("기절")]
     public float stunDuration = 0.5f;
     public float stunRecoveryTime = 0.2f;
-    public float stunImpactStrength = 0.35f;
+    public float stunImpactStrength = 7.5f;
 
     [Header("지상 감지 위치")]    // Transform 3개 중 하나라도 groundLayer에 닿았으면 땅인 것으로 봄
     public Transform groundCheckLeft;
@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("원거리 공격")]
     public float shieldThrowDuration = 0.25f;   // 방패를 던지는 시간
-    public float shieldThrowInterval = 0.45f;   // 방패를 잡고 다시 던지기까지의 시간
+    public float shieldThrowInterval = 0.25f;   // 방패를 잡고 다시 던지기까지의 시간
     public Transform shieldSummonPos;    // 방패 소환 위치
     public GameObject shieldPrefabs;     // 방패 프리팹
 
