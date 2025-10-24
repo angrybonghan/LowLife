@@ -91,7 +91,6 @@ public class PlayerController : MonoBehaviour
     // =========================================================================
     // 점프 및 공중 상태 (Jump & Air)
     // =========================================================================
-    private float coyoteTimeDuration = 0.1f; // 코요테 타임 길이
     private float coyoteTime = 0;            // 현재 코요테타임 잔여 시간
     private float timeSinceLastJump = 0;     // 마지막 점프로부터 지난 시간
 
