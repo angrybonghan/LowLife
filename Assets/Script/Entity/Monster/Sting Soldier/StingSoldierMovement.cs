@@ -92,7 +92,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
             TrackPos(trackTargetPos);
             LookPos(playerObject.transform.position);
 
-            if (distanceToTargetPos <= attackRange)
+            if (distanceToTargetPos <= attackRange || IsPlayerInRange())
             {
                 SetState(state.attack);
             }
@@ -106,7 +106,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
             Vector2 trackTargetPos = GetOptimalAttackPosition();
             float distanceToTargetPos = Vector3.Distance(transform.position, trackTargetPos);
 
-            if (distanceToTargetPos > attackRange && !isAttacking)
+            if (distanceToTargetPos > attackRange && !isAttacking && !IsPlayerInRange())
             {
                 SetState(state.track);
             }
@@ -331,6 +331,34 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
                 }
             }
         }
+    }
+
+    bool IsPlayerInRange()
+    {
+        float offsetX = hitboxOffset.x;
+        if (!isFacingRight) offsetX *= -1;
+        Vector2 localAdjustedOffset = new Vector2(offsetX, hitboxOffset.y);
+        Vector2 worldCenter = (Vector2)transform.position + localAdjustedOffset;
+
+        Collider2D[] hitTargets = Physics2D.OverlapBoxAll(
+            worldCenter,            // 중심 위치
+            hitboxSize,             // 크기
+            0f,                     // 회전 각도
+            targetLayer             // 감지할 레이어
+        );
+
+        if (hitTargets.Length > 0)
+        {
+            foreach (Collider2D targetCollider in hitTargets)
+            {
+                if (targetCollider.CompareTag("Player"))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void OnDrawGizmosSelected()
