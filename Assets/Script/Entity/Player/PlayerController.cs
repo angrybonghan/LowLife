@@ -221,12 +221,6 @@ public class PlayerController : MonoBehaviour
             ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
         }
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
-
-
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            DepleteShieldGauge(0.1f);
-        }
     }
 
     private void FixedUpdate()
