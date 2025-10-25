@@ -27,8 +27,8 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     public LayerMask targetLayer;   // 감지 레이어
 
     [Header("죽음")]
-    public float deathDuration; // 죽는 시간
-    public float fallingOutPower; // 죽었을 때 날아갈 힘
+    public float deathDuration = 2; // 죽는 시간
+    public float fallingOutPower = 15; // 죽었을 때 날아갈 힘
 
 
     float idleMovingStepDelay = 0.75f;  // Idle 상태에서 이동의 주기
