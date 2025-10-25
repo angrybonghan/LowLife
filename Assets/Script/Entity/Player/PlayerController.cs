@@ -236,26 +236,78 @@ public class PlayerController : MonoBehaviour
             HandleMovement();   // 모든 상태에 대한 움직임
         }
     }
-
-    void CheckFlip()
+    void UpdateStates()
     {
-        if (isControlDisabled || isDashing || isParrying || isThrowingShield) return;
+        // 움직이는지 확인
+        isRunning = currentMoveSpeed > 0;
 
-        if ((moveInput > 0 && !isFacingRight) || (moveInput < 0 && isFacingRight)) Flip();
+        // 하강 중인지 (가속 y가 0 미만이라면 하강)
+        isFalling = (rb.velocity.y < 0);
+
+
+        // 지상인지 확인
+        isGrounded = CheckisGrounded();
+
+        // 탈 수 있는 벽에 붙어있는지 확인
+        bool isClimbableWallDetectedTop = Physics2D.OverlapCircle(wallCheckTop.position, layerCheckRadius, wallLayer);
+        bool isClimbableWallDetectedBottom = Physics2D.OverlapCircle(wallCheckBottom.position, layerCheckRadius, wallLayer);
+        isTouchingClimbableWall = isClimbableWallDetectedTop || isClimbableWallDetectedBottom;
+
+        // 아무 벽에 붙어있는지 확인
+        bool isWallDetectedTop = Physics2D.OverlapCircle(wallCheckTop.position, layerCheckRadius, groundLayer);
+        bool isWallDetectedBottom = Physics2D.OverlapCircle(wallCheckBottom.position, layerCheckRadius, groundLayer);
+        isTouchingAnyWall = isWallDetectedTop || isWallDetectedBottom || isTouchingClimbableWall;
     }
 
-    void Flip()
+    bool CheckisGrounded()
     {
-        isFacingRight = !isFacingRight;
-        transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+        bool isGroundedLeftFoot = Physics2D.OverlapCircle(groundCheckLeft.position, layerCheckRadius, groundLayer);
+        bool isGroundedCenterFoot = Physics2D.OverlapCircle(groundCheckCenter.position, layerCheckRadius, groundLayer);
+        bool isGroundedRightFoot = Physics2D.OverlapCircle(groundCheckRight.position, layerCheckRadius, groundLayer);
 
-        if (normalizedSpeed >= 0.7f && isGrounded && !isQuickTurning && !isAttacking)
+        bool isRealGrounded = isGroundedLeftFoot || isGroundedCenterFoot || isGroundedRightFoot;
+
+        if (isRealGrounded)
         {
-            // 최고 속도 기준 70% 이상의 속도에서 퀵턴이 작동할 수 있음
-            // 비활성화 조건 : 공격 중일 때
-            isQuickTurning = true;
-            quickTrunTime = 0;
-            quickTurnDirection = -moveInput;
+            SetCoyote(0.1f);
+        }
+        else if (isCoyote)
+        {
+            coyoteTime -= Time.deltaTime;
+            if (coyoteTime <= 0) isCoyote = false;
+        }
+
+        return isCoyote || isRealGrounded;
+    }
+
+    void SetCoyote(float duration)
+    {
+        if (duration <= 0) isCoyote = false;
+        else
+        {
+            isCoyote = true;
+            coyoteTime = duration;
+        }
+    }
+
+    void PlayerControlDisableHandler()
+    {
+        if (!isControlDisabled) return;
+
+        if (isTouchingAnyWall && !isWallSliding)
+        {
+            currentMoveSpeed = 0;
+            isControlDisabled = false;
+            return;
+        }
+
+        controlDisableDuration -= Time.deltaTime;
+        if (controlDisableDuration <= 0)
+        {
+            if (hasInput || isGrounded || isWallSliding)
+            {
+                isControlDisabled = false;
+            }
         }
     }
 
@@ -284,195 +336,156 @@ public class PlayerController : MonoBehaviour
         return notBothKeys && atLeastOneKey;
     }
 
-    void HandleMovement()
+    void AttackHandler()
     {
-        if (hasKnockback)   // 넉백 움직임
-        {
-            KnockbackHandler();
-            return;
-        }
+        ThrowCooldownHandler();
 
-        if (isAttacking)    // 공격 감속 (+ 에어브레이크)
-        {
-            AttackingMovement();
-            return;
-        }
-
-        if (isThrowingShield)   // 방패 던지는 도중 가속 방지
-        {
-            ThrowingMovement();
-            return;
-        }
-
-        if (isShielding)    // 방패 도중 움직임
-        {
-            ShieldMovement();
-            return;
-        }
-        
-        // 기본 이동 도중에는 대쉬가 가장 높은 우선순위를 가짐
-        if (isDashing)
-        {
-            DashMovement();
-            return;
-        }
-
-        // 조작 비활성화 상태에서 감속이나 가속하지 않음
-        if (isControlDisabled) return;
-
-        // 월 슬라이딩
-        if (isWallSliding)
-        {
-            WallSlidingMovement();
-            return;
-        }
-
-        // 퀵 턴
-        if (isQuickTurning)
-        {
-            QuickTurnMovement();
-            return;
-        }
-
-        // 모든 특수 이동이 아닐 때, 기본 이동 로직 실행
-        DefaultMovement();
+        ShieldLeapHandler();
+        RangedAttackHandler();
     }
 
-    void QuickTurnMovement()
+    void ThrowCooldownHandler()
     {
-        quickTrunTime += Time.deltaTime;
-        rb.velocity = new Vector2(quickTurnDirection * currentMoveSpeed * (1 - (quickTrunTime / quickTrunDuration)), rb.velocity.y);
-
-        // 퀵 턴 해제 조건
-        // 퀵턴 시간 초과, 퀵턴 도중 방향을 다시 전환, 추락 (땅에서 떨어짐)
-        if (quickTrunTime >= quickTrunDuration)
+        if (!canThrow)
         {
-            isQuickTurning = false;
-            if (!hasInput)   // 입력하지 않으면 정지
+            currentShieldThrowInterval += Time.deltaTime;
+
+            if (currentShieldThrowInterval >= shieldThrowInterval)
             {
-                currentMoveSpeed = 0;
+                canThrow = true;
             }
         }
-        // 방향을 다시 전환하거나 땅에서 떨어지면, 현재 속도를 절반 감소
-        if (quickTurnDirection == moveInput || !isGrounded)
-        {
-            isQuickTurning = false;
-            currentMoveSpeed *= 0.5f;
-        }
-    }
-    void DashMovement()
-    {
-        rb.velocity = new Vector2(dashDirection * dashSpeed, dashVerticalVelocity);
 
-        GameObject newDashEffect = Instantiate(dashEffect, transform.position, quaternion.identity);
-        newDashEffect.transform.localScale = new Vector3(
-            newDashEffect.transform.localScale.x * dashDirection,
-            newDashEffect.transform.localScale.y,
-            newDashEffect.transform.localScale.z);
+        if (isThrowingShield)
+        {
+            currentShieldThrowDuration += Time.deltaTime;
 
-        GradientAfterimagePlayer gradientDashEffect = newDashEffect.GetComponent<GradientAfterimagePlayer>();
-        if (gradientDashEffect != null)
-        {
-            gradientDashEffect.SetColorLevel(currentDashDuration / dashDuration);
-        }
-    }
-
-    void WallSlidingMovement()
-    {
-        if (currentWallSlidingSpeed > WallSlidingSpeed) // 월 슬라이딩 관성 계산
-        {
-            currentWallSlidingSpeed = rb.velocity.y;
-        }
-        else
-        {
-            if (currentWallSlidingSpeed < WallSlidingSpeed)
+            if (isDashing || currentShieldThrowDuration >= shieldThrowDuration)
             {
-                currentWallSlidingSpeed += (Mathf.Abs(currentWallSlidingSpeed) * Time.deltaTime * deceleration) / 2;
-                currentWallSlidingSpeed = Mathf.Min(currentWallSlidingSpeed, WallSlidingSpeed);
+                isThrowingShield = false;
+                rb.gravityScale = startGravityScale;
+
+                if (isFlippedAfterThrowShield)
+                {
+                    transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                }
+                return;
+            }
+        }
+    }
+
+    void ShieldLeapHandler()
+    {
+        if (shieldScript == null) return;
+        if (hasShield || shieldScript.isReturning) return;
+        if (shieldGauge < shieldLeapShieldGaugeDecrease) return;
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            isDashing = false;
+            NoGravityOff();
+
+            GameObject newEffect;
+            if (isGrounded)
+            {
+                newEffect = Instantiate(shieldLeapGroundImpactPrefab);
+            }
+            else if (isWallSliding)
+            {
+                newEffect = Instantiate(shieldLeapWallSlideEffectPrefab);
+            }
+            else
+            {
+                newEffect = Instantiate(shieldLeapAirEffectPrefab);
             }
 
-            rb.velocity = new Vector2(0, currentWallSlidingSpeed);
+            newEffect.transform.position = transform.position;
+            newEffect.transform.localScale = new Vector3(
+                newEffect.transform.localScale.x * lastMoveInput,
+                newEffect.transform.localScale.y,
+                newEffect.transform.localScale.z);
+
+            transform.position = shieldInstance.transform.position;
+            CatchShield();
+            DepleteShieldGauge(shieldLeapShieldGaugeDecrease);
+        }
+    }
+    void RangedAttackHandler()
+    {
+        if (!canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding) return;
+        // 방패 투척 불가능 조건 : 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중
+        if (crosshairInstance == null) return;
+        // 또는 조준점 없음
+
+        if (Input.GetMouseButton(0))
+        {
+            ThrowShield();
         }
     }
 
-    void DefaultMovement()
+    void ThrowShield()
     {
-        if (hasInput)   // 입력에 의한 가속
+        hasShield = false;
+        ShieldSprite.SetActive(false);
+
+        shieldInstance = Instantiate(shieldPrefabs, shieldSummonPos.position, quaternion.identity);
+        shieldScript = shieldInstance.GetComponent<ShieldMovement>();
+
+        Vector2 shootDirection = crosshairInstance.transform.position - transform.position;
+        shieldScript.InitializeThrow(shootDirection, this);
+
+        shieldPitchNormalized = GetNormalizedShieldPitch(shootDirection);
+        anim.SetFloat("float_shieldPitchNormalized", shieldPitchNormalized);
+        anim.SetTrigger("trigger_attack_ranged");
+
+        isThrowingShield = true;
+        currentShieldThrowDuration = 0;
+        attackStartDirection = lastMoveInput;
+
+        isFlippedAfterThrowShield = false;
+
+        bool shouldFlip = (shootDirection.x >= 0 && !isFacingRight) ||
+                  (shootDirection.x < 0 && isFacingRight);
+
+        if (shouldFlip)
         {
-            currentMoveSpeed = Mathf.Min(currentMoveSpeed + acceleration * Time.deltaTime, maxSpeed);
-        }
-        else  // 입력 없으면 감속
-        {
-            currentMoveSpeed = Mathf.Max(currentMoveSpeed - deceleration * Time.deltaTime, 0);
+            if (isRunning)
+            {
+                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+                isFlippedAfterThrowShield = true;
+            }
+            else
+            {
+                lastMoveInput = -lastMoveInput;
+                Flip();
+            }
         }
 
-        if (isTouchingAnyWall)  // 벽과 충돌하면 속도 없어짐
+        if (!isGrounded)
         {
-            currentMoveSpeed = 0;
+            rb.gravityScale = startGravityScale * 0.5f;
         }
-        rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
-
-        normalizedSpeed = currentMoveSpeed / maxSpeed;
     }
 
-    void AttackingMovement()
+    void CheckFlip()
     {
-        currentMoveSpeed = Mathf.Max(currentMoveSpeed - (deceleration * Time.deltaTime * 0.75f), 0);
+        if (isControlDisabled || isDashing || isParrying || isThrowingShield) return;
 
-        rb.velocity = new Vector2(currentMoveSpeed * attackStartDirection, rb.velocity.y);
-
-        normalizedSpeed = currentMoveSpeed / maxSpeed;
+        if ((moveInput > 0 && !isFacingRight) || (moveInput < 0 && isFacingRight)) Flip();
     }
 
-    void ThrowingMovement()
+    void Flip()
     {
-        if (moveInput != attackStartDirection)   // 방향과 다른 키거나 키가 없으면 감속 (원래의 0.2 배로 감속함)
+        isFacingRight = !isFacingRight;
+        transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+
+        if (normalizedSpeed >= 0.7f && isGrounded && !isQuickTurning && !isAttacking)
         {
-            currentMoveSpeed = Mathf.Max(currentMoveSpeed - (deceleration * Time.deltaTime * 0.2f), 0);
-        }
-
-        if (isTouchingAnyWall)  // 벽과 충돌하면 속도 없어짐
-        {
-            currentMoveSpeed = 0;
-        }
-        rb.velocity = new Vector2(attackStartDirection * currentMoveSpeed, rb.velocity.y);
-
-        normalizedSpeed = currentMoveSpeed / maxSpeed;
-    }
-
-    void ShieldMovement()
-    {
-        if (hasInput && !isEquippingShield)
-        {
-            currentMoveSpeed = maxSpeed * shieldSpeedMultiplier;
-        }
-        else
-        {
-            currentMoveSpeed = 0;
-        }
-
-        if (isTouchingAnyWall || isParrying)  // 벽과 충돌하거나 패링하면 멈춤
-        {
-            currentMoveSpeed = 0;
-        }
-
-        rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
-
-        normalizedSpeed = currentMoveSpeed / maxSpeed;
-    }
-
-    void JumpHandler()
-    {
-        timeSinceLastJump += Time.deltaTime;
-
-        if (!isGrounded || isDashing) return;
-
-        if (Input.GetKey(KeyCode.Space))
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            anim.SetTrigger("trigger_jump");
-            SetCoyote(0);
-            timeSinceLastJump = 0;
+            // 최고 속도 기준 70% 이상의 속도에서 퀵턴이 작동할 수 있음
+            // 비활성화 조건 : 공격 중일 때
+            isQuickTurning = true;
+            quickTrunTime = 0;
+            quickTurnDirection = -moveInput;
         }
     }
 
@@ -533,31 +546,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void PlayerControlDisableHandler()
+    void JumpHandler()
     {
-        if (!isControlDisabled) return;
+        timeSinceLastJump += Time.deltaTime;
 
-        if (isTouchingAnyWall && !isWallSliding)
+        if (!isGrounded || isDashing) return;
+
+        if (Input.GetKey(KeyCode.Space))
         {
-            currentMoveSpeed = 0;
-            isControlDisabled = false;
-            return;
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            anim.SetTrigger("trigger_jump");
+            SetCoyote(0);
+            timeSinceLastJump = 0;
         }
-
-        controlDisableDuration -= Time.deltaTime;
-        if (controlDisableDuration <= 0)
-        {
-            if (hasInput || isGrounded || isWallSliding)
-            {
-                isControlDisabled = false;
-            }
-        }
-    }
-
-    void SetPlayerControlDisableDuration(float time)
-    {
-        isControlDisabled = true;
-        controlDisableDuration = time;
     }
 
     void DashHandler()
@@ -572,7 +573,7 @@ public class PlayerController : MonoBehaviour
 
             if (isGrounded)
             {
-                canDash=true;
+                canDash = true;
             }
         }
 
@@ -632,14 +633,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void NoGravityOn()
+    void ParryHandler()
     {
-        rb.gravityScale = 0;
-    }
+        if (isParrying)
+        {
+            currentParryDuration += Time.deltaTime;
+            if (currentParryDuration >= parryDuration)
+            {
+                isParrying = false;
+                isShielding = false;
+            }
+        }
+        else
+        {
+            if (!isShielding || isEquippingShield) return;
 
-    void NoGravityOff()
-    {
-        rb.gravityScale = startGravityScale;
+            if (Input.GetMouseButtonDown(0))
+            {
+                isParrying = true;
+                currentParryDuration = 0;
+                anim.SetTrigger("trigger_parry");
+            }
+        }
     }
 
     void ShieldHandler()
@@ -684,178 +699,184 @@ public class PlayerController : MonoBehaviour
         ShieldGaugeHandler();
     }
 
-    void ParryHandler()
+    void UpdateAnimation()
     {
-        if (isParrying)
+        anim.SetBool("bool_isRunning", isRunning);
+        anim.SetBool("bool_isFalling", isFalling);
+        anim.SetBool("bool_isGrounded", isGrounded);
+        anim.SetBool("bool_isQuickTurning", isQuickTurning);
+        anim.SetBool("bool_isWallSliding", isWallSliding);
+        anim.SetBool("bool_isDashing", isDashing);
+        anim.SetBool("bool_isShielding", isShielding);
+
+        anim.SetFloat("float_moveSpeed", normalizedSpeed);
+    }
+
+    void HandleMovement()
+    {
+        if (hasKnockback) KnockbackHandler();
+        else if (isAttacking) AttackingMovement();
+        else if (isThrowingShield) ThrowingMovement();
+        else if (isShielding) ShieldMovement();
+        else if (isDashing) DashMovement();
+        else if (isControlDisabled) return;
+        else if (isWallSliding) WallSlidingMovement();
+        else if (isQuickTurning) QuickTurnMovement();
+        else DefaultMovement();
+    }
+
+    void KnockbackHandler()
+    {
+        float knockbackLevel = 3f;
+
+        rb.velocity = new Vector2(knockbackDirection * knockbackPower * knockbackLevel, rb.velocity.y);
+        currentKnockbacktime -= Time.deltaTime;
+        if (currentKnockbacktime <= 0)
         {
-            currentParryDuration += Time.deltaTime;
-            if (currentParryDuration >= parryDuration)
-            {
-                isParrying = false;
-                isShielding = false;
-            }
+            StopKnockback();
+        }
+    }
+
+    void AttackingMovement()
+    {
+        currentMoveSpeed = Mathf.Max(currentMoveSpeed - (deceleration * Time.deltaTime * 0.75f), 0);
+
+        rb.velocity = new Vector2(currentMoveSpeed * attackStartDirection, rb.velocity.y);
+
+        normalizedSpeed = currentMoveSpeed / maxSpeed;
+    }
+
+    void ThrowingMovement()
+    {
+        if (moveInput != attackStartDirection)   // 방향과 다른 키거나 키가 없으면 감속 (원래의 0.2 배로 감속함)
+        {
+            currentMoveSpeed = Mathf.Max(currentMoveSpeed - (deceleration * Time.deltaTime * 0.2f), 0);
+        }
+
+        if (isTouchingAnyWall)  // 벽과 충돌하면 속도 없어짐
+        {
+            currentMoveSpeed = 0;
+        }
+        rb.velocity = new Vector2(attackStartDirection * currentMoveSpeed, rb.velocity.y);
+
+        normalizedSpeed = currentMoveSpeed / maxSpeed;
+    }
+
+    void ShieldMovement()
+    {
+        if (hasInput && !isEquippingShield)
+        {
+            currentMoveSpeed = maxSpeed * shieldSpeedMultiplier;
         }
         else
         {
-            if (!isShielding || isEquippingShield) return;
+            currentMoveSpeed = 0;
+        }
 
-            if (Input.GetMouseButtonDown(0))
-            {
-                isParrying = true;
-                currentParryDuration = 0;
-                anim.SetTrigger("trigger_parry");
-            }
+        if (isTouchingAnyWall || isParrying)  // 벽과 충돌하거나 패링하면 멈춤
+        {
+            currentMoveSpeed = 0;
+        }
+
+        rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
+
+        normalizedSpeed = currentMoveSpeed / maxSpeed;
+    }
+
+    void DashMovement()
+    {
+        rb.velocity = new Vector2(dashDirection * dashSpeed, dashVerticalVelocity);
+
+        GameObject newDashEffect = Instantiate(dashEffect, transform.position, quaternion.identity);
+        newDashEffect.transform.localScale = new Vector3(
+            newDashEffect.transform.localScale.x * dashDirection,
+            newDashEffect.transform.localScale.y,
+            newDashEffect.transform.localScale.z);
+
+        GradientAfterimagePlayer gradientDashEffect = newDashEffect.GetComponent<GradientAfterimagePlayer>();
+        if (gradientDashEffect != null)
+        {
+            gradientDashEffect.SetColorLevel(currentDashDuration / dashDuration);
         }
     }
 
-    void SetCoyote(float duration)
+    void WallSlidingMovement()
     {
-        if (duration <= 0) isCoyote = false;
+        if (currentWallSlidingSpeed > WallSlidingSpeed) // 월 슬라이딩 관성 계산
+        {
+            currentWallSlidingSpeed = rb.velocity.y;
+        }
         else
         {
-            isCoyote = true;
-            coyoteTime = duration;
-        }
-    }
-
-    void UpdateStates()
-    {
-        // 움직이는지 확인
-        isRunning = currentMoveSpeed > 0;
-
-        // 하강 중인지 (가속 y가 0 미만이라면 하강)
-        isFalling = (rb.velocity.y < 0);
-
-
-        // 지상인지 확인
-        isGrounded = CheckisGrounded();
-
-        // 탈 수 있는 벽에 붙어있는지 확인
-        bool isClimbableWallDetectedTop = Physics2D.OverlapCircle(wallCheckTop.position, layerCheckRadius, wallLayer);
-        bool isClimbableWallDetectedBottom = Physics2D.OverlapCircle(wallCheckBottom.position, layerCheckRadius, wallLayer);
-        isTouchingClimbableWall = isClimbableWallDetectedTop || isClimbableWallDetectedBottom;
-
-        // 아무 벽에 붙어있는지 확인
-        bool isWallDetectedTop = Physics2D.OverlapCircle(wallCheckTop.position, layerCheckRadius, groundLayer);
-        bool isWallDetectedBottom = Physics2D.OverlapCircle(wallCheckBottom.position, layerCheckRadius, groundLayer);
-        isTouchingAnyWall = isWallDetectedTop || isWallDetectedBottom || isTouchingClimbableWall;
-    }
-
-    bool CheckisGrounded()
-    {
-        bool isGroundedLeftFoot = Physics2D.OverlapCircle(groundCheckLeft.position, layerCheckRadius, groundLayer);
-        bool isGroundedCenterFoot = Physics2D.OverlapCircle(groundCheckCenter.position, layerCheckRadius, groundLayer);
-        bool isGroundedRightFoot = Physics2D.OverlapCircle(groundCheckRight.position, layerCheckRadius, groundLayer);
-
-        bool isRealGrounded = isGroundedLeftFoot || isGroundedCenterFoot || isGroundedRightFoot;
-
-        if (isRealGrounded)
-        {
-            SetCoyote(0.1f);
-        }
-        else if (isCoyote)
-        {
-            coyoteTime -= Time.deltaTime;
-            if (coyoteTime <= 0) isCoyote = false;
-        }
-
-        return isCoyote || isRealGrounded;
-    }
-
-    void AttackHandler()
-    {
-        ThrowCooldownHandler();
-
-        ShieldLeapHandler();
-        RangedAttackHandler();
-    }
-
-
-    void ThrowCooldownHandler()
-    {
-        if (!canThrow)
-        {
-            currentShieldThrowInterval += Time.deltaTime;
-
-            if (currentShieldThrowInterval >= shieldThrowInterval)
+            if (currentWallSlidingSpeed < WallSlidingSpeed)
             {
-                canThrow = true;
+                currentWallSlidingSpeed += (Mathf.Abs(currentWallSlidingSpeed) * Time.deltaTime * deceleration) / 2;
+                currentWallSlidingSpeed = Mathf.Min(currentWallSlidingSpeed, WallSlidingSpeed);
+            }
+
+            rb.velocity = new Vector2(0, currentWallSlidingSpeed);
+        }
+    }
+
+    void QuickTurnMovement()
+    {
+        quickTrunTime += Time.deltaTime;
+        rb.velocity = new Vector2(quickTurnDirection * currentMoveSpeed * (1 - (quickTrunTime / quickTrunDuration)), rb.velocity.y);
+
+        // 퀵 턴 해제 조건
+        // 퀵턴 시간 초과, 퀵턴 도중 방향을 다시 전환, 추락 (땅에서 떨어짐)
+        if (quickTrunTime >= quickTrunDuration)
+        {
+            isQuickTurning = false;
+            if (!hasInput)   // 입력하지 않으면 정지
+            {
+                currentMoveSpeed = 0;
             }
         }
-
-        if (isThrowingShield)
+        // 방향을 다시 전환하거나 땅에서 떨어지면, 현재 속도를 절반 감소
+        if (quickTurnDirection == moveInput || !isGrounded)
         {
-            currentShieldThrowDuration += Time.deltaTime;
-
-            if (isDashing || currentShieldThrowDuration >= shieldThrowDuration)
-            {
-                isThrowingShield = false;
-                rb.gravityScale = startGravityScale;
-
-                if (isFlippedAfterThrowShield)
-                {
-                    transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-                }
-                return;
-            }
+            isQuickTurning = false;
+            currentMoveSpeed *= 0.5f;
         }
     }
-    void RangedAttackHandler()
+
+    void DefaultMovement()
     {
-        if (!canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding) return;
-        // 방패 투척 불가능 조건 : 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중
-        if (crosshairInstance == null) return;
-        // 또는 조준점 없음
-
-        if (Input.GetMouseButton(0))
+        if (hasInput)   // 입력에 의한 가속
         {
-            ThrowShield();
+            currentMoveSpeed = Mathf.Min(currentMoveSpeed + acceleration * Time.deltaTime, maxSpeed);
         }
+        else  // 입력 없으면 감속
+        {
+            currentMoveSpeed = Mathf.Max(currentMoveSpeed - deceleration * Time.deltaTime, 0);
+        }
+
+        if (isTouchingAnyWall)  // 벽과 충돌하면 속도 없어짐
+        {
+            currentMoveSpeed = 0;
+        }
+        rb.velocity = new Vector2(lastMoveInput * currentMoveSpeed, rb.velocity.y);
+
+        normalizedSpeed = currentMoveSpeed / maxSpeed;
     }
 
-    void ThrowShield()
+    void SetPlayerControlDisableDuration(float time)
     {
-        hasShield = false;
-        ShieldSprite.SetActive(false);
-
-        shieldInstance = Instantiate(shieldPrefabs, shieldSummonPos.position, quaternion.identity);
-        shieldScript = shieldInstance.GetComponent<ShieldMovement>();
-
-        Vector2 shootDirection = crosshairInstance.transform.position - transform.position;
-        shieldScript.InitializeThrow(shootDirection, this);
-
-        shieldPitchNormalized = GetNormalizedShieldPitch(shootDirection);
-        anim.SetFloat("float_shieldPitchNormalized", shieldPitchNormalized);
-        anim.SetTrigger("trigger_attack_ranged");
-
-        isThrowingShield = true;
-        currentShieldThrowDuration = 0;
-        attackStartDirection = lastMoveInput;
-
-        isFlippedAfterThrowShield = false;
-
-        bool shouldFlip = (shootDirection.x >= 0 && !isFacingRight) ||
-                  (shootDirection.x < 0 && isFacingRight);
-
-        if (shouldFlip)
-        {
-            if (isRunning)
-            {
-                transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-                isFlippedAfterThrowShield = true;
-            }
-            else
-            {
-                lastMoveInput = -lastMoveInput;
-                Flip();
-            }
-        }
-
-        if (!isGrounded)
-        {
-            rb.gravityScale = startGravityScale * 0.5f;
-        }
+        isControlDisabled = true;
+        controlDisableDuration = time;
     }
+
+    void NoGravityOn()
+    {
+        rb.gravityScale = 0;
+    }
+
+    void NoGravityOff()
+    {
+        rb.gravityScale = startGravityScale;
+    }
+
 
     public void AimOn()
     {
@@ -893,56 +914,6 @@ public class PlayerController : MonoBehaviour
 
         canThrow = false;
         currentShieldThrowInterval = 0;
-    }
-
-    void ShieldLeapHandler()
-    {
-        if (shieldScript == null) return;
-        if (hasShield || shieldScript.isReturning) return;
-        if (shieldGauge < shieldLeapShieldGaugeDecrease) return;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            isDashing = false;
-            NoGravityOff();
-
-            GameObject newEffect;
-            if (isGrounded)
-            {
-                newEffect = Instantiate(shieldLeapGroundImpactPrefab);
-            }
-            else if (isWallSliding)
-            {
-                newEffect = Instantiate(shieldLeapWallSlideEffectPrefab);
-            }
-            else
-            {
-                newEffect = Instantiate(shieldLeapAirEffectPrefab);
-            }
-
-            newEffect.transform.position = transform.position;
-            newEffect.transform.localScale = new Vector3(
-                newEffect.transform.localScale.x * lastMoveInput,
-                newEffect.transform.localScale.y,
-                newEffect.transform.localScale.z);
-
-            transform.position = shieldInstance.transform.position;
-            CatchShield();
-            DepleteShieldGauge(shieldLeapShieldGaugeDecrease);
-        }
-    }
-
-    void UpdateAnimation()
-    {
-        anim.SetBool("bool_isRunning", isRunning);
-        anim.SetBool("bool_isFalling", isFalling);
-        anim.SetBool("bool_isGrounded", isGrounded);
-        anim.SetBool("bool_isQuickTurning", isQuickTurning);
-        anim.SetBool("bool_isWallSliding", isWallSliding);
-        anim.SetBool("bool_isDashing", isDashing);
-        anim.SetBool("bool_isShielding", isShielding);
-
-        anim.SetFloat("float_moveSpeed", normalizedSpeed);
     }
 
     void OnDrawGizmosSelected()
@@ -1043,18 +1014,6 @@ public class PlayerController : MonoBehaviour
             shieldGaugeFadeoutCoroutine = null;
 
             isShieldGaugeFadingOut = false;
-        }
-    }
-
-    void KnockbackHandler()
-    {
-        float knockbackLevel = 3f;
-
-        rb.velocity = new Vector2(knockbackDirection * knockbackPower * knockbackLevel, rb.velocity.y);
-        currentKnockbacktime -= Time.deltaTime;
-        if (currentKnockbacktime <= 0)
-        {
-            StopKnockback();
         }
     }
 

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
+[RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(BoxCollider2D))]
 public class StingSoldierMovement : MonoBehaviour, I_Attackable
 {
     [Header("¿òÁ÷ÀÓ")]
@@ -49,11 +49,12 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
 
     private Rigidbody2D rb;
     private Animator anim;
-
+    private BoxCollider2D boxCol;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        boxCol = GetComponent<BoxCollider2D>();
     }
 
 
@@ -399,6 +400,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         float timer = 0f;
         Vector3 initialScale = transform.localScale;
         Vector3 targetScale = Vector3.zero;
+        boxCol.isTrigger = false;
 
         while (timer < deathDuration)
         {
