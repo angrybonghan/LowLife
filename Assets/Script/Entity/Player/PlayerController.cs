@@ -441,7 +441,7 @@ public class PlayerController : MonoBehaviour
         bool shouldFlip = (shootDirection.x >= 0 && !isFacingRight) ||
                   (shootDirection.x < 0 && isFacingRight);
 
-        if (shouldFlip)
+        if (shouldFlip && controlDisableDuration <= 0)
         {
             if (isRunning)
             {
