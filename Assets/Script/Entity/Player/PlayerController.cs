@@ -1049,7 +1049,7 @@ public class PlayerController : MonoBehaviour
             if (attackOnRight == isFacingRight)
             {
                 ApplyDamageToShield(damage);
-                AddKnockback(knockbackPower, knockbacktime);
+                if (shieldGauge != 0) AddKnockback(knockbackPower, knockbacktime);
             }
             else Death();
         }
