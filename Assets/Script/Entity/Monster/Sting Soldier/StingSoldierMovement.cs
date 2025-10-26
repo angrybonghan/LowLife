@@ -252,9 +252,8 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
                 if (!wasHitPlayer)
                 {
                     Attack();
-                    LookPos(playerObject.transform.position);
                 }
-
+                rb.velocity = Vector2.zero;
                 yield return null;
             }
 
