@@ -20,6 +20,10 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     public float attackDuration;    // 공격의 유지 시간
     public float attackCooldown;    // 공격 대기시간 (공격 쿨타임)
     public float attackLength;  // 공격의 길이
+    
+    [Header("대미지")]
+    public float damage = 0.3f;  // 공격 대미지
+
 
     [Header("히트박스")]
     public Vector2 hitboxOffset = Vector2.zero;    // 히트박스 오프셋
@@ -321,7 +325,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
                     if (targetCollider.TryGetComponent<PlayerController>(out PlayerController playerScript))
                     {
                         wasHitPlayer = true;
-                        playerScript.OnAttack(0.35f, 1, 0.1f, transform);
+                        playerScript.OnAttack(damage, 1, 0.1f, transform);
                     }
                     else
                     {
