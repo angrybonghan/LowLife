@@ -61,7 +61,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
     Vector3 movePosLeft;
     Vector3 targetPos;
 
-    public enum state { idle, doubt, track, attack }
+    public enum state { idle, doubt, track, attack, endAttack }
     state currentState;
 
     private Rigidbody2D rb;
@@ -140,6 +140,10 @@ public class SlagMovement : MonoBehaviour, I_Attackable
         else if (targetState == state.attack)
         {
             StartCoroutine(AttackHandler());
+        }
+        else if (targetState == state.endAttack)
+        {
+            StartCoroutine(EndAttack());
         }
     }
 
@@ -254,7 +258,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
 
         if (detectionRate == 0)
         {
-            SetState(state.idle);
+            SetState(state.endAttack);
             Destroy(exclamationMark.gameObject);
         }
     }
@@ -358,6 +362,15 @@ public class SlagMovement : MonoBehaviour, I_Attackable
                 }
             }
         }
+    }
+
+    IEnumerator EndAttack()
+    {
+        anim.SetTrigger("endAttack");
+
+        yield return new WaitForSeconds(readyToAttackTime);
+
+        SetState(state.idle);
     }
 
     bool IsPlayerInView()
