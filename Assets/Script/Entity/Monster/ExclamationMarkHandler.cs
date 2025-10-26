@@ -11,10 +11,19 @@ public class ExclamationMarkHandler : MonoBehaviour
     public Color MidValueColor = Color.yellow;
     public Color MinValueColor = Color.green;
 
+    private Transform trackTargetPos;
 
-    public void SetPos(Vector2 newPos)
+    private void Update()
     {
-        transform.position = newPos;
+        if (trackTargetPos != null)
+        {
+            transform.position = trackTargetPos.position;
+        }
+    }
+
+    public void SetTargetPos(Transform targetTransform)
+    {
+        trackTargetPos = targetTransform;
     }
 
     public void SetGaugeValue(float value)
