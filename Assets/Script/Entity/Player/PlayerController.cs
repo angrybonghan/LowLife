@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     [Header("방패")]
     public float shieldEquipDuration = 0.2f;   // 방패를 꺼내는 시간
     public float parryDuration = 0.4f;  // 방패로 튕겨내는 시간
-    
+
     [Header("방패 게이지")]
     public float shieldRechargeDuration = 3;    // 방패가 완전 방전에서 완전 충전으로 회복되는 시간
     public Color maxShieldGaugeColor = Color.green; // 방패 완충에서 방패 게이지 색상
@@ -220,6 +220,7 @@ public class PlayerController : MonoBehaviour
             ParryHandler(); // 패링 작동, 애니메이션 트리거
             ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
         }
+        ShieldGaugeHandler();   // 방패 게이지 관련
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
     }
 
@@ -406,8 +407,8 @@ public class PlayerController : MonoBehaviour
     }
     void RangedAttackHandler()
     {
-        if (!canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding) return;
-        // 방패 투척 불가능 조건 : 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중
+        if (!canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding || isQuickTurning) return;
+        // 방패 투척 불가능 조건 : 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중, 퀵턴 중
         if (crosshairInstance == null) return;
         // 또는 조준점 없음
 
@@ -689,8 +690,6 @@ public class PlayerController : MonoBehaviour
                 SetShieldUIFadeOutDelay();
             }
         }
-
-        ShieldGaugeHandler();
     }
 
     void UpdateAnimation()
@@ -901,7 +900,7 @@ public class PlayerController : MonoBehaviour
     {
         Destroy(shieldInstance);
         shieldInstance = null;
-        
+
 
         hasShield = true;
         ShieldSprite.SetActive(true);
@@ -1081,8 +1080,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator StunCoroutine()
     {
-        yield return new WaitUntil( () => !isGrounded );
-        yield return new WaitUntil( () => isGrounded );
+        yield return new WaitUntil(() => !isGrounded);
+        yield return new WaitUntil(() => isGrounded);
         rb.velocity = Vector3.zero;
         yield return new WaitForSeconds(stunDuration);
         anim.SetTrigger("trigger_flyAway_end");
