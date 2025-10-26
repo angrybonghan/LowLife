@@ -47,7 +47,6 @@ public class SlagMovement : MonoBehaviour, I_Attackable
     public float fallingOutPower = 15; // 죽었을 때 날아갈 힘
 
     private int facingSign = 1;
-    private int attackNumber = 1;
 
     private float currentNormalizedSpeed = 0;   // 정규화된 속도
     private float layerCheckRadius = 0.05f;  // 감지 위치 반경
@@ -127,7 +126,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
             movePosRight.x += moveRadius;
             movePosLeft.x -= moveRadius;
 
-            targetPos = movePosRight;
+            targetPos = isFacingRight ? movePosRight : movePosLeft;
 
             StartCoroutine(IdleMovement());
         }
@@ -151,18 +150,13 @@ public class SlagMovement : MonoBehaviour, I_Attackable
         targetPos = isFacingRight ? movePosRight : movePosLeft;
     }
 
-    void SetIdlePos()
-    {
-
-    }
-
     IEnumerator IdleMovement()
     {
         while (true)
         {
             float sign = isFacingRight ? 1f : -1f;
 
-            while (!HasArrived() && canGoStraight)
+            while (!HasArrived(targetPos) && canGoStraight)
             {
                 currentNormalizedSpeed = Mathf.Min(currentNormalizedSpeed + acceleration * Time.deltaTime, 0.5f);
                 rb.velocity = new Vector2(sign * currentNormalizedSpeed * maxSpeed, rb.velocity.y);
@@ -208,6 +202,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
             else
             {
                 TimeSincePlayerLost = 0;
+                LookPos(playerObject.transform.position);
             }
 
             
@@ -215,9 +210,9 @@ public class SlagMovement : MonoBehaviour, I_Attackable
         }
     }
 
-    bool HasArrived()
+    bool HasArrived(Vector3 pos)
     {
-        float distance = Vector3.Distance(transform.position, targetPos);
+        float distance = Vector3.Distance(transform.position, pos);
         return distance <= 0.1f;
     }
 
@@ -225,7 +220,10 @@ public class SlagMovement : MonoBehaviour, I_Attackable
     {
         LookPos(playerObject.transform.position);
 
-        if (canGoStraight)
+        Vector2 checkPos = playerObject.transform.position;
+        checkPos.y = transform.position.y;
+
+        if (canGoStraight && !HasArrived(checkPos))
         {
             currentNormalizedSpeed = Mathf.Clamp(currentNormalizedSpeed + acceleration * Time.deltaTime, 0.505f, 1f);
             rb.velocity = new Vector2(facingSign * currentNormalizedSpeed * maxSpeed, rb.velocity.y);
@@ -236,15 +234,29 @@ public class SlagMovement : MonoBehaviour, I_Attackable
             currentNormalizedSpeed = 0;
         }
 
-
         if (IsPlayerInRange())
         {
             SetState(state.attack);
             return;
         }
 
-        
+        if (IsPlayerInView())
+        {
+            detectionRate += Time.deltaTime / detectionTime;
+        }
+        else
+        {
+            detectionRate -= Time.deltaTime / detectionDecayTime;
+        }
 
+        detectionRate = Mathf.Clamp01(detectionRate);
+        exclamationMark.SetGaugeValue(detectionRate);
+
+        if (detectionRate == 0)
+        {
+            SetState(state.idle);
+            Destroy(exclamationMark.gameObject);
+        }
     }
 
     void LookPos(Vector2 targetPos)
@@ -312,12 +324,13 @@ public class SlagMovement : MonoBehaviour, I_Attackable
 
     void SwitchAttackNumber()
     {
-        attackNumber = attackNumber == 1 ? 2 : 1;   // 개간지 삼항연산 ㅇㅇ
+        int newAttackNumber = anim.GetInteger("attackNumber") == 1 ? 2 : 1;   // 개간지 삼항연산 ㅇㅇ
 
-        anim.SetInteger("attackNumber", attackNumber);
+        anim.SetInteger("attackNumber", newAttackNumber);
     }
 
-    void Attack()    {
+    void Attack()
+    {
         Vector2 localAdjustedOffset = new Vector2(hitboxOffset.x * facingSign, hitboxOffset.y);
         Vector2 worldCenter = (Vector2)transform.position + localAdjustedOffset;
 
@@ -466,9 +479,12 @@ public class SlagMovement : MonoBehaviour, I_Attackable
 
         if (Application.isPlaying)
         {
-            Gizmos.DrawWireSphere(movePosRight, 0.25f);
-            Gizmos.DrawWireSphere(movePosLeft, 0.25f);
-            Gizmos.DrawLine(movePosRight, movePosLeft);
+            if (currentState == state.idle)
+            {
+                Gizmos.DrawWireSphere(movePosRight, 0.25f);
+                Gizmos.DrawWireSphere(movePosLeft, 0.25f);
+                Gizmos.DrawLine(movePosRight, movePosLeft);
+            }
         }
         else
         {
