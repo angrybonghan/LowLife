@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(BoxCollider2D))]
@@ -46,16 +45,16 @@ public class SlagMovement : MonoBehaviour, I_Attackable
     public float deathDuration = 2; // 죽는 시간
     public float fallingOutPower = 15; // 죽었을 때 날아갈 힘
 
-    private int facingSign = 1;
+    private int facingSign = 1; // 바라보는 방향
 
     private float currentNormalizedSpeed = 0;   // 정규화된 속도
     private float layerCheckRadius = 0.05f;  // 감지 위치 반경
     private float detectionRate = 0;    // 발각의 정도
 
-    private bool isFacingRight = true;
-    private bool canGoStraight = true;
-    private bool isMoving = false;
-    bool isDead = false;    // 죽었는지 여부
+    private bool isFacingRight = true;  // 오른쪽을 바라보는지 여부
+    private bool canGoStraight = true;  // 직진 가능 여부 (벽이 없고 땅이 있어야 함)
+    private bool isMoving = false;  // 움직이고 있는지 여부
+    private bool isDead = false;    // 죽었는지 여부
 
     Vector3 movePosRight;
     Vector3 movePosLeft;
@@ -517,8 +516,6 @@ public class SlagMovement : MonoBehaviour, I_Attackable
         Gizmos.DrawWireSphere(wallCheckPos.position, 0.05f);
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(exclamationMarkPos.position, 0.05f);
-
-
     }
 
 }
