@@ -69,6 +69,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
     private ExclamationMarkHandler exclamationMark;
 
     GameObject playerObject;    // 플레이어 오브젝트
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
