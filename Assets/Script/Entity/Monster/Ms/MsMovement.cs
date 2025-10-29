@@ -53,7 +53,7 @@ public class MsMovement : MonoBehaviour, I_Attackable
     private int facingSign = 1; // 바라보는 방향
 
     private float currentNormalizedSpeed = 0;   // 정규화된 속도
-    private float layerCheckRadius = 0.05f;  // 감지 위치 반경
+    private float layerCheckRadius = 0.1f;  // 감지 위치 반경
     private float detectionRate = 0;    // 발각의 정도
 
     private bool isFacingRight = true;  // 오른쪽을 바라보는지 여부
