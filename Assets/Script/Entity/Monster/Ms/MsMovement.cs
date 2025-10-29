@@ -20,6 +20,7 @@ public class MsMovement : MonoBehaviour
 
     [Header("공격")]
     public Transform firePoint;
+    public Transform projectile;
     public float readyToAttackTime = 0.5f;  // 공격의 준비 시간 (총 들기, 내리기)
     public float aimingTime = 0.2f;          // 조준 시간 (이후 발사)
     public float reloadTime = 0.5f;  // 공격의 준비 시간 (재장전)
@@ -276,7 +277,8 @@ public class MsMovement : MonoBehaviour
 
     void Attack()
     {
-
+        EnemyProjectile ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<EnemyProjectile>();
+        ep.SetRotationFrom(armObj.transform);
     }
 
 
