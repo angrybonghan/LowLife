@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(BoxCollider2D))]
-public class MsMovement : MonoBehaviour
+public class MsMovement : MonoBehaviour, I_Attackable
 {
     [Header("움직임")]
     public float maxSpeed = 8; // 최대 움직임 속도
@@ -20,7 +20,7 @@ public class MsMovement : MonoBehaviour
 
     [Header("공격")]
     public Transform firePoint;
-    public Transform projectile;
+    public GameObject projectile;
     public float readyToAttackTime = 0.5f;  // 공격의 준비 시간 (총 들기, 내리기)
     public float aimingTime = 0.2f;          // 조준 시간 (이후 발사)
     public float reloadTime = 0.5f;  // 공격의 준비 시간 (재장전)
@@ -150,7 +150,7 @@ public class MsMovement : MonoBehaviour
         }
         else if (targetState == state.endAttack)
         {
-
+            StartCoroutine(EndAttack());
         }
     }
 
@@ -278,26 +278,40 @@ public class MsMovement : MonoBehaviour
     void Attack()
     {
         EnemyProjectile ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<EnemyProjectile>();
-        ep.SetRotationFrom(armObj.transform);
+        //ep.SetRotationFrom(armObj.transform);
+        ep.SetTarget(playerObject.transform);
+    }
+
+    IEnumerator EndAttack()
+    {
+        anim.SetTrigger("endAttack");
+        yield return new WaitForSeconds(readyToAttackTime);
+        SetState(state.idle);
     }
 
 
     void RotatePartsToLookAtPlayer()
     {
-        Vector3 targetDirection = playerObject.transform.position - transform.position;
-        float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
+        LookPos(playerObject.transform.position);
 
-        float targetArmAngle = angle;
-
-        if (!isFacingRight) targetArmAngle = 180f - targetArmAngle;
+        float verticalProximity = GetVerticalProximity();
+        float targetArmAngle = verticalProximity * 90;
+        float targetHeadAngle = targetArmAngle * 0.5f;
 
         Quaternion armRotation = Quaternion.Euler(0, 0, targetArmAngle);
         armObj.localRotation = armRotation;
 
-        float finalHeadAngle = targetArmAngle * 0.5f;
-
-        Quaternion headRotation = Quaternion.Euler(0, 0, finalHeadAngle);
+        Quaternion headRotation = Quaternion.Euler(0, 0, targetHeadAngle);
         headObj.localRotation = headRotation;
+    }
+
+    float GetVerticalProximity()
+    {
+        Vector3 direction = playerObject.transform.position - transform.position;
+        Vector2 normalizedDirection = direction.normalized;
+        float verticalComponent = normalizedDirection.y;
+
+        return verticalComponent;
     }
 
     bool IsPlayerInView()
@@ -328,6 +342,18 @@ public class MsMovement : MonoBehaviour
 
         if (!isPlayerInView) return false;
 
+        return CanSeePlayer();
+    }
+
+    bool IsPlayerInRange()
+    {
+        bool inRange = Vector3.Distance(transform.position, playerObject.transform.position) < attackRange;
+
+        return CanSeePlayer() && inRange;
+    }
+
+    bool CanSeePlayer()
+    {
         Vector2 startPos = transform.position;
         Vector2 endPos = playerObject.transform.position;
         Vector2 direction = (endPos - startPos).normalized;
@@ -336,11 +362,6 @@ public class MsMovement : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(startPos, direction, distance, obstacleMask);
         if (hit.collider != null) return false;
         return true;
-    }
-
-    bool IsPlayerInRange()
-    {
-        return Vector3.Distance(transform.position, playerObject.transform.position) < attackRange;
     }
 
     void SwitchPos()
@@ -390,6 +411,51 @@ public class MsMovement : MonoBehaviour
         anim.SetBool("isMoving", isMoving);
         anim.SetFloat("moveSpeed", currentNormalizedSpeed);
 
+    }
+
+    public void OnAttack(Transform attackerTransform)
+    {
+        if (isDead) return;
+
+        isDead = true;
+
+        Vector2 direction = (transform.position - attackerTransform.position).normalized;
+        rb.velocity = Vector2.zero;
+        rb.AddForce(direction * fallingOutPower, ForceMode2D.Impulse);
+        rb.freezeRotation = false;
+        rb.gravityScale = 1f;
+        rb.AddTorque(GetRandom(-20, 20));
+        if (exclamationMark != null) Destroy(exclamationMark.gameObject);
+
+        anim.SetTrigger("die");
+        StopAllCoroutines();
+        StartCoroutine(Dead());
+    }
+
+    float GetRandom(float min, float max)
+    {
+        return Random.Range(min, max);
+    }
+
+    IEnumerator Dead()
+    {
+        float timer = 0f;
+        Vector3 initialScale = transform.localScale;
+        Vector3 targetScale = Vector3.zero;
+        boxCol.isTrigger = false;
+
+        while (timer < deathDuration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / deathDuration;
+
+            transform.localScale = Vector3.Lerp(initialScale, targetScale, t);
+
+            yield return null;
+        }
+
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmosSelected()

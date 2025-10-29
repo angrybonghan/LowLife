@@ -50,7 +50,7 @@ MonoBehaviour:
   damage: 0.3
   knockbackPower: 1
   knockbacktime: 0.1
-  speed: 30
+  speed: 20
   lifeTime: 10
 --- !u!212 &4990001281638098441
 SpriteRenderer:

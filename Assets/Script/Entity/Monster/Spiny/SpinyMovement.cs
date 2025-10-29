@@ -79,10 +79,6 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
             case state.move:
                 MoveHandler();
                 break;
-            
-            case state.turn:
-
-                break;
         }
 
         if (isAttacking) Attack();
