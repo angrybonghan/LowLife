@@ -7,6 +7,6 @@ public class CameraTest : MonoBehaviour
     void Start()
     {
         CameraMovement.TargetTracking(Target.transform, new Vector3(0,1.5f,0));
-        CameraMovement.RotateTo(new Vector3(7,0,0), 0f);
+        //CameraMovement.RotateTo(new Vector3(7,0,0), 0f);
     }
 }
