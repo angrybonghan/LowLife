@@ -98,6 +98,7 @@ public class MsMovement : MonoBehaviour, I_Attackable
 
     void Update()
     {
+        if (isDead) return;
         UpdateStates();
 
         switch (currentState)
@@ -235,6 +236,8 @@ public class MsMovement : MonoBehaviour, I_Attackable
         if (IsPlayerInRange())
         {
             SetState(state.attack);
+            detectionRate = 1;
+            exclamationMark.SetGaugeValue(detectionRate);
             return;
         }
 
@@ -278,7 +281,6 @@ public class MsMovement : MonoBehaviour, I_Attackable
     void Attack()
     {
         EnemyProjectile ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<EnemyProjectile>();
-        //ep.SetRotationFrom(armObj.transform);
         ep.SetTarget(playerObject.transform);
     }
 

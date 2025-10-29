@@ -241,6 +241,8 @@ public class SlagMovement : MonoBehaviour, I_Attackable
         if (IsPlayerInRange())
         {
             SetState(state.attack);
+            detectionRate = 1;
+            exclamationMark.SetGaugeValue(detectionRate);
             return;
         }
 
