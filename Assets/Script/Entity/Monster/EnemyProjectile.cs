@@ -12,6 +12,8 @@ public class EnemyProjectile : MonoBehaviour
     public float speed = 5.0f;
     public float lifeTime = 10;
 
+    bool isParried = false;
+
     private Rigidbody2D rb;
 
     private void Awake()
@@ -36,12 +38,40 @@ public class EnemyProjectile : MonoBehaviour
         rb.velocity = targetVelocity;
     }
 
+    void Parry()
+    {
+        Quaternion currentRotation = transform.rotation;
+        Quaternion targetRotation = currentRotation * Quaternion.Euler(0, 0, 180f);
+        transform.rotation = targetRotation;
+
+        isParried = true;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (!isParried)
         {
-            PlayerController pc = other.GetComponent<PlayerController>();
-            pc.OnAttack(damage, knockbackPower, knockbacktime, transform);
+            if (other.CompareTag("Player"))
+            {
+                PlayerController pc = other.GetComponent<PlayerController>();
+                if (pc.IsParried(transform))
+                {
+                    Parry();
+                    return;
+                }
+                else
+                {
+                    pc.OnAttack(damage, knockbackPower, knockbacktime, transform);
+                }
+            }
+        }
+        else
+        {
+            I_Attackable attackableTarget = other.GetComponent<I_Attackable>();
+            if (attackableTarget != null)
+            {
+                attackableTarget.OnAttack(transform);
+            }
         }
 
         Die();

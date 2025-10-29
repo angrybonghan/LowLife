@@ -1235,7 +1235,7 @@ GameObject:
   - component: {fileID: 168428686}
   m_Layer: 10
   m_Name: Slag
-  m_TagString: Untagged
+  m_TagString: Entity
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1386,7 +1386,7 @@ MonoBehaviour:
     m_Bits: 2048
   exclamationMarkPos: {fileID: 116922407}
   exclamationMarkObj: {fileID: 8865739664671177490, guid: fbbaa78aedd34ef4f89e5b30f71a8401, type: 3}
-  detectionTime: 3
+  detectionTime: 0.3
   detectionCancelTime: 1
   detectionDecayTime: 3
   deathDuration: 2
@@ -2377,7 +2377,7 @@ GameObject:
   - component: {fileID: 419371490}
   m_Layer: 10
   m_Name: Spiny
-  m_TagString: Untagged
+  m_TagString: Entity
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5971,7 +5971,7 @@ GameObject:
   - component: {fileID: 1348084396}
   m_Layer: 10
   m_Name: Wiggle
-  m_TagString: Untagged
+  m_TagString: Entity
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6867,7 +6867,7 @@ MonoBehaviour:
   dashCooldown: 0.5
   dashEffect: {fileID: 1877804497623792628, guid: 7b377459c6d19e54183b58215d31df69, type: 3}
   shieldEquipDuration: 0.2
-  parryDuration: 0.4
+  parryDuration: 0.2
   shieldRechargeDuration: 3
   maxShieldGaugeColor: {r: 0, g: 1, b: 0, a: 1}
   minShieldGaugeColor: {r: 1, g: 0, b: 0, a: 1}
@@ -8196,7 +8196,7 @@ GameObject:
   - component: {fileID: 1934594924}
   m_Layer: 10
   m_Name: Ms
-  m_TagString: Untagged
+  m_TagString: Entity
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8342,7 +8342,7 @@ MonoBehaviour:
   damage: 0.4
   viewOffset: {x: 7.5, y: 4}
   viewSize: {x: 15, y: 10}
-  attackRange: 10
+  attackRange: 14
   obstacleMask:
     serializedVersion: 2
     m_Bits: 768
@@ -8351,7 +8351,7 @@ MonoBehaviour:
     m_Bits: 2048
   exclamationMarkPos: {fileID: 591418627}
   exclamationMarkObj: {fileID: 8865739664671177490, guid: fbbaa78aedd34ef4f89e5b30f71a8401, type: 3}
-  detectionTime: 1
+  detectionTime: 0.2
   detectionCancelTime: 0.5
   detectionDecayTime: 2
   deathDuration: 2

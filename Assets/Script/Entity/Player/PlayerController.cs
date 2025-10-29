@@ -1032,6 +1032,18 @@ public class PlayerController : MonoBehaviour
         knockbackDirection = 0;
     }
 
+    public bool IsParried(Transform attackerPos)
+    {
+        if (!isParrying) return false;
+
+        float myX = transform.position.x;
+        float attackerX = attackerPos.position.x;
+        bool attackOnRight = attackerX > myX;
+
+        if (attackOnRight == isFacingRight) return true;
+        else return false;
+    }
+
 
     /// <summary>
     /// 인수 : 방패 대미지 - 넉백 정도 - 넉백 시간 - 공격자 위치
