@@ -117,6 +117,8 @@ MonoBehaviour:
     m_Bits: 512
   wallKickEffect: {fileID: 4075624708730450522, guid: f1c30cf1d56dfdf4b806291b64619206, type: 3}
   wallKickEffectPos: {fileID: 2085677987025618830}
+  jumpEffect: {fileID: 1231102164689481926, guid: 6e311cb63c05b9d4789e07f2e841e6f9, type: 3}
+  jumpEffectPos: {fileID: 3827836183322564268}
   shieldThrowDuration: 0.25
   shieldThrowInterval: 0.25
   shieldSummonPos: {fileID: 2832086274755950019}

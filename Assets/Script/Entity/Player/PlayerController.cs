@@ -47,8 +47,10 @@ public class PlayerController : MonoBehaviour
     public LayerMask wallLayer;
 
     [Header("이펙트 위치 / 프리팹")]
-    public GameObject wallKickEffect;   // 이펙트 생성 위치
-    public Transform wallKickEffectPos; // 이펙트 프리팹
+    public GameObject wallKickEffect;   // 월 킥 이펙트 프리팹
+    public Transform wallKickEffectPos; // 월 킥 이펙트 생성 위치
+    public GameObject jumpEffect;   // 점프 이펙트
+    public Transform jumpEffectPos; // 점프 이펙트 생성 위치
 
     [Header("원거리 공격")]
     public float shieldThrowDuration = 0.25f;   // 방패를 던지는 시간
@@ -550,6 +552,12 @@ public class PlayerController : MonoBehaviour
             anim.SetTrigger("trigger_jump");
             SetCoyote(0);
             timeSinceLastJump = 0;
+
+            GameObject newJumpEffect = Instantiate(jumpEffect, jumpEffectPos.position, Quaternion.identity);
+            newJumpEffect.transform.localScale = new Vector3(
+                newJumpEffect.transform.localScale.x * lastMoveInput,
+                newJumpEffect.transform.localScale.y,
+                newJumpEffect.transform.localScale.z);
         }
     }
 
