@@ -3,45 +3,29 @@ using UnityEngine;
 public class CrosshairController : MonoBehaviour
 {
     [Header("조준점 설정")]
-    public float mouseSensitivity = 10f;
-    public float maxMovementRange = 5f;
-    public float currentZ = 0;
+    public float currentZ = 0f;
 
-    private Transform anchorPosition;
-    private Vector3 offset;
+    private Camera mainCamera;
 
     void Start()
     {
-        GameObject anchorObject = GameObject.FindWithTag("Player");
-        anchorPosition = anchorObject.transform;
+        if (Camera.main != null)
+        {
+            mainCamera = Camera.main;
+        }
+        else
+        {
+            Debug.LogError("씬에 'MainCamera' 태그가 지정된 카메라가 없음");
+            enabled = false;
+        }
     }
 
     private void Update()
     {
-        if (Cursor.lockState != CursorLockMode.Locked) return;
-
-        Vector3 currentAnchorPosition = anchorPosition.position;
-
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-
-        Vector3 newoffset = offset;
-        newoffset.x += mouseX;
-        newoffset.y += mouseY;
-
-        Vector3 finalCrosshairPos = currentAnchorPosition + newoffset;
-
-        float distance = Vector3.Distance(currentAnchorPosition, finalCrosshairPos);
-
-        if (distance > maxMovementRange)
-        {
-            Vector3 direction = (finalCrosshairPos - currentAnchorPosition).normalized;
-            finalCrosshairPos = currentAnchorPosition + direction * maxMovementRange;
-        }
-
+        Vector3 mouseScreenPosition = Input.mousePosition;
+        mouseScreenPosition.z = -mainCamera.transform.position.z + currentZ;
+        Vector3 finalCrosshairPos = mainCamera.ScreenToWorldPoint(mouseScreenPosition);
         finalCrosshairPos.z = currentZ;
-        offset = finalCrosshairPos - currentAnchorPosition;
-
         transform.position = finalCrosshairPos;
     }
 }
