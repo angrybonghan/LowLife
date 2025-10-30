@@ -92,7 +92,7 @@ MonoBehaviour:
   wallCheckPos: {fileID: 3948973501238503019}
   groundCheckPos: {fileID: 265983330595388237}
   firePoint: {fileID: 5922279000243116458}
-  projectile: {fileID: 5752058744442932764, guid: 0a4b7a27c3061714a8cc7869ac15e5dd, type: 3}
+  projectile: {fileID: 5752058744442932764, guid: bb797aad836b3a443aa57a54c4f64230, type: 3}
   readyToAttackTime: 0.5
   aimingTime: 0.5
   reloadTime: 0.65
