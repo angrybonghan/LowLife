@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5810235755271514897}
   - component: {fileID: 6437546367220238736}
+  - component: {fileID: 1318245214535873019}
   m_Layer: 12
   m_Name: ShildSprite
   m_TagString: Untagged
@@ -84,6 +85,33 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!50 &1318245214535873019
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3038705031696134154}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &3792225553167996052
 GameObject:
   m_ObjectHideFlags: 0
@@ -146,7 +174,8 @@ MonoBehaviour:
     m_Bits: 1024
   particlePos: {fileID: 2501141621642985761}
   groundHitParticle: {fileID: 4041333301960470708, guid: 35eed6bd6ce8d8248a97b02acb109df0, type: 3}
-  entityHitParticle: {fileID: 4041333301960470708, guid: f52e17a6c27b5ac40bfbbf74f007e95c, type: 3}
+  entityHitParticle_shape: {fileID: 4041333301960470708, guid: f52e17a6c27b5ac40bfbbf74f007e95c, type: 3}
+  entityHitParticle_explod: {fileID: 8779808620717203034, guid: ffad53f439ff85a46b39c6749755b211, type: 3}
   playerPostion: {fileID: 0}
   throwDirection: {x: 0, y: 0, z: 0}
   isReturning: 0
@@ -233,7 +262,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0

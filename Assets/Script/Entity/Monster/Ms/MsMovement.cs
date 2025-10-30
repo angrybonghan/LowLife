@@ -434,6 +434,11 @@ public class MsMovement : MonoBehaviour, I_Attackable
         StartCoroutine(Dead());
     }
 
+    public bool CanAttack()
+    {
+        return true;
+    }
+
     float GetRandom(float min, float max)
     {
         return Random.Range(min, max);

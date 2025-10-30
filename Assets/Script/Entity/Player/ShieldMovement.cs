@@ -17,7 +17,8 @@ public class ShieldMovement : MonoBehaviour
     [Header("파티클")]
     public Transform particlePos;
     public GameObject groundHitParticle;
-    public GameObject entityHitParticle;
+    public GameObject entityHitParticle_shape;
+    public GameObject entityHitParticle_explod;
 
     [Header("외부 조작 설정")]
     public Transform playerPostion;    // 방패를 던진 플레이어 위치
@@ -129,7 +130,9 @@ public class ShieldMovement : MonoBehaviour
 
         if (entityLayer == (entityLayer | (1 << other.gameObject.layer)))
         {
-            Instantiate(entityHitParticle, transform.position, Quaternion.identity);
+            TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
+            Instantiate(entityHitParticle_shape, transform.position, Quaternion.identity);
+            Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
             PlayRandomHitSound();
             CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
         }

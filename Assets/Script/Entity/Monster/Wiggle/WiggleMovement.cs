@@ -188,6 +188,10 @@ public class WiggleMovement : MonoBehaviour, I_Attackable
         StartCoroutine(Dead());
     }
 
+    public bool CanAttack()
+    {
+        return true;
+    }
     IEnumerator Dead()
     {
         float timer = 0f;

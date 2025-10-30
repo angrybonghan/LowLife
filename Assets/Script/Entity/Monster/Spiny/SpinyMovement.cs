@@ -298,6 +298,11 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
         StartCoroutine(Dead());
     }
 
+    public bool CanAttack()
+    {
+        return !isAttacking;
+    }
+
     IEnumerator Dead()
     {
         float timer = 0f;
