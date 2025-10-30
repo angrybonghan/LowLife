@@ -125,17 +125,23 @@ public class ShieldMovement : MonoBehaviour
     {
         if (other.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
         {
-            targetAttackable.OnAttack(transform);
+            if (targetAttackable.CanAttack())
+            {
+                targetAttackable.OnAttack(transform);
+
+                Instantiate(entityHitParticle_shape, transform.position, Quaternion.identity);
+                Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
+                PlayRandomHitSound();
+                TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
+                CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
+            }
+            else
+            {
+                //엔티티이긴 하나 공격하지 못하는 적
+            }
         }
 
-        if (entityLayer == (entityLayer | (1 << other.gameObject.layer)))
-        {
-            TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
-            Instantiate(entityHitParticle_shape, transform.position, Quaternion.identity);
-            Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
-            PlayRandomHitSound();
-            CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
-        }
+        
 
         if (!isReturning)
         {
