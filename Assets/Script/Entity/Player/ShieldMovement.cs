@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D), typeof(Animator))]
+[RequireComponent(typeof(AudioSource))]
 public class ShieldMovement : MonoBehaviour
 {
     [Header("참조 및 설정")]
@@ -26,23 +27,28 @@ public class ShieldMovement : MonoBehaviour
     public GameObject afterEffect;
     public float afterEffectInterval;
 
+    [Header("사운드")]
+    public AudioClip[] hitSounds;
+
     private float currentFlightTime = 0; // 현재 날아가는 시간 (시간 계산용)
     private float LastAfterEffect = 0;  // 마지막 잔상 시간  (시간 계산용)
 
     // 참조용 변수
     private Rigidbody2D rb;
-    private CircleCollider2D boxCol;
+    private CircleCollider2D circleCol;
     private Animator anim;
     private PlayerController playerController;
+    private AudioSource audioSource;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        boxCol = rb.GetComponent<CircleCollider2D>();
-        anim = rb.GetComponent<Animator>();
+        circleCol = GetComponent<CircleCollider2D>();
+        anim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
         // 초기 설정
-        boxCol.isTrigger = true;
+        circleCol.isTrigger = true;
         rb.gravityScale = 0f;
         isReturning = false;
         LastAfterEffect = Time.time;
@@ -124,6 +130,7 @@ public class ShieldMovement : MonoBehaviour
         if (entityLayer == (entityLayer | (1 << other.gameObject.layer)))
         {
             Instantiate(entityHitParticle, transform.position, Quaternion.identity);
+            PlayRandomHitSound();
             CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
         }
 
@@ -137,5 +144,16 @@ public class ShieldMovement : MonoBehaviour
 
             SetReturnState(); // 뭔가에 충돌 시 복귀 상태로 전환
         }
+    }
+
+    private void PlayRandomHitSound()
+    {
+        if (hitSounds == null || hitSounds.Length == 0)
+        {
+            return;
+        }
+
+        int randomIndex = Random.Range(0, hitSounds.Length);
+        AudioSource.PlayClipAtPoint(hitSounds[randomIndex], transform.position, 2f);
     }
 }
