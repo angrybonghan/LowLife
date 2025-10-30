@@ -219,11 +219,10 @@ public class PlayerController : MonoBehaviour
             DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
             ParryHandler(); // 패링 작동, 애니메이션 트리거
             ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
+            HandleMovement(); // 모든 상태에 대한 움직임
         }
         ShieldGaugeHandler();   // 방패 게이지 관련
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
-
-        HandleMovement(); // 모든 상태에 대한 움직임
     }
 
 
@@ -399,6 +398,8 @@ public class PlayerController : MonoBehaviour
             transform.position = shieldInstance.transform.position;
             CatchShield();
             DepleteShieldGauge(shieldLeapShieldGaugeDecrease);
+            CameraMovement.RotationShaking(1f, 0.05f, 0.2f);
+            CameraMovement.PositionShaking(0.1f, 0.05f, 0.2f);
         }
     }
     void RangedAttackHandler()

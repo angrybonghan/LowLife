@@ -118,6 +118,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5810235755271514897}
+  - {fileID: 2501141621642985761}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6952242348837909371
@@ -136,6 +137,15 @@ MonoBehaviour:
   throwSpeed: 30
   returnSpeed: 80
   catchDistance: 1.25
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 768
+  entityLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  particlePos: {fileID: 2501141621642985761}
+  groundHitParticle: {fileID: 4041333301960470708, guid: 35eed6bd6ce8d8248a97b02acb109df0, type: 3}
+  entityHitParticle: {fileID: 4041333301960470708, guid: f52e17a6c27b5ac40bfbbf74f007e95c, type: 3}
   playerPostion: {fileID: 0}
   throwDirection: {x: 0, y: 0, z: 0}
   isReturning: 0
@@ -177,7 +187,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 26624
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -224,3 +234,34 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!1 &6528130865293333110
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2501141621642985761}
+  m_Layer: 12
+  m_Name: ParticlePos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2501141621642985761
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6528130865293333110}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.35, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6230961762819289205}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

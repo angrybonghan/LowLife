@@ -9,6 +9,15 @@ public class ShieldMovement : MonoBehaviour
     public float returnSpeed = 20f;    // 방패가 플레이어에게 돌아오는 속도
     public float catchDistance = 0.75f; // 플레이어에게 잡혀질 거리
 
+    [Header("레이어")]
+    public LayerMask groundLayer;
+    public LayerMask entityLayer;
+
+    [Header("파티클")]
+    public Transform particlePos;
+    public GameObject groundHitParticle;
+    public GameObject entityHitParticle;
+
     [Header("외부 조작 설정")]
     public Transform playerPostion;    // 방패를 던진 플레이어 위치
     public Vector3 throwDirection;  // 던지는 방향
@@ -44,6 +53,9 @@ public class ShieldMovement : MonoBehaviour
         if (!isReturning)
         {
             rb.velocity = throwDirection * throwSpeed;
+            float angle = Mathf.Atan2(throwDirection.y, throwDirection.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
             currentFlightTime += Time.deltaTime;
 
             if (LastAfterEffect + afterEffectInterval <= Time.time)
@@ -67,6 +79,9 @@ public class ShieldMovement : MonoBehaviour
             {
                 Vector3 directionToPlayer = (playerPostion.position - transform.position).normalized;
                 rb.velocity = directionToPlayer * returnSpeed;
+
+                float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(0f, 0f, angle);
 
                 // 플레이어에게 잡힘
                 if (Vector2.Distance(playerPostion.position, transform.position) <= catchDistance)
@@ -106,8 +121,20 @@ public class ShieldMovement : MonoBehaviour
             targetAttackable.OnAttack(transform);
         }
 
+        if (entityLayer == (entityLayer | (1 << other.gameObject.layer)))
+        {
+            Instantiate(entityHitParticle, transform.position, Quaternion.identity);
+            CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
+        }
+
         if (!isReturning)
         {
+            // 충돌한 개체의 레이어가 일치하는지 확인
+            if (groundLayer == (groundLayer | (1 << other.gameObject.layer)))
+            {
+                Instantiate(groundHitParticle, particlePos.position, Quaternion.identity);
+            }
+
             SetReturnState(); // 뭔가에 충돌 시 복귀 상태로 전환
         }
     }
