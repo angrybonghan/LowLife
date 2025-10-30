@@ -222,15 +222,11 @@ public class PlayerController : MonoBehaviour
         }
         ShieldGaugeHandler();   // 방패 게이지 관련
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
+
+        HandleMovement(); // 모든 상태에 대한 움직임
     }
 
-    private void FixedUpdate()
-    {
-        if (!isStunned)
-        {
-            HandleMovement();   // 모든 상태에 대한 움직임
-        }
-    }
+
     void UpdateStates()
     {
         // 움직이는지 확인
