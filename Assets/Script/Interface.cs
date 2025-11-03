@@ -6,3 +6,8 @@ public interface I_Attackable
 
     bool CanAttack();
 }
+
+public interface I_Interactable
+{
+    void InInteraction();
+}
