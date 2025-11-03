@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class DialogueBubbleReference : MonoBehaviour
+public class DialogueBubble : MonoBehaviour
 {
     public TextMeshPro dialogueText;
     public GameObject bubbleBody;

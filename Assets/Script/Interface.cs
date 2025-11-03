@@ -11,3 +11,8 @@ public interface I_Interactable
 {
     void InInteraction();
 }
+
+public interface I_DialogueCallback
+{
+    void OnDialogueEnd();
+}

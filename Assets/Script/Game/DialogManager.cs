@@ -1,16 +1,209 @@
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
 public class DialogManager : MonoBehaviour
 {
+    public static DialogManager instance;
 
+    public DialogueBubble dialogueBubblePrefab;
 
-    void Start()
+    bool isTyping;         // 현재 타이핑 중인지 여부
+    bool skipInputDetected = false;
+
+    DialogueBubble currentBubbleInstance;
+
+    DialogueSO currentDialogue;
+    Coroutine dialogueCoroutine;
+    AudioSource audioSource;
+
+    void Awake()
     {
-        
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
     {
-        
+        if (isTyping && Input.anyKeyDown)
+        {
+            skipInputDetected = true;
+        }
     }
+
+    public void StartDialogue(DialogueSO dialogue)
+    {
+        if (dialogue == null) return;
+
+        if (dialogueCoroutine != null)
+        {
+            StopCoroutine(dialogueCoroutine);
+            dialogueCoroutine = null;
+        }
+        if (currentBubbleInstance != null)
+        {
+            Destroy(currentBubbleInstance.gameObject);
+            currentBubbleInstance = null;
+        }
+
+        if (dialogueBubblePrefab != null)
+        {
+            currentBubbleInstance = Instantiate(dialogueBubblePrefab);
+        }
+        else
+        {
+            Debug.LogError("DialogueBubble 프리팹 없음");
+            return;
+        }
+
+        currentDialogue = dialogue;
+        dialogueCoroutine = StartCoroutine(PlayDialogueSequence());
+    }
+
+    public void StopDialogue()
+    {
+        if (dialogueCoroutine != null)
+        {
+            StopCoroutine(dialogueCoroutine);
+            dialogueCoroutine = null;
+        }
+
+        if (currentBubbleInstance != null)
+        {
+            Destroy(currentBubbleInstance.gameObject);
+            currentBubbleInstance = null;
+        }
+
+        isTyping = false;
+    }
+
+    IEnumerator PlayDialogueSequence()
+    {
+        if (currentDialogue.section == null)
+        {
+            StopDialogue();
+            yield break;
+        }
+
+        foreach (DialogueLine line in currentDialogue.section)
+        {
+            UpdateBubbleUI(line); // 말풍선 위치, 꼬리표 방향 등 UI 업데이트
+
+            if (line.sentence == null || line.sentence.Length == 0) continue;
+
+            foreach (string sentence in line.sentence)
+            {
+                if (string.IsNullOrWhiteSpace(sentence)) continue;
+
+                yield return StartCoroutine(TypeSentence(sentence, line.intervalTime, line.typingSound, line.canSkip));
+
+                if (line.canSkip && line.autoSkip)
+                {
+                    yield return StartCoroutine(WaitForInputOrTime(line.autoSkipIntervalTime));
+                }
+                else if (line.canSkip && !line.autoSkip)
+                {
+                    yield return StartCoroutine(WaitForAnyKeyInput());
+                }
+                else if (!line.canSkip && line.autoSkip)
+                {
+                    yield return new WaitForSeconds(line.autoSkipIntervalTime);
+                }
+                else
+                {
+                    yield return StartCoroutine(WaitForAnyKeyInput());
+                }
+            }
+        }
+
+        I_DialogueCallback[] callbacks = GetComponents<I_DialogueCallback>();
+
+        foreach (I_DialogueCallback callback in callbacks)
+        {
+            callback.OnDialogueEnd();
+        }
+
+        StopDialogue();
+    }
+
+    IEnumerator TypeSentence(string fullSentence, float intervalTime, AudioClip[] typingSounds, bool canSkipTyping)
+    {
+        skipInputDetected = false;
+        isTyping = true;
+        string currentText = "";
+        currentBubbleInstance.SetText("");
+
+        bool skipCheckActive = canSkipTyping;
+
+
+        for (int i = 0; i < fullSentence.Length; i++)
+        {
+            if (skipCheckActive && skipInputDetected)
+            {
+                currentBubbleInstance.SetText(fullSentence);
+                currentText = fullSentence;
+                isTyping = false;
+                skipInputDetected = false;
+                break;
+            }
+
+            currentText += fullSentence[i];
+            currentBubbleInstance.SetText(currentText);
+
+            if (typingSounds != null && typingSounds.Length > 0 && audioSource != null)
+            {
+                AudioClip clipToPlay = typingSounds[Random.Range(0, typingSounds.Length)];
+                audioSource.PlayOneShot(clipToPlay);
+            }
+
+            yield return new WaitForSeconds(intervalTime);
+        }
+
+        if (currentText.Length < fullSentence.Length)
+        {
+            currentBubbleInstance.SetText(fullSentence);
+        }
+
+        isTyping = false;
+        skipInputDetected = false;
+    }
+
+    private void UpdateBubbleUI(DialogueLine line)
+    {
+        currentBubbleInstance.SetPosition(line.bubblePosition);
+        currentBubbleInstance.SetBubbleOffset(line.bubbleBodyOffset);
+        currentBubbleInstance.SetTailToLower(line.isTailDown);
+    }
+
+    IEnumerator WaitForAnyKeyInput()
+    {
+        yield return null;
+        while (Input.anyKeyDown)
+        {
+            yield return null;
+        }
+
+        while (!Input.anyKeyDown)
+        {
+            yield return null;
+        }
+    }
+
+    IEnumerator WaitForInputOrTime(float duration)
+    {
+        yield return null;
+        while (Input.anyKeyDown)
+        {
+            yield return null;
+        }
+
+        float startTime = Time.time;
+
+        while (Time.time < startTime + duration && !Input.anyKeyDown)
+        {
+            yield return null;
+        }
+    }
+
 }
