@@ -35,10 +35,11 @@ MonoBehaviour:
     canSkip: 0
     autoSkip: 1
     autoSkipIntervalTime: 0.5
-    typingSound: []
+    typingSound:
+    - {fileID: 8300000, guid: 74720289bcf099b4f89fd4210122c227, type: 3}
   - bubblePosition: {x: -19, y: 0, z: 0}
     bubbleBodyOffset: 0
-    isTailDown: 1
+    isTailDown: 0
     sentence:
     - 1
     - 2

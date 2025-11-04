@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5278217998590119289}
   - component: {fileID: 6163260329811461536}
+  - component: {fileID: 2530227124491807116}
   - component: {fileID: 3339423998877578904}
   - component: {fileID: 69942482678099883}
   - component: {fileID: 7194760173455879321}
@@ -132,6 +133,18 @@ MonoBehaviour:
   shieldLeapGroundImpactPrefab: {fileID: 5902937327030398573, guid: d274f043070a1e94ab54ab8bef84ce82, type: 3}
   shieldLeapWallSlideEffectPrefab: {fileID: 3255466628281366065, guid: 4f01e12eb07b0204aa5e048e91971aa9, type: 3}
   testBlackScreenUI: {fileID: 0}
+--- !u!114 &2530227124491807116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2706846149502957041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 304b09f7871767e4e9a4e6f28a77b467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &3339423998877578904
 Rigidbody2D:
   serializedVersion: 4
