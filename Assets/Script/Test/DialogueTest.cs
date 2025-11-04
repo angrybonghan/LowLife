@@ -7,7 +7,7 @@ public class DialogueTest : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            DialogManager.instance.StartDialogue(someTuffDialogue);
+            DialogManager.instance.StartDialogue(someTuffDialogue, gameObject);
         }
     }
 }

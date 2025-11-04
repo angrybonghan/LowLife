@@ -177,6 +177,12 @@ public class PlayerController : MonoBehaviour
     private GameObject crosshairInstance;     // 조준점 게임오브젝트 레퍼런스
     private float startGravityScale;    // 시작 당시의 중력 값
 
+    // =========================================================================
+    // 외부조작기 (싱글톤)
+    // =========================================================================
+    public static PlayerController instance { get; private set; }
+    public static bool canControl = true;
+
 
     // 속성, 스크립트 참조
     private Rigidbody2D rb;
@@ -184,6 +190,13 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        if (instance == null) instance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         startGravityScale = rb.gravityScale;
@@ -214,13 +227,16 @@ public class PlayerController : MonoBehaviour
         if (!isStunned)
         {
             MoveInputHandler(); // 조작 키 감지
-            AttackHandler(); // 방패 투척, 방패 도약 작동, 애니메이션 트리거
-            CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
-            WallSlidingHandler(); // 월 슬라이딩, 월 킥 애니메이션 트리거
-            JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
-            DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
-            ParryHandler(); // 패링 작동, 애니메이션 트리거
-            ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
+            if (canControl)
+            {
+                CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
+                AttackHandler(); // 방패 투척, 방패 도약 작동, 애니메이션 트리거
+                WallSlidingHandler();   // 월 슬라이딩, 월 킥, 관련 애니메이션 트리거
+                JumpHandler();  // 점프 작동, 점프 애니메이션 트리거
+                DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
+                ParryHandler(); // 패링 작동, 애니메이션 트리거
+                ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
+            }
             HandleMovement(); // 모든 상태에 대한 움직임
         }
         ShieldGaugeHandler();   // 방패 게이지 관련
@@ -305,6 +321,13 @@ public class PlayerController : MonoBehaviour
 
     void MoveInputHandler()
     {
+        if (!canControl)
+        {
+            moveInput = 0;
+            hasInput = false;
+            return;
+        }
+
         if (IsSingleInput())
         {
             if (Input.GetKey(KeyCode.A)) moveInput = -1;
@@ -332,6 +355,7 @@ public class PlayerController : MonoBehaviour
     {
         ThrowCooldownHandler();
 
+        if (!canControl) return;
         ShieldLeapHandler();
         RangedAttackHandler();
     }
@@ -1027,6 +1051,7 @@ public class PlayerController : MonoBehaviour
         knockbackPower = power;
         currentKnockbacktime = time;
         knockbackDirection = isFacingRight ? -1 : 1;
+        // 3항연4ㅏㄴ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     void StopKnockback()
@@ -1087,6 +1112,7 @@ public class PlayerController : MonoBehaviour
         isShielding = false;
 
         float sign = isFacingRight ? -1 : 1;
+        // 삼항!!!!!!!!!!! 으악!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         rb.velocity = new Vector3(stunImpactStrength * sign, stunImpactStrength, 0f);
 
         anim.SetTrigger("trigger_flyAway_start");
@@ -1117,5 +1143,32 @@ public class PlayerController : MonoBehaviour
     void Death()
     {
         testBlackScreenUI.SetActive(true);
+    }
+
+    public void Goto(Vector3 pos)
+    {
+        instance.transform.position = pos;
+    }
+
+    public void LookRight(bool lookRight)
+    {
+        if (instance.isFacingRight != lookRight)
+        {
+            instance.Flip();
+            instance.lastMoveInput = lookRight ? 1 : -1;
+            // 삼항연사아아아아아안!!!!!!!!!!!!!!!!!!!!!!!!
+        }
+    }
+
+    public void AllStop()
+    {
+        currentMoveSpeed = 0;
+        isRunning = false;
+
+        SetPlayerControlDisableDuration(0);
+        NoGravityOff();
+
+        isDashing = false;
+        isShielding = false;
     }
 }
