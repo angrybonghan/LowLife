@@ -8,7 +8,10 @@ public class DialogManager : MonoBehaviour
     public DialogueBubble dialogueBubblePrefab;
 
     bool isTyping;         // 현재 타이핑 중인지 여부
-    bool skipInputDetected = false;
+    bool skipInputDetected = false; // 스킵 키가 입력되었는지 여부
+    bool isAnySkipKeyPressed;
+
+    GameObject dialogueCallbackObj;
 
     DialogueBubble currentBubbleInstance;
 
@@ -26,15 +29,17 @@ public class DialogManager : MonoBehaviour
 
     void Update()
     {
-        if (isTyping && Input.anyKeyDown)
+        if (IsAnySkipKeyPressed() && isTyping)
         {
             skipInputDetected = true;
         }
     }
 
-    public void StartDialogue(DialogueSO dialogue)
+    public void StartDialogue(DialogueSO dialogue, GameObject CallbackObj)
     {
         if (dialogue == null) return;
+
+        dialogueCallbackObj = CallbackObj;
 
         if (dialogueCoroutine != null)
         {
@@ -117,7 +122,7 @@ public class DialogManager : MonoBehaviour
             }
         }
 
-        I_DialogueCallback[] callbacks = GetComponents<I_DialogueCallback>();
+        I_DialogueCallback[] callbacks = dialogueCallbackObj.GetComponents<I_DialogueCallback>();
 
         foreach (I_DialogueCallback callback in callbacks)
         {
@@ -133,13 +138,11 @@ public class DialogManager : MonoBehaviour
         isTyping = true;
         string currentText = "";
         currentBubbleInstance.SetText("");
-
-        bool skipCheckActive = canSkipTyping;
-
+        yield return null;
 
         for (int i = 0; i < fullSentence.Length; i++)
         {
-            if (skipCheckActive && skipInputDetected)
+            if (canSkipTyping && skipInputDetected)
             {
                 currentBubbleInstance.SetText(fullSentence);
                 currentText = fullSentence;
@@ -179,12 +182,12 @@ public class DialogManager : MonoBehaviour
     IEnumerator WaitForAnyKeyInput()
     {
         yield return null;
-        while (Input.anyKeyDown)
+        while (IsAnySkipKeyPressed())
         {
             yield return null;
         }
 
-        while (!Input.anyKeyDown)
+        while (!IsAnySkipKeyPressed())
         {
             yield return null;
         }
@@ -193,17 +196,30 @@ public class DialogManager : MonoBehaviour
     IEnumerator WaitForInputOrTime(float duration)
     {
         yield return null;
-        while (Input.anyKeyDown)
+        while (IsAnySkipKeyPressed())
         {
             yield return null;
         }
 
         float startTime = Time.time;
 
-        while (Time.time < startTime + duration && !Input.anyKeyDown)
+        while (Time.time < startTime + duration && !IsAnySkipKeyPressed())
         {
             yield return null;
         }
+    }
+
+    bool IsAnySkipKeyPressed()
+    {
+        bool isKeyboardPressedDown = Input.GetKeyDown(KeyCode.Space) ||
+                                     Input.GetKeyDown(KeyCode.F) ||
+                                     Input.GetKeyDown(KeyCode.E);
+
+        bool isMousePressedDown = Input.GetMouseButtonDown(0) ||
+                                  Input.GetMouseButtonDown(1) ||
+                                  Input.GetMouseButtonDown(2);
+
+        return isKeyboardPressedDown || isMousePressedDown;
     }
 
 }
