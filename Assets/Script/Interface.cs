@@ -7,6 +7,13 @@ public interface I_Attackable
     bool CanAttack();
 }
 
+public interface I_Destructible
+{
+    void OnAttack();
+
+    bool CanDestructible();
+}
+
 public interface I_Interactable
 {
     void InInteraction();

@@ -141,7 +141,18 @@ public class ShieldMovement : MonoBehaviour
             }
         }
 
-        
+        if (other.TryGetComponent<I_Destructible>(out I_Destructible targetDestructible))
+        {
+            if (targetDestructible.CanDestructible())
+            {
+                targetDestructible.OnAttack();
+
+                Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
+                CameraMovement.PositionShaking(0.5f, 0.05f, 0.15f);
+            }
+        }
+
+
 
         if (!isReturning)
         {
