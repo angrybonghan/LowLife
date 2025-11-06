@@ -26,7 +26,7 @@ public class EnemyProjectile : MonoBehaviour
         Destroy(gameObject, lifeTime);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         ApplyVelocityInFacingDirection();
     }

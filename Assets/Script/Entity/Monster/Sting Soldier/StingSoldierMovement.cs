@@ -325,6 +325,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
                     {
                         wasHitPlayer = true;
                         playerScript.OnAttack(damage, 1, 0.1f, transform);
+                        return;
                     }
                     else
                     {

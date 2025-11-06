@@ -55,14 +55,17 @@ public class ShieldMovement : MonoBehaviour
         LastAfterEffect = Time.time;
     }
 
+    private void Start()
+    {
+        rb.velocity = throwDirection * throwSpeed;
+        float angle = Mathf.Atan2(throwDirection.y, throwDirection.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
+    }
+
     void Update()
     {
         if (!isReturning)
         {
-            rb.velocity = throwDirection * throwSpeed;
-            float angle = Mathf.Atan2(throwDirection.y, throwDirection.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, angle);
-
             currentFlightTime += Time.deltaTime;
 
             if (LastAfterEffect + afterEffectInterval <= Time.time)
@@ -82,26 +85,23 @@ public class ShieldMovement : MonoBehaviour
         }
         else // 되돌아오는 상태
         {
-            if (playerPostion != null)
+            if (Vector2.Distance(playerPostion.position, transform.position) <= catchDistance)
             {
-                Vector3 directionToPlayer = (playerPostion.position - transform.position).normalized;
-                rb.velocity = directionToPlayer * returnSpeed;
-
-                float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg;
-                transform.rotation = Quaternion.Euler(0f, 0f, angle);
-
-                // 플레이어에게 잡힘
-                if (Vector2.Distance(playerPostion.position, transform.position) <= catchDistance)
-                {
-                    playerController.CatchShield();
-                    Destroy(gameObject);
-                }
-            }
-            else
-            {
-                // 플레이어 참조가 사라졌다면, 방패 파괴
+                playerController.CatchShield();
                 Destroy(gameObject);
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (isReturning)
+        {
+            Vector3 directionToPlayer = (playerPostion.position - transform.position).normalized;
+            rb.velocity = directionToPlayer * returnSpeed;
+
+            float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
     }
 
@@ -117,8 +117,15 @@ public class ShieldMovement : MonoBehaviour
 
     private void SetReturnState()
     {
-        isReturning = true;
-        rb.gravityScale = 0f;
+        if (playerPostion == null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            isReturning = true;
+            rb.gravityScale = 0f;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
