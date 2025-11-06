@@ -356,6 +356,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
                     if (targetCollider.TryGetComponent<PlayerController>(out PlayerController playerScript))
                     {
                         playerScript.OnAttack(damage, 1, 0.1f, transform);
+                        break;
                     }
                     else
                     {
