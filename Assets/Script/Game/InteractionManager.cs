@@ -8,12 +8,12 @@ public class InteractionManager : MonoBehaviour
     public bool canHoldInput = true;
 
     [Header("사용 설정")]
-    public bool canInteraction = true;
     public bool isReusable = false;
 
     [Header("UI")]
     public GameObject triggerUI; // 상호작용 UI
 
+    bool canInteraction = true;
     bool isPlayerInRange = false;
     bool hasUI = false;
 
@@ -43,6 +43,7 @@ public class InteractionManager : MonoBehaviour
             }
             CallInteractionEfficiently();
         }
+
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -112,5 +113,18 @@ public class InteractionManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void canInteract(bool isTrue)
+    {
+        canInteraction = isTrue;
+        if (isTrue && IsPlayerInArea())
+        {
+            InteractionOn();
+        }
+        else
+        {
+            InteractionOff();
+        }
     }
 }
