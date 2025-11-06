@@ -5,20 +5,27 @@ public class TimeManager : MonoBehaviour
 {
     public static TimeManager instance;
 
+    public float nomalTimeScale = 1;
+
     private void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(gameObject);
     }
 
+    private void Start()
+    {
+        Time.timeScale = nomalTimeScale;
+    }
+
     public static void ResetTime()
     {
-        Time.timeScale = 1;
+        Time.timeScale = instance.nomalTimeScale = 1;
     }
 
     public static void SetTimeSpeed(float value)
     {
-        Time.timeScale = value;
+        Time.timeScale = value * instance.nomalTimeScale;
     }
 
     /// <summary>
@@ -26,7 +33,7 @@ public class TimeManager : MonoBehaviour
     /// </summary>
     public static void StartTimedSlowMotion(float duration, float timeScale)
     {
-        Time.timeScale = timeScale;
+        Time.timeScale = timeScale * instance.nomalTimeScale;
         instance.StartCoroutine(instance.RestoreTimeScaleRoutine(duration));
     }
 
@@ -36,6 +43,6 @@ public class TimeManager : MonoBehaviour
         float targetTime = startTime + duration;
         yield return new WaitUntil(() => Time.realtimeSinceStartup >= targetTime);
 
-        Time.timeScale = 1f;
+        Time.timeScale = nomalTimeScale;
     }
 }
