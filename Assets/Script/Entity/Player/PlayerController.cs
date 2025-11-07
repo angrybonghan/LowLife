@@ -422,6 +422,9 @@ public class PlayerController : MonoBehaviour
                 newEffect.transform.localScale.z);
 
             transform.position = shieldInstance.transform.position;
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            SetCoyote(0);
+
             CatchShield();
             DepleteShieldGauge(shieldLeapShieldGaugeDecrease);
             CameraMovement.RotationShaking(1f, 0.05f, 0.2f);
