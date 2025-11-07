@@ -81,11 +81,6 @@ public class SlagMovement : MonoBehaviour, I_Attackable
     {
         playerObject = PlayerController.instance.gameObject;
 
-        if (playerObject == null)
-        {
-            Debug.LogError("플레이어 없음");
-        }
-
         isFacingRight = true;
         SetState(state.idle);
     }
@@ -95,20 +90,27 @@ public class SlagMovement : MonoBehaviour, I_Attackable
         if (isDead) return;
 
         UpdateStates();
-        switch (currentState)
+        if (playerObject != null)
         {
-            case state.idle:
-                if (IsPlayerInView())
-                {
-                    SetState(state.doubt);
-                }
+            switch (currentState)
+            {
+                case state.idle:
+                    if (IsPlayerInView())
+                    {
+                        SetState(state.doubt);
+                    }
 
-                break;
+                    break;
 
-            case state.track:
-                TrackHandler();
+                case state.track:
+                    TrackHandler();
 
-                break;
+                    break;
+            }
+        }
+        else if (currentState != state.idle)
+        {
+            SetState(state.idle);
         }
     }
 
@@ -120,7 +122,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
         rb.velocity = Vector3.zero;
         currentNormalizedSpeed = 0;
 
-        if (targetState == state.idle)
+        if (targetState == state.idle || playerObject == null)
         {
             movePosRight = movePosLeft = transform.position;
             movePosRight.x += moveRadius;
