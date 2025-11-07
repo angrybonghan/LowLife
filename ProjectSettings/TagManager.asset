@@ -42,6 +42,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: SpeechBubble
+    uniqueID: 2662898955
+    locked: 0
   - name: Crosshair
     uniqueID: 2447632547
     locked: 0

@@ -35,6 +35,7 @@ public class HitReaction : MonoBehaviour, I_Destructible
         if (reactionText == null || reactionText.Length == 0)
         {
             this.enabled = false;
+            return;
         }
 
         haveInteractionObj = interactionObj != null;

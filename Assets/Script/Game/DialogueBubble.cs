@@ -50,4 +50,30 @@ public class DialogueBubble : MonoBehaviour
     {
         transform.position = targetPosition;
     }
+
+    public void SetOrderInLayer(int value)
+    {
+        SetGameObjectOrder(bubbleBody, value);
+
+        dialogueText.sortingOrder = value + 1;
+        SetGameObjectOrder(upperTail, value + 1);
+        SetGameObjectOrder(lowerTail, value + 1);
+    }
+
+    void SetGameObjectOrder(GameObject go, int order)
+    {
+        if (go != null)
+        {
+            SpriteRenderer spriteRenderer = go.GetComponent<SpriteRenderer>();
+
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.sortingOrder = order;
+            }
+            else
+            {
+                Debug.LogWarning(go.name + "에 SpriteRenderer 컴포넌트 없음");
+            }
+        }
+    }
 }
