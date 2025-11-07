@@ -23,6 +23,7 @@ public class CameraMovement : MonoBehaviour
     private Vector2 shakePositionOffset = Vector2.zero; // 위치 흔들림에 대한 오프셋
     private Vector3 mainRotation;   // 회전값
     private Transform positionTrackingTarget;   // 위치 추적 대상
+    private Vector3 lastTrackingTargetPos;
     private Transform rotationTrackingTarget;   // 회전 추적 대상
     // 코루틴 저장 변수
     private Coroutine panCoroutine;
@@ -67,6 +68,12 @@ public class CameraMovement : MonoBehaviour
         {
             mainRotation = NormalizeAngles(mainRotation);
         }
+
+        if (positionTrackingTarget != null)
+        {
+            lastTrackingTargetPos = positionTrackingTarget.position;
+        }
+        
     }
 
     private void LateUpdate()
@@ -143,23 +150,25 @@ public class CameraMovement : MonoBehaviour
     {
         while (true)
         {
-            Vector2 targetPosition = positionTrackingTarget.transform.position + offset;
+            Vector2 targetPosition = positionTrackingTarget == null ? lastTrackingTargetPos : positionTrackingTarget.transform.position + offset;
 
-            //if ((mainPosition - new Vector3(targetPosition.x, targetPosition.y, currentZ)).sqrMagnitude > Threshold * Threshold)
-            //{
-            //    float posX = Mathf.Lerp(mainPosition.x, targetPosition.x, cameraTrackingSpeed * Time.deltaTime);
-            //    //float posX = targetPosition.x;
+            /*
+            if ((mainPosition - new Vector3(targetPosition.x, targetPosition.y, currentZ)).sqrMagnitude > Threshold * Threshold)
+            {
+                float posX = Mathf.Lerp(mainPosition.x, targetPosition.x, cameraTrackingSpeed * Time.deltaTime);
+                //float posX = targetPosition.x;
 
-            //    float posY;
+                float posY;
 
-            //    posY = Mathf.Lerp(mainPosition.y, targetPosition.y, (cameraTrackingSpeed / yTrackingDampening) * Time.deltaTime);
+                posY = Mathf.Lerp(mainPosition.y, targetPosition.y, (cameraTrackingSpeed / yTrackingDampening) * Time.deltaTime);
 
-            //    mainPosition = new Vector3(
-            //        posX,
-            //        posY,
-            //        currentZ
-            //    );
-            //}
+                mainPosition = new Vector3(
+                    posX,
+                    posY,
+                    currentZ
+                );
+            }
+            */
 
             float posX = Mathf.Lerp(mainPosition.x, targetPosition.x, cameraTrackingSpeed * Time.deltaTime);
             //float posX = targetPosition.x;
