@@ -119,6 +119,11 @@ public class MsMovement : MonoBehaviour, I_Attackable
         else if (currentState != state.idle)
         {
             SetState(state.idle);
+
+            if (exclamationMark != null)
+            {
+                Destroy(exclamationMark.gameObject);
+            }
         }
     }
 
