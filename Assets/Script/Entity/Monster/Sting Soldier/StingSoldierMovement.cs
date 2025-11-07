@@ -64,12 +64,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
 
     void Start()
     {
-        playerObject = GameObject.FindWithTag("Player");
-
-        if (playerObject == null)
-        {
-            Debug.LogError("플레이어 없음");
-        }
+        playerObject = PlayerController.instance.gameObject;
 
         SetState(state.idle);
     }
@@ -80,12 +75,19 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
 
         if (currentState == state.idle)
         {
+            if (playerObject == null) return;
+
             float distanceToPlayer = Vector3.Distance(idleStartPos, playerObject.transform.position);
 
             if (distanceToPlayer <= detectionRange)
             {
                 SetState(state.track);
             }
+        }
+        else if (playerObject == null)
+        {
+            SetState(state.idle);
+            return;
         }
         else if (currentState == state.track)
         {
@@ -124,7 +126,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         IdleMovementCoroutine = null;
         AttackMovementCoroutine = null;
 
-        if (targetState == state.idle)
+        if (targetState == state.idle || playerObject == null)
         {
             currentState = state.idle;
             idleStartPos = transform.position;

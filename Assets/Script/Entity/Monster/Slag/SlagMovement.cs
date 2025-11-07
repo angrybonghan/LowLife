@@ -79,7 +79,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
 
     void Start()
     {
-        playerObject = GameObject.FindWithTag("Player");
+        playerObject = PlayerController.instance.gameObject;
 
         if (playerObject == null)
         {
