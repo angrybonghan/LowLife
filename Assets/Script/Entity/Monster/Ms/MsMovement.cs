@@ -87,11 +87,6 @@ public class MsMovement : MonoBehaviour, I_Attackable
     {
         playerObject = PlayerController.instance.gameObject;
 
-        if (playerObject == null)
-        {
-            Debug.LogError("플레이어 없음");
-        }
-
         isFacingRight = true;
         SetState(state.idle);
     }
@@ -101,23 +96,30 @@ public class MsMovement : MonoBehaviour, I_Attackable
         if (isDead) return;
         UpdateStates();
 
-        switch (currentState)
+        if (playerObject != null)
         {
-            case state.idle:
-                if (IsPlayerInView())
-                {
-                    SetState(state.doubt);
-                }
+            switch (currentState)
+            {
+                case state.idle:
+                    if (IsPlayerInView())
+                    {
+                        SetState(state.doubt);
+                    }
 
-                break;
+                    break;
 
-            case state.track:
-                TrackHandler();
+                case state.track:
+                    TrackHandler();
 
-                break;
+                    break;
+            }
+
+            if (isAiming) RotatePartsToLookAtPlayer();
         }
-
-        if (isAiming) RotatePartsToLookAtPlayer();
+        else if (currentState != state.idle)
+        {
+            SetState(state.idle);
+        }
     }
 
     void SetState(state targetState)
@@ -128,7 +130,7 @@ public class MsMovement : MonoBehaviour, I_Attackable
         rb.velocity = Vector3.zero;
         currentNormalizedSpeed = 0;
 
-        if (targetState == state.idle)
+        if (targetState == state.idle || playerObject == null)
         {
             movePosRight = movePosLeft = transform.position;
             movePosRight.x += moveRadius;
@@ -318,6 +320,11 @@ public class MsMovement : MonoBehaviour, I_Attackable
 
     bool IsPlayerInView()
     {
+        if (!CanSeePlayer())
+        {
+            return false;
+        }
+
         Vector2 localAdjustedOffset = new Vector2(viewOffset.x * facingSign, viewOffset.y);
         Vector2 worldCenter = (Vector2)transform.position + localAdjustedOffset;
 
@@ -328,23 +335,17 @@ public class MsMovement : MonoBehaviour, I_Attackable
             playerLayer             // 감지할 레이어
         );
 
-        bool isPlayerInView = false;
-
         if (hitTargets.Length > 0)
         {
             foreach (Collider2D targetCollider in hitTargets)
             {
                 if (targetCollider.CompareTag("Player"))
                 {
-                    isPlayerInView = true;
-                    break;
+                    return true;
                 }
             }
         }
-
-        if (!isPlayerInView) return false;
-
-        return CanSeePlayer();
+        return false;
     }
 
     bool IsPlayerInRange()
