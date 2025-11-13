@@ -65,7 +65,8 @@ public class PlayerController : MonoBehaviour
     public GameObject postProcessVolumeObject;  // 원거리 모드에서 켜질 화면 필터 (Post-process Volume) 오브젝트
 
     [Header("방패 도약")]
-    public float shieldLeapShieldGaugeDecrease = 0.5f;
+    public float shieldLeapShieldGaugeDecrease = 0.5f;  // 방패 도약에서 감소되는 방패 게이지 수치
+    public float minShieldLeapShieldGauge = 0.5f;   // 방패 도약을 하기 위해 필요한 최소 방패 게이지 수치
     public GameObject shieldLeapAirEffectPrefab; // 방패 도약 이펙트 프리팹 - 공중
     public GameObject shieldLeapGroundImpactPrefab; // 방패 도약 이펙트 프리팹 - 지상
     public GameObject shieldLeapWallSlideEffectPrefab; // 방패 도약 이펙트 프리팹 - 월 슬라이딩
@@ -394,7 +395,7 @@ public class PlayerController : MonoBehaviour
     {
         if (shieldScript == null) return;
         if (hasShield || shieldScript.isReturning) return;
-        if (shieldGauge < shieldLeapShieldGaugeDecrease) return;
+        if (shieldGauge < minShieldLeapShieldGauge) return;
 
         if (Input.GetMouseButtonDown(0))
         {
