@@ -7,6 +7,11 @@ public class TimeManager : MonoBehaviour
 
     public float nomalTimeScale = 1;
 
+    float timedSlowMotionValue = 1;
+    float fadeTimeScaleValue = 1;
+
+    Coroutine fadeTimeScaleCoroutine;
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -15,7 +20,29 @@ public class TimeManager : MonoBehaviour
 
     private void Start()
     {
+        nomalTimeScale = Mathf.Max(nomalTimeScale, 0);
         Time.timeScale = nomalTimeScale;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            FadeTimeScale(1, 0);
+        }
+        else if (Input.GetKeyDown(KeyCode.O))
+        {
+            FadeTimeScale(1, 0.2f);
+        }
+        else if (Input.GetKeyDown(KeyCode.P))
+        {
+            FadeTimeScale(1, 1);
+        }
+    }
+
+    private void LateUpdate()
+    {
+        Time.timeScale = nomalTimeScale * timedSlowMotionValue * fadeTimeScaleValue;
     }
 
     public static void ResetTime()
@@ -23,26 +50,58 @@ public class TimeManager : MonoBehaviour
         Time.timeScale = instance.nomalTimeScale = 1;
     }
 
-    public static void SetTimeSpeed(float value)
+    /// <summary>
+    /// 인수 : 목표 타임스케일
+    /// </summary>
+    public static void SetTimeScale(float value)
     {
         Time.timeScale = value * instance.nomalTimeScale;
     }
 
     /// <summary>
-    /// 인수 : 길이 - 타임스케일
+    /// 인수 : 동작 길이 - 목표 타임스케일
     /// </summary>
-    public static void StartTimedSlowMotion(float duration, float timeScale)
+    public static void StartTimedSlowMotion(float duration, float multiplierValue)
     {
-        Time.timeScale = timeScale * instance.nomalTimeScale;
-        instance.StartCoroutine(instance.RestoreTimeScaleRoutine(duration));
+        instance.timedSlowMotionValue = multiplierValue * instance.nomalTimeScale;
+        instance.StartCoroutine(instance.Co_StartTimedSlowMotion(duration));
     }
 
-    IEnumerator RestoreTimeScaleRoutine(float duration)
+    IEnumerator Co_StartTimedSlowMotion(float duration)
     {
         float startTime = Time.realtimeSinceStartup;
         float targetTime = startTime + duration;
         yield return new WaitUntil(() => Time.realtimeSinceStartup >= targetTime);
 
-        Time.timeScale = nomalTimeScale;
+        timedSlowMotionValue = nomalTimeScale;
+    }
+
+    /// <summary>
+    /// 인수 : 기간(작동시간) - 목표 타임스케일
+    /// </summary>
+    public static void FadeTimeScale(float duration, float timeScale)
+    {
+        timeScale = Mathf.Max(timeScale, 0);
+        if (instance.fadeTimeScaleCoroutine != null) instance.StopCoroutine(instance.fadeTimeScaleCoroutine);
+        instance.fadeTimeScaleCoroutine = instance.StartCoroutine(instance.Co_FadeTimeScale(duration, timeScale));
+    }
+
+    IEnumerator Co_FadeTimeScale(float duration, float targetTimeScale)
+    {
+        if (duration > 0)
+        {
+            float startScale = Time.timeScale;
+            float time = 0f;
+
+            while (time < duration)
+            {
+                fadeTimeScaleValue = Mathf.Lerp(startScale, targetTimeScale, time / duration);
+                time += Time.unscaledDeltaTime;
+                yield return null;
+            }
+        }
+
+
+        fadeTimeScaleValue = targetTimeScale;
     }
 }
