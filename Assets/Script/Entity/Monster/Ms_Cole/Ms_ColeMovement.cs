@@ -164,6 +164,7 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
         while (true)
         {
             float sign = isFacingRight ? 1f : -1f;
+            // 삼항연산이랑 데이트하기 null일차
 
             while (!HasArrived(targetPos) && canGoStraight)
             {

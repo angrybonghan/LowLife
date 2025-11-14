@@ -84,6 +84,8 @@ public class FussZone : MonoBehaviour
         // 삼항연산 안에 삼항연산이 있는거임.
         // 그럼 이 삼항연산이 삼항연산을 임신했다고 볼 수 있는 거임???????
 
+        // ??? : 임삼항연산은 어지러운게 맞아요
+
         return targetText;
     }
 

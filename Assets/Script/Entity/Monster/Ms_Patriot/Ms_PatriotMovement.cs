@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(BoxCollider2D))]
@@ -22,7 +23,7 @@ public class Ms_PatriotMovement : MonoBehaviour
     [Header("플레이어 감지")]
     public Transform exclamationMarkPos;    // 느낌표 위치
     public GameObject exclamationMarkObj;    // 느낌표 프리팹
-    public float detectionTime = 1.0f;  // 발각도 충전 시간
+    public float detectionTime = 0.2f;  // 발각도 충전 시간
     public float detectionCancelTime = 0.5f;  // 의심 해제 시간
     public float detectionDecayTime = 2.0f; // 발각도 감소 시간
 
@@ -32,6 +33,13 @@ public class Ms_PatriotMovement : MonoBehaviour
 
     [Header("공격 범위")]
     public float attackRange;
+
+    [Header("공격")]
+    public Transform firePoint;
+    public GameObject projectile;
+    public float readyToAttackTime = 0.6f;  // 공격의 준비 시간 (총 들기, 내리기)
+    public float fireTime = 0.6666f;          // 조준 시간 (이후 발사)
+    public float reloadTime = 1f;  // 공격의 준비 시간 (재장전)
 
     private float currentNormalizedSpeed = 0;   // 정규화된 속도
     private float detectionRate = 0;    // 발각의 정도
@@ -47,7 +55,7 @@ public class Ms_PatriotMovement : MonoBehaviour
     Vector3 movePosLeft;
     Vector3 targetPos;
 
-    public enum state { idle, doubt, attack }
+    public enum state { idle, doubt, attack, endAttack }
     state currentState;
 
     private Rigidbody2D rb;
@@ -77,12 +85,38 @@ public class Ms_PatriotMovement : MonoBehaviour
         if (isDead) return;
         UpdateStates();
 
+        if (playerObject != null)
+        {
+            if (currentState == state.idle)
+            {
+                if (IsPlayerInView())
+                {
+                    exclamationMark = Instantiate(exclamationMarkObj).GetComponent<ExclamationMarkHandler>();
+                    exclamationMark.SetTargetPos(exclamationMarkPos);
 
+                    SetState(state.doubt);
+                }
+            }
+        }
+        else if (currentState != state.idle)
+        {
+            SetState(state.idle);
 
+            if (exclamationMark != null)
+            {
+                Destroy(exclamationMark.gameObject);
+            }
+        }
     }
 
     void SetState(state targetState)
     {
+        StopAllCoroutines();
+        currentState = targetState;
+
+        rb.velocity = Vector3.zero;
+        currentNormalizedSpeed = 0;
+
         if (targetState == state.idle || playerObject == null)
         {
             movePosRight = movePosLeft = transform.position;
@@ -93,6 +127,18 @@ public class Ms_PatriotMovement : MonoBehaviour
 
             StartCoroutine(IdleMovement());
         }
+        else if (targetState == state.doubt)
+        {
+            StartCoroutine(DoubtHandler());
+        }
+        else if (targetState == state.attack)
+        {
+            StartCoroutine(AttackHandler());
+        }
+        else if (targetState == state.endAttack)
+        {
+            StartCoroutine(EndAttack());
+        }
     }
 
     IEnumerator IdleMovement()
@@ -100,6 +146,8 @@ public class Ms_PatriotMovement : MonoBehaviour
         while (true)
         {
             float sign = isFacingRight ? 1f : -1f;
+            // 삼항으!!!!!!악!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // 너무 아름다워. 너무 고귀해. 내 그대를 위하여 국화꽃을 따리다.
 
             while (!HasArrived(targetPos) && canGoStraight)
             {
@@ -138,6 +186,135 @@ public class Ms_PatriotMovement : MonoBehaviour
         UpdateStates();
     }
 
+    IEnumerator DoubtHandler()
+    {
+        float TimeSincePlayerLost = 0;
+        while (true)
+        {
+            if (IsPlayerInView()) detectionRate += Time.deltaTime / detectionTime;
+            else detectionRate -= Time.deltaTime / detectionDecayTime;
+
+            detectionRate = Mathf.Clamp01(detectionRate);
+            exclamationMark.SetGaugeValue(detectionRate);
+
+            if (detectionRate == 1)
+            {
+                SetState(state.attack);
+            }
+
+            if (detectionRate == 0)
+            {
+                TimeSincePlayerLost += Time.deltaTime;
+                if (TimeSincePlayerLost >= detectionCancelTime)
+                {
+                    if (exclamationMark != null) Destroy(exclamationMark);
+
+                    Destroy(exclamationMark.gameObject);
+                    SetState(state.endAttack);
+                }
+            }
+            else
+            {
+                TimeSincePlayerLost = 0;
+                LookPos(playerObject.transform.position);
+            }
+
+
+            yield return null;
+        }
+    }
+
+    IEnumerator AttackHandler()
+    {
+        anim.SetTrigger("readyToAttack");
+
+        yield return new WaitForSeconds(readyToAttackTime);
+
+        while (IsPlayerInRange())
+        {
+            LookPos(playerObject.transform.position);
+            anim.SetTrigger("fire");
+            yield return new WaitForSeconds(fireTime);
+            Attack();
+            yield return new WaitForSeconds(reloadTime);
+
+        }
+
+        SetState(state.doubt);
+    }
+
+    IEnumerator EndAttack()
+    {
+        anim.SetTrigger("endAttack");
+        yield return new WaitForSeconds(readyToAttackTime);
+        SetState(state.idle);
+    }
+
+    void Attack()
+    {
+        //EnemyProjectile ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<EnemyProjectile>();
+        //ep.SetTarget(playerObject.transform);
+    }
+
+    bool IsPlayerInRange()
+    {
+        bool inRange = Vector3.Distance(transform.position, playerObject.transform.position) < attackRange;
+
+        return CanSeePlayer() && inRange;
+    }
+
+    bool IsPlayerInView()
+    {
+        if (!CanSeePlayer())
+        {
+            return false;
+        }
+
+        Vector2 localAdjustedOffset = new Vector2(viewOffset.x * facingSign, viewOffset.y);
+        Vector2 worldCenter = (Vector2)transform.position + localAdjustedOffset;
+
+        Collider2D[] hitTargets = Physics2D.OverlapBoxAll(
+            worldCenter,            // 중심 위치
+            viewSize,             // 크기
+            0f,                     // 회전 각도
+            playerLayer             // 감지할 레이어
+        );
+
+        if (hitTargets.Length > 0)
+        {
+            foreach (Collider2D targetCollider in hitTargets)
+            {
+                if (targetCollider.CompareTag("Player"))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool CanSeePlayer()
+    {
+        Vector2 startPos = transform.position;
+        Vector2 endPos = playerObject.transform.position;
+        Vector2 direction = (endPos - startPos).normalized;
+        float distance = Vector3.Distance(startPos, endPos);
+
+        RaycastHit2D hit = Physics2D.Raycast(startPos, direction, distance, obstacleMask);
+        if (hit.collider != null) return false;
+        return true;
+    }
+
+    void LookPos(Vector2 targetPos)
+    {
+        float directionX = targetPos.x - transform.position.x;
+
+        if (directionX != 0 && (directionX > 0) != isFacingRight)
+        {
+            Flip();
+        }
+    }
+
     void UpdateStates()
     {
         movePosRight.y = movePosLeft.y = targetPos.y = transform.position.y;
@@ -151,8 +328,9 @@ public class Ms_PatriotMovement : MonoBehaviour
 
         anim.SetBool("isMoving", isMoving);
         anim.SetFloat("moveSpeed", currentNormalizedSpeed);
-
     }
+
+    
 
     private void OnDrawGizmosSelected()
     {
