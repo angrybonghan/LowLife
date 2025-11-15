@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
 public class SlagMovement : MonoBehaviour, I_Attackable
 {
     [Header("움직임")]
@@ -66,7 +66,6 @@ public class SlagMovement : MonoBehaviour, I_Attackable
 
     private Rigidbody2D rb;
     private Animator anim;
-    private BoxCollider2D boxCol;
     private ExclamationMarkHandler exclamationMark;
 
     GameObject playerObject;    // 플레이어 오브젝트
@@ -75,7 +74,6 @@ public class SlagMovement : MonoBehaviour, I_Attackable
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        boxCol = GetComponent<BoxCollider2D>();
     }
 
     void Start()
@@ -475,7 +473,6 @@ public class SlagMovement : MonoBehaviour, I_Attackable
         float timer = 0f;
         Vector3 initialScale = transform.localScale;
         Vector3 targetScale = Vector3.zero;
-        boxCol.isTrigger = false;
 
         while (timer < deathDuration)
         {
