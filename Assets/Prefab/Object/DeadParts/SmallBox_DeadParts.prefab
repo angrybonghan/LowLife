@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4320322161713126697}
   - component: {fileID: 1976427026231878976}
   - component: {fileID: 4184199790032076852}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Rope1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 7057430717245595337}
   - component: {fileID: 832715042763573685}
   - component: {fileID: 768441854879495809}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Rope2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -370,7 +370,7 @@ GameObject:
   - component: {fileID: 8021599531655206139}
   - component: {fileID: 6489044437065266534}
   - component: {fileID: 487347799851088978}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SmallBox2_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -548,7 +548,7 @@ GameObject:
   - component: {fileID: 7982401271401212465}
   - component: {fileID: 2669408735110447323}
   - component: {fileID: 3456655681469074091}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SmallBox5_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -726,7 +726,7 @@ GameObject:
   - component: {fileID: 3937332082409651104}
   - component: {fileID: 6504279767909463880}
   - component: {fileID: 5262055177748097654}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SmallBox4_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -904,7 +904,7 @@ GameObject:
   - component: {fileID: 3975360788650248876}
   - component: {fileID: 4385293095043688126}
   - component: {fileID: 272209554092226907}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SmallBox7_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1082,7 +1082,7 @@ GameObject:
   - component: {fileID: 2779304971688900184}
   - component: {fileID: 8908945884669897201}
   - component: {fileID: 3229163061861983686}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SmallBox6_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1260,7 +1260,7 @@ GameObject:
   - component: {fileID: 9034013151600472617}
   - component: {fileID: 760951340629701042}
   - component: {fileID: 7662866639432586434}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SmallBox8_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1438,7 +1438,7 @@ GameObject:
   - component: {fileID: 2563791323192483456}
   - component: {fileID: 1603660018059661948}
   - component: {fileID: 3796823587156862759}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SmallBox3_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1613,7 +1613,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4456197578953116039}
   - component: {fileID: 9004747101065331644}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SmallBox_DeadParts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1670,7 +1670,7 @@ GameObject:
   - component: {fileID: 2033298784798476463}
   - component: {fileID: 6246270490839698186}
   - component: {fileID: 8125847469562417535}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SmallBox1_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}

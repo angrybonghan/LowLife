@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3873176708293057022}
   - component: {fileID: 6154428270192865916}
   - component: {fileID: 5714488496511062332}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigRope1 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 6731251682345867671}
   - component: {fileID: 944727796122916315}
   - component: {fileID: 6166294927008553684}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigBox2_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -373,7 +373,7 @@ GameObject:
   - component: {fileID: 9164410843677258510}
   - component: {fileID: 4527688891549736169}
   - component: {fileID: 7624745785507217747}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigBox5_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -550,7 +550,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6209718789686349680}
   - component: {fileID: 3764673310245109156}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Box_DeadParts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -609,7 +609,7 @@ GameObject:
   - component: {fileID: 583751305373793442}
   - component: {fileID: 3619186585061512258}
   - component: {fileID: 6744243324596581935}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigBox8_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -789,7 +789,7 @@ GameObject:
   - component: {fileID: 4281803657039511095}
   - component: {fileID: 5857732383654095786}
   - component: {fileID: 7393644341163779576}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigBox3_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -967,7 +967,7 @@ GameObject:
   - component: {fileID: 4571885326949825582}
   - component: {fileID: 3945362482398174161}
   - component: {fileID: 1363997793191322107}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigBox1_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1147,7 +1147,7 @@ GameObject:
   - component: {fileID: 12164898623955743}
   - component: {fileID: 1094102853664264381}
   - component: {fileID: 9055524609650509398}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigRope1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1327,7 +1327,7 @@ GameObject:
   - component: {fileID: 638679338284704562}
   - component: {fileID: 4462222557214405152}
   - component: {fileID: 9158549732627813975}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigRope2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1507,7 +1507,7 @@ GameObject:
   - component: {fileID: 7524227417551697669}
   - component: {fileID: 8575809254219172530}
   - component: {fileID: 3495490959348987851}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigBox7_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1687,7 +1687,7 @@ GameObject:
   - component: {fileID: 156577840180568644}
   - component: {fileID: 6641532440452495746}
   - component: {fileID: 1557823701307833234}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigBox4_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1865,7 +1865,7 @@ GameObject:
   - component: {fileID: 5477489867734608320}
   - component: {fileID: 7711629960701049485}
   - component: {fileID: 984105486989203365}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigRope2 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2045,7 +2045,7 @@ GameObject:
   - component: {fileID: 1013085803407856398}
   - component: {fileID: 5758813970676044227}
   - component: {fileID: 1074703015386950594}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BigBox6_Fragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}

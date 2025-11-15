@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(BoxCollider2D))]
-public class Ms_PatriotMovement : MonoBehaviour
+public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
 {
     [Header("움직임")]
     public float maxSpeed = 5.5f; // 최대 움직임 속도
@@ -40,6 +40,10 @@ public class Ms_PatriotMovement : MonoBehaviour
     public float readyToAttackTime = 0.6f;  // 공격의 준비 시간 (총 들기, 내리기)
     public float fireTime = 0.6666f;          // 조준 시간 (이후 발사)
     public float reloadTime = 1f;  // 공격의 준비 시간 (재장전)
+
+    [Header("죽음")]
+    public float deathDuration = 2; // 죽는 시간
+    public float fallingOutPower = 15; // 죽었을 때 날아갈 힘
 
     private float currentNormalizedSpeed = 0;   // 정규화된 속도
     private float detectionRate = 0;    // 발각의 정도
@@ -91,11 +95,12 @@ public class Ms_PatriotMovement : MonoBehaviour
             {
                 if (IsPlayerInView())
                 {
-                    exclamationMark = Instantiate(exclamationMarkObj).GetComponent<ExclamationMarkHandler>();
-                    exclamationMark.SetTargetPos(exclamationMarkPos);
-
                     SetState(state.doubt);
                 }
+            }
+            else if (currentState == state.attack)
+            {
+                AttackHandler();
             }
         }
         else if (currentState != state.idle)
@@ -129,11 +134,14 @@ public class Ms_PatriotMovement : MonoBehaviour
         }
         else if (targetState == state.doubt)
         {
+            exclamationMark = Instantiate(exclamationMarkObj).GetComponent<ExclamationMarkHandler>();
+            exclamationMark.SetTargetPos(exclamationMarkPos);
+
             StartCoroutine(DoubtHandler());
         }
         else if (targetState == state.attack)
         {
-            StartCoroutine(AttackHandler());
+            StartCoroutine(Co_AttackHandler());
         }
         else if (targetState == state.endAttack)
         {
@@ -224,23 +232,48 @@ public class Ms_PatriotMovement : MonoBehaviour
         }
     }
 
-    IEnumerator AttackHandler()
+    void AttackHandler()
+    {
+        if (IsPlayerInRange())
+        {
+            detectionRate = 1;
+            exclamationMark.SetGaugeValue(detectionRate);
+            return;
+        }
+
+        if (IsPlayerInView())
+        {
+            detectionRate += Time.deltaTime / detectionTime;
+        }
+        else
+        {
+            detectionRate -= Time.deltaTime / detectionDecayTime;
+        }
+
+        detectionRate = Mathf.Clamp01(detectionRate);
+        exclamationMark.SetGaugeValue(detectionRate);
+
+        if (detectionRate == 0)
+        {
+            Destroy(exclamationMark.gameObject);
+            SetState(state.endAttack);
+        }
+    }
+
+    IEnumerator Co_AttackHandler()
     {
         anim.SetTrigger("readyToAttack");
-
         yield return new WaitForSeconds(readyToAttackTime);
 
-        while (IsPlayerInRange())
+        while (true)
         {
+            yield return new WaitUntil(() => IsPlayerInRange());
             LookPos(playerObject.transform.position);
             anim.SetTrigger("fire");
             yield return new WaitForSeconds(fireTime);
             Attack();
             yield return new WaitForSeconds(reloadTime);
-
         }
-
-        SetState(state.doubt);
     }
 
     IEnumerator EndAttack()
@@ -252,8 +285,8 @@ public class Ms_PatriotMovement : MonoBehaviour
 
     void Attack()
     {
-        //EnemyProjectile ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<EnemyProjectile>();
-        //ep.SetTarget(playerObject.transform);
+        Ms_PatriotProjectile ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<Ms_PatriotProjectile>();
+        ep.SetTarget(playerObject.transform);
     }
 
     bool IsPlayerInRange()
@@ -330,7 +363,56 @@ public class Ms_PatriotMovement : MonoBehaviour
         anim.SetFloat("moveSpeed", currentNormalizedSpeed);
     }
 
-    
+    public void OnAttack(Transform attackerTransform)
+    {
+        if (isDead) return;
+
+        isDead = true;
+
+        Vector2 direction = (transform.position - attackerTransform.position).normalized;
+        rb.velocity = Vector2.zero;
+        rb.AddForce(direction * fallingOutPower, ForceMode2D.Impulse);
+        rb.freezeRotation = false;
+        rb.gravityScale = 1f;
+        rb.AddTorque(GetRandom(-20, 20));
+        if (exclamationMark != null) Destroy(exclamationMark.gameObject);
+
+        anim.SetTrigger("die");
+        StopAllCoroutines();
+        StartCoroutine(Dead());
+    }
+
+    public bool CanAttack()
+    {
+        return true;
+    }
+
+    float GetRandom(float min, float max)
+    {
+        return Random.Range(min, max);
+    }
+
+    IEnumerator Dead()
+    {
+        float timer = 0f;
+        Vector3 initialScale = transform.localScale;
+        Vector3 targetScale = Vector3.zero;
+        boxCol.isTrigger = false;
+
+        while (timer < deathDuration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / deathDuration;
+
+            transform.localScale = Vector3.Lerp(initialScale, targetScale, t);
+
+            yield return null;
+        }
+
+        Destroy(gameObject);
+    }
+
 
     private void OnDrawGizmosSelected()
     {
