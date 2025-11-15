@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
 public class Ms_ColeMovement : MonoBehaviour, I_Attackable
 {
     [Header("움직임")]
@@ -16,7 +16,8 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
 
     [Header("지형 감지")]
     public Transform wallCheckPos;  // 벽
-    public Transform groundCheckPos;    // 땅
+    public Transform upperGroundCheckPos;    // 땅 위쪽
+    public Transform lowerGroundCheckPos;    // 땅 아래쪽
     public float layerCheckRadius = 0.05f;  // 감지 위치 반경
 
     [Header("공격")]
@@ -68,7 +69,6 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
 
     private Rigidbody2D rb;
     private Animator anim;
-    private BoxCollider2D boxCol;
     private ExclamationMarkHandler exclamationMark;
 
     GameObject playerObject;    // 플레이어 오브젝트
@@ -77,7 +77,6 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        boxCol = GetComponent<BoxCollider2D>();
     }
 
     void Start()
@@ -407,7 +406,9 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
     {
         movePosRight.y = movePosLeft.y = targetPos.y = transform.position.y;
 
-        bool isGrounded = Physics2D.OverlapCircle(groundCheckPos.position, layerCheckRadius, obstacleMask);
+        bool upperGroundDetect = Physics2D.OverlapCircle(upperGroundCheckPos.position, layerCheckRadius, obstacleMask);
+        bool lowerGroundDetect = Physics2D.OverlapCircle(lowerGroundCheckPos.position, layerCheckRadius, obstacleMask);
+        bool isGrounded = upperGroundDetect || lowerGroundDetect;
         bool isTouchingAnyWall = Physics2D.OverlapCircle(wallCheckPos.position, layerCheckRadius, obstacleMask);
 
         canGoStraight = isGrounded && !isTouchingAnyWall;
@@ -453,7 +454,6 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
         float timer = 0f;
         Vector3 initialScale = transform.localScale;
         Vector3 targetScale = Vector3.zero;
-        boxCol.isTrigger = false;
 
         while (timer < deathDuration)
         {
@@ -505,7 +505,8 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
         }
 
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(groundCheckPos.position, layerCheckRadius);
+        Gizmos.DrawWireSphere(upperGroundCheckPos.position, layerCheckRadius);
+        Gizmos.DrawWireSphere(lowerGroundCheckPos.position, layerCheckRadius);
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(wallCheckPos.position, layerCheckRadius);
         Gizmos.color = Color.white;
