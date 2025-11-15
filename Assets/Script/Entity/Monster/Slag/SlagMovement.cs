@@ -12,7 +12,8 @@ public class SlagMovement : MonoBehaviour, I_Attackable
 
     [Header("지형 감지")]
     public Transform wallCheckPos;  // 벽
-    public Transform groundCheckPos;    // 땅
+    public Transform upperGroundCheckPos;    // 땅 위쪽
+    public Transform lowerGroundCheckPos;    // 땅 아래쪽
 
     [Header("공격")]
     public float readyToAttackTime = 0.5f;  // 공격의 준비 시간
@@ -425,7 +426,10 @@ public class SlagMovement : MonoBehaviour, I_Attackable
     {
         movePosRight.y = movePosLeft.y = targetPos.y = transform.position.y;
 
-        bool isGrounded = Physics2D.OverlapCircle(groundCheckPos.position, layerCheckRadius, obstacleMask);
+        bool upperGroundDetect = Physics2D.OverlapCircle(upperGroundCheckPos.position, layerCheckRadius, obstacleMask);
+        bool lowerGroundDetect = Physics2D.OverlapCircle(lowerGroundCheckPos.position, layerCheckRadius, obstacleMask);
+
+        bool isGrounded = upperGroundDetect || lowerGroundDetect;
         bool isTouchingAnyWall = Physics2D.OverlapCircle(wallCheckPos.position, layerCheckRadius, obstacleMask);
 
         canGoStraight = isGrounded && !isTouchingAnyWall;
@@ -527,7 +531,8 @@ public class SlagMovement : MonoBehaviour, I_Attackable
         }
 
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(groundCheckPos.position, 0.05f);
+        Gizmos.DrawWireSphere(upperGroundCheckPos.position, 0.05f);
+        Gizmos.DrawWireSphere(lowerGroundCheckPos.position, 0.05f);
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(wallCheckPos.position, 0.05f);
         Gizmos.color = Color.white;
