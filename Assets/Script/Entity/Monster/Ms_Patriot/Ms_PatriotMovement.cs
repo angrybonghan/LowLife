@@ -2,7 +2,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
 public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
 {
     [Header("움직임")]
@@ -13,7 +13,8 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
 
     [Header("지형 감지")]
     public Transform wallCheckPos;  // 벽
-    public Transform groundCheckPos;    // 땅
+    public Transform upperGroundCheckPos;    // 땅 위쪽
+    public Transform lowerGroundCheckPos;    // 땅 아래쪽
     public float layerCheckRadius = 0.05f;  // 감지 위치 반경
 
     [Header("레이어, 캐스트")]
@@ -52,6 +53,7 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
     private bool canGoStraight = true;  // 직진 가능 여부 (벽이 없고 땅이 있어야 함)
     private bool isMoving = false;  // 움직이고 있는지 여부
     private bool isDead = false;    // 죽었는지 여부
+    private bool isAttackCharging = false; // 공격 충전 중인지 여부
 
     private int facingSign = 1; // 바라보는 방향
 
@@ -64,7 +66,6 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
 
     private Rigidbody2D rb;
     private Animator anim;
-    private BoxCollider2D boxCol;
     private ExclamationMarkHandler exclamationMark;
 
     GameObject playerObject;    // 플레이어 오브젝트
@@ -73,7 +74,6 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        boxCol = GetComponent<BoxCollider2D>();
     }
 
     void Start()
@@ -101,6 +101,11 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
             else if (currentState == state.attack)
             {
                 AttackHandler();
+
+                if (isAttackCharging)
+                {
+                    LookPos(playerObject.transform.position);
+                }
             }
         }
         else if (currentState != state.idle)
@@ -121,6 +126,8 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
 
         rb.velocity = Vector3.zero;
         currentNormalizedSpeed = 0;
+
+        isAttackCharging = false;
 
         if (targetState == state.idle || playerObject == null)
         {
@@ -268,10 +275,11 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
         while (true)
         {
             yield return new WaitUntil(() => IsPlayerInRange());
-            LookPos(playerObject.transform.position);
             anim.SetTrigger("fire");
+            isAttackCharging = true;
             yield return new WaitForSeconds(fireTime);
             Attack();
+            isAttackCharging = false;
             yield return new WaitForSeconds(reloadTime);
         }
     }
@@ -352,7 +360,9 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
     {
         movePosRight.y = movePosLeft.y = targetPos.y = transform.position.y;
 
-        bool isGrounded = Physics2D.OverlapCircle(groundCheckPos.position, layerCheckRadius, obstacleMask);
+        bool upperGroundDetect = Physics2D.OverlapCircle(upperGroundCheckPos.position, layerCheckRadius, obstacleMask);
+        bool lowerGroundDetect = Physics2D.OverlapCircle(lowerGroundCheckPos.position, layerCheckRadius, obstacleMask);
+        bool isGrounded = upperGroundDetect || lowerGroundDetect;
         bool isTouchingAnyWall = Physics2D.OverlapCircle(wallCheckPos.position, layerCheckRadius, obstacleMask);
 
         canGoStraight = isGrounded && !isTouchingAnyWall;
@@ -397,7 +407,6 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
         float timer = 0f;
         Vector3 initialScale = transform.localScale;
         Vector3 targetScale = Vector3.zero;
-        boxCol.isTrigger = false;
 
         while (timer < deathDuration)
         {
@@ -450,7 +459,8 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
         }
 
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(groundCheckPos.position, layerCheckRadius);
+        Gizmos.DrawWireSphere(upperGroundCheckPos.position, layerCheckRadius);
+        Gizmos.DrawWireSphere(lowerGroundCheckPos.position, layerCheckRadius);
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(wallCheckPos.position, layerCheckRadius);
         Gizmos.color = Color.white;

@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4903607588367101292}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1894897386680801130
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 200916564330249620}
+  m_Layer: 10
+  m_Name: lowerGroundCheckPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &200916564330249620
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894897386680801130}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.7, y: -1.7, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4903607588367101292}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2279765005156895858
 GameObject:
   m_ObjectHideFlags: 0
@@ -72,7 +103,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4903607588367101292}
   - component: {fileID: 5885649175425731340}
-  - component: {fileID: 8762686887917666206}
+  - component: {fileID: 9128023064002656900}
   - component: {fileID: 7058339926218764253}
   - component: {fileID: 399636638214956679}
   m_Layer: 10
@@ -98,6 +129,7 @@ Transform:
   - {fileID: 5011467190885540979}
   - {fileID: 2499634874083178008}
   - {fileID: 8340986143185591778}
+  - {fileID: 200916564330249620}
   - {fileID: 7489184062790589291}
   - {fileID: 1705173871007498756}
   m_Father: {fileID: 0}
@@ -119,7 +151,8 @@ MonoBehaviour:
   trunDuration: 0.5
   acceleration: 2
   wallCheckPos: {fileID: 2499634874083178008}
-  groundCheckPos: {fileID: 8340986143185591778}
+  upperGroundCheckPos: {fileID: 8340986143185591778}
+  lowerGroundCheckPos: {fileID: 200916564330249620}
   layerCheckRadius: 0.05
   obstacleMask:
     serializedVersion: 2
@@ -138,12 +171,12 @@ MonoBehaviour:
   firePoint: {fileID: 1705173871007498756}
   projectile: {fileID: 4933377370252658386, guid: 54a169c0e5af9de46adace3243b3612b, type: 3}
   readyToAttackTime: 0.6
-  fireTime: 0.6666
+  fireTime: 0.66666
   reloadTime: 1.5
   deathDuration: 2
   fallingOutPower: 15
---- !u!61 &8762686887917666206
-BoxCollider2D:
+--- !u!70 &9128023064002656900
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -175,18 +208,8 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
   m_Size: {x: 0.8, y: 1.75}
-  m_EdgeRadius: 0
+  m_Direction: 0
 --- !u!50 &7058339926218764253
 Rigidbody2D:
   serializedVersion: 4
@@ -276,7 +299,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8340986143185591778}
   m_Layer: 10
-  m_Name: GroundCheckPos
+  m_Name: upperGroundCheckPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
