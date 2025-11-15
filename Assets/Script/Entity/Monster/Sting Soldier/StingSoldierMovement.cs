@@ -126,11 +126,12 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         IdleMovementCoroutine = null;
         AttackMovementCoroutine = null;
 
+        currentState = targetState;
+        rb.velocity = Vector2.zero;
+
         if (targetState == state.idle || playerObject == null)
         {
-            currentState = state.idle;
             idleStartPos = transform.position;
-            rb.velocity = Vector2.zero;
 
             if (IdleMovementCoroutine != null)
             {
@@ -139,19 +140,11 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
 
             IdleMovementCoroutine = StartCoroutine(IdleMovement());
         }
-        else if (targetState == state.track)
+        else if (targetState == state.attack)
         {
-            currentState = state.track;
-            rb.velocity = Vector2.zero;
-        }
-        else
-        {
-            currentState = state.attack;
-            rb.velocity = Vector2.zero;
-
             if (AttackMovementCoroutine != null)
             {
-                StopCoroutine(IdleMovementCoroutine);
+                StopCoroutine(AttackMovementCoroutine);
             }
 
             AttackMovementCoroutine = StartCoroutine(AttackMovement());
