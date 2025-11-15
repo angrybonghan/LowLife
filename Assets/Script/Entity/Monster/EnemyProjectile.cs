@@ -13,6 +13,7 @@ public class EnemyProjectile : MonoBehaviour
     public float lifeTime = 10;
 
     bool isParried = false;
+    bool isDead = false;
 
     private Rigidbody2D rb;
 
@@ -49,6 +50,8 @@ public class EnemyProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (isDead) return;
+
         if (!isParried)
         {
             if (other.CompareTag("Player"))
@@ -62,6 +65,7 @@ public class EnemyProjectile : MonoBehaviour
                 else
                 {
                     pc.OnAttack(damage, knockbackPower, knockbacktime, transform);
+                    isDead = true;
                 }
             }
         }
@@ -72,13 +76,9 @@ public class EnemyProjectile : MonoBehaviour
             {
                 attackableTarget.OnAttack(transform);
             }
+            isDead = true;
         }
 
-        Die();
-    }
-
-    void Die()
-    {
         Destroy(gameObject);
     }
 

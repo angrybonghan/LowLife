@@ -22,6 +22,7 @@ public class Ms_PatriotProjectile : MonoBehaviour
     public GameObject explosionEffect;
 
     bool isParried = false;
+    bool isDead = false;
 
     float currentLifeTime = 0;
 
@@ -107,12 +108,12 @@ public class Ms_PatriotProjectile : MonoBehaviour
                 }
             }
         }
-
-        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (isDead) return;
+
         if (!isParried)
         {
             if (other.CompareTag("Player"))
@@ -126,10 +127,12 @@ public class Ms_PatriotProjectile : MonoBehaviour
             }
 
             Explode();
+            isDead = true;
         }
         else
         {
             ParryExplode();
+            isDead = true;
         }
 
         Destroy(gameObject);
