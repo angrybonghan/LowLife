@@ -165,8 +165,8 @@ MonoBehaviour:
   detectionTime: 0.2
   detectionCancelTime: 0.5
   detectionDecayTime: 2
-  viewOffset: {x: 5, y: 4.1}
-  viewSize: {x: 10, y: 10}
+  viewOffset: {x: 6, y: 0}
+  viewSize: {x: 12, y: 15}
   attackRange: 14
   firePoint: {fileID: 1705173871007498756}
   projectile: {fileID: 4933377370252658386, guid: 54a169c0e5af9de46adace3243b3612b, type: 3}
@@ -190,7 +190,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 18432
+    m_Bits: 19456
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
