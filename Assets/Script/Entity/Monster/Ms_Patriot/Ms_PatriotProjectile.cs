@@ -131,15 +131,6 @@ public class Ms_PatriotProjectile : MonoBehaviour
         isParried = true;
     }
 
-    public void SetTarget(Transform target)
-    {
-        Vector3 direction = target.position - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
-
-        transform.rotation = targetRotation;
-    }
-
     public void SetFacing(Vector2 target)
     {
         Vector2 direction = target - (Vector2)transform.position;
