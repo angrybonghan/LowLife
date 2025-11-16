@@ -51,7 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackRange: 12
   dashChrgeTime: 0.3333333
-  dashSpeed: 32
+  dashSpeed: 40
   targetCollisionMask:
     serializedVersion: 2
     m_Bits: 2816
@@ -61,6 +61,10 @@ MonoBehaviour:
   damage: 0.03448
   knockbackPower: 0.5
   knockbacktime: 0.06
+  signalRange: 7
+  maxSignalCount: 1
+  hasSignal: 0
+  signalInputTime: 0.1
   afterDeathLayer:
     serializedVersion: 2
     m_Bits: 130103

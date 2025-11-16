@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CircleCollider2D))]
 public class RashMovement : MonoBehaviour, I_Attackable
@@ -17,6 +19,12 @@ public class RashMovement : MonoBehaviour, I_Attackable
     public float damage = 0.24f;
     public float knockbackPower = 1f;
     public float knockbacktime = 0.05f;
+
+    [Header("시그널")]
+    public float signalRange = 5;   // 신호의 범위
+    public float maxSignalCount = 1;    // 신호를 보낼 수 있는 최대 개체 수
+    public bool hasSignal = false;  // 이미 신호를 받았는지 여부 (시작 시 false로 고정됨)
+    public float signalInputTime = 0.2f; // 신호를 받았을 때 대기 시간
 
     [Header("사망 후 제외 레이어")]
     public LayerMask afterDeathLayer;
@@ -50,6 +58,7 @@ public class RashMovement : MonoBehaviour, I_Attackable
     {
         playerObject = PlayerController.instance.gameObject;
         isFacingRight = true;
+        hasSignal = false;
         currentState = state.idle;
 
         if (Random.value > 0.5f) Flip();
@@ -102,8 +111,11 @@ public class RashMovement : MonoBehaviour, I_Attackable
 
     IEnumerator Co_RashMovement()
     {
-        yield return new WaitUntil(() => IsPlayerInRange() && CanSeePlayer());
+        yield return new WaitUntil(() => (IsPlayerInRange() && CanSeePlayer()) || hasSignal);
         currentState = state.readyToRush;
+        if (hasSignal) yield return new WaitForSeconds(signalInputTime);
+        hasSignal = true;
+        SendSignal();
         anim.SetTrigger("readyToRush");
         yield return new WaitForSeconds(dashChrgeTime);
 
@@ -112,6 +124,36 @@ public class RashMovement : MonoBehaviour, I_Attackable
 
         currentState = state.rush;
         anim.SetTrigger("rush");
+    }
+
+    void SendSignal()
+    {
+        var allRashes = FindObjectsOfType<RashMovement>();
+
+        var potentialTargets = allRashes
+            .Where(rash => rash != this && rash.hasSignal == false)
+            .Select(rash => new
+            {
+                Target = rash,
+                Distance = Vector3.Distance(transform.position, rash.transform.position)
+            })
+            .ToList();
+
+        var sortedTargets = potentialTargets.OrderBy(t => t.Distance);
+        var closestTargets = sortedTargets.Take((int)maxSignalCount);
+
+        foreach (var target in closestTargets)
+        {
+            if (target.Distance < signalRange)
+            {
+                target.Target.SignalInput();
+            }
+        }
+    }
+
+    public void SignalInput()
+    {
+        hasSignal = true;
     }
 
     bool IsPlayerInRange()
@@ -254,5 +296,8 @@ public class RashMovement : MonoBehaviour, I_Attackable
     {
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(transform.position, signalRange);
+
     }
 }
