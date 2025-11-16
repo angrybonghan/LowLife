@@ -123,7 +123,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
         StopAllCoroutines();
         currentState = targetState;
 
-        rb.velocity = Vector3.zero;
+        rb.velocity = Vector2.zero;
         currentNormalizedSpeed = 0;
 
         if (targetState == state.idle || playerObject == null)
