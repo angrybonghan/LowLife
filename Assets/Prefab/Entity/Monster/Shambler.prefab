@@ -72,7 +72,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7596261896034317118}
   - component: {fileID: 9124325386169447894}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 8686147039021856065}
   - component: {fileID: 250245763051673366}
   - component: {fileID: 3940851745364890402}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Shambler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
