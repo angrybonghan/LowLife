@@ -28,6 +28,8 @@ public class ExclamationMarkHandler : MonoBehaviour
 
     public void SetGaugeValue(float value)
     {
+        if (sizeObj == null) return;
+
         value = Mathf.Clamp01(value);
 
         float originalXSize = sizeObj.transform.localScale.x;
