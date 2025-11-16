@@ -54,10 +54,7 @@ MonoBehaviour:
   knockbacktime: 0.1
   explosionTargetLayer:
     serializedVersion: 2
-    m_Bits: 2048
-  enemyExplosionTargetLayer:
-    serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 3072
   speed: 10
   lifeTime: 5
   trackingPower: 1.5

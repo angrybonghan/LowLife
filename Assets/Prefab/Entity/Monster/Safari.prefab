@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2544209133523767768}
   - component: {fileID: 4820445207433927050}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 223212139450839479}
   - component: {fileID: 5113815021277606261}
   - component: {fileID: 2706370820354273507}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Safari
   m_TagString: Untagged
   m_Icon: {fileID: 0}
