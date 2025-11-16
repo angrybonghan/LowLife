@@ -11,7 +11,6 @@ public class Ms_PatriotProjectile : MonoBehaviour
 
     [Header("레이어")]
     public LayerMask explosionTargetLayer;
-    public LayerMask enemyExplosionTargetLayer;
 
     [Header("이동")]
     public float speed = 5.0f;
@@ -23,6 +22,7 @@ public class Ms_PatriotProjectile : MonoBehaviour
 
     bool isParried = false;
     bool isDead = false;
+    bool wasHitPlayer = false;
 
     float currentLifeTime = 0;
 
@@ -52,8 +52,7 @@ public class Ms_PatriotProjectile : MonoBehaviour
         currentLifeTime += Time.deltaTime;
         if (currentLifeTime >= lifeTime)
         {
-            if (isParried) ParryExplode();
-            else Explode();
+            Explode();
         }
     }
 
@@ -66,29 +65,10 @@ public class Ms_PatriotProjectile : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, trackingPower * Time.fixedDeltaTime);
     }
 
-    void ParryExplode()
-    {
-        Collider2D[] hitTargets = Physics2D.OverlapCircleAll(
-            transform.position,                 // 중심 위치
-            explosionRadius,                    // 반경
-            enemyExplosionTargetLayer                // 감지할 레이어 마스크
-        );
-
-        foreach (Collider2D other in hitTargets)
-        {
-            I_Attackable attackableTarget = other.GetComponent<I_Attackable>();
-
-            if (attackableTarget != null && !other.CompareTag("Player"))
-            {
-                attackableTarget.OnAttack(transform);
-            }
-        }
-
-        Destroy(gameObject);
-    }
-
     void Explode()
     {
+        isDead = true;
+
         Collider2D[] hitTargets = Physics2D.OverlapCircleAll(
             transform.position,                 // 중심 위치
             explosionRadius,                    // 반경
@@ -101,13 +81,23 @@ public class Ms_PatriotProjectile : MonoBehaviour
             {
                 PlayerController pc = other.GetComponent<PlayerController>();
 
-                if (pc != null)
+                if (pc != null && !wasHitPlayer)
                 {
                     pc.OnAttack(damage, knockbackPower, knockbacktime, transform);
-                    break;
+                    wasHitPlayer = true;
                 }
+                continue;
+            }
+
+            I_Attackable attackableTarget = other.GetComponent<I_Attackable>();
+
+            if (attackableTarget != null && !other.CompareTag("Player"))
+            {
+                attackableTarget.OnAttack(transform);
             }
         }
+
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -127,15 +117,8 @@ public class Ms_PatriotProjectile : MonoBehaviour
             }
 
             Explode();
-            isDead = true;
         }
-        else
-        {
-            ParryExplode();
-            isDead = true;
-        }
-
-        Destroy(gameObject);
+        else Explode();
     }
 
     void Parry()
