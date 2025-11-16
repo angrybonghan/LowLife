@@ -52,7 +52,7 @@ MonoBehaviour:
   attackRange: 12
   dashChrgeTime: 0.3333333
   dashSpeed: 21
-  playerCenterOffset: 0.25
+  playerCenterOffset: -0.25
   targetCollisionMask:
     serializedVersion: 2
     m_Bits: 2816
