@@ -8,7 +8,6 @@ public class RashMovement : MonoBehaviour, I_Attackable
     public float attackRange = 5; // 공격의 범위
     public float dashChrgeTime = 5; // 공격의 충전 시간
     public float dashSpeed = 5; // 공격의 속도
-    public float playerCenterOffset = 0.25f;    // 플레이어 좌표로부터 플레이어 중심 오프셋
 
     [Header("레이캐스트")]
     public LayerMask targetCollisionMask; // 충돌을 검사할 레이어 마스크
@@ -32,6 +31,8 @@ public class RashMovement : MonoBehaviour, I_Attackable
 
     public enum state { idle, readyToRush, rush }
     state currentState;
+
+    Vector3 directionToPlayer;
 
     CircleCollider2D CirCol;
     Rigidbody2D rb;
@@ -74,8 +75,7 @@ public class RashMovement : MonoBehaviour, I_Attackable
 
     void RushMoveAndCollide()
     {
-        Vector3 forwardDirection = isFacingRight ? transform.right : -transform.right;
-        Vector3 movement = forwardDirection * dashSpeed * Time.deltaTime;
+        Vector3 movement = directionToPlayer * dashSpeed * Time.deltaTime;
 
         float distance = movement.magnitude;
         float radius = CirCol.radius * Mathf.Abs(transform.localScale.x);
@@ -107,6 +107,9 @@ public class RashMovement : MonoBehaviour, I_Attackable
         anim.SetTrigger("readyToRush");
         yield return new WaitForSeconds(dashChrgeTime);
 
+        directionToPlayer = playerObject.transform.position - transform.position;
+        directionToPlayer = directionToPlayer.normalized;
+
         currentState = state.rush;
         anim.SetTrigger("rush");
     }
@@ -132,10 +135,7 @@ public class RashMovement : MonoBehaviour, I_Attackable
     {
         if (playerObject == null) return;
 
-        Vector3 targetPos = playerObject.transform.position;
-        targetPos.y += playerCenterOffset;
-
-        LookPos(targetPos);
+        LookPos(playerObject.transform.position);
 
         float targetAngle = GetVerticalProximity() * 90;
         targetAngle *= isFacingRight ? 1 : -1;
@@ -147,10 +147,7 @@ public class RashMovement : MonoBehaviour, I_Attackable
     {
         if (playerObject == null) return 0f;
 
-        Vector3 targetPosition = playerObject.transform.position;
-        targetPosition.y += playerCenterOffset;
-
-        Vector3 direction = targetPosition - transform.position;
+        Vector3 direction = playerObject.transform.position - transform.position;
         Vector2 normalizedDirection = direction.normalized;
         float verticalComponent = normalizedDirection.y;
 
