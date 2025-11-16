@@ -107,6 +107,10 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
                     break;
             }
         }
+        else if (currentState != state.idle)
+        {
+            SetState(state.idle);
+        }
     }
 
     void SetState(state targetState)
