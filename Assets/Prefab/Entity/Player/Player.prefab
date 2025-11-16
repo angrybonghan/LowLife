@@ -88,7 +88,7 @@ MonoBehaviour:
   acceleration: 12
   deceleration: 50
   maxSpeed: 12
-  jumpForce: 10
+  jumpForce: 12
   quickTrunDuration: 0.3
   shieldSpeedMultiplier: 0.35
   dashDuration: 0.25
