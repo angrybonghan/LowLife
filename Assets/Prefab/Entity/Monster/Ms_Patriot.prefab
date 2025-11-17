@@ -175,6 +175,9 @@ MonoBehaviour:
   reloadTime: 1.5
   deathDuration: 2
   fallingOutPower: 15
+  afterDeathLayer:
+    serializedVersion: 2
+    m_Bits: 130103
 --- !u!70 &9128023064002656900
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

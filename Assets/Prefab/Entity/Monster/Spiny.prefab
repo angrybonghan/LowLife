@@ -144,8 +144,11 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 2048
-  deathDuration: 0.4
+  deathDuration: 2
   fallingOutPower: 15
+  afterDeathLayer:
+    serializedVersion: 2
+    m_Bits: 130103
 --- !u!95 &2616104792672795622
 Animator:
   serializedVersion: 5

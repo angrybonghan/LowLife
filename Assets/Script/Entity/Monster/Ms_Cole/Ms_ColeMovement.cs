@@ -49,6 +49,9 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
     public float deathDuration = 2; // 죽는 시간
     public float fallingOutPower = 15; // 죽었을 때 날아갈 힘
 
+    [Header("사망 후 제외 레이어")]
+    public LayerMask afterDeathLayer;
+
     private int facingSign = 1; // 바라보는 방향
 
     private float currentNormalizedSpeed = 0;   // 정규화된 속도
@@ -433,6 +436,9 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
         rb.gravityScale = 1f;
         rb.AddTorque(GetRandom(-20, 20));
         if (exclamationMark != null) Destroy(exclamationMark.gameObject);
+
+        CapsuleCollider2D capsuleCol = GetComponent<CapsuleCollider2D>();
+        capsuleCol.excludeLayers = afterDeathLayer;
 
         anim.SetTrigger("die");
         StopAllCoroutines();

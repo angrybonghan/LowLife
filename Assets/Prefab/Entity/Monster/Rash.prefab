@@ -69,7 +69,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 130103
   selfAttackPos: {fileID: 1719839856633578855}
-  deathDuration: 1
+  deathDuration: 2
   fallingOutPower: 15
 --- !u!58 &353435743526222579
 CircleCollider2D:
@@ -80,7 +80,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 759526881199925047}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: b18cfc565af7fc847abac6429c3f056e, type: 2}
+  m_Material: {fileID: 6200000, guid: aa993e7fa5258954cb3f946be1113914, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

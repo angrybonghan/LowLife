@@ -14,6 +14,9 @@ public class WiggleMovement : MonoBehaviour, I_Attackable
     public float deathDuration = 2; // 죽는 시간
     public float fallingOutPower = 15; // 죽었을 때 날아갈 힘
 
+    [Header("사망 후 제외 레이어")]
+    public LayerMask afterDeathLayer;
+
     public enum state { move, turn }
     private state currentState;
 
@@ -183,6 +186,7 @@ public class WiggleMovement : MonoBehaviour, I_Attackable
         rb.gravityScale = 1f;
         rb.AddTorque(GetRandom(-20, 20));
         boxCol.isTrigger = false;
+        boxCol.excludeLayers = afterDeathLayer;
         anim.SetTrigger("die");
         StopAllCoroutines();
         StartCoroutine(Dead());

@@ -51,8 +51,11 @@ MonoBehaviour:
   moveSpeed: 5
   moveRadius: 2
   rotationTime: 0.5
-  deathDuration: 0.4
+  deathDuration: 2
   fallingOutPower: 15
+  afterDeathLayer:
+    serializedVersion: 2
+    m_Bits: 130103
 --- !u!61 &3119887290570930252
 BoxCollider2D:
   m_ObjectHideFlags: 0

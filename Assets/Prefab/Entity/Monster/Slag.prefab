@@ -80,6 +80,9 @@ MonoBehaviour:
   detectionDecayTime: 3
   deathDuration: 2
   fallingOutPower: 15
+  afterDeathLayer:
+    serializedVersion: 2
+    m_Bits: 130103
 --- !u!70 &4192881435857556147
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
