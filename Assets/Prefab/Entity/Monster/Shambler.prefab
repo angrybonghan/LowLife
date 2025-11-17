@@ -306,6 +306,7 @@ MonoBehaviour:
   damage: 1
   knockbackPower: 1
   knockbacktime: 0.1
+  readyToAttackTimeAtTeamKill: 0.1
   explosionRadius: 2.3
   attackRadius: 1.75
   viewOffset: {x: 4.75, y: 0.25}

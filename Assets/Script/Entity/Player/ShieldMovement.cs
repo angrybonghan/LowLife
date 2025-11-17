@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D), typeof(Animator))]
 [RequireComponent(typeof(AudioSource))]
@@ -41,8 +42,20 @@ public class ShieldMovement : MonoBehaviour
     private PlayerController playerController;
     private AudioSource audioSource;
 
+    public static ShieldMovement shieldInstance;
+
     private void Awake()
     {
+        if (shieldInstance == null)
+        {
+            shieldInstance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         rb = GetComponent<Rigidbody2D>();
         circleCol = GetComponent<CircleCollider2D>();
         anim = GetComponent<Animator>();
@@ -182,5 +195,10 @@ public class ShieldMovement : MonoBehaviour
 
         int randomIndex = Random.Range(0, hitSounds.Length);
         AudioSource.PlayClipAtPoint(hitSounds[randomIndex], transform.position, 2f);
+    }
+
+    private void OnDestroy()
+    {
+        shieldInstance = null;
     }
 }

@@ -25,6 +25,9 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
     public float knockbackPower = 1f;
     public float knockbacktime = 0.1f;
 
+    [Header("팀 킬")]
+    public float readyToAttackTimeAtTeamKill = 0.1f;
+
     [Header("공격 범위")]
     public float explosionRadius = 2.0f;    // 공격의 범위
     public float attackRadius = 2.0f;   // 공격 시작의 범위
@@ -258,6 +261,8 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
 
     void StartExplosion()
     {
+        if (isExploding) return;
+        isExploding = true;
         StopAllCoroutines();
         StartCoroutine(Explosion());
     }
@@ -269,7 +274,6 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
         rb.velocity = Vector2.zero;
         currentNormalizedSpeed = 0;
 
-        isExploding = true;
         anim.SetTrigger("explosionPreparation");
         yield return new WaitForSeconds(readyToAttackTime);
         anim.SetTrigger("explosion");
@@ -396,6 +400,18 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
 
     public void OnAttack(Transform attacker)
     {
+        if (ShieldMovement.shieldInstance != null)
+        {
+            if (ShieldMovement.shieldInstance.transform.position != attacker.position)
+            {
+                readyToAttackTime = readyToAttackTimeAtTeamKill;
+            }
+        }
+        else
+        {
+            readyToAttackTime = readyToAttackTimeAtTeamKill;
+        }
+        
         StartExplosion();
     }
 
