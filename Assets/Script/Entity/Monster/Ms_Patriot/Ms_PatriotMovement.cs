@@ -293,7 +293,7 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
     void Attack()
     {
         Ms_PatriotProjectile ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<Ms_PatriotProjectile>();
-        ep.SetFacing(Vector3.forward * 999);
+        ep.SetFacing((Vector2)transform.position + (Vector2.right * (isFacingRight ? 99999 : -99999 )));
     }
 
     bool IsPlayerInRange()

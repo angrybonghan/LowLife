@@ -62,7 +62,7 @@ MonoBehaviour:
   knockbackPower: 0.5
   knockbacktime: 0.06
   signalRange: 7
-  maxSignalCount: 2
+  maxSignalCount: 1
   hasSignal: 0
   signalInputTime: 0.1
   afterDeathLayer:

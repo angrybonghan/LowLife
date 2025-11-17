@@ -69,6 +69,9 @@ MonoBehaviour:
     m_Bits: 2048
   deathDuration: 2
   fallingOutPower: 15
+  afterDeathLayer:
+    serializedVersion: 2
+    m_Bits: 130103
 --- !u!95 &1848330084019698097
 Animator:
   serializedVersion: 5
@@ -105,7 +108,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 3072
+    m_Bits: 19456
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

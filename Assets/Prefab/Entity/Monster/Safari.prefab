@@ -153,6 +153,9 @@ MonoBehaviour:
     m_Bits: 2048
   deathDuration: 2
   fallingOutPower: 15
+  afterDeathLayer:
+    serializedVersion: 2
+    m_Bits: 130103
 --- !u!61 &223212139450839479
 BoxCollider2D:
   m_ObjectHideFlags: 0
