@@ -34,6 +34,9 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
     public float deathDuration = 2; // 죽는 시간
     public float fallingOutPower = 15; // 죽었을 때 날아갈 힘
 
+    [Header("사망 후 제외 레이어")]
+    public LayerMask afterDeathLayer;
+
 
     float idleMovingStepDelay = 0.75f;  // Idle 상태에서 이동의 주기
 
@@ -416,6 +419,8 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         rb.freezeRotation = false;
         rb.gravityScale = 1f;
         rb.AddTorque(GetRandom(-20, 20));
+
+        boxCol.excludeLayers = afterDeathLayer;
 
         anim.SetTrigger("die");
         StopAllCoroutines();

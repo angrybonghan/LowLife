@@ -12,14 +12,21 @@ public class EnemyProjectile : MonoBehaviour
     public float speed = 5.0f;
     public float lifeTime = 10;
 
+    [Header("패링 후 제외 레이어")]
+    public LayerMask afterParryLayer;
+
     bool isParried = false;
     bool isDead = false;
 
-    private Rigidbody2D rb;
+    Rigidbody2D rb;
+    BoxCollider2D boxCol;
+    CircleCollider2D cirCol;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        boxCol = GetComponent<BoxCollider2D>();
+        cirCol = GetComponent<CircleCollider2D>();
     }
 
     private void Start()
@@ -46,6 +53,9 @@ public class EnemyProjectile : MonoBehaviour
         transform.rotation = targetRotation;
 
         isParried = true;
+
+        if (boxCol != null) boxCol.excludeLayers = afterParryLayer;
+        if (cirCol != null) cirCol.excludeLayers = afterParryLayer;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
