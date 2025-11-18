@@ -336,6 +336,12 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
 
         facingSign = isFacingRight ? 1 : -1;
 
+        if (currentState == state.attack)
+        {
+            rb.velocity = Vector3.zero;
+            currentNormalizedSpeed = 0;
+        }
+
         UpdateStates();
     }
 
