@@ -42,6 +42,7 @@ public class ShatterParticle : MonoBehaviour
     {
         SetRandomVelocity();
         SetRandomAngularVelocity();
+        SetRandomSize();
         if (canChangeColor) SetRandomColor();
 
         initialScale = transform.localScale;
