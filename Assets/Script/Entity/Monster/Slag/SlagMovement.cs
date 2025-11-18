@@ -16,12 +16,14 @@ public class SlagMovement : MonoBehaviour, I_Attackable
     public Transform lowerGroundCheckPos;    // 땅 아래쪽
 
     [Header("공격")]
-    public float readyToAttackTime = 0.5f;  // 공격의 준비 시간
+    public float readyToAttackTime = 0.5f;  // 공격으로 전환 시간
     public float attackChargeTime = 0.42f;  // 공격의 준비 시간
     public float attackCooldown = 0.35f;    // 공격 대기시간 (공격 쿨타임)
 
     [Header("대미지")]
     public float damage = 0.4f;  // 공격 대미지
+    public float knockbackPower = 1f;
+    public float knockbacktime = 0.05f;
 
     [Header("히트박스")]
     public Vector2 hitboxOffset = Vector2.zero;    // 히트박스 오프셋
@@ -364,7 +366,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
                 {
                     if (targetCollider.TryGetComponent<PlayerController>(out PlayerController playerScript))
                     {
-                        playerScript.OnAttack(damage, 1, 0.1f, transform);
+                        playerScript.OnAttack(damage, knockbackPower, knockbacktime, transform);
                         break;
                     }
                     else

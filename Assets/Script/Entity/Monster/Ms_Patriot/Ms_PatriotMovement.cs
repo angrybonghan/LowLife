@@ -18,7 +18,7 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
 
     [Header("레이어, 캐스트")]
     public LayerMask obstacleMask;  // 장애물을 감지할 레이어
-    public LayerMask playerLayer;   // 감지 레이어
+    public LayerMask playerLayer;   // 플레이어 감지 레이어
 
     [Header("플레이어 감지")]
     public Transform exclamationMarkPos;    // 느낌표 위치
