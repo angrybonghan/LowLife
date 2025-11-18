@@ -187,6 +187,8 @@ public class WiggleMovement : MonoBehaviour, I_Attackable
         rb.AddTorque(GetRandom(-20, 20));
         boxCol.isTrigger = false;
         boxCol.excludeLayers = afterDeathLayer;
+        GameManager.SwitchLayerTo("Particle", gameObject);
+
         anim.SetTrigger("die");
         StopAllCoroutines();
         StartCoroutine(Dead());

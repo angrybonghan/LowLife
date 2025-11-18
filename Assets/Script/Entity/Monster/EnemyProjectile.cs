@@ -1,7 +1,8 @@
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class EnemyProjectile : MonoBehaviour
+public class EnemyProjectile : MonoBehaviour, I_Projectile
 {
     [Header("АјАн")]
     public float damage = 0.3f;
@@ -56,6 +57,11 @@ public class EnemyProjectile : MonoBehaviour
 
         if (boxCol != null) boxCol.excludeLayers = afterParryLayer;
         if (cirCol != null) cirCol.excludeLayers = afterParryLayer;
+    }
+
+    public void Collision()
+    {
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

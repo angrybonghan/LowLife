@@ -422,6 +422,8 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
 
         boxCol.excludeLayers = afterDeathLayer;
 
+        GameManager.SwitchLayerTo("Particle", gameObject);
+
         anim.SetTrigger("die");
         StopAllCoroutines();
         StartCoroutine(Dead());

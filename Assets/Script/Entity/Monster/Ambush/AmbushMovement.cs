@@ -540,6 +540,8 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
         CapsuleCollider2D capsuleCol = GetComponent<CapsuleCollider2D>();
         capsuleCol.excludeLayers = afterDeathLayer;
 
+        GameManager.SwitchLayerTo("Particle", gameObject);
+
         anim.SetTrigger("die");
         StopAllCoroutines();
         StartCoroutine(Co_Dead());

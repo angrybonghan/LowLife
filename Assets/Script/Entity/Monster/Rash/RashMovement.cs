@@ -261,6 +261,8 @@ public class RashMovement : MonoBehaviour, I_Attackable
         CirCol.isTrigger = false;
         CirCol.excludeLayers = afterDeathLayer;
 
+        GameManager.SwitchLayerTo("Particle", gameObject);
+
         anim.SetTrigger("die");
         StopAllCoroutines();
         StartCoroutine(Dead());
