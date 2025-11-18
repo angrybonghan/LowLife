@@ -238,10 +238,10 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
 
     void AttackHandler()
     {
+        LookPos(playerObject.transform.position);
+
         if (currentNormalizedSpeed >= 0.505f)
         {
-            LookPos(playerObject.transform.position);
-
             if (IsPlayerInRange())
             {
                 Attack();
