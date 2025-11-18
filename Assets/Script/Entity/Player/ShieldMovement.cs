@@ -123,9 +123,6 @@ public class ShieldMovement : MonoBehaviour
         {
             targetDirection = (playerPostion.position - transform.position).normalized;
             currentSpeed = returnSpeed;
-
-            float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
         else
         {
@@ -150,8 +147,24 @@ public class ShieldMovement : MonoBehaviour
 
         if (hit.collider != null)
         {
-            transform.position = (Vector3)hit.point - (Vector3)movement.normalized * castRadius;
-            ExecuteCollisionLogic(hit.collider);
+            if (hit.collider.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
+            {
+                if (targetAttackable.CanAttack())
+                {
+                    transform.position = (Vector3)hit.point - (Vector3)movement.normalized * castRadius;
+                    ExecuteCollisionLogic(hit.collider);
+                }
+                else
+                {
+                    transform.position += movement;
+                }
+            }
+            else
+            {
+                transform.position = (Vector3)hit.point - (Vector3)movement.normalized * castRadius;
+                ExecuteCollisionLogic(hit.collider); 
+            }
+
             SetReturnState();
         }
         else
@@ -164,16 +177,13 @@ public class ShieldMovement : MonoBehaviour
     {
         if (other.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
         {
-            if (targetAttackable.CanAttack())
-            {
-                targetAttackable.OnAttack(transform);
+            targetAttackable.OnAttack(transform);
 
-                Instantiate(entityHitParticle_shape, lastHitPos, Quaternion.identity);
-                Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
-                PlayRandomHitSound();
-                TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
-                CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
-            }
+            Instantiate(entityHitParticle_shape, lastHitPos, Quaternion.identity);
+            Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
+            PlayRandomHitSound();
+            TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
+            CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
         }
         else if (other.TryGetComponent<I_Destructible>(out I_Destructible targetDestructible))
         {
