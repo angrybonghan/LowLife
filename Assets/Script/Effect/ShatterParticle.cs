@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using TreeEditor;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
 public class ShatterParticle : MonoBehaviour
@@ -8,11 +9,15 @@ public class ShatterParticle : MonoBehaviour
     [Header("가속 X")]
     public float maxXRange = 5f;
     [Header("가속 Y")]
-    public bool isYPositive = false;
+    public bool isYPositive = false;    // Y가 무조건 양수여야 하는지 여부
     public float maxYRange = 5f;
 
     [Header("회전")]
     public float AngularSpeed = 360f;
+
+    [Header("크기")]
+    public float maxSizeMultiples = 1.1f;
+    public float minSizeMultiples = 0.9f;
 
     [Header("색상")]
     public bool canChangeColor = true;
@@ -22,8 +27,6 @@ public class ShatterParticle : MonoBehaviour
     [Header("사라짐")]
     public float minShrinkDuration = 1.0f;
     public float maxShrinkDuration = 3.0f;
-
-
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -61,6 +64,11 @@ public class ShatterParticle : MonoBehaviour
         rb.angularVelocity = randomAngularVelocity;
     }
 
+    void SetRandomSize()
+    {
+        transform.localScale = transform.localScale * GetRandom(minSizeMultiples, maxSizeMultiples);
+    }
+
     void SetRandomColor()
     {
         float lerpValue = GetRandom(0.0f, 1.0f);
@@ -91,17 +99,8 @@ public class ShatterParticle : MonoBehaviour
 
     float GetRandom(float min, float max)
     {
-        if (max == min)
-        {
-            return max;
-        }
-        else if (min < max)
-        {
-            return Random.Range(min, max);
-        }
-        else
-        {
-            return Random.Range(max, min);
-        }
+        if (max == min) return max;
+        else if (min < max) return Random.Range(min, max);
+        else return Random.Range(max, min);
     }
 }
