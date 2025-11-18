@@ -123,7 +123,9 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
         StopAllCoroutines();
         currentState = targetState;
 
-        rb.velocity = Vector2.zero;
+        Vector2 originVelocity = rb.velocity;
+        originVelocity.x = 0;
+        rb.velocity = originVelocity;
         currentNormalizedSpeed = 0;
 
         if (targetState == state.idle || playerObject == null)
@@ -161,7 +163,9 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
                 rb.velocity = new Vector2(sign * currentNormalizedSpeed * maxSpeed, rb.velocity.y);
                 yield return null;
             }
-            rb.velocity = Vector3.zero;
+            Vector2 originVelocity = rb.velocity;
+            originVelocity.x = 0;
+            rb.velocity = originVelocity;
             currentNormalizedSpeed = 0;
 
             yield return new WaitForSeconds(trunDuration);
@@ -223,7 +227,9 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
         }
         else
         {
-            rb.velocity = Vector3.zero;
+            Vector2 originVelocity = rb.velocity;
+            originVelocity.x = 0;
+            rb.velocity = originVelocity;
             currentNormalizedSpeed = 0;
         }
 
@@ -270,8 +276,10 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
     IEnumerator Explosion()
     {
         if (exclamationMark != null) Destroy(exclamationMark.gameObject);
-        
-        rb.velocity = Vector2.zero;
+
+        Vector2 originVelocity = rb.velocity;
+        originVelocity.x = 0;
+        rb.velocity = originVelocity;
         currentNormalizedSpeed = 0;
 
         anim.SetTrigger("explosionPreparation");

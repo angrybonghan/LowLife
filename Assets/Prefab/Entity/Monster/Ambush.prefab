@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5012849554714283624}
   - component: {fileID: 1596412324521240715}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 8202120725765226382}
   - component: {fileID: 3696134390370405200}
   - component: {fileID: 5428218481559312281}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ambush
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -251,7 +251,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 105527
+    m_Bits: 89143
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

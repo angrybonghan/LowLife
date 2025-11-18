@@ -137,7 +137,9 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
         StopAllCoroutines();
         currentState = targetState;
 
-        rb.velocity = Vector2.zero;
+        Vector2 originVelocity = rb.velocity;
+        originVelocity.x = 0;
+        rb.velocity = originVelocity;
         currentNormalizedSpeed = 0;
 
         if (targetState == state.idle || playerObject == null)
@@ -182,7 +184,9 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
                 rb.velocity = new Vector2(sign * currentNormalizedSpeed * maxSpeed, rb.velocity.y);
                 yield return null;
             }
-            rb.velocity = Vector3.zero;
+            Vector2 originVelocity = rb.velocity;
+            originVelocity.x = 0;
+            rb.velocity = originVelocity;
             currentNormalizedSpeed = 0;
 
             yield return new WaitForSeconds(trunDuration);
@@ -304,7 +308,9 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
         }
         else
         {
-            rb.velocity = Vector3.zero;
+            Vector2 originVelocity = rb.velocity;
+            originVelocity.x = 0;
+            rb.velocity = originVelocity;
             currentNormalizedSpeed = 0;
         }
     }
@@ -338,7 +344,9 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
 
         if (currentState == state.attack)
         {
-            rb.velocity = Vector3.zero;
+            Vector2 originVelocity = rb.velocity;
+            originVelocity.x = 0;
+            rb.velocity = originVelocity;
             currentNormalizedSpeed = 0;
         }
 
