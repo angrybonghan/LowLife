@@ -39,6 +39,8 @@ public class ShieldMovement : MonoBehaviour
     private float LastAfterEffect = 0;  // 마지막 잔상 시간  (시간 계산용)
     private float castRadius;
 
+    Vector2 lastHitPos;
+
     // 참조용 변수
     private CircleCollider2D circleCol;
     private Animator anim;
@@ -144,6 +146,8 @@ public class ShieldMovement : MonoBehaviour
             isReturning ? returnCollisionMask : throwCollisionMask
         );
 
+        lastHitPos = hit.point;
+
         if (hit.collider != null)
         {
             transform.position = (Vector3)hit.point - (Vector3)movement.normalized * castRadius;
@@ -164,8 +168,8 @@ public class ShieldMovement : MonoBehaviour
             {
                 targetAttackable.OnAttack(transform);
 
-                Instantiate(entityHitParticle_shape, transform.position, Quaternion.identity);
-                Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
+                Instantiate(entityHitParticle_shape, lastHitPos, Quaternion.identity);
+                Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
                 PlayRandomHitSound();
                 TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
                 CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
@@ -177,7 +181,7 @@ public class ShieldMovement : MonoBehaviour
             {
                 targetDestructible.OnAttack();
 
-                Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
+                Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
                 CameraMovement.PositionShaking(0.5f, 0.05f, 0.15f);
             }
         }
@@ -187,7 +191,7 @@ public class ShieldMovement : MonoBehaviour
         }
         else if (groundLayer == (groundLayer | (1 << other.gameObject.layer)))
         {
-            Instantiate(groundHitParticle, particlePos.position, Quaternion.identity);
+            Instantiate(groundHitParticle, lastHitPos, Quaternion.identity);
         }
     }
 
