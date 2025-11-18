@@ -124,7 +124,6 @@ GameObject:
   - component: {fileID: 6952242348837909371}
   - component: {fileID: 8832889182749839318}
   - component: {fileID: 318854487923840362}
-  - component: {fileID: 8663214315899638827}
   - component: {fileID: 8531420106014333922}
   m_Layer: 13
   m_Name: Shild
@@ -166,12 +165,19 @@ MonoBehaviour:
   throwSpeed: 30
   returnSpeed: 80
   catchDistance: 1.25
+  shieldSize: 0.35
   groundLayer:
     serializedVersion: 2
     m_Bits: 768
   entityLayer:
     serializedVersion: 2
     m_Bits: 1024
+  returnCollisionMask:
+    serializedVersion: 2
+    m_Bits: 35840
+  throwCollisionMask:
+    serializedVersion: 2
+    m_Bits: 34560
   particlePos: {fileID: 2501141621642985761}
   groundHitParticle: {fileID: 4041333301960470708, guid: 35eed6bd6ce8d8248a97b02acb109df0, type: 3}
   entityHitParticle_shape: {fileID: 4041333301960470708, guid: f52e17a6c27b5ac40bfbbf74f007e95c, type: 3}
@@ -219,7 +225,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 92160
+    m_Bits: 92928
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -233,39 +239,12 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.35
---- !u!50 &8663214315899638827
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3792225553167996052}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!82 &8531420106014333922
 AudioSource:
   m_ObjectHideFlags: 0

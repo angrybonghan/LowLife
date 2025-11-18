@@ -23,3 +23,8 @@ public interface I_DialogueCallback
 {
     void OnDialogueEnd();
 }
+
+public interface I_Projectile
+{
+    void Collision();
+}
