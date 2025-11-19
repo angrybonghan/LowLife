@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 
-// 퀘스트 UI 텍스트 표시
 public class QuestUIController : MonoBehaviour
 {
     public TextMeshProUGUI questText;
@@ -18,7 +17,21 @@ public class QuestUIController : MonoBehaviour
         foreach (var quest in QuestManager.Instance.GetActiveQuests())
         {
             var state = QuestManager.Instance.GetQuestState(quest.questID);
-            display += $"<b>{quest.questName}</b> - {state}\n{quest.description}\n\n";
+
+            // 완료된 퀘스트는 UI에서 숨김
+            if (state == QuestState.Completed)
+                continue;
+
+            // 선행 퀘스트가 있고, 아직 완료되지 않았다면 숨김
+            if (!string.IsNullOrEmpty(quest.prerequisiteQuestID))
+            {
+                var prereqState = QuestManager.Instance.GetQuestState(quest.prerequisiteQuestID);
+                if (prereqState != QuestState.Completed)
+                    continue;
+            }
+
+            // 표시할 퀘스트 정보
+            display += $"<b>{quest.questName}</b>\n{quest.description}\n\n";
         }
 
         questText.text = display;

@@ -22,13 +22,16 @@ public class QuestInitializer : MonoBehaviour
         {
             if (quest.questType != QuestType.Combat) continue;
 
-            Vector3 origin = quest.questCenterPosition;
-            Gizmos.color = Color.red;
+            Vector3 center = quest.questCenterPosition;
 
-            Gizmos.DrawRay(origin, Vector3.up * quest.detectUp);
-            Gizmos.DrawRay(origin, Vector3.down * quest.detectDown);
-            Gizmos.DrawRay(origin, Vector3.left * quest.detectLeft);
-            Gizmos.DrawRay(origin, Vector3.right * quest.detectRight);
+            Vector3 size = new Vector3(
+                quest.detectLeft + quest.detectRight,
+                quest.detectUp + quest.detectDown,
+                1f
+            );
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(center, size);
         }
     }
 }

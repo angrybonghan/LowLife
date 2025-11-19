@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22b057228469eed4a8851095ee04d16e, type: 3}
   m_Name: NewQuest_1
   m_EditorClassIdentifier: 
-  questID: A-1
+  questID: A1
   questName: "NPC\uB300\uD654"
-  description: "NPC\uC640 \uB300\uD654 \uD788\uC138\uC694"
+  description: "NPC\uC640 \uB300\uD654 \uD558\uC138\uC694"
   prerequisiteQuestID: 
   questType: 0
   detectUp: 5

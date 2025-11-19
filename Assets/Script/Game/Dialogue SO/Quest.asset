@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Quest
   m_EditorClassIdentifier: 
   section:
-  - bubblePosition: {x: -21, y: -1, z: 0}
+  - bubblePosition: {x: -30, y: -1, z: 0}
     bubbleBodyOffset: 2
     isTailDown: 1
     sentence:
@@ -24,7 +24,7 @@ MonoBehaviour:
     autoSkip: 0
     autoSkipIntervalTime: 0
     typingSound: []
-  - bubblePosition: {x: -22.86, y: 0, z: 0}
+  - bubblePosition: {x: -32, y: 0, z: 0}
     bubbleBodyOffset: 0
     isTailDown: 1
     sentence:
@@ -34,7 +34,7 @@ MonoBehaviour:
     autoSkip: 0
     autoSkipIntervalTime: 0
     typingSound: []
-  - bubblePosition: {x: -21, y: -1, z: 0}
+  - bubblePosition: {x: -30, y: -1, z: 0}
     bubbleBodyOffset: 2
     isTailDown: 1
     sentence:
@@ -44,7 +44,7 @@ MonoBehaviour:
     autoSkip: 0
     autoSkipIntervalTime: 0
     typingSound: []
-  - bubblePosition: {x: -22.86, y: 0, z: 0}
+  - bubblePosition: {x: -32, y: 0, z: 0}
     bubbleBodyOffset: 0
     isTailDown: 1
     sentence:

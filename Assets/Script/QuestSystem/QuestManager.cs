@@ -1,118 +1,100 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-// 퀘스트 상태를 관리하고 퀘스트 진행을 처리하는 매니저
 public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance;
 
-    private Dictionary<string, QuestState> questStates = new Dictionary<string, QuestState>();
-    private List<QuestDataSO> activeQuests = new List<QuestDataSO>();
-
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        Instance = this;
     }
 
-    private void Update()
-    {
-        foreach (var quest in activeQuests)
-        {
-            if (questStates[quest.questID] != QuestState.InProgress) continue;
+    // 현재 등록된 퀘스트 목록
+    public List<QuestDataSO> activeQuests = new List<QuestDataSO>();
 
-            switch (quest.questType)
-            {
-                case QuestType.Combat:
-                    Vector3 origin = quest.questCenterPosition;
-                    bool enemyDetected = false;
-                    enemyDetected |= Physics.Raycast(origin, Vector3.up, quest.detectUp, quest.enemyLayer);
-                    enemyDetected |= Physics.Raycast(origin, Vector3.down, quest.detectDown, quest.enemyLayer);
-                    enemyDetected |= Physics.Raycast(origin, Vector3.left, quest.detectLeft, quest.enemyLayer);
-                    enemyDetected |= Physics.Raycast(origin, Vector3.right, quest.detectRight, quest.enemyLayer);
+    // 퀘스트 상태 저장 (ID → 상태)
+    private Dictionary<string, QuestState> questStates = new Dictionary<string, QuestState>();
 
-                    if (!enemyDetected)
-                        CompleteQuest(quest);
-                    break;
-            }
-        }
-    }
-
-    public void RegisterQuest(QuestDataSO quest)
-    {
-        if (!questStates.ContainsKey(quest.questID))
-            questStates.Add(quest.questID, QuestState.NotStarted);
-    }
-
+    // 퀘스트 등록
     public void AddToActiveQuests(QuestDataSO quest)
     {
         if (!activeQuests.Contains(quest))
         {
             activeQuests.Add(quest);
-            RegisterQuest(quest);
+            questStates[quest.questID] = QuestState.NotStarted;
         }
     }
 
+    // 퀘스트 시작
     public void StartQuest(string questID)
     {
-        QuestDataSO quest = activeQuests.Find(q => q.questID == questID);
+        QuestDataSO quest = GetQuestData(questID);
         if (quest == null) return;
-
-        if (!string.IsNullOrEmpty(quest.prerequisiteQuestID) &&
-            GetQuestState(quest.prerequisiteQuestID) != QuestState.Completed)
-            return;
 
         if (questStates[questID] == QuestState.NotStarted)
         {
             questStates[questID] = QuestState.InProgress;
 
+            // 구출 퀘스트용 NPC는 시작 시 숨김
             if (quest.npcToRescue != null)
                 quest.npcToRescue.SetActive(false);
 
-            if (quest.questType == QuestType.Dialogue)
-                CompleteQuest(quest);
+            // Dialogue 퀘스트는 자동 완료하지 않음 (수동으로 처리)
+            // 이전 코드: if (quest.questType == QuestType.Dialogue) CompleteQuest(quest);
+
+            // UI 갱신
+            FindObjectOfType<QuestUIController>()?.UpdateQuestText();
         }
     }
 
-    public void DeliverItem(string itemID)
+    // 퀘스트 완료
+    public void CompleteQuest(QuestDataSO quest)
     {
-        foreach (var quest in activeQuests)
-        {
-            if (quest.questType == QuestType.Delivery &&
-                quest.requiredItemID == itemID &&
-                questStates[quest.questID] == QuestState.InProgress)
-            {
-                CompleteQuest(quest);
-            }
-        }
-    }
+        if (questStates[quest.questID] != QuestState.InProgress) return;
 
-    private void CompleteQuest(QuestDataSO quest)
-    {
         questStates[quest.questID] = QuestState.Completed;
 
+        // 구출 NPC 등장
         if (quest.npcToRescue != null)
             quest.npcToRescue.SetActive(true);
 
-        AchievementManager.Instance.UnlockAchievement(quest.achievementID);
+        // 업적 해제
+        if (!string.IsNullOrEmpty(quest.achievementID))
+            AchievementManager.Instance.UnlockAchievement(quest.achievementID);
 
+        // 업적 팝업
         if (quest.achievementPopup != null)
-            quest.achievementPopup.SetActive(true);
+            Instantiate(quest.achievementPopup);
 
+        // 다음 퀘스트 자동 시작
         foreach (var nextQuest in activeQuests)
         {
-            if (nextQuest.prerequisiteQuestID == quest.questID &&
-                questStates[nextQuest.questID] == QuestState.NotStarted)
-            {
+            if (nextQuest.prerequisiteQuestID == quest.questID)
                 StartQuest(nextQuest.questID);
-            }
         }
+
+        // UI 갱신
+        FindObjectOfType<QuestUIController>()?.UpdateQuestText();
     }
 
+    // 퀘스트 상태 확인
     public QuestState GetQuestState(string questID)
     {
-        return questStates.ContainsKey(questID) ? questStates[questID] : QuestState.NotStarted;
+        if (questStates.ContainsKey(questID))
+            return questStates[questID];
+        return QuestState.NotStarted;
     }
 
-    public List<QuestDataSO> GetActiveQuests() => activeQuests;
+    // 퀘스트 데이터 가져오기
+    public QuestDataSO GetQuestData(string questID)
+    {
+        return activeQuests.Find(q => q.questID == questID);
+    }
+
+    // 현재 진행 중인 퀘스트 목록 반환
+    public List<QuestDataSO> GetActiveQuests()
+    {
+        return activeQuests;
+    }
 }
