@@ -14,7 +14,6 @@ public class ShieldMovement : MonoBehaviour
 
     [Header("·¹ÀÌ¾î")]
     public LayerMask groundLayer;
-    public LayerMask entityLayer;
     public LayerMask returnCollisionMask;
     public LayerMask throwCollisionMask;
 
