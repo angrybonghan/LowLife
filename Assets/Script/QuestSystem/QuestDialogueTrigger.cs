@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// NPC 대화 종료 후 퀘스트 시작을 트리거하는 컴포넌트
+// 대화 종료 시 퀘스트 시작 트리거
 public class QuestDialogueTrigger : MonoBehaviour, I_DialogueCallback
 {
     public string questID;

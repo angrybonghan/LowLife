@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class AchievementManager : MonoBehaviour
 {
     public static AchievementManager Instance;
-    private HashSet<string> unlockedAchievements = new HashSet<string>(); // 해제된 업적 목록
+    private HashSet<string> unlockedAchievements = new HashSet<string>();
 
     private void Awake()
     {
@@ -19,7 +19,6 @@ public class AchievementManager : MonoBehaviour
         {
             unlockedAchievements.Add(achievementID);
             Debug.Log($"업적 달성: {achievementID}");
-            // UI 팝업, 저장 기능 등 확장 가능
         }
     }
 

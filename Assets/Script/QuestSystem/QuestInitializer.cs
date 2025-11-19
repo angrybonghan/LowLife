@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// 에디터에서 등록한 ScriptableObject 퀘스트들을 QuestManager에 등록
+// 퀘스트 등록 및 감지 범위 시각화
 public class QuestInitializer : MonoBehaviour
 {
     public List<QuestDataSO> questsToRegister;
@@ -20,9 +20,9 @@ public class QuestInitializer : MonoBehaviour
 
         foreach (var quest in questsToRegister)
         {
-            if (quest.questCenter == null) continue;
+            if (quest.questType != QuestType.Combat) continue;
 
-            Vector3 origin = quest.questCenter.position;
+            Vector3 origin = quest.questCenterPosition;
             Gizmos.color = Color.red;
 
             Gizmos.DrawRay(origin, Vector3.up * quest.detectUp);
