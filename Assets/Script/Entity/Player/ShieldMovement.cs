@@ -1,8 +1,6 @@
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D), typeof(Animator))]
-[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(CircleCollider2D), typeof(Animator), typeof(AudioSource))]
 public class ShieldMovement : MonoBehaviour
 {
     [Header("참조 및 설정")]
@@ -11,9 +9,14 @@ public class ShieldMovement : MonoBehaviour
     public float returnSpeed = 20f;    // 방패가 플레이어에게 돌아오는 속도
     public float catchDistance = 0.75f; // 플레이어에게 잡혀질 거리
 
+    [Header("크기")]
+    public float shieldSize = 0.35f;
+
     [Header("레이어")]
     public LayerMask groundLayer;
     public LayerMask entityLayer;
+    public LayerMask returnCollisionMask;
+    public LayerMask throwCollisionMask;
 
     [Header("파티클")]
     public Transform particlePos;
@@ -34,9 +37,11 @@ public class ShieldMovement : MonoBehaviour
 
     private float currentFlightTime = 0; // 현재 날아가는 시간 (시간 계산용)
     private float LastAfterEffect = 0;  // 마지막 잔상 시간  (시간 계산용)
+    private float castRadius;
+
+    Vector2 lastHitPos;
 
     // 참조용 변수
-    private Rigidbody2D rb;
     private CircleCollider2D circleCol;
     private Animator anim;
     private PlayerController playerController;
@@ -56,27 +61,27 @@ public class ShieldMovement : MonoBehaviour
             return;
         }
 
-        rb = GetComponent<Rigidbody2D>();
         circleCol = GetComponent<CircleCollider2D>();
         anim = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
         // 초기 설정
         circleCol.isTrigger = true;
-        rb.gravityScale = 0f;
         isReturning = false;
         LastAfterEffect = Time.time;
+        castRadius = circleCol.radius;
     }
 
     private void Start()
     {
-        rb.velocity = throwDirection * throwSpeed;
         float angle = Mathf.Atan2(throwDirection.y, throwDirection.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
     void Update()
     {
+        MoveAndCollide();
+
         if (!isReturning)
         {
             currentFlightTime += Time.deltaTime;
@@ -93,28 +98,110 @@ public class ShieldMovement : MonoBehaviour
 
             if (currentFlightTime >= maxShieldFlightTime)
             {
-                SetReturnState(); // 복귀 상태로 전환
+                SetReturnState();
             }
         }
-        else // 되돌아오는 상태
+        else
         {
             if (Vector2.Distance(playerPostion.position, transform.position) <= catchDistance)
             {
-                playerController.CatchShield();
+                if (playerController != null)
+                {
+                    playerController.CatchShield();
+                }
                 Destroy(gameObject);
             }
         }
     }
 
-    private void FixedUpdate()
+    private void MoveAndCollide()
     {
+        Vector3 targetDirection;
+        float currentSpeed;
+
         if (isReturning)
         {
-            Vector3 directionToPlayer = (playerPostion.position - transform.position).normalized;
-            rb.velocity = directionToPlayer * returnSpeed;
+            targetDirection = (playerPostion.position - transform.position).normalized;
+            currentSpeed = returnSpeed;
+        }
+        else
+        {
+            targetDirection = throwDirection;
+            currentSpeed = throwSpeed;
+        }
 
-            float angle = Mathf.Atan2(directionToPlayer.y, directionToPlayer.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        Vector3 movement = targetDirection * currentSpeed * Time.deltaTime;
+        float distance = movement.magnitude;
+
+        if (distance <= 0) return;
+
+        RaycastHit2D hit = Physics2D.CircleCast(
+            transform.position,
+            castRadius,
+            movement.normalized,
+            distance,
+            isReturning ? returnCollisionMask : throwCollisionMask
+        );
+
+        lastHitPos = hit.point;
+
+        if (hit.collider != null)
+        {
+            if (hit.collider.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
+            {
+                if (targetAttackable.CanAttack())
+                {
+                    transform.position = (Vector3)hit.point - (Vector3)movement.normalized * castRadius;
+                    ExecuteCollisionLogic(hit.collider);
+                }
+                else
+                {
+                    transform.position += movement;
+                }
+            }
+            else
+            {
+                transform.position = (Vector3)hit.point - (Vector3)movement.normalized * castRadius;
+                ExecuteCollisionLogic(hit.collider); 
+            }
+
+            SetReturnState();
+        }
+        else
+        {
+            transform.position += movement;
+        }
+    }
+
+    private void ExecuteCollisionLogic(Collider2D other)
+    {
+        if (other.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
+        {
+            targetAttackable.OnAttack(transform);
+
+            Instantiate(entityHitParticle_shape, lastHitPos, Quaternion.identity);
+            Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
+            PlayRandomHitSound();
+            TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
+            CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
+        }
+        else if (other.TryGetComponent<I_Destructible>(out I_Destructible targetDestructible))
+        {
+            if (targetDestructible.CanDestructible())
+            {
+                targetDestructible.OnAttack();
+
+                Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
+                CameraMovement.PositionShaking(0.5f, 0.05f, 0.15f);
+            }
+        }
+        else if (other.TryGetComponent<I_Projectile>(out I_Projectile targetProjectile))
+        {
+            targetProjectile.Collision();
+        }
+        else if (groundLayer == (groundLayer | (1 << other.gameObject.layer)))
+        {
+            Instantiate(groundHitParticle, lastHitPos, Quaternion.identity);
         }
     }
 
@@ -137,54 +224,54 @@ public class ShieldMovement : MonoBehaviour
         else
         {
             isReturning = true;
-            rb.gravityScale = 0f;
+            //rb.gravityScale = 0f;
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
-        {
-            if (targetAttackable.CanAttack())
-            {
-                targetAttackable.OnAttack(transform);
+    //void OnTriggerEnter2D(Collider2D other)
+    //{
+    //    if (other.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
+    //    {
+    //        if (targetAttackable.CanAttack())
+    //        {
+    //            targetAttackable.OnAttack(transform);
 
-                Instantiate(entityHitParticle_shape, transform.position, Quaternion.identity);
-                Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
-                PlayRandomHitSound();
-                TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
-                CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
-            }
-            else
-            {
-                //엔티티이긴 하나 공격하지 못하는 적
-            }
-        }
+    //            Instantiate(entityHitParticle_shape, transform.position, Quaternion.identity);
+    //            Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
+    //            PlayRandomHitSound();
+    //            TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
+    //            CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
+    //        }
+    //        else
+    //        {
+    //            //엔티티이긴 하나 공격하지 못하는 적
+    //        }
+    //    }
 
-        if (other.TryGetComponent<I_Destructible>(out I_Destructible targetDestructible))
-        {
-            if (targetDestructible.CanDestructible())
-            {
-                targetDestructible.OnAttack();
+    //    if (other.TryGetComponent<I_Destructible>(out I_Destructible targetDestructible))
+    //    {
+    //        if (targetDestructible.CanDestructible())
+    //        {
+    //            targetDestructible.OnAttack();
 
-                Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
-                CameraMovement.PositionShaking(0.5f, 0.05f, 0.15f);
-            }
-        }
+    //            Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
+    //            CameraMovement.PositionShaking(0.5f, 0.05f, 0.15f);
+    //        }
+    //    }
 
 
 
-        if (!isReturning)
-        {
-            // 충돌한 개체의 레이어가 일치하는지 확인
-            if (groundLayer == (groundLayer | (1 << other.gameObject.layer)))
-            {
-                Instantiate(groundHitParticle, particlePos.position, Quaternion.identity);
-            }
+    //    if (!isReturning)
+    //    {
+    //        // 충돌한 개체의 레이어가 일치하는지 확인
+    //        if (groundLayer == (groundLayer | (1 << other.gameObject.layer)))
+    //        {
+    //            Instantiate(groundHitParticle, particlePos.position, Quaternion.identity);
+    //        }
 
-            SetReturnState(); // 뭔가에 충돌 시 복귀 상태로 전환
-        }
-    }
+    //        SetReturnState(); // 뭔가에 충돌 시 복귀 상태로 전환
+    //    }
+    //}
 
     private void PlayRandomHitSound()
     {
@@ -200,5 +287,11 @@ public class ShieldMovement : MonoBehaviour
     private void OnDestroy()
     {
         shieldInstance = null;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, shieldSize);
     }
 }

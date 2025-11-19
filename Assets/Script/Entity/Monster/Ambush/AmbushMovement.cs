@@ -11,6 +11,7 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
 
     [Header("도망")]
     public GameObject leafParticle;
+    public float runawayStartInvincibilityTime = 0.2f;
     public float maxRunawaySpeed = 20f;
     public float runawayAcceleration = 2f;
     public float resetDistance = 20f;
@@ -67,6 +68,7 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
     private bool canGoStraight = true;  // 직진 가능 여부 (벽이 없고 땅이 있어야 함)
     private bool isMoving = false;  // 움직이고 있는지 여부
     private bool isDead = false;    // 죽었는지 여부
+    private bool isInvincibility = false; // 무적인지 여부
 
     Vector3 movePosRight;
     Vector3 movePosLeft;
@@ -511,13 +513,24 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
             anim.SetTrigger("pelloff");
             if (exclamationMark != null) Destroy(exclamationMark.gameObject);
 
+            StartCoroutine(SetInvincibility(runawayStartInvincibilityTime));
+
             Instantiate(leafParticle, transform.position, Quaternion.identity);
         }
     }
 
+    IEnumerator SetInvincibility(float time)
+    {
+        isInvincibility = true;
+
+        yield return new WaitForSeconds(time);
+
+        isInvincibility = false;
+    }
+
     public bool CanAttack()
     {
-        return true;
+        return !isInvincibility;
     }
 
     float GetRandom(float min, float max)
@@ -539,6 +552,8 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
 
         CapsuleCollider2D capsuleCol = GetComponent<CapsuleCollider2D>();
         capsuleCol.excludeLayers = afterDeathLayer;
+
+        GameManager.SwitchLayerTo("Particle", gameObject);
 
         anim.SetTrigger("die");
         StopAllCoroutines();

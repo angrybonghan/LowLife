@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6622577784206384724}
   - component: {fileID: 1956588607705563936}
   - component: {fileID: 5720032509600829930}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: GradientShieldAfterImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}

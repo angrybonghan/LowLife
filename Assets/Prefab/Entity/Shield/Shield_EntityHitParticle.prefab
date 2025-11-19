@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 690399704303169886}
   - component: {fileID: 2134590895125995211}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Shield_EntityHitParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

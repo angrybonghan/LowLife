@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Ms_PatriotProjectile : MonoBehaviour
+public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 {
     [Header("АјАн")]
     public float explosionRadius = 2.0f;
@@ -98,6 +98,11 @@ public class Ms_PatriotProjectile : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    public void Collision()
+    {
+        Explode();
     }
 
     private void OnTriggerEnter2D(Collider2D other)

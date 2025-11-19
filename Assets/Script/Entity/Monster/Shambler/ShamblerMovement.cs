@@ -270,6 +270,7 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
         if (isExploding) return;
         isExploding = true;
         StopAllCoroutines();
+        GameManager.SwitchLayerTo("Particle", gameObject);
         StartCoroutine(Explosion());
     }
 

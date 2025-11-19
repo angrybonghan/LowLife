@@ -19,4 +19,11 @@ public class GameManager : MonoBehaviour
     {
         
     }
+
+    public static void SwitchLayerTo(string layerName, GameObject target)
+    {
+        int layerIndex = LayerMask.NameToLayer("Particle");
+
+        if (layerIndex != -1) target.layer = layerIndex;
+    }
 }
