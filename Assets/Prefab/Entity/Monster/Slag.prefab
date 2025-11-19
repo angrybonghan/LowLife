@@ -63,10 +63,12 @@ MonoBehaviour:
   attackChargeTime: 0.45
   attackCooldown: 0.4
   damage: 0.35
+  knockbackPower: 1
+  knockbacktime: 0.05
   hitboxOffset: {x: 0.6, y: 0}
   hitboxSize: {x: 1.66, y: 1.5}
-  viewOffset: {x: 7.5, y: 0.7}
-  viewSize: {x: 15, y: 3}
+  viewOffset: {x: 7.5, y: 0}
+  viewSize: {x: 15, y: 5}
   obstacleMask:
     serializedVersion: 2
     m_Bits: 768

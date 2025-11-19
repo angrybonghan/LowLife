@@ -186,7 +186,7 @@ MonoBehaviour:
   throwDirection: {x: 0, y: 0, z: 0}
   isReturning: 0
   afterEffect: {fileID: 6200615553165862474, guid: 60c2b79d20dce4444b14493215948c46, type: 3}
-  afterEffectInterval: 0.025
+  afterEffectInterval: 0.0125
   hitSounds:
   - {fileID: 8300000, guid: 74720289bcf099b4f89fd4210122c227, type: 3}
 --- !u!95 &8832889182749839318
