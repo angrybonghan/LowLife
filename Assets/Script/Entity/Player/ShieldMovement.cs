@@ -28,7 +28,8 @@ public class ShieldMovement : MonoBehaviour
     public Transform playerPostion;    // 방패를 던진 플레이어 위치
     public Vector3 throwDirection;  // 던지는 방향
     public bool isReturning = false; // 현재 방패가 돌아오는 중인가?
-    [Header("이펙트")]
+
+    [Header("잔상 이펙트")]
     public GameObject afterEffect;
     public float afterEffectInterval;
 
