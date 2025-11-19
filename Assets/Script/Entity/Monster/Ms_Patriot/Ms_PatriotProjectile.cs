@@ -97,6 +97,9 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
             }
         }
 
+        EffectPlayer ep = Instantiate(explosionEffect, transform.position, Quaternion.identity).GetComponent<EffectPlayer>();
+        ep.SetSize(2f);
+
         Destroy(gameObject);
     }
 

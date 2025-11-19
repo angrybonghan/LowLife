@@ -98,8 +98,8 @@ MonoBehaviour:
   readyToAttackTime: 0.5
   aimingTime: 0.5
   reloadTime: 0.65
-  viewOffset: {x: 7.5, y: 4}
-  viewSize: {x: 15, y: 10}
+  viewOffset: {x: 7.5, y: 0}
+  viewSize: {x: 15, y: 15}
   attackRange: 14
   obstacleMask:
     serializedVersion: 2
