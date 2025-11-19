@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using TreeEditor;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
 public class ShatterParticle : MonoBehaviour
