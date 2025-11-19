@@ -58,7 +58,7 @@ MonoBehaviour:
   speed: 10
   lifeTime: 5
   trackingPower: 1.5
-  explosionEffect: {fileID: 0}
+  explosionEffect: {fileID: 1466296792038068455, guid: 3b66fdbca4fe6b34188063638268a1cb, type: 3}
 --- !u!212 &1864225356472557942
 SpriteRenderer:
   m_ObjectHideFlags: 0

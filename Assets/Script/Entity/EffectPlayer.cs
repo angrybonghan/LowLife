@@ -35,4 +35,10 @@ public class EffectPlayer : MonoBehaviour
 
         Destroy(gameObject);
     }
+
+    public void SetSize(float size)
+    {
+        Vector2 newSize = new Vector2(size, size);
+        transform.localScale = newSize;
+    }
 }
