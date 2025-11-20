@@ -30,6 +30,8 @@ public class EnemyLaser : MonoBehaviour
 
     private const float maxRayDistance = 100f;
 
+    bool hasOrigin = false;
+
     Transform originTransform;
     Transform target;
     Vector2 targetPos;
@@ -54,18 +56,31 @@ public class EnemyLaser : MonoBehaviour
 
     void Update()
     {
-        if (originTransform != null) transform.position = originTransform.position; 
+        if (hasOrigin)
+        {
+            if (originTransform != null) transform.position = originTransform.position;
+            else Destroy(gameObject);
+        }
     }
 
     public void SetOrigin(Transform target)
     {
         if (target != null) originTransform = target;
+        hasOrigin = true;
     }
 
     public void SetTarget(Transform target)
     {
         if (target != null) this.target = target;
     }
+
+    public void SetDamage(float damage, float knockbackPower, float knockbacktime)
+    {
+        this.damage = damage;
+        this.knockbackPower = knockbackPower;
+        this.knockbacktime = knockbacktime;
+    }
+
 
     IEnumerator Co_Aiming()
     {
@@ -89,7 +104,6 @@ public class EnemyLaser : MonoBehaviour
 
     IEnumerator Co_Fire()
     {
-        // 발사 이후 서서히 레이저가 얇아지고, 색상이 보간되며 그 이후 제거되는 로직
         if (target != null) targetPos = target.position;
         LookPos(targetPos);
 
@@ -186,11 +200,6 @@ public class EnemyLaser : MonoBehaviour
         if (hit)
         {
             distanceToSet = hit.distance;
-            Debug.DrawLine(origin, hit.point, Color.red);
-        }
-        else
-        {
-            Debug.DrawLine(origin, origin + direction * maxRayDistance, Color.green);
         }
 
         Vector3 newScale = transform.localScale;
