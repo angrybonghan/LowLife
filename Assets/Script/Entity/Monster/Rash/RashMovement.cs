@@ -157,6 +157,7 @@ public class RashMovement : MonoBehaviour, I_Attackable
 
     bool IsPlayerInRange()
     {
+        if (playerObject == null) return false;
         return Vector3.Distance(transform.position, playerObject.transform.position) < attackRange;
     }
 
