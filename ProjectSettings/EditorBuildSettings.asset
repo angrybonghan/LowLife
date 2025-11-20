@@ -5,7 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
+    path: Assets/Scenes/PlayerMovementTest.unity
+    guid: ba619262351df314590a5a638fed615c
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Swomp.unity
+    guid: 2f8808eae29658e468fee57dd15a1fb0
   m_configObjects: {}

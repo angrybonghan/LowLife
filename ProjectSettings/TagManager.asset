@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Entity
   layers:
   - Default
   - TransparentFX
@@ -13,15 +14,15 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Wall_CollisionOnly
+  - Wall
+  - Entity
+  - Player
+  - NoPostProcess
+  - Shield
+  - Particle
+  - Projectile
+  - IgnoreShield
   - 
   - 
   - 
@@ -40,4 +41,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: SpeechBubble
+    uniqueID: 2662898955
+    locked: 0
+  - name: Crosshair
+    uniqueID: 2447632547
     locked: 0
