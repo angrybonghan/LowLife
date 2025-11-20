@@ -2,30 +2,31 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
-public class LumenMovement : MonoBehaviour
+public class LumenMovement : MonoBehaviour, I_Attackable
 {
     [Header("움직임")]
-    public float maxSpeed = 8; // 최대 움직임 속도
-    public float moveRadius; // 대기 상태에 들어간 위치로부터 최대 탐색 범위. 이 범위는 지형에 따라 조절될 수 있음.
     public float trunDuration = 0.5f;   // 회전 대기 시간
-    public float acceleration = 2f; // 가속도
 
     [Header("팔, 머리")]
     public Transform headObj;
     public Transform armObj;
 
-    [Header("지형 감지")]
-    public Transform wallCheckPos;  // 벽
-    public Transform upperGroundCheckPos;    // 땅 위쪽
-    public Transform lowerGroundCheckPos;    // 땅 아래쪽
-    public float layerCheckRadius = 0.05f;  // 감지 위치 반경
-
     [Header("공격")]
     public Transform firePoint;
     public GameObject projectile;
     public float readyToAttackTime = 0.5f;  // 공격의 준비 시간 (총 들기, 내리기)
-    public float aimingTime = 0.2f;          // 조준 시간 (이후 발사)
+    public float aimingTime = 2;    // 조준 시간
+    public float timeToFire = 0.3f;          // 조준 이후 발사까지 시간
     public float reloadTime = 0.5f;  // 공격의 준비 시간 (재장전)
+
+    [Header("카트리지 배출")]
+    public Transform cartridgeSummonPos;
+    public GameObject cartridge;
+
+    [Header("대미지")]
+    public float damage = 0.5f;
+    public float knockbackPower = 1f;
+    public float knockbacktime = 0.1f;
 
     [Header("시야 범위")]
     public Vector2 viewOffset = new Vector2(0f, 0.5f); // 시야 중심의 오프셋
@@ -53,19 +54,11 @@ public class LumenMovement : MonoBehaviour
     public LayerMask afterDeathLayer;
 
     private int facingSign = 1; // 바라보는 방향
-
-    private float currentNormalizedSpeed = 0;   // 정규화된 속도
     private float detectionRate = 0;    // 발각의 정도
 
     private bool isFacingRight = true;  // 오른쪽을 바라보는지 여부
-    private bool canGoStraight = true;  // 직진 가능 여부 (벽이 없고 땅이 있어야 함)
-    private bool isMoving = false;  // 움직이고 있는지 여부
     private bool isDead = false;    // 죽었는지 여부
     private bool isAiming = false;  // 조준하고 있는지 여부
-
-    Vector3 movePosRight;
-    Vector3 movePosLeft;
-    Vector3 targetPos;
 
     public enum state { idle, doubt, track, attack, endAttack }
     state currentState;
@@ -93,7 +86,6 @@ public class LumenMovement : MonoBehaviour
     void Update()
     {
         if (isDead) return;
-        UpdateStates();
 
         if (playerObject != null)
         {
@@ -131,19 +123,8 @@ public class LumenMovement : MonoBehaviour
         StopAllCoroutines();
         currentState = targetState;
 
-        Vector2 originVelocity = rb.velocity;
-        originVelocity.x = 0;
-        rb.velocity = originVelocity;
-        currentNormalizedSpeed = 0;
-
         if (targetState == state.idle || playerObject == null)
         {
-            movePosRight = movePosLeft = transform.position;
-            movePosRight.x += moveRadius;
-            movePosLeft.x -= moveRadius;
-
-            targetPos = isFacingRight ? movePosRight : movePosLeft;
-
             StartCoroutine(IdleMovement());
         }
         else if (targetState == state.doubt)
@@ -166,22 +147,8 @@ public class LumenMovement : MonoBehaviour
     {
         while (true)
         {
-            float sign = isFacingRight ? 1f : -1f;
-            // 삼항연산이랑 데이트하기 null일차
-
-            while (!HasArrived(targetPos) && canGoStraight)
-            {
-                currentNormalizedSpeed = Mathf.Min(currentNormalizedSpeed + acceleration * Time.deltaTime, 0.5f);
-                rb.velocity = new Vector2(sign * currentNormalizedSpeed * maxSpeed, rb.velocity.y);
-                yield return null;
-            }
-            Vector2 originVelocity = rb.velocity;
-            originVelocity.x = 0;
-            rb.velocity = originVelocity;
-            currentNormalizedSpeed = 0;
-
             yield return new WaitForSeconds(trunDuration);
-            SwitchPos();
+            Flip();
             yield return null;
         }
     }
@@ -229,22 +196,6 @@ public class LumenMovement : MonoBehaviour
     {
         LookPos(playerObject.transform.position);
 
-        Vector2 checkPos = playerObject.transform.position;
-        checkPos.y = transform.position.y;
-
-        if (canGoStraight && !HasArrived(checkPos))
-        {
-            currentNormalizedSpeed = Mathf.Clamp(currentNormalizedSpeed + acceleration * Time.deltaTime, 0.505f, 1f);
-            rb.velocity = new Vector2(facingSign * currentNormalizedSpeed * maxSpeed, rb.velocity.y);
-        }
-        else
-        {
-            Vector2 originVelocity = rb.velocity;
-            originVelocity.x = 0;
-            rb.velocity = originVelocity;
-            currentNormalizedSpeed = 0;
-        }
-
         if (IsPlayerInRange())
         {
             SetState(state.attack);
@@ -277,11 +228,12 @@ public class LumenMovement : MonoBehaviour
         while (true)
         {
             anim.SetTrigger("aiming");
+            SummonLaser();
             isAiming = true;
             yield return new WaitForSeconds(aimingTime);
             isAiming = false;
+            yield return new WaitForSeconds(timeToFire);
             anim.SetTrigger("fire");
-            Attack();
             yield return new WaitForSeconds(reloadTime);
 
             if (!IsPlayerInRange()) break;
@@ -290,10 +242,19 @@ public class LumenMovement : MonoBehaviour
         SetState(state.track);
     }
 
-    void Attack()
+    void SummonLaser()
     {
         EnemyLaser ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<EnemyLaser>();
         ep.SetOrigin(firePoint);
+        ep.SetDamage(damage, knockbackPower, knockbacktime);
+        ep.aimingTime = aimingTime;
+        ep.timeToFire = timeToFire;
+    }
+
+    public void EmissionCartridge()
+    {
+        LumenCartridge lc = Instantiate(cartridge, cartridgeSummonPos.position, Quaternion.identity).GetComponent<LumenCartridge>();
+        lc.flyToRight = !isFacingRight;
     }
 
     IEnumerator EndAttack()
@@ -308,15 +269,20 @@ public class LumenMovement : MonoBehaviour
     {
         LookPos(playerObject.transform.position);
 
+        RotateObjTo(armObj.gameObject, playerObject.transform.position);
+
         float verticalProximity = GetVerticalProximity();
-        float targetArmAngle = verticalProximity * 90;
-        float targetHeadAngle = targetArmAngle * 0.5f;
-
-        Quaternion armRotation = Quaternion.Euler(0, 0, targetArmAngle);
-        armObj.localRotation = armRotation;
-
+        float targetHeadAngle = verticalProximity * 45;
         Quaternion headRotation = Quaternion.Euler(0, 0, targetHeadAngle);
         headObj.localRotation = headRotation;
+    }
+
+    void RotateObjTo(GameObject obj, Vector2 pos)
+    {
+        Vector2 direction = pos - (Vector2)obj.transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angle + (isFacingRight ? 0 : 180));
+        obj.transform.rotation = rotation;
     }
 
     float GetVerticalProximity()
@@ -377,13 +343,6 @@ public class LumenMovement : MonoBehaviour
         return true;
     }
 
-    void SwitchPos()
-    {
-        Flip();
-
-        targetPos = isFacingRight ? movePosRight : movePosLeft;
-    }
-
     void LookPos(Vector2 targetPos)
     {
         float directionX = targetPos.x - transform.position.x;
@@ -400,32 +359,6 @@ public class LumenMovement : MonoBehaviour
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
 
         facingSign = isFacingRight ? 1 : -1;
-
-        UpdateStates();
-    }
-
-    bool HasArrived(Vector3 pos)
-    {
-        float distance = Vector3.Distance(transform.position, pos);
-        return distance <= 0.1f;
-    }
-
-    void UpdateStates()
-    {
-        movePosRight.y = movePosLeft.y = targetPos.y = transform.position.y;
-
-        bool upperGroundDetect = Physics2D.OverlapCircle(upperGroundCheckPos.position, layerCheckRadius, obstacleMask);
-        bool lowerGroundDetect = Physics2D.OverlapCircle(lowerGroundCheckPos.position, layerCheckRadius, obstacleMask);
-        bool isGrounded = upperGroundDetect || lowerGroundDetect;
-        bool isTouchingAnyWall = Physics2D.OverlapCircle(wallCheckPos.position, layerCheckRadius, obstacleMask);
-
-        canGoStraight = isGrounded && !isTouchingAnyWall;
-
-        isMoving = currentNormalizedSpeed > 0f;
-
-        anim.SetBool("isMoving", isMoving);
-        anim.SetFloat("moveSpeed", currentNormalizedSpeed);
-
     }
 
     public void OnAttack(Transform attackerTransform)
@@ -433,6 +366,7 @@ public class LumenMovement : MonoBehaviour
         if (isDead) return;
 
         isDead = true;
+        Destroy(firePoint.gameObject);
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;
@@ -494,34 +428,7 @@ public class LumenMovement : MonoBehaviour
 
         Gizmos.DrawWireCube(viewGizmoCenter, new Vector3(viewSize.x, viewSize.y, 0f));
 
-        Gizmos.color = Color.cyan;
 
-        if (Application.isPlaying)
-        {
-            if (currentState == state.idle)
-            {
-                Gizmos.DrawWireSphere(movePosRight, 0.25f);
-                Gizmos.DrawWireSphere(movePosLeft, 0.25f);
-                Gizmos.DrawLine(movePosRight, movePosLeft);
-            }
-        }
-        else
-        {
-            Vector3 gizmosMovePosRight = transform.position;
-            Vector3 gizmosMovePosLeft = transform.position;
-            gizmosMovePosRight.x += moveRadius;
-            gizmosMovePosLeft.x -= moveRadius;
-
-            Gizmos.DrawWireSphere(gizmosMovePosRight, 0.25f);
-            Gizmos.DrawWireSphere(gizmosMovePosLeft, 0.25f);
-            Gizmos.DrawLine(gizmosMovePosRight, gizmosMovePosLeft);
-        }
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(upperGroundCheckPos.position, layerCheckRadius);
-        Gizmos.DrawWireSphere(lowerGroundCheckPos.position, layerCheckRadius);
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(wallCheckPos.position, layerCheckRadius);
         Gizmos.color = Color.white;
         Gizmos.DrawWireSphere(exclamationMarkPos.position, 0.1f);
     }
