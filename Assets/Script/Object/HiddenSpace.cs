@@ -11,7 +11,11 @@ public class HiddenSpace : MonoBehaviour
 
     private float targetAlpha;
 
+    private bool hasPlayer = false;
+
     private const string PLAYER_TAG = "Player";
+
+    GameObject playerObject;    // 플레이어 오브젝트
 
     private void Awake()
     {
@@ -21,9 +25,20 @@ public class HiddenSpace : MonoBehaviour
     void Start()
     {
         SetAlpha(1);
+        playerObject = PlayerController.instance.gameObject;
+        hasPlayer = playerObject != null;
 
         BoxCollider2D boxCol = GetComponent<BoxCollider2D>();
         boxCol.isTrigger = true;
+    }
+
+    private void Update()
+    {
+        if (hasPlayer && playerObject == null)
+        {
+            StopAllCoroutines();
+            hasPlayer = false;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -44,7 +59,10 @@ public class HiddenSpace : MonoBehaviour
             targetAlpha = 1.0f;
 
             StopCurrentFadeCoroutine();
-            fadeCoroutine = StartCoroutine(FadeToTargetAlpha());
+            if (gameObject.activeInHierarchy)
+            {
+                fadeCoroutine = StartCoroutine(FadeToTargetAlpha());
+            }
         }
     }
     private void StopCurrentFadeCoroutine()
