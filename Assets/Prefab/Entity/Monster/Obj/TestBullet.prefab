@@ -52,6 +52,9 @@ MonoBehaviour:
   knockbacktime: 0.1
   speed: 20
   lifeTime: 10
+  afterParryLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!212 &4990001281638098441
 SpriteRenderer:
   m_ObjectHideFlags: 0
