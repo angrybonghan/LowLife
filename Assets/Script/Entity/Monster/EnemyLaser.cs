@@ -27,11 +27,13 @@ public class EnemyLaser : MonoBehaviour
 
     [Header("레이어")]
     public LayerMask collisionMask;
+    public LayerMask afterParryCollisionMask;
 
     private const float maxRayDistance = 100f;
 
     bool hasOrigin = false;
     bool hasTarget = false;
+    bool isParryed = false;
 
     Transform originTransform;
     Transform target;
@@ -55,7 +57,7 @@ public class EnemyLaser : MonoBehaviour
 
     void Update()
     {
-        if (hasOrigin)
+        if (hasOrigin && !isParryed)
         {
             if (originTransform != null) transform.position = originTransform.position;
             else Destroy(gameObject);
@@ -130,11 +132,13 @@ public class EnemyLaser : MonoBehaviour
 
     void ShootLaser()
     {
-        spriteRenderer.color = startColor;
+        if (isParryed) startColor = InvertColor(startColor);
+        else spriteRenderer.color = startColor;
 
         Vector2 origin = transform.position;
         Vector2 direction = transform.right;
-        RaycastHit2D hit = Physics2D.Raycast(origin, direction, maxRayDistance, collisionMask);
+        LayerMask layer = isParryed ? afterParryCollisionMask : collisionMask;
+        RaycastHit2D hit = Physics2D.Raycast(origin, direction, maxRayDistance, layer);
 
         if (hit)
         {
@@ -145,6 +149,15 @@ public class EnemyLaser : MonoBehaviour
                 PlayerController pc = other.GetComponent<PlayerController>();
                 if (pc.IsParried(transform))
                 {
+                    isParryed = true;
+
+                    transform.localScale = new Vector2(transform.localScale.x, laserThickness * 1.1f);
+                    spriteRenderer.color = aimingColor;
+
+                    transform.position = hit.point;
+                    Rotate(180);
+                    RaycastResize();
+                    ShootLaser();   // 재귀함수
                     return;
                 }
                 else
@@ -163,6 +176,32 @@ public class EnemyLaser : MonoBehaviour
         }
 
         StartCoroutine(Co_ShrinkAndDestroy());
+    }
+
+
+    void Rotate(float angle)
+    {
+        float currentZ = transform.localEulerAngles.z;
+
+        float newZ = currentZ + angle;
+
+        transform.localRotation = Quaternion.Euler(
+            transform.localEulerAngles.x,
+            transform.localEulerAngles.y,
+            newZ
+        );
+    }
+
+    public Color InvertColor(Color color)
+    {
+        Color inverted = new Color(
+            1.0f - color.r,
+            1.0f - color.g,
+            1.0f - color.b,
+            color.a
+        );
+
+        return inverted;
     }
 
     IEnumerator Co_ShrinkAndDestroy()
@@ -199,7 +238,8 @@ public class EnemyLaser : MonoBehaviour
         Vector2 origin = transform.position;
         Vector2 direction = transform.right;
 
-        RaycastHit2D hit = Physics2D.Raycast(origin, direction, maxRayDistance, collisionMask);
+        LayerMask layer = isParryed ? afterParryCollisionMask : collisionMask;
+        RaycastHit2D hit = Physics2D.Raycast(origin, direction, maxRayDistance, layer);
         float distanceToSet = maxRayDistance;
 
         if (hit)
