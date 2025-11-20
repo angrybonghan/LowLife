@@ -69,9 +69,10 @@ MonoBehaviour:
   minParticleCount: 3
   spreadAngle: 360
   haveRetentionTime: 1
-  retentionTime: 0.5
+  retentionTime: 0.8
   particlePrefabs:
   - {fileID: 4133907345017883595, guid: 6d68c72dbde441c4095f05dcef599e91, type: 3}
+  canDestroyObj: 0
 --- !u!212 &4964272905813958935
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -160,7 +161,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 9136897178246854736}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: aa993e7fa5258954cb3f946be1113914, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
