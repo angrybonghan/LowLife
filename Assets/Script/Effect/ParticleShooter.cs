@@ -17,6 +17,9 @@ public class ParticleShooter : MonoBehaviour
     [Header("이펙트")]
     public GameObject[] particlePrefabs;
 
+    [Header("오브젝트 파괴 여부")]
+    public bool canDestroyObj;
+
     float currentRetentionTime;
 
     private void FixedUpdate()
@@ -28,7 +31,8 @@ public class ParticleShooter : MonoBehaviour
             currentRetentionTime += Time.fixedDeltaTime;
             if (currentRetentionTime >= retentionTime)
             {
-                Destroy(gameObject);
+                if (canDestroyObj) Destroy(gameObject);
+                else this.enabled = false;
             }
         }
         
