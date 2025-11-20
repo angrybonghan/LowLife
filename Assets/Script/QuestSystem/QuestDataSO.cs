@@ -21,7 +21,6 @@ public class QuestDataSO : ScriptableObject
 
     public string requiredItemID;          // 필요한 아이템 ID (예: "herb_bundle")
 
-    public GameObject npcToRescue;         // 퀘스트 완료 시 등장할 NPC (초기 비활성화)
     public string achievementID;           // 업적 ID (예: "ACH_HERB_DELIVERY")
     public GameObject achievementPopup;    // 업적 팝업 UI 오브젝트
 }

@@ -36,12 +36,6 @@ public class QuestManager : MonoBehaviour
         {
             questStates[questID] = QuestState.InProgress;
 
-            // 구출 퀘스트용 NPC는 시작 시 숨김
-            if (quest.npcToRescue != null)
-                quest.npcToRescue.SetActive(false);
-
-            // Dialogue 퀘스트는 자동 완료하지 않음 (수동으로 처리)
-            // 이전 코드: if (quest.questType == QuestType.Dialogue) CompleteQuest(quest);
 
             // UI 갱신
             FindObjectOfType<QuestUIController>()?.UpdateQuestText();
@@ -51,19 +45,20 @@ public class QuestManager : MonoBehaviour
     // 퀘스트 완료
     public void CompleteQuest(QuestDataSO quest)
     {
-        if (questStates[quest.questID] != QuestState.InProgress) return;
+        if (questStates[quest.questID] != QuestState.InProgress)
+        {
+            Debug.Log($"[퀘스트 완료 실패] {quest.questID}는 진행 중이 아닙니다.");
+            return;
+        }
 
         questStates[quest.questID] = QuestState.Completed;
 
-        // 구출 NPC 등장
-        if (quest.npcToRescue != null)
-            quest.npcToRescue.SetActive(true);
+        Debug.Log($"[퀘스트 완료] {quest.questID} - {quest.questName}");
 
-        // 업적 해제
+        // 업적 처리
         if (!string.IsNullOrEmpty(quest.achievementID))
             AchievementManager.Instance.UnlockAchievement(quest.achievementID);
 
-        // 업적 팝업
         if (quest.achievementPopup != null)
             Instantiate(quest.achievementPopup);
 
@@ -71,10 +66,12 @@ public class QuestManager : MonoBehaviour
         foreach (var nextQuest in activeQuests)
         {
             if (nextQuest.prerequisiteQuestID == quest.questID)
+            {
+                Debug.Log($"[다음 퀘스트 자동 시작] {nextQuest.questID}");
                 StartQuest(nextQuest.questID);
+            }
         }
 
-        // UI 갱신
         FindObjectOfType<QuestUIController>()?.UpdateQuestText();
     }
 
