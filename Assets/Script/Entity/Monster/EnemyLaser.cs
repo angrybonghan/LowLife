@@ -31,6 +31,7 @@ public class EnemyLaser : MonoBehaviour
     private const float maxRayDistance = 100f;
 
     bool hasOrigin = false;
+    bool hasTarget = false;
 
     Transform originTransform;
     Transform target;
@@ -45,8 +46,6 @@ public class EnemyLaser : MonoBehaviour
 
     void Start()
     {
-        target = PlayerController.instance.transform;
-
         transform.localScale = new Vector2(transform.localScale.x, laserThickness);
         spriteRenderer.color = aimingColor;
 
@@ -61,6 +60,11 @@ public class EnemyLaser : MonoBehaviour
             if (originTransform != null) transform.position = originTransform.position;
             else Destroy(gameObject);
         }
+
+        if (hasTarget)
+        {
+            if (target == null) Destroy(gameObject);
+        }
     }
 
     public void SetOrigin(Transform target)
@@ -72,6 +76,7 @@ public class EnemyLaser : MonoBehaviour
     public void SetTarget(Transform target)
     {
         if (target != null) this.target = target;
+        hasTarget = true;
     }
 
     public void SetDamage(float damage, float knockbackPower, float knockbacktime)

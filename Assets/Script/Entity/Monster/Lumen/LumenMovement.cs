@@ -247,6 +247,7 @@ public class LumenMovement : MonoBehaviour, I_Attackable
         EnemyLaser ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<EnemyLaser>();
         ep.SetOrigin(firePoint);
         ep.SetDamage(damage, knockbackPower, knockbacktime);
+        ep.SetTarget(playerObject.transform);
         ep.aimingTime = aimingTime;
         ep.timeToFire = timeToFire;
     }
