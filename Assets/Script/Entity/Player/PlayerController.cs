@@ -1146,7 +1146,14 @@ public class PlayerController : MonoBehaviour
 
     void Death()
     {
-        testBlackScreenUI.SetActive(true);
+        if (testBlackScreenUI != null)
+        {
+            testBlackScreenUI.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("testBlackScreenUI 없음");
+        }
     }
 
     public void Goto(Vector3 pos)

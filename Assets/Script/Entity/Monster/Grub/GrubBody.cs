@@ -1,13 +1,9 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(PolygonCollider2D))]
-public class GrubBody : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D), typeof(PolygonCollider2D), typeof(Animator))]
+public class GrubBody : MonoBehaviour, I_Attackable
 {
-    [Header("컨트롤러")]
-    public GrubMovement movementScript;
-
     [Header("히트박스")]
     public float attackRange = 0.075f;
     public LayerMask targetLayer;
@@ -21,9 +17,11 @@ public class GrubBody : MonoBehaviour
     public LayerMask afterDeathLayer;
 
     bool canAttack = false;
+    bool isDead = false;
 
     PolygonCollider2D polyCol;
     Rigidbody2D rb;
+    Animator anim;
 
     GrubBodyController myLord; // 예쓰 마이 로드!!!, 예쓰!!!!!!!!!!!!!!!!
 
@@ -31,6 +29,7 @@ public class GrubBody : MonoBehaviour
     {
         polyCol = GetComponent<PolygonCollider2D>();
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     private void Start()
@@ -41,38 +40,38 @@ public class GrubBody : MonoBehaviour
 
     private void Update()
     {
+        if (isDead) return;
         if (canAttack) AttackHander();
     }
 
     void AttackHander()
     {
-        Collider2D[] hitTargets = Physics2D.OverlapCircleAll(
+        Collider2D hitTargets = Physics2D.OverlapCircle(
             transform.position,
             attackRange,
             targetLayer
             );
 
-        if (hitTargets.Length > 0)
+        if (hitTargets != null)
         {
-            foreach (Collider2D targetCollider in hitTargets)
+            if (hitTargets.TryGetComponent<PlayerController>(out PlayerController pc))
             {
-                if (targetCollider.TryGetComponent<PlayerController>(out PlayerController pc))
+                if (pc.IsParried(transform))
                 {
-                    if (pc.IsParried(transform))
-                    {
-                        movementScript.Parried();
-                        myLord.EnableAttack(false);
-                        return;
-                    }
-                    else
-                    {
-                        pc.OnAttack(damage, knockbackPower, knockbacktime, transform);
-                    }
+                    if (isDead) return;
+                    isDead = true;
+                    myLord.Dead(PlayerController.instance.transform);
+                    return;
                 }
                 else
                 {
-                    Debug.LogWarning($"플레이어 태그를 가졌지만 스크립트가 없는 대상: {targetCollider.gameObject.name}");
+                    pc.OnAttack(damage, knockbackPower, knockbacktime, transform);
+                    canAttack = false;
                 }
+            }
+            else
+            {
+                Debug.LogWarning($"플레이어 태그를 가졌지만 스크립트가 없는 대상: {hitTargets.gameObject.name}");
             }
         }
     }
@@ -90,14 +89,22 @@ public class GrubBody : MonoBehaviour
         canAttack = isEnable;
     }
 
+
     public void Dead(Vector3 flyVelocity, float deathDuration)
     {
+        isDead = true;
+
+        anim.SetTrigger("die");
+
         polyCol.enabled = true;
         polyCol.excludeLayers = afterDeathLayer;
 
         rb.gravityScale = 1f;
-        rb.velocity = flyVelocity;
         rb.freezeRotation = false;
+        rb.velocity = flyVelocity;
+        rb.AddTorque(Random.Range(-20.0f, 20.0f));
+
+        GameManager.SwitchLayerTo("Particle", gameObject);
 
         StartCoroutine(Co_Dead(deathDuration));
     }
@@ -121,6 +128,19 @@ public class GrubBody : MonoBehaviour
 
         myLord.bodyCount--;
         Destroy(gameObject);
+    }
+
+    public bool CanAttack()
+    {
+        return true;
+    }
+
+    public void OnAttack(Transform attackerTransform)
+    {
+        if (isDead) return;
+        isDead = true;
+
+        myLord.Dead(attackerTransform);
     }
 
     private void OnDrawGizmosSelected()
