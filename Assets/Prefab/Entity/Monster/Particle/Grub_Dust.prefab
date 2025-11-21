@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 6265962846412911971}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.535074, y: 0.45573997, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -54,7 +54,7 @@ MonoBehaviour:
   minColor: {r: 0.5283019, g: 0.42633313, b: 0.35635456, a: 1}
   maxColor: {r: 0.2735849, g: 0.20367375, b: 0.15873086, a: 1}
   minShrinkDuration: 1
-  maxShrinkDuration: 2
+  maxShrinkDuration: 1.2
   initialDirection: {x: 0, y: 0}
   spreadAngle: 30
 --- !u!212 &6744916688278236424
