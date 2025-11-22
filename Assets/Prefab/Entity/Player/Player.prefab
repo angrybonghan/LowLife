@@ -147,11 +147,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0853b051ebb8674479953a83b9294f96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  footStepSound:
-  - {fileID: 8300000, guid: b0444feb8c9c9b44a8170a16f73abdfa, type: 3}
-  - {fileID: 8300000, guid: 621a41d4aeb70e047a9a57db8dc74378, type: 3}
-  - {fileID: 8300000, guid: 0d3723cd296b08b4a913b15d15f20a51, type: 3}
-  - {fileID: 8300000, guid: a1ae73ead41f2c74e9301c4b857a4527, type: 3}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 768
+  grassFootStepSound:
+  - {fileID: 8300000, guid: 2991f0d3ef32f534590bbe29c36746bd, type: 3}
+  - {fileID: 8300000, guid: 1dbf9712957ca314cb8c07d21f8e478e, type: 3}
+  - {fileID: 8300000, guid: 8b7aea8801b731d4894640d19fa48f46, type: 3}
+  - {fileID: 8300000, guid: 66c2c6ce1b2315040bafb30681e059b7, type: 3}
+  stoneFootStepSound:
+  - {fileID: 8300000, guid: 93060bf0b087db7438d8415cfd003edb, type: 3}
+  - {fileID: 8300000, guid: f278eccf5dbf0e24395d03b57cd9a9a1, type: 3}
+  - {fileID: 8300000, guid: 7a0dcb18e651a174fa9cabb5e5dcdca7, type: 3}
+  - {fileID: 8300000, guid: 0738d72ff64098a499c74641fb73bc12, type: 3}
+  woodFootStepSound:
+  - {fileID: 8300000, guid: 03da294633a017947888262a5c6f3517, type: 3}
+  - {fileID: 8300000, guid: 0988038f2496eba488362ecce5490c21, type: 3}
+  - {fileID: 8300000, guid: 0307e13eac2973f49a244f0edda7d010, type: 3}
+  - {fileID: 8300000, guid: 167338563c8809049944054af44c8779, type: 3}
   quickTrunSound:
   - {fileID: 8300000, guid: 25e2df766f1d5d14c90206c287e81d15, type: 3}
   - {fileID: 8300000, guid: ff68cf639b17a8e43b9afd37d2475d6b, type: 3}
@@ -242,7 +255,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.44}
   serializedVersion: 2
-  m_Radius: 0.36
+  m_Radius: 0.37
 --- !u!50 &3339423998877578904
 Rigidbody2D:
   serializedVersion: 4
