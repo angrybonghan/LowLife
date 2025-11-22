@@ -32,8 +32,8 @@ public class ShieldMovement : MonoBehaviour
     public GameObject afterEffect;
     public float afterEffectInterval;
 
-    [Header("사운드")]
-    public AudioClip[] hitSounds;
+    //[Header("사운드")]
+    //public AudioClip[] hitSounds;   // 타격
 
     private float currentFlightTime = 0; // 현재 날아가는 시간 (시간 계산용)
     private float LastAfterEffect = 0;  // 마지막 잔상 시간  (시간 계산용)
@@ -181,7 +181,7 @@ public class ShieldMovement : MonoBehaviour
 
             Instantiate(entityHitParticle_shape, lastHitPos, Quaternion.identity);
             Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
-            PlayRandomHitSound();
+            //PlayRandomHitSound();
             TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
             CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
         }
@@ -273,16 +273,16 @@ public class ShieldMovement : MonoBehaviour
     //    }
     //}
 
-    private void PlayRandomHitSound()
-    {
-        if (hitSounds == null || hitSounds.Length == 0)
-        {
-            return;
-        }
+    //private void PlayRandomHitSound()
+    //{
+    //    if (hitSounds == null || hitSounds.Length == 0)
+    //    {
+    //        return;
+    //    }
 
-        int randomIndex = Random.Range(0, hitSounds.Length);
-        AudioSource.PlayClipAtPoint(hitSounds[randomIndex], transform.position, 2f);
-    }
+    //    int randomIndex = Random.Range(0, hitSounds.Length);
+    //    AudioSource.PlayClipAtPoint(hitSounds[randomIndex], transform.position, 2f);
+    //}
 
     private void OnDestroy()
     {

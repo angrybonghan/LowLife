@@ -289,6 +289,8 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
         if (isAttacking || isDead) return;
         isDead = true;
 
+        SoundManager.instance.PlayEntityHitSound(transform.position);
+
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;
         rb.AddForce(direction * fallingOutPower, ForceMode2D.Impulse);

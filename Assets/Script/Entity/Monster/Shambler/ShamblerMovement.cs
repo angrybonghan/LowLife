@@ -415,6 +415,10 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
             {
                 readyToAttackTime = readyToAttackTimeAtTeamKill;
             }
+            else
+            {
+                SoundManager.instance.PlayEntityHitSound(transform.position);
+            }
         }
         else
         {
