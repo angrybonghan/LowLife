@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5278217998590119289}
   - component: {fileID: 6163260329811461536}
+  - component: {fileID: 3924823629814146105}
   - component: {fileID: 2530227124491807116}
   - component: {fileID: 7585767501205437928}
   - component: {fileID: 1225874980706721426}
@@ -134,6 +135,27 @@ MonoBehaviour:
   shieldLeapGroundImpactPrefab: {fileID: 5902937327030398573, guid: d274f043070a1e94ab54ab8bef84ce82, type: 3}
   shieldLeapWallSlideEffectPrefab: {fileID: 3255466628281366065, guid: 4f01e12eb07b0204aa5e048e91971aa9, type: 3}
   testBlackScreenUI: {fileID: 0}
+--- !u!114 &3924823629814146105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2706846149502957041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0853b051ebb8674479953a83b9294f96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  footStepSound:
+  - {fileID: 8300000, guid: b0444feb8c9c9b44a8170a16f73abdfa, type: 3}
+  - {fileID: 8300000, guid: 621a41d4aeb70e047a9a57db8dc74378, type: 3}
+  - {fileID: 8300000, guid: 0d3723cd296b08b4a913b15d15f20a51, type: 3}
+  - {fileID: 8300000, guid: a1ae73ead41f2c74e9301c4b857a4527, type: 3}
+  throwSound:
+  - {fileID: 8300000, guid: 28cb8444afdf9cb48bee07b431a15c00, type: 3}
+  - {fileID: 8300000, guid: 0c3fcf6989854c5418a51dd2983d1d16, type: 3}
+  - {fileID: 8300000, guid: 3aefe7ec3641c6840a2a4fb75fcd22b9, type: 3}
 --- !u!114 &2530227124491807116
 MonoBehaviour:
   m_ObjectHideFlags: 0
