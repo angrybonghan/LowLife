@@ -39,4 +39,14 @@ public class AfterimagePlayer : MonoBehaviour
 
         Destroy(gameObject);
     }
+
+    public void SetSize(Vector3 size)
+    {
+        transform.localScale = size;
+    }
+
+    public void SetColor(Color targetColor)
+    {
+        sr.color = targetColor;
+    }
 }
