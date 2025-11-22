@@ -188,6 +188,7 @@ public class PlayerController : MonoBehaviour
     // 속성, 스크립트 참조
     private Rigidbody2D rb;
     private Animator anim;
+    private PlayerSound playerSound;
 
     private void Awake()
     {
@@ -200,6 +201,7 @@ public class PlayerController : MonoBehaviour
 
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        playerSound = GetComponent<PlayerSound>();
         startGravityScale = rb.gravityScale;
     }
 
@@ -255,7 +257,13 @@ public class PlayerController : MonoBehaviour
 
 
         // 지상인지 확인
+        bool wasGrounded = isGrounded;
         isGrounded = CheckisGrounded();
+
+        if (isGrounded && !wasGrounded)
+        {
+            OnLanded(); // 착지함
+        }
 
         // 탈 수 있는 벽에 붙어있는지 확인
         bool isClimbableWallDetectedTop = Physics2D.OverlapCircle(wallCheckTop.position, layerCheckRadius, wallLayer);
@@ -287,6 +295,11 @@ public class PlayerController : MonoBehaviour
         }
 
         return isCoyote || isRealGrounded;
+    }
+
+    void OnLanded()
+    {
+        playerSound.PlaySound(playerSoundType.FootStep);
     }
 
     void SetCoyote(float duration)
