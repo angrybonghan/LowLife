@@ -170,7 +170,10 @@ public class EnemyLaser : MonoBehaviour
                 I_Attackable attackableTarget = other.GetComponent<I_Attackable>();
                 if (attackableTarget != null)
                 {
-                    attackableTarget.OnAttack(transform);
+                    if (attackableTarget.CanAttack(transform))
+                    {
+                        attackableTarget.OnAttack(transform);
+                    }
                 }
             }
         }

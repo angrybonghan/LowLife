@@ -453,7 +453,7 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
         StartCoroutine(Dead());
     }
 
-    public bool CanAttack()
+    public bool CanAttack(Transform attackerPos)
     {
         return true;
     }

@@ -149,7 +149,7 @@ public class ShieldMovement : MonoBehaviour
         {
             if (hit.collider.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
             {
-                if (targetAttackable.CanAttack())
+                if (targetAttackable.CanAttack(transform))
                 {
                     transform.position = (Vector3)hit.point - (Vector3)movement.normalized * castRadius;
                     ExecuteCollisionLogic(hit.collider);
@@ -162,7 +162,7 @@ public class ShieldMovement : MonoBehaviour
             else
             {
                 transform.position = (Vector3)hit.point - (Vector3)movement.normalized * castRadius;
-                ExecuteCollisionLogic(hit.collider); 
+                ExecuteCollisionLogic(hit.collider);
             }
 
             SetReturnState();

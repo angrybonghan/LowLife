@@ -528,7 +528,7 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
         isInvincibility = false;
     }
 
-    public bool CanAttack()
+    public bool CanAttack(Transform attackerPos)
     {
         return !isInvincibility;
     }

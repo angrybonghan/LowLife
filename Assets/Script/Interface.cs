@@ -4,7 +4,7 @@ public interface I_Attackable
 {
     void OnAttack(Transform attackerPos);
 
-    bool CanAttack();
+    bool CanAttack(Transform attackerPos);
 }
 
 public interface I_Destructible

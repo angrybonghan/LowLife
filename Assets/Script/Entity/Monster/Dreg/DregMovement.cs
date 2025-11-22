@@ -465,11 +465,9 @@ public class DregMovement : MonoBehaviour, I_Attackable
         StartCoroutine(Dead());
     }
 
-    public bool CanAttack()
+    public bool CanAttack(Transform attackerPos)
     {
-        if (ShieldMovement.shieldInstance == null) return true;
-
-        float shieldX = ShieldMovement.shieldInstance.transform.position.x;
+        float shieldX = attackerPos.position.x;
         float myX = transform.position.x;
 
         bool blockingRight = isFacingRight && (myX < shieldX);

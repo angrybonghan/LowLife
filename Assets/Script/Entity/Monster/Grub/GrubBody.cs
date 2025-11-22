@@ -130,7 +130,7 @@ public class GrubBody : MonoBehaviour, I_Attackable
         Destroy(gameObject);
     }
 
-    public bool CanAttack()
+    public bool CanAttack(Transform attackerPos)
     {
         return true;
     }

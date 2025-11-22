@@ -241,7 +241,7 @@ public class RashMovement : MonoBehaviour, I_Attackable
         ExecuteAttackLogic(collision);
     }
 
-    public bool CanAttack()
+    public bool CanAttack(Transform attackerPos)
     {
         return true;
     }

@@ -32,7 +32,7 @@ public class BeadMovement : MonoBehaviour, I_Attackable
         anim = GetComponent<Animator>();
     }
 
-    public bool CanAttack()
+    public bool CanAttack(Transform attackerPos)
     {
         return true;
     }
