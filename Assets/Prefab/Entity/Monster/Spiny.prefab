@@ -149,6 +149,10 @@ MonoBehaviour:
   afterDeathLayer:
     serializedVersion: 2
     m_Bits: 130103
+  invincibleHit:
+  - {fileID: 8300000, guid: 8acca431ea1bb8543947f5879b9abf2f, type: 3}
+  - {fileID: 8300000, guid: f44fc570a39b0e7498a0ddef706ad131, type: 3}
+  - {fileID: 8300000, guid: 444b736b8b1d77b40a95df168af25d5c, type: 3}
 --- !u!95 &2616104792672795622
 Animator:
   serializedVersion: 5

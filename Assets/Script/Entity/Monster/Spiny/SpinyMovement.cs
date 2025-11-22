@@ -28,6 +28,9 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
     [Header("사망 후 제외 레이어")]
     public LayerMask afterDeathLayer;
 
+    [Header("사운드")]
+    public AudioClip[] invincibleHit;
+
     public enum state { move, turn , attack}
     private state currentState;
 
@@ -309,7 +312,15 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
 
     public bool CanAttack(Transform attackerPos)
     {
-        return !isAttacking;
+        if (isAttacking)
+        {
+            int randomIndex = Random.Range(0, invincibleHit.Length);
+            AudioClip clip = invincibleHit[randomIndex];
+            SoundManager.instance.PlaySoundAtPosition(transform.position, clip);
+            return false;
+        }
+
+        return true;
     }
 
     IEnumerator Dead()
