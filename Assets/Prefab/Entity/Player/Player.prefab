@@ -152,6 +152,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 621a41d4aeb70e047a9a57db8dc74378, type: 3}
   - {fileID: 8300000, guid: 0d3723cd296b08b4a913b15d15f20a51, type: 3}
   - {fileID: 8300000, guid: a1ae73ead41f2c74e9301c4b857a4527, type: 3}
+  quickTrunSound:
+  - {fileID: 8300000, guid: 25e2df766f1d5d14c90206c287e81d15, type: 3}
+  - {fileID: 8300000, guid: ff68cf639b17a8e43b9afd37d2475d6b, type: 3}
+  - {fileID: 8300000, guid: a64441d3c0a68604b8ec525e319e6ba3, type: 3}
+  - {fileID: 8300000, guid: 56a1a8f7d1984dd4fa1bd680b9269fb6, type: 3}
   throwSound:
   - {fileID: 8300000, guid: 28cb8444afdf9cb48bee07b431a15c00, type: 3}
   - {fileID: 8300000, guid: 0c3fcf6989854c5418a51dd2983d1d16, type: 3}

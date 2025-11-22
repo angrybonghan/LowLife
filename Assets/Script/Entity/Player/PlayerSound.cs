@@ -3,10 +3,13 @@ using UnityEngine.UIElements;
 
 public class PlayerSound : MonoBehaviour
 {
-    public enum soundType { FootStep, Throw ,Jump,Dash,Parry};
+    public enum soundType { FootStep, Throw ,Jump, Dash, Parry, QuickTrun };
 
     [Header("惯家府")]
     public AudioClip[] footStepSound;
+
+    [Header("狞 畔")]
+    public AudioClip[] quickTrunSound;
 
     [Header("规菩 捧么")]
     public AudioClip[] throwSound;
@@ -36,6 +39,10 @@ public class PlayerSound : MonoBehaviour
             case soundType.Throw:
                 randomIndex = Random.Range(0, throwSound.Length);
                 clip = throwSound[randomIndex];
+                break;
+            case soundType.QuickTrun:
+                randomIndex = Random.Range(0, quickTrunSound.Length);
+                clip = quickTrunSound[randomIndex];
                 break;
         }
 
