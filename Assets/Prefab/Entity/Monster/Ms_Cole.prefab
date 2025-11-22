@@ -117,6 +117,8 @@ MonoBehaviour:
   afterDeathLayer:
     serializedVersion: 2
     m_Bits: 130103
+  fireSound: {fileID: 8300000, guid: 0a20d8143b317a146b36d3968d44c4ae, type: 3}
+  reloadSound: {fileID: 8300000, guid: 5a14dc321ea38b04d82f78c9a699cb3e, type: 3}
 --- !u!70 &8701570102012379236
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

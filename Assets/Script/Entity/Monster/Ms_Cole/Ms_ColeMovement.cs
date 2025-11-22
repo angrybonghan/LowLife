@@ -52,6 +52,10 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
     [Header("사망 후 제외 레이어")]
     public LayerMask afterDeathLayer;
 
+    [Header("사운드")]
+    public AudioClip fireSound;
+    public AudioClip reloadSound;
+
     private int facingSign = 1; // 바라보는 방향
 
     private float currentNormalizedSpeed = 0;   // 정규화된 속도
@@ -282,6 +286,7 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
             yield return new WaitForSeconds(aimingTime);
             isAiming = false;
             anim.SetTrigger("fire");
+            SoundManager.instance.PlaySoundAtPosition(transform.position, fireSound);
             Attack();
             yield return new WaitForSeconds(reloadTime);
 
@@ -289,6 +294,11 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
         }
 
         SetState(state.track);
+    }
+
+    public void PlayReloadSound()
+    {
+        SoundManager.instance.PlaySoundAtPosition(transform.position, reloadSound);
     }
 
     void Attack()
