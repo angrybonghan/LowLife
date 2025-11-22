@@ -20,7 +20,8 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
     public Transform lowerGroundCheckPos;    // 땅 아래쪽
 
     [Header("공격")]
-    public float readyToAttackTime = 0.5f;  // 공격의 준비 시간 (이후 터짐)
+    public float readyToAttackTime = 0.5f;  // 공격의 준비 시간
+    public float readyToExplosionTime = 0.5f;  // 폭발의 준비 시간 (이후 폭발함)
     public float damage = 1f;
     public float knockbackPower = 1f;
     public float knockbacktime = 0.1f;
@@ -284,7 +285,7 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
         currentNormalizedSpeed = 0;
 
         anim.SetTrigger("explosionPreparation");
-        yield return new WaitForSeconds(readyToAttackTime);
+        yield return new WaitForSeconds(readyToExplosionTime);
         anim.SetTrigger("explosion");
         ExplosionDamage();
     }
