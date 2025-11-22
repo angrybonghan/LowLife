@@ -685,6 +685,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ParrySuccess()
+    {
+        TimeManager.SetTimeScale(0.1f);
+        TimeManager.FadeTimeScale(0.778f, 1f);
+        CameraMovement.RotationShaking(1f, 0.05f, 0.2f);
+    }
+
     void ShieldHandler()
     {
         if (!hasShield) return;

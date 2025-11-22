@@ -57,6 +57,8 @@ public class EnemyProjectile : MonoBehaviour, I_Projectile
 
         if (boxCol != null) boxCol.excludeLayers = afterParryLayer;
         if (cirCol != null) cirCol.excludeLayers = afterParryLayer;
+
+        PlayerController.instance.ParrySuccess();
     }
 
     public void Collision()
