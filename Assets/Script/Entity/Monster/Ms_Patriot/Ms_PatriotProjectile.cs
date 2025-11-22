@@ -154,6 +154,8 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 
         currentLifeTime = 0;
         isParried = true;
+
+        PlayerController.instance.ParrySuccess();
     }
 
     public void SetFacing(Vector2 target)

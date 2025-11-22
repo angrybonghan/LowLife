@@ -158,6 +158,7 @@ public class EnemyLaser : MonoBehaviour
                     Rotate(180);
                     RaycastResize();
                     ShootLaser();   // Àç±ÍÇÔ¼ö
+                    PlayerController.instance.ParrySuccess();
                     return;
                 }
                 else
