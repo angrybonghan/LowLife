@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
 public class DestructibleObjects : MonoBehaviour, I_Destructible
 {
     [Header("파괴 설정")]
@@ -10,15 +9,9 @@ public class DestructibleObjects : MonoBehaviour, I_Destructible
     [Header("부품")]
     public GameObject deadPartPrefab;
 
-    private AudioSource audioSource;
-
-    private void Awake()
-    {
-        audioSource = GetComponent<AudioSource>();
-    }
-
     public void OnAttack()
     {
+        PlayRandomDestructionSound();
         Destruction();
     }
 
@@ -30,7 +23,7 @@ public class DestructibleObjects : MonoBehaviour, I_Destructible
     void Destruction()
     {
         if (deadPartPrefab != null) Instantiate(deadPartPrefab, transform.position, Quaternion.identity);
-
+        
         Destroy(gameObject);
     }
 
@@ -44,7 +37,7 @@ public class DestructibleObjects : MonoBehaviour, I_Destructible
 
         if (clipToPlay != null)
         {
-            audioSource.PlayOneShot(clipToPlay);
+            SoundManager.instance.PlaySoundAtPosition(transform.position, clipToPlay);
         }
     }
 }
