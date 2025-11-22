@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(AudioSource))]
 public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 {
     [Header("공격")]
@@ -20,6 +20,10 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
     [Header("이펙트")]
     public GameObject explosionEffect;
 
+    [Header("사운드")]
+    public AudioClip thrusterSound;
+    public AudioClip[] explosionSound;
+
     bool isParried = false;
     bool isDead = false;
     bool wasHitPlayer = false;
@@ -28,15 +32,21 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 
     private Rigidbody2D rb;
     private Transform targetTransform;
+    private AudioSource AS;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        AS = GetComponent<AudioSource>();
     }
 
     void Start()
     {
         targetTransform = PlayerController.instance.transform;
+
+        AS.loop = true;
+        AS.clip = thrusterSound;
+        AS.Play();
     }
 
     void Update()
@@ -68,6 +78,13 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
     void Explode()
     {
         isDead = true;
+
+        AS.Stop();
+
+        int randomIndex = Random.Range(0, explosionSound.Length);
+        AudioClip clip = explosionSound[randomIndex];
+        SoundManager.instance.PlaySoundAtPosition(transform.position, clip);
+
 
         Collider2D[] hitTargets = Physics2D.OverlapCircleAll(
             transform.position,                 // 중심 위치
