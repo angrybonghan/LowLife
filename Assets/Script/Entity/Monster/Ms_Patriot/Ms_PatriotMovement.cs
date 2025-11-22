@@ -48,6 +48,9 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
     [Header("사망 후 제외 레이어")]
     public LayerMask afterDeathLayer;
 
+    [Header("사운드 이펙트")]
+    public AudioClip fireSound;
+
     private float currentNormalizedSpeed = 0;   // 정규화된 속도
     private float detectionRate = 0;    // 발각의 정도
 
@@ -301,6 +304,8 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
     {
         Ms_PatriotProjectile ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<Ms_PatriotProjectile>();
         ep.SetFacing((Vector2)transform.position + (Vector2.right * (isFacingRight ? 99999 : -99999 )));
+
+        SoundManager.instance.PlaySoundAtPosition(transform.position, fireSound);
     }
 
     bool IsPlayerInRange()
