@@ -1094,7 +1094,7 @@ public class PlayerController : MonoBehaviour
 
             if (attackOnRight == isFacingRight)
             {
-                ApplyDamageToShield(damage);
+                AddDamageToShield(damage);
                 if (shieldGauge != 0) AddKnockback(knockbackPower, knockbacktime);
             }
             else Death();
@@ -1102,7 +1102,7 @@ public class PlayerController : MonoBehaviour
         else Death();
     }
 
-    void ApplyDamageToShield(float damage)
+    public void AddDamageToShield(float damage)
     {
         shieldGauge -= damage;
         shieldGauge = Mathf.Clamp01(shieldGauge);

@@ -53,8 +53,8 @@ MonoBehaviour:
   canChangeColor: 1
   minColor: {r: 0.5283019, g: 0.42633313, b: 0.35635456, a: 1}
   maxColor: {r: 0.2735849, g: 0.20367375, b: 0.15873086, a: 1}
-  minShrinkDuration: 1
-  maxShrinkDuration: 1.2
+  minShrinkDuration: 0.375
+  maxShrinkDuration: 0.45
   initialDirection: {x: 0, y: 0}
   spreadAngle: 30
 --- !u!212 &6744916688278236424
