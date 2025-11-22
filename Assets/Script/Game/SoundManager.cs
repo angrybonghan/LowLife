@@ -13,8 +13,6 @@ public class SoundManager : MonoBehaviour
 
     float volume = 1.0f;
 
-    AudioSource AS;
-
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -25,7 +23,6 @@ public class SoundManager : MonoBehaviour
             return;
         }
 
-        AS = GetComponent<AudioSource>();
     }
 
     public void PlaySoundAtPosition(Vector3 position, AudioClip clip)
@@ -48,5 +45,21 @@ public class SoundManager : MonoBehaviour
         {
             PlaySoundAtPosition(position, clipToPlay);
         }
+    }
+
+    public void PlayClipAtPointWithPitch(Vector3 position, AudioClip clip, float pitch = 1.0f)
+    {
+        GameObject tempGO = new GameObject("TempAudio");
+        tempGO.transform.position = position;
+
+        AudioSource audioSource = tempGO.AddComponent<AudioSource>();
+        audioSource.clip = clip;
+        audioSource.spatialBlend = 1.0f;
+
+        audioSource.volume = volume;
+        audioSource.pitch = pitch;
+
+        audioSource.Play();
+        Destroy(tempGO, clip.length / Mathf.Abs(pitch));
     }
 }
