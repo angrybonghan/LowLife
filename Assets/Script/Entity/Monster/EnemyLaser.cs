@@ -32,8 +32,8 @@ public class EnemyLaser : MonoBehaviour
     private const float maxRayDistance = 100f;
 
     bool hasOrigin = false;
-    bool hasTarget = false;
     bool isParryed = false;
+    bool isFiring;  // 발사하고 사라지는 도중인지 여부
 
     Transform originTransform;
     Transform target;
@@ -60,12 +60,7 @@ public class EnemyLaser : MonoBehaviour
         if (hasOrigin && !isParryed)
         {
             if (originTransform != null) transform.position = originTransform.position;
-            else Destroy(gameObject);
-        }
-
-        if (hasTarget)
-        {
-            if (target == null) Destroy(gameObject);
+            else if (!isFiring) Destroy(gameObject);
         }
     }
 
@@ -78,7 +73,6 @@ public class EnemyLaser : MonoBehaviour
     public void SetTarget(Transform target)
     {
         if (target != null) this.target = target;
-        hasTarget = true;
     }
 
     public void SetDamage(float damage, float knockbackPower, float knockbacktime)
@@ -135,6 +129,8 @@ public class EnemyLaser : MonoBehaviour
         if (isParryed) startColor = InvertColor(startColor);
         else spriteRenderer.color = startColor;
 
+        isFiring = true;
+
         Vector2 origin = transform.position;
         Vector2 direction = transform.right;
         LayerMask layer = isParryed ? afterParryCollisionMask : collisionMask;
@@ -178,7 +174,7 @@ public class EnemyLaser : MonoBehaviour
                 }
             }
         }
-
+        
         StartCoroutine(Co_ShrinkAndDestroy());
     }
 

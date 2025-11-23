@@ -112,6 +112,7 @@ public class LumenMovement : MonoBehaviour, I_Attackable
             if (currentState == state.attack)
             {
                 anim.SetTrigger("endAttack");
+                Destroy(firePoint.gameObject);
             }
 
             SetState(state.idle);
