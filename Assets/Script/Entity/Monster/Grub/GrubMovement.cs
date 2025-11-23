@@ -204,7 +204,7 @@ public class GrubMovement : MonoBehaviour
 
     void SwitchPos()
     {
-        targetPos = isRightCloser() ? movePosLeft : movePosRight;
+        targetPos = targetPos == movePosRight ? movePosLeft : movePosRight;
         LookPos(targetPos);
     }
 
