@@ -1,4 +1,3 @@
-using System.Drawing;
 using UnityEngine;
 
 public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun };

@@ -159,7 +159,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 93060bf0b087db7438d8415cfd003edb, type: 3}
   - {fileID: 8300000, guid: f278eccf5dbf0e24395d03b57cd9a9a1, type: 3}
   - {fileID: 8300000, guid: 7a0dcb18e651a174fa9cabb5e5dcdca7, type: 3}
-  - {fileID: 8300000, guid: 0738d72ff64098a499c74641fb73bc12, type: 3}
   woodFootStepSound:
   - {fileID: 8300000, guid: 03da294633a017947888262a5c6f3517, type: 3}
   - {fileID: 8300000, guid: 0988038f2496eba488362ecce5490c21, type: 3}
@@ -438,7 +437,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 6
+  m_SortingOrder: 21
   m_Sprite: {fileID: 21300000, guid: 626c623ece26fa9499d7c29318bde48f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -672,7 +671,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 20
   m_Sprite: {fileID: 21300000, guid: a2e4f89b44745474bb5eb0fc209d2a29, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -756,7 +755,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 20
   m_Sprite: {fileID: 21300000, guid: cfa2ae596356b104f8c50fe38802ca9b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
