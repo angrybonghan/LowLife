@@ -326,6 +326,7 @@ MonoBehaviour:
   detectionTime: 0.1
   detectionCancelTime: 0.5
   detectionDecayTime: 3
+  explosionParticle: {fileID: 7092785366733777106, guid: f9341017196b5754597f06a449183dcf, type: 3}
 --- !u!70 &8686147039021856065
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

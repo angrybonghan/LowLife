@@ -9,6 +9,7 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
     public float moveRadius; // 대기 상태에 들어간 위치로부터 최대 탐색 범위. 이 범위는 지형에 따라 조절될 수 있음.
     public float trunDuration = 0.5f;   // 회전 대기 시간
     public float acceleration = 0.1f; // 가속도
+
     [Header("달리기")]
     public float runningSpeedMultiplier = 3; // 달리기 속도 배수
     public float runningAcceleration = 0.5f; // 달리기 가속도
@@ -48,6 +49,9 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
     public float detectionTime = 0.1f;  // 발각도 충전 시간
     public float detectionCancelTime = 0.5f;  // 의심 해제 시간
     public float detectionDecayTime = 1.5f; // 발각도 감소 시간
+
+    [Header("파티클")]
+    public GameObject explosionParticle;
 
     private int facingSign = 1; // 바라보는 방향
 
@@ -287,6 +291,7 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
         anim.SetTrigger("explosionPreparation");
         yield return new WaitForSeconds(readyToExplosionTime);
         anim.SetTrigger("explosion");
+        Instantiate(explosionParticle, transform.position, Quaternion.identity);
         ExplosionDamage();
     }
 
