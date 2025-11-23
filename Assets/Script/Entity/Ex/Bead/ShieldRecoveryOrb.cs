@@ -50,10 +50,18 @@ public class ShieldRecoveryOrb : MonoBehaviour
 
     void Update()
     {
-        UpdatePower();
-        RotateTowardsTarget();
-        MoveAndCollide();
-        AfterimageHandler();
+        if (playerPostion != null)
+        {
+            UpdatePower();
+            RotateTowardsTarget();
+            MoveAndCollide();
+            AfterimageHandler();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
     }
 
     void UpdatePower()

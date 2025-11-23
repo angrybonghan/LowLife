@@ -221,7 +221,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
             else
             {
                 TimeSincePlayerLost = 0;
-                LookPos(playerObject.transform.position);
+                if (playerObject != null) LookPos(playerObject.transform.position);
             }
 
             
@@ -237,6 +237,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
 
     void TrackHandler()
     {
+        if (playerObject == null) return;
         LookPos(playerObject.transform.position);
 
         Vector2 checkPos = playerObject.transform.position;

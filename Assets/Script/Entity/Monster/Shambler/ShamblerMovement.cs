@@ -184,6 +184,8 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
         float TimeSincePlayerLost = 0;
         while (true)
         {
+            if (playerObject == null) yield break;
+
             if (IsPlayerInView()) detectionRate += Time.deltaTime / detectionTime;
             else detectionRate -= Time.deltaTime / detectionDecayTime;
 

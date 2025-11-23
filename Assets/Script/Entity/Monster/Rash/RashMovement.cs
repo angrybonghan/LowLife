@@ -118,7 +118,7 @@ public class RashMovement : MonoBehaviour, I_Attackable
         anim.SetTrigger("readyToRush");
         yield return new WaitForSeconds(dashChrgeTime);
 
-        directionToPlayer = playerObject.transform.position - transform.position;
+        if (playerObject != null) directionToPlayer = playerObject.transform.position - transform.position;
         directionToPlayer = directionToPlayer.normalized;
 
         currentState = state.rush;

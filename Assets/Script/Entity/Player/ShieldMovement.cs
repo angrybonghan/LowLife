@@ -80,6 +80,13 @@ public class ShieldMovement : MonoBehaviour
 
     void Update()
     {
+        if (playerPostion == null)
+        {
+            shieldInstance = null;
+            Destroy(gameObject);
+            return;
+        }
+
         MoveAndCollide();
 
         if (!isReturning)

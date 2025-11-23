@@ -109,6 +109,11 @@ public class LumenMovement : MonoBehaviour, I_Attackable
         }
         else if (currentState != state.idle)
         {
+            if (currentState == state.attack)
+            {
+                anim.SetTrigger("endAttack");
+            }
+
             SetState(state.idle);
 
             if (exclamationMark != null)
@@ -158,8 +163,13 @@ public class LumenMovement : MonoBehaviour, I_Attackable
         float TimeSincePlayerLost = 0;
         while (true)
         {
-            if (IsPlayerInView()) detectionRate += Time.deltaTime / detectionTime;
-            else detectionRate -= Time.deltaTime / detectionDecayTime;
+            if (playerObject == null) yield break;
+
+            if (playerObject != null)
+            {
+                if (IsPlayerInView()) detectionRate += Time.deltaTime / detectionTime;
+                else detectionRate -= Time.deltaTime / detectionDecayTime;
+            }
 
             detectionRate = Mathf.Clamp01(detectionRate);
             exclamationMark.SetGaugeValue(detectionRate);
@@ -194,7 +204,7 @@ public class LumenMovement : MonoBehaviour, I_Attackable
 
     void TrackHandler()
     {
-        LookPos(playerObject.transform.position);
+        if (playerObject != null) LookPos(playerObject.transform.position);
 
         if (IsPlayerInRange())
         {

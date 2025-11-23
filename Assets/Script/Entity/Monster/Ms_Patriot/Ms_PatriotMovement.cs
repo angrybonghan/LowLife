@@ -115,6 +115,11 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
         }
         else if (currentState != state.idle)
         {
+            if (currentState == state.attack)
+            {
+                anim.SetTrigger("endAttack");
+            }
+
             SetState(state.idle);
 
             if (exclamationMark != null)
@@ -215,6 +220,8 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
         float TimeSincePlayerLost = 0;
         while (true)
         {
+            if (playerObject == null) yield break;
+
             if (IsPlayerInView()) detectionRate += Time.deltaTime / detectionTime;
             else detectionRate -= Time.deltaTime / detectionDecayTime;
 

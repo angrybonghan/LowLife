@@ -194,6 +194,8 @@ public class DregMovement : MonoBehaviour, I_Attackable
         float TimeSincePlayerLost = 0;
         while (true)
         {
+            if (playerObject == null) yield break;
+
             if (IsPlayerInView()) detectionRate += Time.deltaTime / detectionTime;
             else detectionRate -= Time.deltaTime / detectionDecayTime;
 
@@ -217,7 +219,7 @@ public class DregMovement : MonoBehaviour, I_Attackable
             else
             {
                 TimeSincePlayerLost = 0;
-                if (playerObject != null) LookPos(playerObject.transform.position);
+                LookPos(playerObject.transform.position);
             }
 
 
@@ -243,7 +245,7 @@ public class DregMovement : MonoBehaviour, I_Attackable
             return;
         }
 
-        if (playerObject != null) LookPos(playerObject.transform.position);
+        LookPos(playerObject.transform.position);
 
         Vector2 checkPos = playerObject.transform.position;
         checkPos.y = transform.position.y;

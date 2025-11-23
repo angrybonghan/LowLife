@@ -245,6 +245,11 @@ public class PlayerController : MonoBehaviour
         }
         ShieldGaugeHandler();   // 방패 게이지 관련
         UpdateAnimation(); // 애니메이션 업데이트 (달리기, 퀵턴, 공중 상태, 움직임 속도, 추락 감지)
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            Death();
+        }
     }
 
 
