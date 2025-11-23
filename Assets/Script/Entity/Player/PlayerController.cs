@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [Header("방패")]
     public float shieldEquipDuration = 0.2f;   // 방패를 꺼내는 시간
     public float parryDuration = 0.4f;  // 방패로 튕겨내는 시간
+    public GameObject parryEffect;  // 패링할 때 파티클
 
     [Header("방패 게이지")]
     public float shieldRechargeDuration = 3;    // 방패가 완전 방전에서 완전 충전으로 회복되는 시간
@@ -706,9 +707,21 @@ public class PlayerController : MonoBehaviour
 
     public void ParrySuccess()
     {
-        TimeManager.SetTimeScale(0.1f);
+        TimeManager.SetTimeScale(0.025f);
         TimeManager.FadeTimeScale(0.778f, 1f);
         CameraMovement.RotationShaking(1f, 0.05f, 0.2f);
+
+        Quaternion effectRotation;
+        if (isFacingRight)
+        {
+            effectRotation = quaternion.identity;
+        }
+        else
+        {
+            effectRotation = Quaternion.Euler(0, 0, 180);
+        }
+
+        Instantiate(parryEffect, transform.position, effectRotation);
     }
 
     void ShieldHandler()

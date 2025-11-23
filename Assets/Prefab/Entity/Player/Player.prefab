@@ -98,6 +98,7 @@ MonoBehaviour:
   dashEffect: {fileID: 1877804497623792628, guid: 7b377459c6d19e54183b58215d31df69, type: 3}
   shieldEquipDuration: 0.2
   parryDuration: 0.2
+  parryEffect: {fileID: 917781209060386199, guid: 7da7b29c97ea0084fa94d18ae1c9ade1, type: 3}
   shieldRechargeDuration: 3
   maxShieldGaugeColor: {r: 0, g: 1, b: 0, a: 1}
   minShieldGaugeColor: {r: 1, g: 0, b: 0, a: 1}
