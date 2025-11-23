@@ -32,6 +32,11 @@ public class ParticleSpawner : MonoBehaviour
 
     Vector3 GetRandomPositionInCircle(Vector3 center, float range)
     {
+        if (maxRange == 0)
+        {
+            return transform.position;
+        }
+
         Vector2 randomCircle = Random.insideUnitCircle * range;
         Vector3 randomPosition = center + new Vector3(randomCircle.x, randomCircle.y, 0f);
 
