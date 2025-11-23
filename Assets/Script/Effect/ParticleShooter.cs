@@ -84,6 +84,8 @@ public class ParticleShooter : MonoBehaviour
     }
     void OnDrawGizmosSelected()
     {
+        if (maxRange < 0) return;
+
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, maxRange);
 
@@ -111,16 +113,16 @@ public class ParticleShooter : MonoBehaviour
 
             if (spreadAngle > 0)
             {
-                spreadDirectionUp = leftOffsetPosition + rotationUp * centerDirection * 3;
-                spreadDirectionDown = rightOffsetPosition + rotationDown * centerDirection * 3;
+                spreadDirectionUp = leftOffsetPosition + rotationUp * centerDirection * (maxRange + 2f);
+                spreadDirectionDown = rightOffsetPosition + rotationDown * centerDirection * (maxRange + 2f);
 
                 Gizmos.DrawLine(leftOffsetPosition, spreadDirectionUp);
                 Gizmos.DrawLine(rightOffsetPosition, spreadDirectionDown);
             }
             else
             {
-                spreadDirectionUp = rightOffsetPosition + rotationUp * centerDirection * 3;
-                spreadDirectionDown = leftOffsetPosition + rotationDown * centerDirection * 3;
+                spreadDirectionUp = rightOffsetPosition + rotationUp * centerDirection * (maxRange + 2f);
+                spreadDirectionDown = leftOffsetPosition + rotationDown * centerDirection * (maxRange + 2f);
 
                 Gizmos.DrawLine(rightOffsetPosition, spreadDirectionUp);
                 Gizmos.DrawLine(leftOffsetPosition, spreadDirectionDown);

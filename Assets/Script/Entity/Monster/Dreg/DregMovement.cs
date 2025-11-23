@@ -72,8 +72,6 @@ public class DregMovement : MonoBehaviour, I_Attackable
     public enum state { idle, doubt, track, attack }
     state currentState;
 
-    Coroutine paralyzedCoroutine;
-
     private Rigidbody2D rb;
     private Animator anim;
     private ExclamationMarkHandler exclamationMark;
@@ -219,7 +217,7 @@ public class DregMovement : MonoBehaviour, I_Attackable
             else
             {
                 TimeSincePlayerLost = 0;
-                LookPos(playerObject.transform.position);
+                if (playerObject != null) LookPos(playerObject.transform.position);
             }
 
 
@@ -245,7 +243,7 @@ public class DregMovement : MonoBehaviour, I_Attackable
             return;
         }
 
-        LookPos(playerObject.transform.position);
+        if (playerObject != null) LookPos(playerObject.transform.position);
 
         Vector2 checkPos = playerObject.transform.position;
         checkPos.y = transform.position.y;
@@ -477,7 +475,7 @@ public class DregMovement : MonoBehaviour, I_Attackable
         {
             anim.SetTrigger("block");
             StopAllCoroutines();
-            paralyzedCoroutine = StartCoroutine(ParalyzedCoroutine(paralysisTime));
+            StartCoroutine(ParalyzedCoroutine(paralysisTime));
             return false;
         }
 
@@ -500,8 +498,6 @@ public class DregMovement : MonoBehaviour, I_Attackable
         exclamationMark.SetGaugeValue(detectionRate);
 
         SetState(state.track);
-
-        paralyzedCoroutine = null;
     }
 
     float GetRandom(float min, float max)

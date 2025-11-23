@@ -71,8 +71,9 @@ public class PlayerController : MonoBehaviour
     public GameObject shieldLeapGroundImpactPrefab; // 방패 도약 이펙트 프리팹 - 지상
     public GameObject shieldLeapWallSlideEffectPrefab; // 방패 도약 이펙트 프리팹 - 월 슬라이딩
 
-    [Header("test")]
-    public GameObject testBlackScreenUI;    // (테스트용) 사망 시 보여줄 검정색 UI 패널
+    [Header("죽음")]
+    public GameObject dummyShield;    // 사망 시 나오는 방패 (걍 굴러댕김)
+    public GameObject deathParticle;  // 사망 시 나오는 파티클
 
 
     // =========================================================================
@@ -1166,14 +1167,9 @@ public class PlayerController : MonoBehaviour
 
     void Death()
     {
-        if (testBlackScreenUI != null)
-        {
-            testBlackScreenUI.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError("testBlackScreenUI 없음");
-        }
+        Instantiate(deathParticle, transform.position, quaternion.identity);
+        Instantiate(dummyShield, transform.position, quaternion.identity);
+        Destroy(gameObject);
     }
 
     public void Goto(Vector3 pos)

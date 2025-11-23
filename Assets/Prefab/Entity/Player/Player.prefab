@@ -134,7 +134,8 @@ MonoBehaviour:
   shieldLeapAirEffectPrefab: {fileID: 4021274216835747486, guid: 218c4e81d9baa014b945b995954b5d7e, type: 3}
   shieldLeapGroundImpactPrefab: {fileID: 5902937327030398573, guid: d274f043070a1e94ab54ab8bef84ce82, type: 3}
   shieldLeapWallSlideEffectPrefab: {fileID: 3255466628281366065, guid: 4f01e12eb07b0204aa5e048e91971aa9, type: 3}
-  testBlackScreenUI: {fileID: 0}
+  dummyShield: {fileID: 1249094244407886384, guid: 87afe3abecbe57b42b62fe12f2d79906, type: 3}
+  deathParticle: {fileID: 5519408069291609531, guid: 9ee8269af20c8f745b94b78fc04798d1, type: 3}
 --- !u!114 &3924823629814146105
 MonoBehaviour:
   m_ObjectHideFlags: 0

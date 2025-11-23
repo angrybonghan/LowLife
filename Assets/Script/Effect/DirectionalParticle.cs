@@ -16,6 +16,10 @@ public class DirectionalParticle : MonoBehaviour
     public Color minColor = Color.black;
     public Color maxColor = Color.black;
 
+    [Header("Å©±â")]
+    public float maxSizeMultiples = 1.1f;
+    public float minSizeMultiples = 0.9f;
+
     [Header("»ç¶óÁü")]
     public float minShrinkDuration = 1.0f;
     public float maxShrinkDuration = 3.0f;
@@ -38,6 +42,7 @@ public class DirectionalParticle : MonoBehaviour
     {
         SetRandomVelocity();
         SetRandomAngularVelocity();
+        SetRandomSize();
 
         if (canChangeColor) SetRandomColor();
 
@@ -72,6 +77,11 @@ public class DirectionalParticle : MonoBehaviour
     {
         float randomAngularVelocity = GetRandom(-AngularSpeed, AngularSpeed);
         rb.angularVelocity = randomAngularVelocity;
+    }
+
+    void SetRandomSize()
+    {
+        transform.localScale = transform.localScale * GetRandom(minSizeMultiples, maxSizeMultiples);
     }
 
     void SetRandomColor()
