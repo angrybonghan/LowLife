@@ -179,6 +179,7 @@ public class PlayerController : MonoBehaviour
     // =========================================================================
     private GameObject crosshairInstance;     // 조준점 게임오브젝트 레퍼런스
     private float startGravityScale;    // 시작 당시의 중력 값
+    private bool isDead = false;
 
     // =========================================================================
     // 외부조작기 (싱글톤)
@@ -1141,6 +1142,11 @@ public class PlayerController : MonoBehaviour
         else Death();
     }
 
+    public void ImmediateDeath()
+    {
+        Death();
+    }
+
     public void AddDamageToShield(float damage)
     {
         shieldGauge -= damage;
@@ -1185,8 +1191,11 @@ public class PlayerController : MonoBehaviour
 
     void Death()
     {
+        if (isDead) return;
+        isDead = true;
         Instantiate(deathParticle, transform.position, quaternion.identity);
         Instantiate(dummyShield, transform.position, quaternion.identity);
+        CameraMovement.PositionShaking(0.1f, 0.05f, 1);
         Destroy(gameObject);
     }
 
