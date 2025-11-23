@@ -17,6 +17,9 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
     public float lifeTime = 10;
     public float trackingPower = 1f;
 
+    [Header("패링 속도 배수")]
+    public float ParrySpeedMultiplier = 1.5f;
+
     [Header("이펙트")]
     public GameObject explosionEffect;
 
@@ -143,7 +146,15 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 
             Explode();
         }
-        else Explode();
+        else
+        {
+            if (other.CompareTag("Player"))
+            {
+                return;
+            }
+
+            Explode();
+        }
     }
 
     void Parry()
@@ -152,6 +163,7 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
         Quaternion targetRotation = currentRotation * Quaternion.Euler(0, 0, 180f);
         transform.rotation = targetRotation;
 
+        speed *= ParrySpeedMultiplier;
         currentLifeTime = 0;
         isParried = true;
 

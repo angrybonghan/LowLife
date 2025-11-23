@@ -59,6 +59,7 @@ MonoBehaviour:
   speed: 10
   lifeTime: 5
   trackingPower: 1.5
+  ParrySpeedMultiplier: 4
   explosionEffect: {fileID: 1466296792038068455, guid: 3b66fdbca4fe6b34188063638268a1cb, type: 3}
   thrusterSound: {fileID: 8300000, guid: 12a5b48048ca16b48ac65a0b5967b75b, type: 3}
   explosionSound:
@@ -187,7 +188,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!82 &-542360439037621748
 AudioSource:
