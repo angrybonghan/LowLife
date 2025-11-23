@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
 public class EnemyProjectile : MonoBehaviour, I_Projectile
 {
     [Header("АјАн")]
@@ -24,18 +23,13 @@ public class EnemyProjectile : MonoBehaviour, I_Projectile
 
     float castRadius;
 
-    BoxCollider2D boxCol;
-    CircleCollider2D cirCol;
-
-    private void Awake()
-    {
-        boxCol = GetComponent<BoxCollider2D>();
-        cirCol = GetComponent<CircleCollider2D>();
-    }
-
     private void Start()
     {
         Destroy(gameObject, lifeTime);
+
+        BoxCollider2D boxCol = GetComponent<BoxCollider2D>();
+        CircleCollider2D cirCol = GetComponent<CircleCollider2D>();
+
         if (cirCol != null) castRadius = cirCol.radius;
         else if (boxCol != null) castRadius = Mathf.Min(boxCol.size.x, boxCol.size.y);
     }
@@ -70,47 +64,10 @@ public class EnemyProjectile : MonoBehaviour, I_Projectile
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void MoveAndCollide()
     {
         if (isDead) return;
 
-        if (!isParried)
-        {
-            if (other.CompareTag("Player"))
-            {
-                PlayerController pc = other.GetComponent<PlayerController>();
-                if (pc.IsParried(transform))
-                {
-                    Parry();
-                    return;
-                }
-                else
-                {
-                    pc.OnAttack(damage, knockbackPower, knockbacktime, transform);
-                    isDead = true;
-                }
-            }
-        }
-        else
-        {
-            if (other.CompareTag("Player"))
-            {
-                return;
-            }
-
-            I_Attackable attackableTarget = other.GetComponent<I_Attackable>();
-            if (attackableTarget != null)
-            {
-                attackableTarget.OnAttack(transform);
-            }
-            isDead = true;
-        }
-
-        Destroy(gameObject);
-    }
-
-    void MoveAndCollide()
-    {
         Vector3 targetDirection = transform.right;
         Vector3 movement = targetDirection * speed * Time.deltaTime;
         float distance = movement.magnitude;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(AudioSource))]
+[RequireComponent(typeof(AudioSource), typeof(BoxCollider2D))]
 public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 {
     [Header("공격")]
@@ -11,6 +11,8 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 
     [Header("레이어")]
     public LayerMask explosionTargetLayer;
+    public LayerMask afterParryCollisionMask;
+    public LayerMask normalCollisionMask;
 
     [Header("이동")]
     public float speed = 5.0f;
@@ -32,14 +34,13 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
     bool wasHitPlayer = false;
 
     float currentLifeTime = 0;
+    float castRadius;
 
-    private Rigidbody2D rb;
     private Transform targetTransform;
     private AudioSource AS;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
         AS = GetComponent<AudioSource>();
     }
 
@@ -50,6 +51,9 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
         AS.loop = true;
         AS.clip = thrusterSound;
         AS.Play();
+
+        BoxCollider2D boxCol = GetComponent<BoxCollider2D>();
+        castRadius = Mathf.Min(boxCol.size.x, boxCol.size.y);
     }
 
     void Update()
@@ -59,8 +63,7 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
             RotateTowardsTarget();
         }
 
-        Vector2 forwardDirection = transform.right;
-        rb.velocity = forwardDirection * speed;
+        MoveAndCollide();
 
         currentLifeTime += Time.deltaTime;
         if (currentLifeTime >= lifeTime)
@@ -71,11 +74,11 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 
     void RotateTowardsTarget()
     {
-        Vector2 directionToTarget = (Vector2)targetTransform.position - rb.position;
+        Vector2 directionToTarget = (Vector2)(targetTransform.position - transform.position);
         float angle = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
 
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, trackingPower * Time.fixedDeltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, trackingPower * Time.deltaTime);
     }
 
     void Explode()
@@ -128,32 +131,62 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
         Explode();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void MoveAndCollide()
     {
-        if (isDead) return;
+        Vector3 targetDirection = transform.right;
+        Vector3 movement = targetDirection * speed * Time.deltaTime;
+        float distance = movement.magnitude;
 
-        if (!isParried)
+        if (distance <= 0) return;
+
+        RaycastHit2D hit = Physics2D.CircleCast(
+            transform.position,
+            castRadius,
+            movement.normalized,
+            distance,
+            isParried ? afterParryCollisionMask : normalCollisionMask
+        );
+
+        if (hit.collider != null)
         {
-            if (other.CompareTag("Player"))
+            Collider2D other = hit.collider;
+
+            if (!isParried)
             {
-                PlayerController pc = other.GetComponent<PlayerController>();
-                if (pc.IsParried(transform))
+                if (hit.collider.gameObject.CompareTag("Player"))
                 {
-                    Parry();
+                    PlayerController pc = other.GetComponent<PlayerController>();
+                    if (pc.IsParried(transform))
+                    {
+                        Parry();
+                        return;
+                    }
+                    else
+                    {
+                        isDead = true;
+                    }
+                }
+            }
+            else
+            {
+                if (other.CompareTag("Player"))
+                {
                     return;
                 }
+
+                I_Attackable attackableTarget = other.GetComponent<I_Attackable>();
+                if (attackableTarget != null)
+                {
+                    attackableTarget.OnAttack(transform);
+                }
+                isDead = true;
             }
 
             Explode();
         }
         else
         {
-            if (other.CompareTag("Player"))
-            {
-                return;
-            }
-
-            Explode();
+            transform.position += movement;
         }
     }
 
