@@ -317,6 +317,7 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
 
     bool IsPlayerInRange()
     {
+        if (playerObject == null) return false;
         bool inRange = Vector3.Distance(transform.position, playerObject.transform.position) < attackRange;
 
         return CanSeePlayer() && inRange;

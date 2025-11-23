@@ -83,6 +83,7 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 
     void Explode()
     {
+        if (isDead) return;
         isDead = true;
 
         AS.Stop();
@@ -161,10 +162,6 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
                         Parry();
                         return;
                     }
-                    else
-                    {
-                        isDead = true;
-                    }
                 }
             }
             else
@@ -179,7 +176,6 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
                 {
                     attackableTarget.OnAttack(transform);
                 }
-                isDead = true;
             }
 
             Explode();
