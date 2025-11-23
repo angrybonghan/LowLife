@@ -45,12 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRange: 0.2
-  maxParticleCount: 15
-  minParticleCount: 10
+  maxParticleCount: 30
+  minParticleCount: 20
   spreadAngle: 90
   showGizmo: 1
   haveRetentionTime: 1
   retentionTime: 0.05
   particlePrefabs:
   - {fileID: 3820674703635906137, guid: c0799e208d85f264e87bf1b3da077b4e, type: 3}
+  - {fileID: 7128519147185062112, guid: 3ba708015412a3f4fb1231612a947226, type: 3}
   canDestroyObj: 1
