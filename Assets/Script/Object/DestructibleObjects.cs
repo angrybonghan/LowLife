@@ -22,7 +22,7 @@ public class DestructibleObjects : MonoBehaviour, I_Destructible
 
     void Destruction()
     {
-        if (deadPartPrefab != null) Instantiate(deadPartPrefab, transform.position, Quaternion.identity);
+        if (deadPartPrefab != null) Instantiate(deadPartPrefab, transform.position, transform.localRotation);
         
         Destroy(gameObject);
     }
