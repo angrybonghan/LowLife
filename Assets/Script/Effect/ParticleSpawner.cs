@@ -10,6 +10,9 @@ public class ParticleSpawner : MonoBehaviour
     [Header("ÀÌÆåÆ®")]
     public GameObject[] particlePrefabs;
 
+    [Header("¿ÀºêÁ§Æ® ÆÄ±«")]
+    public bool canDistroyObject = true;
+
 
     void Start()
     {
@@ -27,7 +30,7 @@ public class ParticleSpawner : MonoBehaviour
             }
         }
 
-        Destroy(gameObject);
+        if (canDistroyObject) Destroy(gameObject);
     }
 
     Vector3 GetRandomPositionInCircle(Vector3 center, float range)

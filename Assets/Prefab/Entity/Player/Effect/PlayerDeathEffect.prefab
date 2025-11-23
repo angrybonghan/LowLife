@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2106817376649944329}
   - component: {fileID: 6253060196610042536}
+  - component: {fileID: -1385291714319624846}
   m_Layer: 0
   m_Name: PlayerDeathEffect
   m_TagString: Untagged
@@ -55,3 +56,21 @@ MonoBehaviour:
   - {fileID: 2173370422887627547, guid: f2339a132a29e604cb3a257fa2a7cf3f, type: 3}
   - {fileID: 7128244469488386504, guid: 3a677f2c77d317945b6e66cd15f0d3e2, type: 3}
   canDestroyObj: 1
+--- !u!114 &-1385291714319624846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5519408069291609531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a54771ea9c366d745b1e170384a49c8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxRange: 0.2
+  maxParticleCount: 25
+  minParticleCount: 20
+  particlePrefabs:
+  - {fileID: 237421658300291334, guid: 444aa0cbbdcd9764c9fdae6cd3e5465c, type: 3}
+  canDistroyObject: 0
