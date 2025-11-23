@@ -994,7 +994,7 @@ GameObject:
   - component: {fileID: 810878963555817649}
   - component: {fileID: 1194261965661993934}
   - component: {fileID: 2690624774192894385}
-  m_Layer: 16
+  m_Layer: 0
   m_Name: Grub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
