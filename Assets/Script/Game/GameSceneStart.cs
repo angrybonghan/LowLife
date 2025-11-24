@@ -15,6 +15,9 @@ public class GameSceneStart : MonoBehaviour
     [Header("조준점")]
     public bool ToggleCrosshair = true;
 
+    [Header("켜질 오브젝트")]
+    public GameObject[] enableTargets;
+
 
     void Start()
     {
@@ -44,6 +47,14 @@ public class GameSceneStart : MonoBehaviour
         if (ToggleCrosshair)
         {
             CrosshairController.instance.ToggleSprite(true);
+        }
+
+        if (enableTargets != null && enableTargets.Length != 0)
+        {
+            foreach (GameObject obj in enableTargets)
+            {
+                obj.SetActive(true);
+            }
         }
 
         Destroy(gameObject);
