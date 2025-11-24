@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8363078501413919927}
   - component: {fileID: 7721578495776181215}
+  - component: {fileID: 4059390414501948880}
   - component: {fileID: 4211728935980416250}
   - component: {fileID: 2317866153093420821}
   - component: {fileID: 8561358949384049622}
@@ -113,6 +114,23 @@ MonoBehaviour:
   afterDeathLayer:
     serializedVersion: 2
     m_Bits: 130103
+--- !u!114 &4059390414501948880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1396721087738327344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e2c3ec715bccd24b8778e920acae641, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireSound: {fileID: 8300000, guid: 9a174a78b05f2db4dbae154dac94567b, type: 3}
+  reloadSound1: {fileID: 8300000, guid: 986a36527aa2a1f4b8415b1cc0f62ddc, type: 3}
+  reloadSound2: {fileID: 8300000, guid: eb0a2d23c0fba264b8f8310cb8b86e4c, type: 3}
+  ejectSound: {fileID: 8300000, guid: 559628e1783c6c44483e142c8b6c736d, type: 3}
+  aimingSound: {fileID: 8300000, guid: 72859bf1341935e42bd4cc0543e87f0e, type: 3}
 --- !u!70 &4211728935980416250
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
