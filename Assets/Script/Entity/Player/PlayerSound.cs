@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun };
+public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun, Stick, WallKick };
 
 public class PlayerSound : MonoBehaviour
 {
@@ -16,16 +16,10 @@ public class PlayerSound : MonoBehaviour
     [Header("방패 투척")]
     public AudioClip[] throwSound;
 
+    [Header("벽 관련")]
+    public AudioClip stickSound;
+    public AudioClip wallKickSound;
 
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
 
     public void PlaySound(playerSoundType type)
     {
@@ -44,6 +38,12 @@ public class PlayerSound : MonoBehaviour
             case playerSoundType.QuickTrun:
                 randomIndex = Random.Range(0, quickTrunSound.Length);
                 clip = quickTrunSound[randomIndex];
+                break;
+            case playerSoundType.Stick:
+                clip = stickSound;
+                break;
+            case playerSoundType.WallKick:
+                clip = wallKickSound;
                 break;
         }
 

@@ -126,10 +126,7 @@ MonoBehaviour:
   shieldThrowInterval: 0.25
   shieldSummonPos: {fileID: 2832086274755950019}
   shieldPrefabs: {fileID: 3792225553167996052, guid: da7b4a41f559e7f42a3a741cde7f72b3, type: 3}
-  crosshairPrefabs: {fileID: 5711959972963249622, guid: 81fdf19a5e0e988499d4f5534c223c56, type: 3}
-  crosshairSummonPos: {fileID: 1186747484319741690}
   ShieldSprite: {fileID: 3548910215429135363}
-  postProcessVolumeObject: {fileID: 4417633124493930573}
   shieldLeapShieldGaugeDecrease: 0.75
   minShieldLeapShieldGauge: 0.5
   shieldLeapAirEffectPrefab: {fileID: 4021274216835747486, guid: 218c4e81d9baa014b945b995954b5d7e, type: 3}
@@ -137,6 +134,10 @@ MonoBehaviour:
   shieldLeapWallSlideEffectPrefab: {fileID: 3255466628281366065, guid: 4f01e12eb07b0204aa5e048e91971aa9, type: 3}
   dummyShield: {fileID: 1249094244407886384, guid: 87afe3abecbe57b42b62fe12f2d79906, type: 3}
   deathParticle: {fileID: 5519408069291609531, guid: 9ee8269af20c8f745b94b78fc04798d1, type: 3}
+  parryCount: 0
+  isShielding: 0
+  isParrying: 0
+  hasShield: 1
 --- !u!114 &3924823629814146105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,6 +176,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 28cb8444afdf9cb48bee07b431a15c00, type: 3}
   - {fileID: 8300000, guid: 0c3fcf6989854c5418a51dd2983d1d16, type: 3}
   - {fileID: 8300000, guid: 3aefe7ec3641c6840a2a4fb75fcd22b9, type: 3}
+  stickSound: {fileID: 8300000, guid: 4f561c7005a47944aa0bfa8e17fe20e8, type: 3}
+  wallKickSound: {fileID: 8300000, guid: 13bb0b77f388c9f4596a4097da341bbc, type: 3}
 --- !u!114 &2530227124491807116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,6 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 304b09f7871767e4e9a4e6f28a77b467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlayerBeingManipulated: 0
 --- !u!70 &7585767501205437928
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
