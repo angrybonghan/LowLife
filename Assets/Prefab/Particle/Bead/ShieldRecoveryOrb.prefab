@@ -61,6 +61,7 @@ MonoBehaviour:
   maxSizeMultiples: 1.5
   minSizeMultiples: 0.75
   afterimage: {fileID: 8864363763658107815, guid: 2d241a50e646a5346bed63616ec22b15, type: 3}
+  gainSound: {fileID: 8300000, guid: 85925199e2a03dc47aabf4783bfad9b6, type: 3}
 --- !u!212 &4788387350515608159
 SpriteRenderer:
   m_ObjectHideFlags: 0

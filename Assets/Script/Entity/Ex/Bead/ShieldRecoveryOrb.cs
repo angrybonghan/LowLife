@@ -31,6 +31,9 @@ public class ShieldRecoveryOrb : MonoBehaviour
     [Header("¿‹ªÛ")]
     public AfterimagePlayer afterimage;
 
+    [Header("º“∏Æ")]
+    public AudioClip gainSound;
+
     private SpriteRenderer sr;
     private Transform playerPostion;
 
@@ -130,6 +133,8 @@ public class ShieldRecoveryOrb : MonoBehaviour
             if (hit.collider.gameObject.CompareTag("Player"))
             {
                 PlayerController.instance.AddDamageToShield(-shieldRecoveryAmount);
+                float randomPitch = Random.Range(0.5f, 1.2f);
+                SoundManager.instance.PlayClipAtPointWithPitch(transform.position, gainSound, randomPitch);
                 Destroy(gameObject);
             }
             else
