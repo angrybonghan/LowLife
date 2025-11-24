@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/Swomp.unity
+    path: Assets/Scenes/Swomp_TEST.unity
     guid: 2f8808eae29658e468fee57dd15a1fb0
   m_configObjects: {}

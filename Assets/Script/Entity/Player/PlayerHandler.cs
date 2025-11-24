@@ -4,8 +4,10 @@ using UnityEngine;
 public class PlayerHandler : MonoBehaviour
 {
     public static PlayerHandler instance { get; private set; }
+    public bool isPlayerBeingManipulated;
 
     private Coroutine PlayerGotoCoroutine;
+    private Coroutine PlayerMoveForwardCoroutine;
 
     private void Awake()
     {
@@ -13,18 +15,26 @@ public class PlayerHandler : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    public static void PlayerGoto(Vector3 targetPos, float duration, bool facingRight)
+    private void Update()
     {
-        if (instance.PlayerGotoCoroutine != null)
+        if (Input.GetKeyDown(KeyCode.T))
         {
-            instance.StopCoroutine(instance.PlayerGotoCoroutine);
+            PlayerMoveForwardTo(60);
+        }
+    }
+
+    public void PlayerGoto(Vector3 targetPos, float duration, bool facingRight)
+    {
+        if (PlayerGotoCoroutine != null)
+        {
+            StopCoroutine(PlayerGotoCoroutine);
         }
 
-        instance.PlayerGotoCoroutine = instance.StartCoroutine(instance.playerGoto(targetPos, duration));
+        PlayerGotoCoroutine = StartCoroutine(Co_PlayerGoto(targetPos, duration));
         PlayerController.instance.LookRight(facingRight);
     }
 
-    IEnumerator playerGoto(Vector3 targetPos, float duration)
+    IEnumerator Co_PlayerGoto(Vector3 targetPos, float duration)
     {
         if (duration > 0)
         {
@@ -45,5 +55,42 @@ public class PlayerHandler : MonoBehaviour
         PlayerController.instance.Goto(targetPos);
 
         PlayerGotoCoroutine = null;
+    }
+
+    public void PlayerMoveForwardTo(float targetX)
+    {
+        if (PlayerMoveForwardCoroutine != null)
+        {
+            StopCoroutine(PlayerMoveForwardCoroutine);
+        }
+
+        Vector2 lookPos = new Vector2(targetX, transform.position.y);
+        PlayerController.instance.AllStop();
+        PlayerController.instance.LookPos(lookPos);
+        PlayerController.instance.SetSpeed(1);
+        PlayerController.canControl = false;
+
+        PlayerMoveForwardCoroutine = StartCoroutine(Co_PlayerMoveForwardTo(targetX));
+    }
+
+    IEnumerator Co_PlayerMoveForwardTo(float targetX)
+    {
+        Vector3 targetPos = new Vector3(targetX, transform.position.y, transform.position.z);
+
+        while (!HasArrived(targetPos))
+        {
+            targetPos = new Vector3(targetX, transform.position.y, transform.position.z);
+            yield return null;
+        }
+
+        PlayerController.canControl = true;
+
+        PlayerMoveForwardCoroutine = null;
+    }
+
+    bool HasArrived(Vector3 pos)
+    {
+        float distance = Vector3.Distance(transform.position, pos);
+        return distance <= 0.1f;
     }
 }

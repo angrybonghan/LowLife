@@ -19,7 +19,7 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
 
         if (movePlayer)
         {
-            PlayerHandler.PlayerGoto(playerPos, duration, facingRight);
+            PlayerHandler.instance.PlayerGoto(playerPos, duration, facingRight);
             PlayerController.instance.AllStop();
         }
 

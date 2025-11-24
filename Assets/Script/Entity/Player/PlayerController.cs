@@ -1,6 +1,7 @@
-﻿using Unity.Mathematics;
+﻿using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
-using System.Collections;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
 public class PlayerController : MonoBehaviour
@@ -232,9 +233,9 @@ public class PlayerController : MonoBehaviour
 
         if (!isStunned)
         {
-            MoveInputHandler(); // 조작 키 감지
             if (canControl)
             {
+                MoveInputHandler(); // 조작 키 감지
                 CheckFlip();    // 캐릭터 좌우 회전, 퀵턴 작동
                 AttackHandler(); // 방패 투척, 방패 도약 작동, 애니메이션 트리거
                 WallSlidingHandler();   // 월 슬라이딩, 월 킥, 관련 애니메이션 트리거
@@ -243,6 +244,7 @@ public class PlayerController : MonoBehaviour
                 ParryHandler(); // 패링 작동, 애니메이션 트리거
                 ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
             }
+
             HandleMovement(); // 모든 상태에 대한 움직임
         }
         ShieldGaugeHandler();   // 방패 게이지 관련
@@ -343,13 +345,6 @@ public class PlayerController : MonoBehaviour
 
     void MoveInputHandler()
     {
-        if (!canControl)
-        {
-            moveInput = 0;
-            hasInput = false;
-            return;
-        }
-
         if (IsSingleInput())
         {
             if (Input.GetKey(KeyCode.A)) moveInput = -1;
@@ -1216,7 +1211,7 @@ public class PlayerController : MonoBehaviour
 
     public void AllStop()
     {
-        currentMoveSpeed = 0;
+        currentMoveSpeed = normalizedSpeed = 0;
         isRunning = false;
 
         SetPlayerControlDisableDuration(0);
@@ -1224,5 +1219,32 @@ public class PlayerController : MonoBehaviour
 
         isDashing = false;
         isShielding = false;
+        isWallSliding = false;
+
+        moveInput = 0;
+        hasInput = false;
+    }
+
+    public void LookPos(Vector3 targetPos)
+    {
+        float directionX = targetPos.x - transform.position.x;
+
+        if (directionX != 0 && (directionX > 0) != isFacingRight)
+        {
+            Flip();
+        }
+    }
+
+    public void SetSpeed(float speed)
+    {
+        if (speed <= 0)
+        {
+            hasInput = false;
+        }
+        else
+        {
+            lastMoveInput = isFacingRight ? 1 : -1;
+            hasInput = true;
+        }
     }
 }
