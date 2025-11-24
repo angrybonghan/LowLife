@@ -19,7 +19,7 @@ public class ShieldLeapTutorial : MonoBehaviour
     [Header("¿ÃπÃ¡ˆ")]
     public Sprite_Animator[] sprites;
 
-    bool strongScale = false;
+    bool activateShieldLeapText = false;
     bool hasPlayerEntered = false;
     Vector2 boxCenter;
 
@@ -32,7 +32,7 @@ public class ShieldLeapTutorial : MonoBehaviour
         Texts[0].SetColor(strongColor, transitionTime);
         Texts[1].SetSize(6, transitionTime);
         Texts[1].SetColor(weakColor, transitionTime);
-        strongScale = false;
+        activateShieldLeapText = false;
 
         player = PlayerController.instance;
         boxCenter = (Vector2)transform.position + hitboxOffset;
@@ -54,6 +54,14 @@ public class ShieldLeapTutorial : MonoBehaviour
                 hasPlayerEntered = true;
             }
         }
+        else if (activateShieldLeapText)
+        {
+            Texts[0].SetSize(8, transitionTime);
+            Texts[0].SetColor(strongColor, transitionTime);
+            Texts[1].SetSize(6, transitionTime);
+            Texts[1].SetColor(weakColor, transitionTime);
+            activateShieldLeapText = false;
+        }
     }
 
     IEnumerator ShowSprite()
@@ -69,22 +77,22 @@ public class ShieldLeapTutorial : MonoBehaviour
     {
         if (ShieldMovement.shieldInstance != null && !player.hasShield && !ShieldMovement.shieldInstance.isReturning)
         {
-            if (!strongScale)
+            if (!activateShieldLeapText)
             {
                 Texts[0].SetSize(6, transitionTime);
                 Texts[0].SetColor(weakColor, transitionTime);
                 Texts[1].SetSize(8, transitionTime);
                 Texts[1].SetColor(strongColor, transitionTime);
-                strongScale = true;
+                activateShieldLeapText = true;
             }
         }
-        else if (strongScale)
+        else if (activateShieldLeapText)
         {
             Texts[0].SetSize(8, transitionTime);
             Texts[0].SetColor(strongColor, transitionTime);
             Texts[1].SetSize(6, transitionTime);
             Texts[1].SetColor(weakColor, transitionTime);
-            strongScale = false;
+            activateShieldLeapText = false;
         }
     }
 
