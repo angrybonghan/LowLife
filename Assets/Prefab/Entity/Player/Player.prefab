@@ -112,7 +112,7 @@ MonoBehaviour:
   groundCheckRight: {fileID: 3714976174239297166}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 66304
+    m_Bits: 131840
   wallCheckTop: {fileID: 3975760612508664707}
   wallCheckBottom: {fileID: 312887482284412691}
   wallLayer:
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundMask:
     serializedVersion: 2
-    m_Bits: 66304
+    m_Bits: 131840
   grassFootStepSound:
   - {fileID: 8300000, guid: 2991f0d3ef32f534590bbe29c36746bd, type: 3}
   - {fileID: 8300000, guid: 1dbf9712957ca314cb8c07d21f8e478e, type: 3}
