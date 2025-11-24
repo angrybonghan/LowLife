@@ -18,6 +18,9 @@ public class BeadMovement : MonoBehaviour, I_Attackable
     [Header("방패 회복 오브")]
     public ShieldRecoveryOrb shieldRecoveryOrb;
 
+    [Header("소리")]
+    public AudioClip deathSound;
+
 
     bool isDead = false;  // 죽었는지 여부
 
@@ -43,6 +46,7 @@ public class BeadMovement : MonoBehaviour, I_Attackable
         isDead = true;
 
         SummonOrb();
+        SoundManager.instance.PlaySoundAtPosition(transform.position, deathSound);
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;

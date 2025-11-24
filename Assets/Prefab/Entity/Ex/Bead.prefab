@@ -56,6 +56,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 130103
   shieldRecoveryOrb: {fileID: 2194014783224074330, guid: 0e8279a0acb14284a9d7e76c65a7fcd7, type: 3}
+  deathSound: {fileID: 8300000, guid: ecff71f4cbd8be442b2ccc72de3b2d1c, type: 3}
 --- !u!58 &2534889772014954765
 CircleCollider2D:
   m_ObjectHideFlags: 0
