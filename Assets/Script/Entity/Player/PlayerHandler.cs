@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerHandler : MonoBehaviour
 {
     public static PlayerHandler instance { get; private set; }
-    public bool isPlayerBeingManipulated;
+    [HideInInspector] public bool isPlayerBeingManipulated;
 
     private Coroutine PlayerGotoCoroutine;
     private Coroutine PlayerMoveForwardCoroutine;
@@ -17,10 +17,10 @@ public class PlayerHandler : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            PlayerMoveForwardTo(60);
-        }
+        //if (Input.GetKeyDown(KeyCode.T))
+        //{
+        //    PlayerMoveForwardTo(60);
+        //}
     }
 
     public void PlayerGoto(Vector3 targetPos, float duration, bool facingRight)
@@ -29,6 +29,8 @@ public class PlayerHandler : MonoBehaviour
         {
             StopCoroutine(PlayerGotoCoroutine);
         }
+
+        isPlayerBeingManipulated = true;
 
         PlayerGotoCoroutine = StartCoroutine(Co_PlayerGoto(targetPos, duration));
         PlayerController.instance.LookRight(facingRight);
@@ -53,7 +55,7 @@ public class PlayerHandler : MonoBehaviour
             }
         }
         PlayerController.instance.Goto(targetPos);
-
+        isPlayerBeingManipulated = false;
         PlayerGotoCoroutine = null;
     }
 
@@ -63,6 +65,8 @@ public class PlayerHandler : MonoBehaviour
         {
             StopCoroutine(PlayerMoveForwardCoroutine);
         }
+
+        isPlayerBeingManipulated = true;
 
         Vector2 lookPos = new Vector2(targetX, transform.position.y);
         PlayerController.instance.AllStop();
@@ -84,7 +88,7 @@ public class PlayerHandler : MonoBehaviour
         }
 
         PlayerController.canControl = true;
-
+        isPlayerBeingManipulated = false;
         PlayerMoveForwardCoroutine = null;
     }
 
