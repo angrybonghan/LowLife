@@ -1,11 +1,27 @@
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class CrosshairController : MonoBehaviour
 {
     [Header("조준점 설정")]
     public float currentZ = 0f;
 
     private Camera mainCamera;
+    private SpriteRenderer SR;
+
+    public static CrosshairController instance { get; private set; }
+
+    private void Awake()
+    {
+        if (instance == null) instance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        SR = GetComponent<SpriteRenderer>();
+    }
 
     void Start()
     {
@@ -27,5 +43,10 @@ public class CrosshairController : MonoBehaviour
         Vector3 finalCrosshairPos = mainCamera.ScreenToWorldPoint(mouseScreenPosition);
         finalCrosshairPos.z = currentZ;
         transform.position = finalCrosshairPos;
+    }
+
+    public void ToggleSprite(bool isVisible)
+    {
+        SR.enabled = isVisible;
     }
 }

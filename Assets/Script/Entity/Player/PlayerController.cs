@@ -59,12 +59,7 @@ public class PlayerController : MonoBehaviour
     public float shieldThrowInterval = 0.25f;   // 방패를 잡고 다시 던지기까지의 시간
     public Transform shieldSummonPos;    // 방패 소환 위치
     public GameObject shieldPrefabs;     // 방패 프리팹
-
-    [Header("원거리 공격 모드")]
-    public GameObject crosshairPrefabs; // 조준점 프리팹
-    public Transform crosshairSummonPos;    // 원거리 모드를 켰을 때 크로스헤어(조준점) 이 소환될 위치.
     public GameObject ShieldSprite;  // 방패 스프라이트
-    public GameObject postProcessVolumeObject;  // 원거리 모드에서 켜질 화면 필터 (Post-process Volume) 오브젝트
 
     [Header("방패 도약")]
     public float shieldLeapShieldGaugeDecrease = 0.5f;  // 방패 도약에서 감소되는 방패 게이지 수치
@@ -151,7 +146,7 @@ public class PlayerController : MonoBehaviour
     private bool isShieldGaugeFadingOut = false;  // 방패 UI가 페이드 아웃 중인지에 대한 여부
     private bool isShieldGaugeHidden = true;    // 방패 게이지가 숨겨져 있는지에 대한 여부
 
-    private GameObject shieldInstance;     // 조준점 게임오브젝트 레퍼런스
+    private GameObject shieldInstance;     // 방패 게임오브젝트 레퍼런스
     private ShieldMovement shieldScript;    // 방패 움직임 스크립트
     private SpriteRenderer shieldGaugeRenderer;  // 방패 게이지 UI 이미지 스프라이트 렌더러
     private Coroutine shieldGaugeFadeoutCoroutine;  // 쉴드 게이지 페이드 아웃 코루틴
@@ -178,7 +173,6 @@ public class PlayerController : MonoBehaviour
     // =========================================================================
     // 기타 오브젝트 레퍼런스, 변수
     // =========================================================================
-    private GameObject crosshairInstance;     // 조준점 게임오브젝트 레퍼런스
     private float startGravityScale;    // 시작 당시의 중력 값
     private bool isDead = false;
 
@@ -211,7 +205,6 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        AimOn();
         if (shieldGaugeUI != null)
         {
             shieldGaugeRenderer = shieldGaugeUI.GetComponent<SpriteRenderer>();
@@ -452,7 +445,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding || isQuickTurning) return;
         // 방패 투척 불가능 조건 : 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중, 퀵턴 중
-        if (crosshairInstance == null) return;
+        if (CrosshairController.instance == null) return;
         // 또는 조준점 없음
 
         if (Input.GetMouseButton(0))
@@ -467,10 +460,9 @@ public class PlayerController : MonoBehaviour
         ShieldSprite.SetActive(false);
 
         shieldInstance = Instantiate(shieldPrefabs, shieldSummonPos.position, quaternion.identity);
-        shieldScript = shieldInstance.GetComponent<ShieldMovement>();
+        Vector2 shootDirection = CrosshairController.instance.transform.position - transform.position;
 
-        Vector2 shootDirection = crosshairInstance.transform.position - transform.position;
-        shieldScript.InitializeThrow(shootDirection, this);
+        shieldScript = global::ShieldMovement.shieldInstance;
 
         shieldPitchNormalized = GetNormalizedShieldPitch(shootDirection);
         anim.SetFloat("float_shieldPitchNormalized", shieldPitchNormalized);
@@ -936,18 +928,6 @@ public class PlayerController : MonoBehaviour
     void NoGravityOff()
     {
         rb.gravityScale = startGravityScale;
-    }
-
-
-    public void AimOn()
-    {
-        crosshairInstance = Instantiate(crosshairPrefabs, crosshairSummonPos.position, quaternion.identity);
-    }
-
-    public void AimOff()
-    {
-        Destroy(crosshairInstance);
-        crosshairInstance = null;
     }
 
     public float GetNormalizedShieldPitch(Vector2 shootDirection)

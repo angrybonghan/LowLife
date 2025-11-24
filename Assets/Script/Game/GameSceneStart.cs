@@ -12,6 +12,9 @@ public class GameSceneStart : MonoBehaviour
     public float cameraZoom = 17;
     public float cameraZoomduration = 0.5f;
 
+    [Header("¡∂¡ÿ¡°")]
+    public bool ToggleCrosshair = true;
+
 
     void Start()
     {
@@ -19,6 +22,11 @@ public class GameSceneStart : MonoBehaviour
         // ﬂ≤≥¢æÊ»£øÏ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         PlayerHandler.instance.PlayerMoveForwardTo(targetX);
         StartCoroutine(WaitForPlayerMove());
+
+        if (ToggleCrosshair)
+        {
+            CrosshairController.instance.ToggleSprite(false);
+        }
     }
 
     IEnumerator WaitForPlayerMove()
@@ -32,6 +40,11 @@ public class GameSceneStart : MonoBehaviour
     {
         CameraMovement.PositionZoom(cameraZoom, cameraZoomduration);
         CameraMovement.TargetTracking(PlayerController.instance.transform, new Vector3(0, 1f, 0));
+
+        if (ToggleCrosshair)
+        {
+            CrosshairController.instance.ToggleSprite(true);
+        }
 
         Destroy(gameObject);
     }

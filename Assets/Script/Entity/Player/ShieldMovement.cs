@@ -32,9 +32,6 @@ public class ShieldMovement : MonoBehaviour
     public GameObject afterEffect;
     public float afterEffectInterval;
 
-    //[Header("사운드")]
-    //public AudioClip[] hitSounds;   // 타격
-
     private float currentFlightTime = 0; // 현재 날아가는 시간 (시간 계산용)
     private float LastAfterEffect = 0;  // 마지막 잔상 시간  (시간 계산용)
     private float castRadius;
@@ -45,9 +42,8 @@ public class ShieldMovement : MonoBehaviour
     private CircleCollider2D circleCol;
     private Animator anim;
     private PlayerController playerController;
-    private AudioSource audioSource;
 
-    public static ShieldMovement shieldInstance;
+    public static ShieldMovement shieldInstance { get; private set; }
 
     private void Awake()
     {
@@ -63,13 +59,16 @@ public class ShieldMovement : MonoBehaviour
 
         circleCol = GetComponent<CircleCollider2D>();
         anim = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
-
+        
         // 초기 설정
         circleCol.isTrigger = true;
         isReturning = false;
         LastAfterEffect = Time.time;
         castRadius = circleCol.radius;
+
+        playerController = PlayerController.instance;
+        throwDirection = (CrosshairController.instance.transform.position - transform.position).normalized;
+        playerPostion = playerController.transform;
     }
 
     private void Start()
@@ -188,7 +187,6 @@ public class ShieldMovement : MonoBehaviour
 
             Instantiate(entityHitParticle_shape, lastHitPos, Quaternion.identity);
             Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
-            //PlayRandomHitSound();
             TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
             CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
         }
@@ -212,16 +210,6 @@ public class ShieldMovement : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 인수 : 방향 - 플레이어 스크립트
-    /// </summary>
-    public void InitializeThrow(Vector3 direction, PlayerController script)
-    {
-        throwDirection = direction.normalized;
-        playerPostion = script.transform;
-        playerController = script;
-    }
-
     private void SetReturnState()
     {
         if (playerPostion == null)
@@ -231,65 +219,8 @@ public class ShieldMovement : MonoBehaviour
         else
         {
             isReturning = true;
-            //rb.gravityScale = 0f;
         }
     }
-
-    //void OnTriggerEnter2D(Collider2D other)
-    //{
-    //    if (other.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
-    //    {
-    //        if (targetAttackable.CanAttack())
-    //        {
-    //            targetAttackable.OnAttack(transform);
-
-    //            Instantiate(entityHitParticle_shape, transform.position, Quaternion.identity);
-    //            Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
-    //            PlayRandomHitSound();
-    //            TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
-    //            CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
-    //        }
-    //        else
-    //        {
-    //            //엔티티이긴 하나 공격하지 못하는 적
-    //        }
-    //    }
-
-    //    if (other.TryGetComponent<I_Destructible>(out I_Destructible targetDestructible))
-    //    {
-    //        if (targetDestructible.CanDestructible())
-    //        {
-    //            targetDestructible.OnAttack();
-
-    //            Instantiate(entityHitParticle_explod, transform.position, Quaternion.identity);
-    //            CameraMovement.PositionShaking(0.5f, 0.05f, 0.15f);
-    //        }
-    //    }
-
-
-
-    //    if (!isReturning)
-    //    {
-    //        // 충돌한 개체의 레이어가 일치하는지 확인
-    //        if (groundLayer == (groundLayer | (1 << other.gameObject.layer)))
-    //        {
-    //            Instantiate(groundHitParticle, particlePos.position, Quaternion.identity);
-    //        }
-
-    //        SetReturnState(); // 뭔가에 충돌 시 복귀 상태로 전환
-    //    }
-    //}
-
-    //private void PlayRandomHitSound()
-    //{
-    //    if (hitSounds == null || hitSounds.Length == 0)
-    //    {
-    //        return;
-    //    }
-
-    //    int randomIndex = Random.Range(0, hitSounds.Length);
-    //    AudioSource.PlayClipAtPoint(hitSounds[randomIndex], transform.position, 2f);
-    //}
 
     private void OnDestroy()
     {
