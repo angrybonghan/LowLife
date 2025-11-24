@@ -7,7 +7,6 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
     public DialogueSO dialogue;
 
     [Header("플레이어")]
-    public bool movePlayer;
     public Vector3 playerPos;
     public float duration = 0.2f;
     public bool facingRight = true;
@@ -17,11 +16,8 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
     {
         if (dialogue == null) return;
 
-        if (movePlayer)
-        {
-            PlayerHandler.instance.PlayerGoto(playerPos, duration, facingRight);
-            PlayerController.instance.AllStop();
-        }
+        PlayerController.instance.AllStop();
+        PlayerHandler.instance.PlayerGoto(playerPos, duration, facingRight);
 
         DialogManager.instance.StartDialogue(dialogue, gameObject);
 
