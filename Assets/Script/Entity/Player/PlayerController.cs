@@ -1174,6 +1174,7 @@ public class PlayerController : MonoBehaviour
         Instantiate(deathParticle, transform.position, quaternion.identity);
         Instantiate(dummyShield, transform.position, quaternion.identity);
         CameraMovement.PositionShaking(0.1f, 0.05f, 1);
+        GameManager.instance.PlayerDeath();
         Destroy(gameObject);
     }
 

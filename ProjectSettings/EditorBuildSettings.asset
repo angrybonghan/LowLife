@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Swomp_TEST.unity
     guid: 2f8808eae29658e468fee57dd15a1fb0
+  - enabled: 1
+    path: Assets/Scenes/Swomp_1.unity
+    guid: 585e40af331852d4483a183e458b9265
+  - enabled: 1
+    path: Assets/Scenes/LoadingScene/PlayerDeathLoading.unity
+    guid: 96f0167bded2e7247afb14bce29202d3
   m_configObjects: {}
