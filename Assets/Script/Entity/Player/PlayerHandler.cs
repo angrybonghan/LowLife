@@ -71,7 +71,7 @@ public class PlayerHandler : MonoBehaviour
         Vector2 lookPos = new Vector2(targetX, transform.position.y);
         PlayerController.instance.AllStop();
         PlayerController.instance.LookPos(lookPos);
-        PlayerController.instance.SetSpeed(1);
+        PlayerController.instance.SetSpeed(true);
         PlayerController.canControl = false;
 
         PlayerMoveForwardCoroutine = StartCoroutine(Co_PlayerMoveForwardTo(targetX));

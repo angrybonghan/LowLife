@@ -133,14 +133,15 @@ public class PlayerController : MonoBehaviour
     private float currentShieldThrowInterval = 0;      // 방패를 잡은 직후 지난 시간 (쿨다운 계산용)
     private float shieldGauge = 1; //방패 게이지 값
     private float shieldUIFadeDelay = 0;    // 방패가 투명해지기 시작할 때까지 지연 시간
+    [HideInInspector] public int parryCount = 0; // 패링의 수
 
-    private bool isShielding = false;         // 방패를 들고있는 중인가?
+    [HideInInspector] public bool isShielding = false;         // 방패를 들고있는 중인가?
     private bool isEquippingShield = false;   // 방패를 꺼내는 중인가?
     private bool isThrowingShield = false;    // 방패를 던지는 중인가?
-    private bool isParrying = false;          // 패링 중인가?
+    [HideInInspector] public bool isParrying = false;          // 패링 중인가?
     private bool isAttacking = false;         // 공격 중인가?
     private bool allowDashCancel = false;     // 공격 도중 대쉬로 취소 가능 여부
-    private bool hasShield = true;             // 방패를 가지고 있는지 여부
+    [HideInInspector] public bool hasShield = true;             // 방패를 가지고 있는지 여부
     private bool canThrow = true;             // 방패를 던질 수 있는지 여부
     private bool isFlippedAfterThrowShield = false; // 방패를 투척했을 때, 뒤로 던졌는지에 대한 여부
     private bool isShieldGaugeFadingOut = false;  // 방패 UI가 페이드 아웃 중인지에 대한 여부
@@ -710,6 +711,8 @@ public class PlayerController : MonoBehaviour
         }
 
         Instantiate(parryEffect, transform.position, effectRotation);
+
+        parryCount++;
     }
 
     void ShieldHandler()
@@ -1215,16 +1218,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void SetSpeed(float speed)
+    public void SetSpeed(bool canMove)
     {
-        if (speed <= 0)
+        if (canMove)
         {
-            hasInput = false;
+            lastMoveInput = isFacingRight ? 1 : -1;
+            currentMoveSpeed = maxSpeed;
+            hasInput = true;
         }
         else
         {
-            lastMoveInput = isFacingRight ? 1 : -1;
-            hasInput = true;
+            hasInput = false;
         }
     }
 }
