@@ -25,11 +25,11 @@ public class SoundManager : MonoBehaviour
 
     }
 
-    public void PlaySoundAtPosition(Vector3 position, AudioClip clip)
+    public void PlaySoundAtPosition(Vector3 position, AudioClip clip, float volumeMultiple = 1f)
     {
         if (clip != null)
         {
-            AudioSource.PlayClipAtPoint(clip, position, volume);
+            AudioSource.PlayClipAtPoint(clip, position, volume * volumeMultiple);
         }
     }
 
