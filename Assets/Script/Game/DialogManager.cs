@@ -9,22 +9,18 @@ public class DialogManager : MonoBehaviour
 
     bool isTyping;         // 현재 타이핑 중인지 여부
     bool skipInputDetected = false; // 스킵 키가 입력되었는지 여부
-    bool isAnySkipKeyPressed;
 
     GameObject dialogueCallbackObj;
-
     DialogueBubble currentBubbleInstance;
+    Vector3 currentBubblePos;
 
     DialogueSO currentDialogue;
     Coroutine dialogueCoroutine;
-    AudioSource audioSource;
 
     void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(gameObject);
-
-        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -154,10 +150,10 @@ public class DialogManager : MonoBehaviour
             currentText += fullSentence[i];
             currentBubbleInstance.SetText(currentText);
 
-            if (typingSounds != null && typingSounds.Length > 0 && audioSource != null)
+            if (typingSounds != null && typingSounds.Length > 0)
             {
                 AudioClip clipToPlay = typingSounds[Random.Range(0, typingSounds.Length)];
-                audioSource.PlayOneShot(clipToPlay);
+                SoundManager.instance.PlaySoundAtPosition(currentBubblePos, clipToPlay);
             }
 
             yield return new WaitForSeconds(intervalTime);
@@ -174,7 +170,12 @@ public class DialogManager : MonoBehaviour
 
     private void UpdateBubbleUI(DialogueLine line)
     {
-        currentBubbleInstance.SetPosition(line.bubblePosition);
+        if (line.bubblePosition != Vector3.zero)
+        {
+            currentBubbleInstance.SetPosition(line.bubblePosition);
+            currentBubblePos = line.bubblePosition;
+        }
+        
         currentBubbleInstance.SetBubbleOffset(line.bubbleBodyOffset);
         currentBubbleInstance.SetTailToLower(line.isTailDown);
     }
