@@ -1,4 +1,4 @@
-using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -21,7 +21,8 @@ public class GameManager : MonoBehaviour
     public void PlayerDeath()
     {
         Color fadeColor = new Color32(30, 30, 30, 255);
-        ScreenTransition.ScreenTransitionGoto("Swomp_1", "PlayerDeathLoading", fadeColor, 2, 0.5f, 2, 0.5f, 0);
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        ScreenTransition.ScreenTransitionGoto(currentSceneName, "PlayerDeathLoading", fadeColor, 2, 0.5f, 2, 0.5f, 0);
     }
 
 }

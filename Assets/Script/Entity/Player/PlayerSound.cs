@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun, Stick, WallKick };
+public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun, Stick, WallKick, BigCloth, Cloth };
 
 public class PlayerSound : MonoBehaviour
 {
@@ -19,6 +19,13 @@ public class PlayerSound : MonoBehaviour
     [Header("º® °ü·Ã")]
     public AudioClip stickSound;
     public AudioClip wallKickSound;
+
+    [Header("´ë½¬")]
+    public AudioClip dashSound;
+
+    [Header("¿Ê ÆÞ·°ÀÓ")]
+    public AudioClip[] cloth;
+    public AudioClip[] bigCloth;
 
 
     public void PlaySound(playerSoundType type)
@@ -44,6 +51,17 @@ public class PlayerSound : MonoBehaviour
                 break;
             case playerSoundType.WallKick:
                 clip = wallKickSound;
+                break;
+            case playerSoundType.Dash:
+                clip = dashSound;
+                break;
+            case playerSoundType.Cloth:
+                randomIndex = Random.Range(0, cloth.Length);
+                clip = cloth[randomIndex];
+                break;
+            case playerSoundType.BigCloth:
+                randomIndex = Random.Range(0, bigCloth.Length);
+                clip = bigCloth[randomIndex];
                 break;
         }
 

@@ -178,6 +178,14 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 3aefe7ec3641c6840a2a4fb75fcd22b9, type: 3}
   stickSound: {fileID: 8300000, guid: 4f561c7005a47944aa0bfa8e17fe20e8, type: 3}
   wallKickSound: {fileID: 8300000, guid: 13bb0b77f388c9f4596a4097da341bbc, type: 3}
+  dashSound: {fileID: 8300000, guid: c6eb3639b63975c419a7d16f66bca2b9, type: 3}
+  cloth:
+  - {fileID: 8300000, guid: f0f880c0127af89469e008b2d981e502, type: 3}
+  - {fileID: 8300000, guid: ec1b197cd1152fc4f9f0223a6f959165, type: 3}
+  - {fileID: 8300000, guid: c5495cf89b8112040a74d6ad954fe162, type: 3}
+  bigCloth:
+  - {fileID: 8300000, guid: 83247ef8814196a4cb27c48c34af7a35, type: 3}
+  - {fileID: 8300000, guid: b5fd0863b22ace340a85a6006ad5588d, type: 3}
 --- !u!114 &2530227124491807116
 MonoBehaviour:
   m_ObjectHideFlags: 0
