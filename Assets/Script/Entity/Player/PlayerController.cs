@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
 public class PlayerController : MonoBehaviour
@@ -237,6 +236,10 @@ public class PlayerController : MonoBehaviour
                 DashHandler(); // 대쉬 트리거, 대쉬 애니메이션 트리거
                 ParryHandler(); // 패링 작동, 애니메이션 트리거
                 ShieldHandler(); // 방패 전개, 방패 해제, 방패 애니메이션 트리거
+            }
+            else
+            {
+                ThrowCooldownHandler();
             }
 
             HandleMovement(); // 모든 상태에 대한 움직임
@@ -1200,6 +1203,8 @@ public class PlayerController : MonoBehaviour
 
         SetPlayerControlDisableDuration(0);
         NoGravityOff();
+
+        rb.velocity = Vector3.zero;
 
         isDashing = false;
         isShielding = false;
