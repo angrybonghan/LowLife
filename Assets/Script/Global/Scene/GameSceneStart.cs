@@ -18,6 +18,9 @@ public class GameSceneStart : MonoBehaviour
     [Header("켜질 오브젝트")]
     public GameObject[] enableTargets;
 
+    [Header("레터박스")]
+    public bool canUseLetterBox = true;
+
 
     void Start()
     {
@@ -55,6 +58,11 @@ public class GameSceneStart : MonoBehaviour
             {
                 obj.SetActive(true);
             }
+        }
+
+        if (canUseLetterBox)
+        {
+            LetterBoxController.Instance.SetEnable(false);
         }
 
         Destroy(gameObject);
