@@ -564,7 +564,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\"\uAC1C\uBBF8 \uC560\uBC8C\uB808 \uC801 \uC0DD\uAC01 \uBABB \uD55C\uB2E4\""
+  m_text: "\"\uBC1C \uC5C6\uB294 \uAC1C\uBBF8\uAC00 \uCC9C \uB9AC \uAC04\uB2E4\""
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 19778ebed01ae8b4996f00a96fe40ebf, type: 2}
   m_sharedMaterial: {fileID: 1934848496972627334, guid: 19778ebed01ae8b4996f00a96fe40ebf, type: 2}
@@ -591,7 +591,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12.05
+  m_fontSize: 12.95
   m_fontSizeBase: 6.5
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -723,6 +723,7 @@ MonoBehaviour:
   - "\"\uAC1C\uBBF8\uB3C4 \uC2DD\uD6C4\uACBD\""
   - "\"\uAC1C\uBBF8 \uBC11\uC774 \uC5B4\uB461\uB2E4\""
   - "\"\uAC1C\uBBF8 \uC560\uBC8C\uB808 \uC801 \uC0DD\uAC01 \uBABB \uD55C\uB2E4\""
+  - "\"\uBC1C \uC5C6\uB294 \uAC1C\uBBF8\uAC00 \uCC9C \uB9AC \uAC04\uB2E4\""
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
