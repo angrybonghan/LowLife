@@ -7,15 +7,17 @@ public class GameSceneStart : MonoBehaviour
     public bool toThisObject = false;
     public float TargetPosX = 0;
 
+    [Header("조준점")]
+    public bool hideCrosshairAtStart = true;
+    public bool showCrosshairAtEnd = true;
+
     [Header("카메라")]
     public bool cameraMove = true;
     public bool trackPlayer = true;
     public Vector2 cameraPos;
     public float cameraZoom = 17;
     public float cameraMoveDuration = 0.5f;
-
-    [Header("조준점")]
-    public bool ToggleCrosshair = true;
+    
 
     [Header("켜질 오브젝트")]
     public GameObject[] enableTargets;
@@ -31,10 +33,7 @@ public class GameSceneStart : MonoBehaviour
         PlayerHandler.instance.PlayerMoveForwardTo(targetX);
         StartCoroutine(WaitForPlayerMove());
 
-        if (ToggleCrosshair)
-        {
-            CrosshairController.instance.ToggleSprite(false);
-        }
+        if (hideCrosshairAtStart) CrosshairController.instance.ToggleSprite(false);
     }
 
     IEnumerator WaitForPlayerMove()
@@ -54,7 +53,7 @@ public class GameSceneStart : MonoBehaviour
 
         CameraMovement.PositionZoom(cameraZoom, cameraMoveDuration);
 
-        if (ToggleCrosshair)
+        if (hideCrosshairAtStart)
         {
             CrosshairController.instance.ToggleSprite(true);
         }
@@ -67,10 +66,9 @@ public class GameSceneStart : MonoBehaviour
             }
         }
 
-        if (canUseLetterBox)
-        {
-            LetterBoxController.Instance.SetEnable(false);
-        }
+        if (canUseLetterBox) LetterBoxController.Instance.SetEnable(false);
+
+        if (showCrosshairAtEnd) CrosshairController.instance.ToggleSprite(true);
 
         Destroy(gameObject);
     }

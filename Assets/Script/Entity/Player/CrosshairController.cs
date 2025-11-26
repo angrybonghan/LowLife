@@ -4,7 +4,9 @@ using UnityEngine;
 public class CrosshairController : MonoBehaviour
 {
     [Header("조준점 설정")]
-    public float currentZ = 0f;
+    public bool hideAtStart = true;
+
+    [HideInInspector] public float currentZ = 0f;
 
     private Camera mainCamera;
     private SpriteRenderer SR;
@@ -34,6 +36,8 @@ public class CrosshairController : MonoBehaviour
             Debug.LogError("씬에 'MainCamera' 태그가 지정된 카메라가 없음");
             enabled = false;
         }
+
+        ToggleSprite(!hideAtStart);
     }
 
     private void LateUpdate()
