@@ -7,6 +7,7 @@ public class StageEnd : MonoBehaviour
 
     [Header("레터박스")]
     public bool useLetterBox = true;
+    public string text = "계속...";
 
     [Header("카메라")]
     public bool canMoveCamera = true;
@@ -53,7 +54,7 @@ public class StageEnd : MonoBehaviour
             if (useLetterBox && LetterBoxController.Instance != null)
             {
                 LetterBoxController.Instance.SetEnable(true);
-                LetterBoxController.Instance.SetText("계속...");
+                LetterBoxController.Instance.SetText(text);
             }
         }
     }
