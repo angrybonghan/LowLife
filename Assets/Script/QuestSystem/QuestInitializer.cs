@@ -37,11 +37,7 @@ public class QuestInitializer : MonoBehaviour
             if (quest.questType != QuestType.Combat) continue;
 
             Vector3 center = quest.questCenterPosition;
-            Vector3 size = new Vector3(
-                quest.detectLeft + quest.detectRight,
-                quest.detectUp + quest.detectDown,
-                1f
-            );
+            Vector3 size = new Vector3(quest.detectLeft + quest.detectRight, quest.detectUp + quest.detectDown, 1f);
 
             Gizmos.color = Color.red;
             Gizmos.DrawWireCube(center, size);

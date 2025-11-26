@@ -17,8 +17,7 @@ public class EnemyZone : MonoBehaviour
         int remainingEnemies = GetRemainingEnemies();
         Debug.Log($"[Combat 퀘스트] {questData.questID} 범위 내 남은 적: {remainingEnemies}");
 
-        if (remainingEnemies == 0 &&
-            QuestManager.Instance.GetQuestState(questData.questID) == QuestState.InProgress)
+        if (remainingEnemies == 0 && QuestManager.Instance.GetQuestState(questData.questID) == QuestState.InProgress)
         {
             QuestManager.Instance.CompleteQuest(questData);
         }
@@ -27,17 +26,10 @@ public class EnemyZone : MonoBehaviour
     // 범위 내 적 감지
     public int GetRemainingEnemies()
     {
-        Vector3 boxSize = new Vector3(
-            questData.detectLeft + questData.detectRight,
-            questData.detectUp + questData.detectDown,
-            1f
-        );
+        Vector3 boxSize = new Vector3(questData.detectLeft + questData.detectRight, questData.detectUp + questData.detectDown, 1f);
 
         Collider2D[] enemies = Physics2D.OverlapBoxAll(
-            questData.questCenterPosition,
-            boxSize,
-            0f,
-            questData.enemyLayer);
+            questData.questCenterPosition, boxSize, 0f, questData.enemyLayer);
 
         return enemies.Length;
     }
@@ -48,11 +40,7 @@ public class EnemyZone : MonoBehaviour
         if (questData == null) return;
 
         Gizmos.color = Color.red;
-        Vector3 boxSize = new Vector3(
-            questData.detectLeft + questData.detectRight,
-            questData.detectUp + questData.detectDown,
-            1f
-        );
+        Vector3 boxSize = new Vector3(questData.detectLeft + questData.detectRight, questData.detectUp + questData.detectDown, 1f);
         Gizmos.DrawWireCube(questData.questCenterPosition, boxSize);
     }
 }

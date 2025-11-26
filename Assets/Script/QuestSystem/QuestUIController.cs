@@ -31,13 +31,7 @@ public class QuestUIController : MonoBehaviour
             // Combat 퀘스트: 남은 적 수 표시
             if (quest.questType == QuestType.Combat)
             {
-                int remainingEnemies = Physics2D.OverlapBoxAll(
-                    quest.questCenterPosition,
-                    new Vector3(quest.detectLeft + quest.detectRight,
-                                quest.detectUp + quest.detectDown,
-                                1f),
-                    0f,
-                    quest.enemyLayer).Length;
+                int remainingEnemies = Physics2D.OverlapBoxAll(quest.questCenterPosition, new Vector3(quest.detectLeft + quest.detectRight, quest.detectUp + quest.detectDown, 1f), 0f, quest.enemyLayer).Length;
 
                 line += $" (남은 적: {remainingEnemies} 마리)";
             }
