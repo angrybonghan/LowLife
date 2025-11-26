@@ -15,7 +15,10 @@ public class QuestManager : MonoBehaviour
 
     private void Awake() => Instance = this;
 
+    // 현재 진행 중인 퀘스트 목록
     public List<QuestDataSO> activeQuests = new List<QuestDataSO>();
+
+    // 퀘스트 상태 관리
     private Dictionary<string, QuestState> questStates = new Dictionary<string, QuestState>();
 
     // 퀘스트 등록
@@ -42,6 +45,12 @@ public class QuestManager : MonoBehaviour
         return QuestState.NotStarted;
     }
 
+    // 퀘스트 데이터 조회
+    public QuestDataSO GetQuestData(string questID)
+    {
+        return activeQuests.Find(q => q.questID == questID);
+    }
+
     // 퀘스트 시작
     public void StartQuest(string questID)
     {
@@ -52,10 +61,22 @@ public class QuestManager : MonoBehaviour
         {
             questStates[questID] = QuestState.InProgress;
             Debug.Log($"[퀘스트 시작] {quest.questID} - {quest.questName}");
+
+            // Collect 퀘스트라면 시작 시점에 아이템 확인
+            if (quest.questType == QuestType.Collect)
+            {
+                CollectQuest collectQuest = FindObjectOfType<CollectQuest>();
+                if (collectQuest != null)
+                {
+                    collectQuest.CheckAllCollectQuests(quest.requiredItemID);
+                }
+            }
+
             FindObjectOfType<QuestUIController>()?.UpdateQuestText();
         }
     }
 
+    // 퀘스트 완료 처리
     public void CompleteQuest(QuestDataSO quest)
     {
         if (questStates[quest.questID] != QuestState.InProgress) return;
@@ -70,7 +91,7 @@ public class QuestManager : MonoBehaviour
         if (quest.achievementPopup != null)
             Instantiate(quest.achievementPopup);
 
-        // 선행 퀘스트 완료 시 후속 퀘스트 자동 시작
+        // 후속 퀘스트 자동 시작
         foreach (var nextQuest in activeQuests)
         {
             if (nextQuest.prerequisiteQuestID == quest.questID)
@@ -78,25 +99,18 @@ public class QuestManager : MonoBehaviour
                 Debug.Log($"[다음 퀘스트 자동 시작] {nextQuest.questID}");
                 StartQuest(nextQuest.questID);
 
-                // Collect 퀘스트라면 ItemDatabase 확인 후 즉시 완료 처리
+                // Collect 퀘스트라면 아이템 확인
                 if (nextQuest.questType == QuestType.Collect)
                 {
                     CollectQuest collectQuest = FindObjectOfType<CollectQuest>();
                     if (collectQuest != null)
                     {
-                        collectQuest.CheckAndCompleteIfItemsReady(nextQuest.questID);
+                        collectQuest.CheckAllCollectQuests(nextQuest.requiredItemID);
                     }
                 }
             }
         }
 
         FindObjectOfType<QuestUIController>()?.UpdateQuestText();
-    }
-
-
-    // 퀘스트 데이터 조회
-    public QuestDataSO GetQuestData(string questID)
-    {
-        return activeQuests.Find(q => q.questID == questID);
     }
 }

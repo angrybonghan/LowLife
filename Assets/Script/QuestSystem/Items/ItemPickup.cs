@@ -2,12 +2,12 @@ using UnityEngine;
 
 /// <summary>
 /// 아이템 오브젝트에 붙이는 스크립트.
-/// 플레이어가 근처에서 F 키로 상호작용하면 아이템을 획득
+/// 플레이어가 근처에서 F 키로 상호작용하면 아이템을 획득하고,
+/// ItemDatabase에 저장한 뒤 CollectQuest에 반영.
 /// </summary>
 public class ItemPickup : MonoBehaviour
 {
     public string itemID;       // 아이템 ID
-    public string questID;      // 연결된 Collect 퀘스트 ID
     public float interactRange = 2f;
 
     private Transform player;
@@ -29,14 +29,13 @@ public class ItemPickup : MonoBehaviour
             // 아이템 데이터에 저장
             ItemDatabase.Instance.AddItem(itemID);
 
-            // CollectQuest에 반영
             CollectQuest collectQuest = FindObjectOfType<CollectQuest>();
             if (collectQuest != null)
             {
-                collectQuest.AddItem(questID, itemID);
+                collectQuest.CheckAllCollectQuests(itemID);
             }
 
-            Debug.Log($"[아이템 획득] {itemID} - 퀘스트 {questID} 진행 반영");
+            Debug.Log($"[아이템 획득] {itemID} 획득 → CollectQuest 반영");
 
             Destroy(gameObject); // 아이템 오브젝트 제거
         }
