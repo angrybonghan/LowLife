@@ -16,7 +16,7 @@ MonoBehaviour:
   questName: 
   description: 
   prerequisiteQuestID: 
-  questType: 5
+  questType: 1
   detectUp: 5
   detectDown: 5
   detectLeft: 5
