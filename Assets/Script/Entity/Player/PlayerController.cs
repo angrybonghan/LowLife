@@ -1209,6 +1209,7 @@ public class PlayerController : MonoBehaviour
         isDashing = false;
         isShielding = false;
         isWallSliding = false;
+        isQuickTurning = false;
 
         moveInput = 0;
         hasInput = false;

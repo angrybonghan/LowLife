@@ -5,6 +5,9 @@ public class StageEnd : MonoBehaviour
     [Header("이동 위치")]
     public float targetX = 0f;
 
+    [Header("레터박스")]
+    public bool useLetterBox = true;
+
     [Header("카메라")]
     public bool canMoveCamera = true;
     public Vector2 cameraPos = Vector2.zero;
@@ -45,6 +48,12 @@ public class StageEnd : MonoBehaviour
             foreach (GameObject obj in disableAtAction)
             {
                 obj.SetActive(false);
+            }
+
+            if (useLetterBox && LetterBoxController.Instance != null)
+            {
+                LetterBoxController.Instance.SetEnable(true);
+                LetterBoxController.Instance.SetText("계속...");
             }
         }
     }

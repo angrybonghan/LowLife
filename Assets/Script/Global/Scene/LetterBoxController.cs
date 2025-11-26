@@ -6,7 +6,7 @@ public class LetterBoxController : MonoBehaviour
 
     [Header("파츠")]
     public LetterBox_Animator[] lb;
-    public TMP_Animator text;
+    public TMPugui_Animator text;
 
     [Header("동작의 시간")]
     public float enableTime;

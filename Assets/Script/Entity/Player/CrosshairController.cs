@@ -36,7 +36,7 @@ public class CrosshairController : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         Vector3 mouseScreenPosition = Input.mousePosition;
         mouseScreenPosition.z = -mainCamera.transform.position.z + currentZ;

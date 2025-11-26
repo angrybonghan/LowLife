@@ -28,3 +28,9 @@ public interface I_Projectile
 {
     void Collision();
 }
+
+public interface I_TriggerBox
+{
+    void TriggerIn();
+    void TriggerOut();
+}

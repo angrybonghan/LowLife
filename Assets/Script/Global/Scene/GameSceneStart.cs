@@ -9,8 +9,10 @@ public class GameSceneStart : MonoBehaviour
 
     [Header("카메라")]
     public bool cameraMove = true;
+    public bool trackPlayer = true;
+    public Vector2 cameraPos;
     public float cameraZoom = 17;
-    public float cameraZoomduration = 0.5f;
+    public float cameraMoveDuration = 0.5f;
 
     [Header("조준점")]
     public bool ToggleCrosshair = true;
@@ -44,8 +46,13 @@ public class GameSceneStart : MonoBehaviour
 
     void MoveEnd()
     {
-        CameraMovement.PositionZoom(cameraZoom, cameraZoomduration);
-        CameraMovement.TargetTracking(PlayerController.instance.transform, new Vector3(0, 1f, 0));
+        if (cameraMove)
+        {
+            if (trackPlayer) CameraMovement.TargetTracking(PlayerController.instance.transform, Vector3.up);
+            else CameraMovement.DollyTo(cameraPos, cameraMoveDuration);
+        }
+
+        CameraMovement.PositionZoom(cameraZoom, cameraMoveDuration);
 
         if (ToggleCrosshair)
         {
