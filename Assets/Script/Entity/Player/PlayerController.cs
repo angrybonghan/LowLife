@@ -450,7 +450,8 @@ public class PlayerController : MonoBehaviour
         if (!canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding || isQuickTurning) return;
         // 방패 투척 불가능 조건 : 투척 쿨다운 중, 방패 없음, 방패 던지는 중, 벽에 붙었음, 패링 중, 방패로 막는 중, 퀵턴 중
         if (CrosshairController.instance == null) return;
-        // 또는 조준점 없음
+        if (!CrosshairController.instance.isSprtieEnable) return;
+        // 또는 조준점이 없거나 숨겨짐
 
         if (Input.GetMouseButton(0))
         {

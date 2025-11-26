@@ -7,6 +7,7 @@ public class CrosshairController : MonoBehaviour
     public bool hideAtStart = true;
 
     [HideInInspector] public float currentZ = 0f;
+    [HideInInspector] public bool isSprtieEnable = true;
 
     private Camera mainCamera;
     private SpriteRenderer SR;
@@ -51,6 +52,6 @@ public class CrosshairController : MonoBehaviour
 
     public void ToggleSprite(bool isVisible)
     {
-        SR.enabled = isVisible;
+        isSprtieEnable = SR.enabled = isVisible;
     }
 }
