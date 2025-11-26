@@ -1,26 +1,58 @@
 using UnityEngine;
 
-// 퀘스트 정보를 담는 ScriptableObject
+/// <summary>
+/// 퀘스트 정보를 담는 ScriptableObject.
+/// 각 퀘스트별로 필요한 데이터(타입, 목표 위치, 적 Layer 등)를 저장.
+/// </summary>
 [CreateAssetMenu(fileName = "NewQuest", menuName = "Quest/New Quest")]
 public class QuestDataSO : ScriptableObject
 {
-    public string questID;                  // 퀘스트 고유 ID
-    public string questName;               // 퀘스트 이름
-    public string description;             // 퀘스트 설명
-    public string prerequisiteQuestID;     // 선행 퀘스트 ID (없으면 비워둠)
+    public string questID;              // 퀘스트 고유 ID
+    public string questName;            // 퀘스트 이름
+    public string description;          // 퀘스트 설명
+    public string prerequisiteQuestID;  // 선행 퀘스트 ID (없으면 비워둠)
 
-    [Header("퀘스트 타입")]
-    public QuestType questType = QuestType.Dialogue; // 퀘스트 종류 (Dialogue, Combat, Delivery)
+    public QuestType questType = QuestType.Dialogue; // 퀘스트 종류
 
-    public float detectUp = 5f;            // 위 방향 감지 거리
-    public float detectDown = 5f;          // 아래 방향 감지 거리
-    public float detectLeft = 5f;          // 왼쪽 방향 감지 거리
-    public float detectRight = 5f;         // 오른쪽 방향 감지 거리
-    public LayerMask enemyLayer;           // 감지할 적의 레이어
-    public Vector3 questCenterPosition;    // 감지 기준 위치 (월드 좌표)
+    // Combat 퀘스트용 (범위 내 적 처치)
+    public float detectUp = 5f;
+    public float detectDown = 5f;
+    public float detectLeft = 5f;
+    public float detectRight = 5f;
+    public LayerMask enemyLayer;
+    public Vector3 questCenterPosition;
 
-    public string requiredItemID;          // 필요한 아이템 ID (예: "herb_bundle")
+    // Collect 퀘스트용 (아이템 수집)
+    public string requiredItemID;
+    public int requiredItemCount = 1;
 
-    public string achievementID;           // 업적 ID (예: "ACH_HERB_DELIVERY")
-    public GameObject achievementPopup;    // 업적 팝업 UI 오브젝트
+    // Delivery 퀘스트용 (아이템 전달)
+    public string deliveryTargetNPC;
+
+    // Explore 퀘스트용 (특정 위치 도달)
+    public string targetSceneName;
+    public Vector3 exploreTargetPosition;
+    public float exploreRadius = 3f;
+
+    // Escort 퀘스트용 (NPC 호위)
+    public string escortTargetSceneName;
+    public Vector3 escortTargetPosition;
+    public float escortCompleteRadius = 2f;
+
+    // 완료 연출
+    public string achievementID;
+    public GameObject achievementPopup;
+}
+
+/// <summary>
+/// 퀘스트 타입 정의
+/// </summary>
+public enum QuestType
+{
+    Dialogue,   // NPC 대화
+    Combat,     // 적 처치
+    Delivery,   // 아이템 전달
+    Collect,    // 아이템 수집
+    Explore,    // 특정 위치 도달
+    Escort      // NPC 호위
 }

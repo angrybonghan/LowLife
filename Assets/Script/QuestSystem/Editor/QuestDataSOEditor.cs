@@ -8,6 +8,9 @@ public class QuestDataSOEditor : Editor
     // Foldout 상태 저장용 변수들
     private bool showCombatSettings = true;
     private bool showDeliverySettings = true;
+    private bool showCollectSettings = true;
+    private bool showExploreSettings = true;
+    private bool showEscortSettings = true;
     private bool showCompletionSettings = true;
 
     public override void OnInspectorGUI()
@@ -40,23 +43,55 @@ public class QuestDataSOEditor : Editor
                 {
                     DrawSection(null, new string[]
                     {
-                        "detectUp", "detectDown", "detectLeft", "detectRight", "enemyLayer", "questCenterPosition"
+                        "detectUp", "detectDown", "detectLeft", "detectRight",
+                        "enemyLayer", "questCenterPosition"
                     });
                 }
                 break;
 
             case QuestType.Delivery:
-                showDeliverySettings = EditorGUILayout.Foldout(showDeliverySettings, "아이템 퀘스트 설정");
+                showDeliverySettings = EditorGUILayout.Foldout(showDeliverySettings, "아이템 전달 퀘스트 설정");
                 if (showDeliverySettings)
                 {
                     DrawSection(null, new string[]
                     {
-                        "requiredItemID"
+                        "requiredItemID", "deliveryTargetNPC"
                     });
                 }
                 break;
 
-                // 향후 확장 가능: Exploration, Escort 등
+            case QuestType.Collect:
+                showCollectSettings = EditorGUILayout.Foldout(showCollectSettings, "아이템 수집 퀘스트 설정");
+                if (showCollectSettings)
+                {
+                    DrawSection(null, new string[]
+                    {
+                        "requiredItemID", "requiredItemCount"
+                    });
+                }
+                break;
+
+            case QuestType.Explore:
+                showExploreSettings = EditorGUILayout.Foldout(showExploreSettings, "탐험 퀘스트 설정");
+                if (showExploreSettings)
+                {
+                    DrawSection(null, new string[]
+                    {
+                        "targetSceneName", "exploreTargetPosition", "exploreRadius"
+                    });
+                }
+                break;
+
+            case QuestType.Escort:
+                showEscortSettings = EditorGUILayout.Foldout(showEscortSettings, "호위 퀘스트 설정");
+                if (showEscortSettings)
+                {
+                    DrawSection(null, new string[]
+                    {
+                        "escortTargetSceneName", "escortTargetPosition", "escortCompleteRadius"
+                    });
+                }
+                break;
         }
 
         // 완료 시 연출 섹션
@@ -65,7 +100,7 @@ public class QuestDataSOEditor : Editor
         {
             DrawSection(null, new string[]
             {
-                 "achievementID", "achievementPopup"
+                "achievementID", "achievementPopup"
             });
         }
 

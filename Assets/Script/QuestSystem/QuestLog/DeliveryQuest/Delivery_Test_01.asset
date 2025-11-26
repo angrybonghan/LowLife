@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22b057228469eed4a8851095ee04d16e, type: 3}
+  m_Name: Delivery_Test_01
+  m_EditorClassIdentifier: 
+  questID: A8
+  questName: "\uC544\uC774\uD15C \uC804\uB2EC"
+  description: "\uC544\uC774\uD15C\uC744 \uD2B9\uC815 NPC\uC5D0\uAC8C \uC804\uB2EC\uD558\uC138\uC694."
+  prerequisiteQuestID: A7
+  questType: 2
+  detectUp: 5
+  detectDown: 5
+  detectLeft: 5
+  detectRight: 5
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  questCenterPosition: {x: 0, y: 0, z: 0}
+  requiredItemID: B
+  requiredItemCount: 1
+  deliveryTargetNPC: QuestNPC (1)
+  targetSceneName: 
+  exploreTargetPosition: {x: 0, y: 0, z: 0}
+  exploreRadius: 3
+  escortTargetSceneName: 
+  escortTargetPosition: {x: 0, y: 0, z: 0}
+  escortCompleteRadius: 2
+  achievementID: 
+  achievementPopup: {fileID: 0}
