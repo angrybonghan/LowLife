@@ -12,6 +12,7 @@ public class AmagoMovementManager : MonoBehaviour
     public float minMoveSpeed = 5f;
     public float maxMoveSpeed = 35f;
     public float speedIncreaseSensitivity = 7f;
+    public float rotationDuration = 0.2f;
 
     [Header("¸ö")]
     public AmagoBodyMovement body;
@@ -46,6 +47,7 @@ public class AmagoMovementManager : MonoBehaviour
         head.transform.position = transform.position;
         lastSpawnPartPos = head.transform;
         head.currentRoadTarget = firstRoad;
+        head.rotationDuration = rotationDuration;
     }
 
     void Update()
@@ -68,6 +70,7 @@ public class AmagoMovementManager : MonoBehaviour
         AmagoBodyMovement newBody = Instantiate(body, transform.position, Quaternion.identity);
         newBody.currentRoadTarget = firstRoad;
         newBody.SetOrderInLayer(layerNumber);
+        newBody.rotationDuration = rotationDuration;
         allBody.Add(newBody);
         lastSpawnPartPos = newBody.transform;
 

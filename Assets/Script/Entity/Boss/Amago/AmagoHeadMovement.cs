@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -5,6 +6,10 @@ public class AmagoHeadMovement : MonoBehaviour
 {
     [HideInInspector] public float speed;
     [HideInInspector] public AmagoRoadSelector currentRoadTarget;
+    [HideInInspector] public float rotationDuration;
+
+    Vector2 currentDirection;
+    Coroutine rotateCoroutine;
 
 
     void Update()
@@ -20,10 +25,6 @@ public class AmagoHeadMovement : MonoBehaviour
             currentRoadTarget.transform.position,
             speed * Time.deltaTime
             );
-
-        Vector3 direction = currentRoadTarget.transform.position - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
     void SetNextRoad()
@@ -32,6 +33,46 @@ public class AmagoHeadMovement : MonoBehaviour
 
         currentRoadTarget.SetConfirmedRoad();
         currentRoadTarget = currentRoadTarget.GetNextRoad();
+
+        currentDirection = (Vector2)(currentRoadTarget.transform.position - transform.position);
+        currentDirection = currentDirection.normalized;
+
+        LookNextRoad();
+    }
+
+    void LookNextRoad()
+    {
+        if (currentDirection.sqrMagnitude < 0.001f) return;
+
+        if (rotateCoroutine != null)
+        {
+            StopCoroutine(rotateCoroutine);
+        }
+
+        rotateCoroutine = StartCoroutine(RotateToNextRoadCoroutine());
     }
     
+    private IEnumerator RotateToNextRoadCoroutine()
+    {
+        float targetAngle = Mathf.Atan2(currentDirection.y, currentDirection.x) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);
+
+        if (rotationDuration > 0)
+        {
+            Quaternion startRotation = transform.rotation;
+            float timeElapsed = 0f;
+
+            while (timeElapsed < rotationDuration)
+            {
+                float t = timeElapsed / rotationDuration;
+                transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+                yield return null;
+                timeElapsed += Time.deltaTime;
+            }
+        }
+
+        transform.rotation = targetRotation;
+        rotateCoroutine = null;
+    }
+
 }
