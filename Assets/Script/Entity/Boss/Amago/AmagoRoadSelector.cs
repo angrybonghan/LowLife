@@ -24,17 +24,24 @@ public class AmagoRoadSelector : MonoBehaviour
 
     public void SetConfirmedRoad()
     {
-        ConfirmedRoad = useExRoad && IsPlayerInRange() ? exRoad : nextRoad;
+        if (useExRoad && IsPlayerInRange())
+        {
+            ConfirmedRoad = exRoad;
+            nextRoad.RoadDestruction();
+        }
+        else
+        {
+            ConfirmedRoad = nextRoad;
+            exRoad.RoadDestruction();
+        }
     }
 
     public AmagoRoadSelector GetNextRoad()
     {
         return ConfirmedRoad;
 
-        // 삼함연산으로 리턴을했다고요?????????
-        // 대채어떢깨했나요???????
-        // 진짜정말대단하새요 ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ
-        // 너는나의히어로애여 ㅠㅠ
+        // **삼함연산은 이제 없다.**
+        // 꿈과희망이사라지다!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     public bool IsPlayerInRange()
@@ -54,6 +61,13 @@ public class AmagoRoadSelector : MonoBehaviour
         return false;
     }
 
+    public void RoadDestruction()
+    {
+        nextRoad?.RoadDestruction();
+        exRoad?.RoadDestruction();
+
+        Destroy(gameObject);
+    }
 
     private void OnDrawGizmosSelected()
     {
