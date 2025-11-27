@@ -33,6 +33,12 @@ public class AmagoHeadMovement : MonoBehaviour
         currentRoadTarget.SetConfirmedRoad();
         currentRoadTarget = currentRoadTarget.GetNextRoad();
 
+        if (currentRoadTarget == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         currentDirection = (Vector2)(currentRoadTarget.transform.position - transform.position);
         currentDirection = currentDirection.normalized;
 
