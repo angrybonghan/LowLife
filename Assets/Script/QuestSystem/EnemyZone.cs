@@ -10,18 +10,28 @@ public class EnemyZone : MonoBehaviour
     public string questID;        // 연결할 퀘스트 ID
     public QuestDataSO questData; // QuestInitializer에서 연결됨
 
+    private int lastRemainingEnemies = -1; // 이전 프레임의 적 수 저장
+
     private void Update()
     {
         if (questData == null) return;
 
         int remainingEnemies = GetRemainingEnemies();
-        Debug.Log($"[Combat 퀘스트] {questData.questID} 범위 내 남은 적: {remainingEnemies}");
 
+        //남은 적 수가 변했을 때만 로그 출력
+        if (remainingEnemies != lastRemainingEnemies)
+        {
+            Debug.Log($"[Combat 퀘스트] {questData.questID} 범위 내 남은 적: {remainingEnemies}");
+            lastRemainingEnemies = remainingEnemies;
+        }
+
+        //모든 적 처치 시 퀘스트 완료 처리
         if (remainingEnemies == 0 && QuestManager.Instance.GetQuestState(questData.questID) == QuestState.InProgress)
         {
             QuestManager.Instance.CompleteQuest(questData);
         }
     }
+
 
     // 범위 내 적 감지
     public int GetRemainingEnemies()
