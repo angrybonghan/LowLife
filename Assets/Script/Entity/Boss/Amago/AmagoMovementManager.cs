@@ -48,6 +48,8 @@ public class AmagoMovementManager : MonoBehaviour
         lastSpawnPartPos = head.transform;
         head.currentRoadTarget = firstRoad;
         head.rotationDuration = rotationDuration;
+
+        head.transform.SetParent(transform);   
     }
 
     void Update()
@@ -61,7 +63,6 @@ public class AmagoMovementManager : MonoBehaviour
         if (ShouldSpawnBody())
         {
             SummonBody();
-            if (currentBodyCount >= maxBodyCount) canSpawnBody = false;
         }
     }
 
@@ -71,15 +72,28 @@ public class AmagoMovementManager : MonoBehaviour
         newBody.currentRoadTarget = firstRoad;
         newBody.SetOrderInLayer(layerNumber);
         newBody.rotationDuration = rotationDuration;
+        newBody.transform.SetParent(transform);
         allBody.Add(newBody);
         lastSpawnPartPos = newBody.transform;
 
         layerNumber--;
         currentBodyCount++;
+
+        if (currentBodyCount >= maxBodyCount)
+        {
+            canSpawnBody = false;
+            newBody.lastBody = true;
+        }
     }
 
     void UpdateSpeed()
     {
+        if (head==null)
+        {
+            SetAmagoSpeed(maxMoveSpeed);
+            return;
+        }
+
         float distanceToPlayer = Vector2.Distance(head.transform.position, PlayerController.instance.transform.position);
         float t = Mathf.Clamp01(distanceToPlayer / speedIncreaseSensitivity);
         float speed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, t);

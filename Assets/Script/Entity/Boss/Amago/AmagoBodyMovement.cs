@@ -9,6 +9,7 @@ public class AmagoBodyMovement : MonoBehaviour
     [HideInInspector] public float speed;
     [HideInInspector] public AmagoRoadSelector currentRoadTarget;
     [HideInInspector] public float rotationDuration;
+    [HideInInspector] public bool lastBody = false;
 
     Vector2 currentDirection;
     Coroutine rotateCoroutine;
@@ -32,7 +33,7 @@ public class AmagoBodyMovement : MonoBehaviour
     {
         if ((Vector2)transform.position != (Vector2)currentRoadTarget.transform.position) return;
 
-        currentRoadTarget.SetConfirmedRoad();
+        if (lastBody) Destroy(currentRoadTarget.gameObject);
         currentRoadTarget = currentRoadTarget.GetNextRoad();
 
         if (currentRoadTarget == null)

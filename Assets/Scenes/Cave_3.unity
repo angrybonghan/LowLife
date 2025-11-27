@@ -11394,6 +11394,7 @@ GameObject:
   - component: {fileID: 425628317}
   - component: {fileID: 425628315}
   - component: {fileID: 425628316}
+  - component: {fileID: 425628318}
   m_Layer: 0
   m_Name: AmagoRoad 4
   m_TagString: Untagged
@@ -11413,7 +11414,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f4153eb4e1109941ae08e57d4b0a07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextRoad: {fileID: 2129822120}
+  nextRoad: {fileID: 0}
   useExRoad: 0
   exRoad: {fileID: 0}
   hitboxOffset: {x: 0, y: 0}
@@ -11488,6 +11489,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 68827881}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &425628318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425628314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78652cc0df96cc346bc08ecedcae69c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519303585
 GameObject:
   m_ObjectHideFlags: 0
@@ -12525,6 +12538,7 @@ GameObject:
   - component: {fileID: 991755225}
   - component: {fileID: 991755224}
   - component: {fileID: 991755223}
+  - component: {fileID: 991755226}
   m_Layer: 0
   m_Name: Amago Origin
   m_TagString: Untagged
@@ -12620,6 +12634,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &991755226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991755222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78652cc0df96cc346bc08ecedcae69c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1176373265
 GameObject:
   m_ObjectHideFlags: 0
@@ -13491,6 +13517,7 @@ GameObject:
   - component: {fileID: 1984528963}
   - component: {fileID: 1984528965}
   - component: {fileID: 1984528964}
+  - component: {fileID: 1984528966}
   m_Layer: 0
   m_Name: AmagoRoad 3
   m_TagString: Untagged
@@ -13585,6 +13612,18 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &1984528966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1984528962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78652cc0df96cc346bc08ecedcae69c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1991240976
 GameObject:
   m_ObjectHideFlags: 0
@@ -13596,6 +13635,7 @@ GameObject:
   - component: {fileID: 1991240977}
   - component: {fileID: 1991240979}
   - component: {fileID: 1991240978}
+  - component: {fileID: 1991240980}
   m_Layer: 0
   m_Name: AmagoRoad 2
   m_TagString: Untagged
@@ -13690,6 +13730,18 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &1991240980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1991240976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78652cc0df96cc346bc08ecedcae69c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1996250479
 GameObject:
   m_ObjectHideFlags: 0
@@ -13804,6 +13856,7 @@ GameObject:
   - component: {fileID: 2129822118}
   - component: {fileID: 2129822120}
   - component: {fileID: 2129822119}
+  - component: {fileID: 2129822121}
   m_Layer: 0
   m_Name: AmagoRoad 1
   m_TagString: Untagged
@@ -13898,6 +13951,18 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &2129822121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129822117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78652cc0df96cc346bc08ecedcae69c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5557172546274030975
 PrefabInstance:
   m_ObjectHideFlags: 0
