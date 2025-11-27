@@ -15,19 +15,22 @@ public class AmagoMovementManager : MonoBehaviour
     public float rotationDuration = 0.2f;
 
     [Header("¸ö")]
-    public AmagoBodyMovement body;
+    public AmagoBodyMovement bodyPrefab;
     public float bodySpawnDistanceInterval = 0.4f;
     public int maxBodyCount = 15;
 
     [Header("¸Ó¸®")]
-    public AmagoHeadMovement head;
+    public AmagoHeadMovement headPrefab;
+
 
     Transform lastSpawnPartPos;
 
     int currentBodyCount = 0;
-    int layerNumber = -2;
+    int layerNumber = -10;
+    bool canSpawnAmago = false;
     bool canSpawnBody = true;
     List<AmagoBodyMovement> allBody = new List<AmagoBodyMovement>();
+    AmagoHeadMovement head;
 
     private void Awake()
     {
@@ -43,17 +46,11 @@ public class AmagoMovementManager : MonoBehaviour
     void Start()
     {
         canSpawnBody = maxBodyCount > 0;
-
-        head.transform.position = transform.position;
-        lastSpawnPartPos = head.transform;
-        head.currentRoadTarget = firstRoad;
-        head.rotationDuration = rotationDuration;
-
-        head.transform.SetParent(transform);   
     }
 
     void Update()
     {
+        if (!canSpawnAmago) return;
         if (canSpawnBody) BodySpawnHandler();
         UpdateSpeed();
     }
@@ -66,9 +63,22 @@ public class AmagoMovementManager : MonoBehaviour
         }
     }
 
+    public void StartSpawnAmago()
+    {
+        canSpawnAmago = true;
+
+        head = Instantiate(headPrefab, transform.position, Quaternion.identity);
+
+        head.transform.position = transform.position;
+        head.currentRoadTarget = firstRoad;
+        head.rotationDuration = rotationDuration;
+        head.transform.SetParent(transform);
+        lastSpawnPartPos = head.transform;
+    }
+
     void SummonBody()
     {
-        AmagoBodyMovement newBody = Instantiate(body, transform.position, Quaternion.identity);
+        AmagoBodyMovement newBody = Instantiate(bodyPrefab, transform.position, Quaternion.identity);
         newBody.currentRoadTarget = firstRoad;
         newBody.SetOrderInLayer(layerNumber);
         newBody.rotationDuration = rotationDuration;

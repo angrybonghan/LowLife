@@ -27,12 +27,12 @@ public class AmagoRoadSelector : MonoBehaviour
         if (useExRoad && IsPlayerInRange())
         {
             ConfirmedRoad = exRoad;
-            nextRoad.RoadDestruction();
+            nextRoad?.RoadDestruction();
         }
         else
         {
             ConfirmedRoad = nextRoad;
-            exRoad.RoadDestruction();
+            exRoad?.RoadDestruction();
         }
     }
 

@@ -178,6 +178,13 @@ public class GrubMovement : MonoBehaviour
         return hit.collider != null;
     }
 
+    void ResetIdleRange()
+    {
+        movePosRight = movePosLeft = transform.position;
+        movePosRight.x += moveRadius;
+        movePosLeft.x -= moveRadius;
+    }
+
     void LookPos(Vector2 targetPos)
     {
         float directionX = targetPos.x - transform.position.x;
@@ -185,6 +192,11 @@ public class GrubMovement : MonoBehaviour
         if (directionX != 0 && (directionX > 0) != isFacingRight)
         {
             Flip();
+        }
+
+        if (!canGoStraight)
+        {
+            ResetIdleRange();
         }
     }
 

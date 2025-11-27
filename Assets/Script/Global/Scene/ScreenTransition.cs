@@ -48,10 +48,7 @@ public class ScreenTransition : MonoBehaviour
             return;
         }
 
-        if (isTransitioning)
-        {
-            return;
-        }
+        if (isTransitioning) return;
 
         Instance.SceneName = SceneName;
         Instance.LoadingSceneName = LoadingSceneName;
@@ -62,7 +59,6 @@ public class ScreenTransition : MonoBehaviour
         Instance.FadeInTime = FadeInTime;
         Instance.WaitTime2 = WaitTime2;
 
-        if (isTransitioning) return;
         Instance.StartTransitionInternal();
     }
 

@@ -84,6 +84,7 @@ public class PlayerHandler : MonoBehaviour
         while (!HasArrived(targetPos))
         {
             targetPos = new Vector3(targetX, transform.position.y, transform.position.z);
+            PlayerController.instance.LookPos(targetPos);
             yield return null;
         }
 

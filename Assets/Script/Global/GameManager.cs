@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
 
     public static void SwitchLayerTo(string layerName, GameObject target)
     {
-        int layerIndex = LayerMask.NameToLayer("Particle");
+        int layerIndex = LayerMask.NameToLayer(layerName);
 
         if (layerIndex != -1) target.layer = layerIndex;
     }
