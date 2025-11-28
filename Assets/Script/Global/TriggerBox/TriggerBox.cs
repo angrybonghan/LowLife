@@ -116,6 +116,7 @@ public class TriggerBox : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        if (rangeType == TriggerBoxRangeType.notUse) return;
         Gizmos.color = Color.red;
 
         Vector2 hitboxGizmoCenter = (Vector2)transform.position + hitboxOffset;

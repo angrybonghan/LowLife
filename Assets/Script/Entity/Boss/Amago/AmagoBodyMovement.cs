@@ -6,6 +6,9 @@ public class AmagoBodyMovement : MonoBehaviour
     [Header("스프라이트")]
     public SpriteRenderer SR;
 
+    [Header("발소리")]
+    public AudioClip[] footStep;
+
     [HideInInspector] public float speed;
     [HideInInspector] public AmagoRoadSelector currentRoadTarget;
     [HideInInspector] public float rotationDuration;
@@ -86,5 +89,12 @@ public class AmagoBodyMovement : MonoBehaviour
 
         transform.rotation = targetRotation;
         rotateCoroutine = null;
+    }
+
+    public void PlayFootstepSound()
+    {
+        float pitch = Random.value;
+
+        SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, footStep, pitch);
     }
 }
