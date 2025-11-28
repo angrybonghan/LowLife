@@ -377,7 +377,7 @@ public class LumenMovement : MonoBehaviour, I_Attackable
     {
         if (isDead) return;
         isDead = true;
-        Destroy(firePoint.gameObject);
+        if (firePoint != null) Destroy(firePoint.gameObject);
 
         SoundManager.instance.PlayEntityHitSound(transform.position);
 

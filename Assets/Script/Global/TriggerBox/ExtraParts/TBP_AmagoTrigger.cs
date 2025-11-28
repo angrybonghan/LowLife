@@ -35,5 +35,11 @@ public class TBP_AmagoTrigger : MonoBehaviour, I_TriggerBox
         yield return new WaitForSeconds(0.5f);
 
         SoundManager.instance.PlayLoopBgm(bgmLoop, 0.7f);
+
+        while (true)
+        {
+            CameraMovement.PositionShaking(0.2f, 0.05f, Mathf.Infinity);
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 }
