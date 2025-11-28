@@ -87,6 +87,8 @@ public class DialogManager : MonoBehaviour
             yield break;
         }
 
+        yield return null;
+
         foreach (DialogueLine line in currentDialogue.section)
         {
             UpdateBubbleUI(line); // 말풍선 위치, 꼬리표 방향 등 UI 업데이트

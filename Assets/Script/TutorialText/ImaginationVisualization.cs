@@ -20,6 +20,9 @@ public class ImaginationVisualization : MonoBehaviour
     public float startAlpha = 0f;
     public float targetAlpha = 0.3f;
 
+    [Header("»ç¶óÁü")]
+    public bool destroyAfterImagination = false;
+
     bool hasFoundPlayer = false;
 
     private void Start()
@@ -50,6 +53,7 @@ public class ImaginationVisualization : MonoBehaviour
             sprite.SetAlpha(targetAlpha, fadeTime);
         }
 
+        if (destroyAfterImagination) Destroy(gameObject);
         this.enabled = false;
     }
 
