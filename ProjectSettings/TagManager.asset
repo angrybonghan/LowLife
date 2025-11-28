@@ -7,6 +7,7 @@ TagManager:
   - Entity
   - Curtain
   - UI
+  - AmagoDestructible
   layers:
   - Default
   - TransparentFX

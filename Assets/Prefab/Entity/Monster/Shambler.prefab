@@ -249,6 +249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4488557671847034698}
   - component: {fileID: 2632923920378921043}
+  - component: {fileID: 5949853596305725392}
   - component: {fileID: 8686147039021856065}
   - component: {fileID: 250245763051673366}
   - component: {fileID: 3940851745364890402}
@@ -327,6 +328,23 @@ MonoBehaviour:
   detectionCancelTime: 0.5
   detectionDecayTime: 3
   explosionParticle: {fileID: 7092785366733777106, guid: f9341017196b5754597f06a449183dcf, type: 3}
+--- !u!114 &5949853596305725392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7567075206043227767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10b92b98375940543a9f10b8d0ed60ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  beepSound: {fileID: 8300000, guid: 7b0b2f4b2c72c9647ac5c62c727a1abe, type: 3}
+  explosionSound:
+  - {fileID: 8300000, guid: bb8a47c587a9033488266101498b0447, type: 3}
+  - {fileID: 8300000, guid: aa159a34fe3633a4a8451f743fc89e8d, type: 3}
+  - {fileID: 8300000, guid: ada669caf5a533d429620ebed5f95dc8, type: 3}
 --- !u!70 &8686147039021856065
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

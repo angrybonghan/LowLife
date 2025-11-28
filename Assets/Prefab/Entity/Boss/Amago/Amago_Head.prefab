@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 8803713839595941462}
   - component: {fileID: 4694423896870450930}
   - component: {fileID: 1830348196532719082}
-  m_Layer: 0
+  - component: {fileID: 4366835120760539413}
+  m_Layer: 8
   m_Name: Amago_Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82da8f0acb3aa7044b5262b154d51978, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 0
   currentRoadTarget: {fileID: 0}
+  rotationDuration: 0
 --- !u!95 &1830348196532719082
 Animator:
   serializedVersion: 5
@@ -68,6 +71,57 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!60 &4366835120760539413
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 313430239097942849}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 2.8828278, y: 1.9260798}
+      - {x: 0.8838539, y: 3.1553679}
+      - {x: -0.9355498, y: 2.7279913}
+      - {x: -1.0064559, y: 0.7105957}
+      - {x: -0.18752515, y: 0.059333086}
+      - {x: 2.9063673, y: 0.021816194}
+  m_UseDelaunayMesh: 0
 --- !u!1 &2826859672305529738
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +194,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -1
+  m_SortingOrder: -7
   m_Sprite: {fileID: 21300000, guid: b0f9c1669a71b474282fb408c459e542, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

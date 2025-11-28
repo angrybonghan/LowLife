@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5489798777993056820
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 341279781513421247}
+  - component: {fileID: 272654190643215413}
+  m_Layer: 0
+  m_Name: AmagoDestructible_DeadParticle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &341279781513421247
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5489798777993056820}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &272654190643215413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5489798777993056820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a54771ea9c366d745b1e170384a49c8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxRange: 1
+  maxParticleCount: 100
+  minParticleCount: 70
+  particlePrefabs:
+  - {fileID: 2163116794913655362, guid: f5e8668cf9b9c3c44890cb489015b4bb, type: 3}
+  - {fileID: 2163116794913655362, guid: 5cf161da2a47efb4c877c128b4325b37, type: 3}
+  - {fileID: 2163116794913655362, guid: 705eb2dc8a597974298d15c35971ad94, type: 3}
+  - {fileID: 2163116794913655362, guid: fa7bd23a3fa0d4b4cbe1727830e008f9, type: 3}
+  - {fileID: 2163116794913655362, guid: 7eadbca255ae3794ebf18a136c6c3596, type: 3}
+  - {fileID: 2163116794913655362, guid: ff81cc4b1ba29ca4b8c1804984b02028, type: 3}
+  canDistroyObject: 1

@@ -17,6 +17,18 @@ public class AmagoHeadMovement : MonoBehaviour
         SetNextRoad();
     }
 
+    private void FixedUpdate()
+    {
+        if (PlayerController.instance != null)
+        {
+            PlayerController pc = PlayerController.instance;
+            if (pc.transform.position.x < transform.position.x)
+            {
+                pc.ImmediateDeath();
+            }
+        }
+    }
+
     void GoFowordToRoad()
     {
         transform.position = Vector2.MoveTowards(
@@ -78,6 +90,33 @@ public class AmagoHeadMovement : MonoBehaviour
 
         transform.rotation = targetRotation;
         rotateCoroutine = null;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            PlayerController.instance.ImmediateDeath();
+        }
+        else if (other.CompareTag("AmagoDestructible"))
+        {
+            if (other.TryGetComponent<AmagoDestructible>(out AmagoDestructible destructible))
+            {
+                destructible.Destroy(transform.position);
+            }
+        }
+        else if (other.TryGetComponent<DestructibleObjects>(out DestructibleObjects destructible))
+        {
+            if (destructible.CanDestructible())
+            {
+                destructible.OnAttack();
+            }
+        }
+        else if (other.TryGetComponent<I_Attackable>(out I_Attackable entity))
+        {
+            entity.OnAttack(transform);
+        }
+
     }
 
 }

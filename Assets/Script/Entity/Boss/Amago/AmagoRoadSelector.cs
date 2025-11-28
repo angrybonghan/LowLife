@@ -8,7 +8,7 @@ public class AmagoRoadSelector : MonoBehaviour
     [Header("조건부 길")]
     public bool useExRoad = false;
     public AmagoRoadSelector exRoad;
-
+    
     [Header("조건부 길 감지 위치")]
     public Vector2 hitboxOffset = Vector2.zero;    // 오프셋
     public Vector2 hitboxSize = new Vector2(1.0f, 1.0f); // 크기 (width, height)

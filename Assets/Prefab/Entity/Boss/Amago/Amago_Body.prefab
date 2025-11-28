@@ -95,7 +95,8 @@ GameObject:
   - component: {fileID: 247559962578857571}
   - component: {fileID: 2381357279698436641}
   - component: {fileID: 7698989871834889569}
-  m_Layer: 0
+  - component: {fileID: 1804946468723456164}
+  m_Layer: 8
   m_Name: Amago_Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,6 +132,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SR: {fileID: 9150142178442899274}
+  footStep:
+  - {fileID: 8300000, guid: 72a5d8ba4e7369143b22ce8ea9e1db60, type: 3}
+  - {fileID: 8300000, guid: 355cb0ee88101b244b602147ed9650d2, type: 3}
+  - {fileID: 8300000, guid: 333c272ff15d33b4095cbb81b1041467, type: 3}
+  - {fileID: 8300000, guid: 3f8ecc60070440448bc185cf0a7ca168, type: 3}
   speed: 0
   currentRoadTarget: {fileID: 0}
   rotationDuration: 0
@@ -156,6 +162,41 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!58 &1804946468723456164
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 427884231966994589}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 1.5}
+  serializedVersion: 2
+  m_Radius: 2
 --- !u!1 &2850567815188188919
 GameObject:
   m_ObjectHideFlags: 0

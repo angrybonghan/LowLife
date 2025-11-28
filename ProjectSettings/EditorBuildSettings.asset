@@ -45,6 +45,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Swomp_2.unity
     guid: 27f7c3f78da29214e9e8330cf6c52d78
   - enabled: 1
-    path: Assets/Scenes/Cave_2.unity
+    path: Assets/Scenes/Cave_3.unity
     guid: 34c26327a2dc28743b41c35722d25552
+  - enabled: 1
+    path: Assets/Scenes/Cave_4.unity
+    guid: 32a1df4d5d3dc6c48b5d4955e304ec6e
   m_configObjects: {}
