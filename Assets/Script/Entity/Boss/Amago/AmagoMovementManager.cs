@@ -104,7 +104,12 @@ public class AmagoMovementManager : MonoBehaviour
             return;
         }
 
-        float distanceToPlayer = Vector2.Distance(head.transform.position, PlayerController.instance.transform.position);
+        float distanceToPlayer = PlayerController.instance == null ?
+            0f :
+            Vector2.Distance(head.transform.position, PlayerController.instance.transform.position);
+        // 삼항연산을 은밀하게 사용하기 튜토리얼!
+        // 1. 핑크색 PS5 컨트롤러를 준비ㅎ
+
         float t = Mathf.Clamp01(distanceToPlayer / speedIncreaseSensitivity);
         float speed = Mathf.Lerp(minMoveSpeed, maxMoveSpeed, t);
 
