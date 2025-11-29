@@ -19,6 +19,10 @@ public class TNTbox : MonoBehaviour, I_Attackable
     [Header("데드파츠 부품")]
     public GameObject deadParts;
 
+    [Header("소리")]
+    public AudioClip beepSound;
+    public AudioClip[] explosionSound;
+
     bool isExploding = false;   // 폭발 중인지 여부
     bool wasHitPlayer = false; // 플레이어가 한 번 피격되었는지 여부
 
@@ -91,6 +95,16 @@ public class TNTbox : MonoBehaviour, I_Attackable
         }
     }
 
+    public void PlayExplosionSound()
+    {
+        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, explosionSound);
+    }
+
+    public void PlayBeepSound()
+    {
+        SoundManager.instance.PlaySoundAtPosition(transform.position, beepSound);
+    }
+
     public void ExplosionEnd()
     {
         Destroy(gameObject);
@@ -101,6 +115,5 @@ public class TNTbox : MonoBehaviour, I_Attackable
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
-
     }
 }
