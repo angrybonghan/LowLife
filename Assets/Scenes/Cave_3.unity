@@ -146684,6 +146684,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5b5a06b79d8054ab52d90470f4084f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canPlayerMove: 1
   targetX: 180
   useLetterBox: 1
   text: "\uACC4\uC18D..."
@@ -150357,8 +150358,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 355206638}
   - {fileID: 1613982563}
+  - {fileID: 355206638}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
