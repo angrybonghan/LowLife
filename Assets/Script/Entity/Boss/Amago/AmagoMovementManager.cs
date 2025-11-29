@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,18 +18,17 @@ public class AmagoMovementManager : MonoBehaviour
     [Header("¸ö")]
     public AmagoBodyMovement bodyPrefab;
     public float bodySpawnDistanceInterval = 0.4f;
+    public float bodyAnimationInterval = 0.2f;
     public int maxBodyCount = 15;
 
     [Header("¸Ó¸®")]
     public AmagoHeadMovement headPrefab;
 
 
-    Transform lastSpawnPartPos;
+    Vector3 lastSpawnPartPos;
 
-    int currentBodyCount = 0;
     int layerNumber = -10;
     bool canSpawnAmago = false;
-    bool canSpawnBody = true;
     List<AmagoBodyMovement> allBody = new List<AmagoBodyMovement>();
     AmagoHeadMovement head;
 
@@ -43,24 +43,10 @@ public class AmagoMovementManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        canSpawnBody = maxBodyCount > 0;
-    }
-
     void Update()
     {
         if (!canSpawnAmago) return;
-        if (canSpawnBody) BodySpawnHandler();
         UpdateSpeed();
-    }
-
-    void BodySpawnHandler()
-    {
-        if (ShouldSpawnBody())
-        {
-            SummonBody();
-        }
     }
 
     public void StartSpawnAmago()
@@ -73,27 +59,33 @@ public class AmagoMovementManager : MonoBehaviour
         head.currentRoadTarget = firstRoad;
         head.rotationDuration = rotationDuration;
         head.transform.SetParent(transform);
-        lastSpawnPartPos = head.transform;
+        lastSpawnPartPos = transform.position;
+
+        for (int i = 0; i < maxBodyCount; i++)
+        {
+            lastSpawnPartPos.x -= bodySpawnDistanceInterval;
+
+            if (maxBodyCount - 1 == i) SummonBody(lastSpawnPartPos, i).lastBody = true;
+            else SummonBody(lastSpawnPartPos, i);
+            
+            layerNumber--;
+        }
+
+        StartCoroutine(ReloadBdyAnimation());
     }
 
-    void SummonBody()
+    AmagoBodyMovement SummonBody(Vector3 spawnPos, int bodyNumber)
     {
-        AmagoBodyMovement newBody = Instantiate(bodyPrefab, transform.position, Quaternion.identity);
+        AmagoBodyMovement newBody = Instantiate(bodyPrefab, spawnPos, Quaternion.identity);
         newBody.currentRoadTarget = firstRoad;
         newBody.SetOrderInLayer(layerNumber);
         newBody.rotationDuration = rotationDuration;
         newBody.transform.SetParent(transform);
+        newBody.name = $"AmagoBody_{bodyNumber}";
         allBody.Add(newBody);
-        lastSpawnPartPos = newBody.transform;
+        lastSpawnPartPos = newBody.transform.position;
 
-        layerNumber--;
-        currentBodyCount++;
-
-        if (currentBodyCount >= maxBodyCount)
-        {
-            canSpawnBody = false;
-            newBody.lastBody = true;
-        }
+        return newBody;
     }
 
     void UpdateSpeed()
@@ -129,9 +121,14 @@ public class AmagoMovementManager : MonoBehaviour
         head.speed = value;
     }
 
-    bool ShouldSpawnBody()
+    IEnumerator ReloadBdyAnimation()
     {
-        float distanceToLastPart = Vector2.Distance(lastSpawnPartPos.position, transform.position);
-        return distanceToLastPart > bodySpawnDistanceInterval;
+        float lastDistance = 0f;
+        foreach (AmagoBodyMovement body in allBody)
+        {
+            body.ReloadBodyAnimtion();
+            lastDistance = Vector2.Distance(head.transform.position, transform.position);
+            yield return new WaitForSeconds(bodyAnimationInterval);
+        }
     }
 }

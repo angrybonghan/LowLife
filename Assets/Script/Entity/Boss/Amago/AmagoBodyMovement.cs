@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class AmagoBodyMovement : MonoBehaviour
 {
     [Header("스프라이트")]
@@ -16,6 +17,12 @@ public class AmagoBodyMovement : MonoBehaviour
 
     Vector2 currentDirection;
     Coroutine rotateCoroutine;
+    Animator anim;
+
+    private void Awake()
+    {
+        anim = GetComponent<Animator>();
+    }
 
     void Update()
     {
@@ -96,5 +103,10 @@ public class AmagoBodyMovement : MonoBehaviour
         float pitch = Random.value;
 
         SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, footStep, pitch);
+    }
+
+    public void ReloadBodyAnimtion()
+    {
+        anim.SetTrigger("MoveBody");
     }
 }
