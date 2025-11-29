@@ -3,6 +3,7 @@ using UnityEngine;
 public class StageEnd : MonoBehaviour
 {
     [Header("이동 위치")]
+    public bool canPlayerMove = true;
     public float targetX = 0f;
 
     [Header("레터박스")]
@@ -35,8 +36,9 @@ public class StageEnd : MonoBehaviour
             canAction = false;
 
             CrosshairController.instance.ToggleSprite(false);
+
             PlayerController.instance.AllStop();
-            PlayerHandler.instance.PlayerMoveForwardTo(targetX);
+            if (canPlayerMove) PlayerHandler.instance.PlayerMoveForwardTo(targetX);
 
             if (canMoveCamera)
             {

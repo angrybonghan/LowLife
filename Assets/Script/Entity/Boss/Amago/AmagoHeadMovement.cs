@@ -22,7 +22,7 @@ public class AmagoHeadMovement : MonoBehaviour
         if (PlayerController.instance != null)
         {
             PlayerController pc = PlayerController.instance;
-            if (pc.transform.position.x < transform.position.x)
+            if (pc.transform.position.x < transform.position.x - 5)
             {
                 pc.ImmediateDeath();
             }

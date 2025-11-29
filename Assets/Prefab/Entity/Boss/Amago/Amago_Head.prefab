@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4694423896870450930}
   - component: {fileID: 1830348196532719082}
   - component: {fileID: 4366835120760539413}
-  m_Layer: 8
+  m_Layer: 18
   m_Name: Amago_Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}

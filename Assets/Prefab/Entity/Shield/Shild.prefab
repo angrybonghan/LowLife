@@ -169,15 +169,12 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 768
-  entityLayer:
-    serializedVersion: 2
-    m_Bits: 1024
   returnCollisionMask:
     serializedVersion: 2
     m_Bits: 35840
   throwCollisionMask:
     serializedVersion: 2
-    m_Bits: 34560
+    m_Bits: 296704
   particlePos: {fileID: 2501141621642985761}
   groundHitParticle: {fileID: 4041333301960470708, guid: 35eed6bd6ce8d8248a97b02acb109df0, type: 3}
   entityHitParticle_shape: {fileID: 4041333301960470708, guid: f52e17a6c27b5ac40bfbbf74f007e95c, type: 3}
@@ -187,8 +184,6 @@ MonoBehaviour:
   isReturning: 0
   afterEffect: {fileID: 6200615553165862474, guid: 60c2b79d20dce4444b14493215948c46, type: 3}
   afterEffectInterval: 0.0125
-  hitSounds:
-  - {fileID: 8300000, guid: 74720289bcf099b4f89fd4210122c227, type: 3}
 --- !u!95 &8832889182749839318
 Animator:
   serializedVersion: 5
