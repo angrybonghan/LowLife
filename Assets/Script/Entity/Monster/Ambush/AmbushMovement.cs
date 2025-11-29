@@ -58,6 +58,9 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
     [Header("사망 후 제외 레이어")]
     public LayerMask afterDeathLayer;
 
+    [Header("소리")]
+    public AudioClip[] pelloffSound;
+
     private int facingSign = 1; // 바라보는 방향
 
     private float currentNormalizedSpeed = 0;   // 정규화된 속도
@@ -513,6 +516,7 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
         {
             SetState(state.nothing);
             anim.SetTrigger("pelloff");
+            PlayPelloffSound();
             if (exclamationMark != null) Destroy(exclamationMark.gameObject);
 
             StartCoroutine(SetInvincibility(runawayStartInvincibilityTime));
@@ -538,6 +542,11 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
     float GetRandom(float min, float max)
     {
         return Random.Range(min, max);
+    }
+
+    void PlayPelloffSound()
+    {
+        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, pelloffSound);
     }
 
     void Dead(Transform attackerTransform)
