@@ -238,10 +238,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 130103
   pelloffSound:
-  - {fileID: 8300000, guid: ea3459ff301df7841b2db786891780e6, type: 3}
-  - {fileID: 8300000, guid: dfa097763afdb4249a169d4c6025090f, type: 3}
-  - {fileID: 8300000, guid: f2ee1337205ec5143a183aa4006602cb, type: 3}
-  - {fileID: 8300000, guid: 10be9943fe8c8d1408976d50fe5b4186, type: 3}
+  - {fileID: 8300000, guid: 0be39d8bc0038fa419c35018a0b8cbae, type: 3}
+  - {fileID: 8300000, guid: bcc7563d37e27354a8e544dd4c275b14, type: 3}
+  - {fileID: 8300000, guid: a8374527cdd95bc49880a173de278e45, type: 3}
+  - {fileID: 8300000, guid: fdf2f619b3a9dd645a8c9723e4419f57, type: 3}
 --- !u!70 &8202120725765226382
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

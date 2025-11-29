@@ -64,7 +64,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void PlayClipAtPointWithPitch(Vector3 position, AudioClip clip, float pitch = 1.0f)
+    public void PlayClipAtPointWithPitch(Vector3 position, AudioClip clip, float pitch = 1.0f, float volumeMultiple = 1.0f)
     {
         GameObject tempGO = new GameObject("TempAudio");
         tempGO.transform.position = position;
@@ -73,14 +73,14 @@ public class SoundManager : MonoBehaviour
         audioSource.clip = clip;
         audioSource.spatialBlend = 1.0f;
 
-        audioSource.volume = volume;
+        audioSource.volume = volume * volumeMultiple;
         audioSource.pitch = pitch;
 
         audioSource.Play();
         Destroy(tempGO, clip.length / Mathf.Abs(pitch));
     }
 
-    public void PlayRandomClipAtPointWithPitch(Vector3 position, AudioClip[] clips, float pitch = 1.0f)
+    public void PlayRandomClipAtPointWithPitch(Vector3 position, AudioClip[] clips, float pitch = 1.0f, float volumeMultiple = 1.0f)
     {
         if (clips == null || clips.Length == 0) return;
 
@@ -94,14 +94,14 @@ public class SoundManager : MonoBehaviour
         audioSource.clip = clip;
         audioSource.spatialBlend = 1.0f;
 
-        audioSource.volume = volume;
+        audioSource.volume = volume * volumeMultiple;
         audioSource.pitch = pitch;
 
         audioSource.Play();
         Destroy(tempGO, clip.length / Mathf.Abs(pitch));
     }
 
-    public void PlayLoopBgm(AudioClip clip, float pitch = 1.0f)
+    public void PlayLoopBgm(AudioClip clip, float pitch = 1.0f, float volumeMultiple = 1.0f)
     {
         GameObject tempBgmGO = new GameObject("TempBgmAudio");
         allBgmPlayer.Add(tempBgmGO);
@@ -109,7 +109,7 @@ public class SoundManager : MonoBehaviour
         AudioSource audioSource = tempBgmGO.AddComponent<AudioSource>();
         audioSource.clip = clip;
         audioSource.spatialBlend = 0f;
-        audioSource.volume = volume;
+        audioSource.volume = volume * volumeMultiple;
         audioSource.pitch = pitch;
         audioSource.loop = true;
 

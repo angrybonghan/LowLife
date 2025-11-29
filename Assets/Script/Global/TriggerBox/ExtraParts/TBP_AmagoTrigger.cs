@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class TBP_AmagoTrigger : MonoBehaviour, I_TriggerBox
 {
+    [Header("BGM")]
+    public AudioClip amagoBgm;
+
     [Header("¼Ò¸®")]
     public AudioClip spawnSound;
     public AudioClip bgmLoop;
@@ -34,7 +37,8 @@ public class TBP_AmagoTrigger : MonoBehaviour, I_TriggerBox
         SoundManager.instance.PlaySoundAtPosition(new Vector3(14, -32, Camera.main.transform.position.z), spawnSound);
         yield return new WaitForSeconds(0.5f);
 
-        SoundManager.instance.PlayLoopBgm(bgmLoop, 0.7f);
+        SoundManager.instance.PlayLoopBgm(bgmLoop, 1f, 0.7f);
+        SoundManager.instance.PlayLoopBgm(amagoBgm, 1f, 0.5f);
 
         while (true)
         {
