@@ -12,6 +12,9 @@ public class EnemyLaser : MonoBehaviour
     public Color aimingColor = Color.red;
     public Color lockOnColor = Color.red;
 
+    [Header("분산")]
+    public float laserDispersion = 0f;
+
     [Header("공격")]
     public float damage = 0.3f;
     public float knockbackPower = 1f;
@@ -107,6 +110,12 @@ public class EnemyLaser : MonoBehaviour
     {
         if (target != null) targetPos = target.position;
         LookPos(targetPos);
+
+        if (laserDispersion > 0)
+        {
+            float randomAngle = Random.Range(-laserDispersion / 2f, laserDispersion / 2f);
+            Rotate(randomAngle);
+        }
 
         if (timeToFire > 0)
         {
