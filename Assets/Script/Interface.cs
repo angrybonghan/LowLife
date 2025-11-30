@@ -34,3 +34,10 @@ public interface I_TriggerBox
     void TriggerIn();
     void TriggerOut();
 }
+
+public interface I_MawSkill
+{
+    bool isFacingRight { get; set; }
+
+    Transform GetTransform();
+}
