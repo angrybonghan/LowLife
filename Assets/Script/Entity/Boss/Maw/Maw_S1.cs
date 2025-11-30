@@ -1,9 +1,8 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
-public class Maw_S1 : MonoBehaviour
+public class Maw_S1 : MonoBehaviour, I_MawSkill
 {
     [Header("ÀÌµ¿")]
     public Transform wallCheckPos;
@@ -26,12 +25,13 @@ public class Maw_S1 : MonoBehaviour
 
     [Header("°ø°Ý À§Ä¡")]
     public Transform firePoint;
-
-    [Header("¹æÇâ")]
-    public bool isFacingRight = true;
+    public bool isFacingRight { get; set; }
 
     [Header("°³¹ÌÁö¿Á ÆÄÃ÷")]
     public GameObject antlion;
+
+    [Header("Áß¾Ó X")]
+    public float centerX;
 
     bool canFire = false;
     bool aiming = false;
@@ -54,6 +54,8 @@ public class Maw_S1 : MonoBehaviour
         {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
         }
+
+        LookPos(centerX);
 
         StartCoroutine(SkillSequence());
     }
@@ -101,6 +103,7 @@ public class Maw_S1 : MonoBehaviour
         yield return new WaitUntil(() => IsGrounded());
 
         anim.SetTrigger("land");
+        MawManager.instance.canUseSklill = true;
     }
 
     bool IsTouchingWall()
@@ -134,7 +137,7 @@ public class Maw_S1 : MonoBehaviour
 
     public void Flip()
     {
-        isFacingRight = !isFacingRight;
+        MawManager.instance.isFacingRight = isFacingRight = !isFacingRight;
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
     }
 
@@ -158,7 +161,7 @@ public class Maw_S1 : MonoBehaviour
         canFire = true;
     }
 
-    public bool IsGrounded()
+    bool IsGrounded()
     {
         Vector2 size = capsuleCol.size;
         Vector2 offset = capsuleCol.offset;
@@ -168,5 +171,28 @@ public class Maw_S1 : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, rayDistance, wallLayer);
 
         return hit.collider != null;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            PlayerController.instance.ImmediateDeath();
+        }
+    }
+
+    void LookPos(float targetX)
+    {
+        float directionX = targetX - transform.position.x;
+
+        if (directionX != 0 && (directionX > 0) != isFacingRight)
+        {
+            Flip();
+        }
+    }
+
+    public Transform GetTransform()
+    {
+        return transform;
     }
 }
