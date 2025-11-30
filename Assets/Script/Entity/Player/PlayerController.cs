@@ -1239,4 +1239,12 @@ public class PlayerController : MonoBehaviour
             hasInput = false;
         }
     }
+
+    public void ExternalJump(float jumpPower)
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+        anim.SetTrigger("trigger_jump");
+        SetCoyote(0);
+        timeSinceLastJump = 0;
+    }
 }
