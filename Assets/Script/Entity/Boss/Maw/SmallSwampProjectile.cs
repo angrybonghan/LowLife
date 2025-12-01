@@ -7,6 +7,9 @@ public class SmallSwampProjectile : MonoBehaviour
     public float riseSpeed = 5.0f;
     public float dropSpeed = 4.0f;
 
+    [Header("분산의 속도")]
+    public float dispersionSpeed = 1f;
+
     [Header("늪")]
     public GameObject groundSwamp;
     public GameObject effect;
@@ -19,12 +22,18 @@ public class SmallSwampProjectile : MonoBehaviour
     public float floorY;
 
     bool isGoingUp = true;
+    float currentDispersionSpeed = 0f;
 
     Animator anim;
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
+    }
+
+    private void Start()
+    {
+        currentDispersionSpeed = dispersionSpeed * Random.Range(-1f, 1f);
     }
 
     private void Update()
@@ -41,7 +50,11 @@ public class SmallSwampProjectile : MonoBehaviour
 
     void GoUp()
     {
-        transform.position += Vector3.up * riseSpeed * Time.deltaTime;
+        Vector2 newPos = transform.position;
+        newPos.x += currentDispersionSpeed * Time.deltaTime;
+        newPos.y += riseSpeed * Time.deltaTime;
+        transform.position = newPos;
+
         if (targetY <= transform.position.y)
         {
             SetDropPos();

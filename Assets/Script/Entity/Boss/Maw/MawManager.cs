@@ -6,6 +6,9 @@ public class MawManager : MonoBehaviour
 {
     public static MawManager instance { get; private set; }
 
+    [Header("시작")]
+    public bool spawnMawAtStart = false;
+
     [Header("스킬셋")]
     public float skillInterval = 0.7887f;
     public int skillCount;
@@ -52,8 +55,8 @@ public class MawManager : MonoBehaviour
     private void Start()
     {
         canUseSklill = false;
-        UseSkill();
-
+        if (spawnMawAtStart) UseSkill();
+        
         StartCoroutine(SkillManagerSequence());
     }
 
@@ -140,7 +143,7 @@ public class MawManager : MonoBehaviour
         swampPositionCenter = Random.Range(minSwampX, maxSwampX);
     }
     
-    void ClearAllSwamp()
+    public void ClearAllSwamp()
     {
         foreach (GameObject swamp in allSwamp)
         {

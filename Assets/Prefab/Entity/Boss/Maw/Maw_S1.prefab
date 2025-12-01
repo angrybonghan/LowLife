@@ -321,7 +321,7 @@ MonoBehaviour:
   verticalJumpPower: 12
   horizontalJumpPower: 25
   bulletCount: 20
-  phaseCount: 3
+  phaseCount: 1
   fireRate: 0.05
   phaseInterval: 0.5
   damage: 0.05
