@@ -143,7 +143,6 @@ MonoBehaviour:
   maxHorizontalJumpPower: 25
   stunDuration: 2
   centerX: 35
-  isFacingRight: 1
 --- !u!70 &8471429178414871270
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

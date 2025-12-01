@@ -29,7 +29,6 @@ public class MawManager : MonoBehaviour
     public float minSwampX;
 
 
-
     [HideInInspector] public bool canUseSklill = true;
     [HideInInspector] public List<GameObject> allSwamp = new List<GameObject>();
 
@@ -37,7 +36,6 @@ public class MawManager : MonoBehaviour
     int lastSkillNumber = 0;
     int currentSmallSwampCount = 0;
     float swampPositionCenter;
-
 
 
     private void Awake()
