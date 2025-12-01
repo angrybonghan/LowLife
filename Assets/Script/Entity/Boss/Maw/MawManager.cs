@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MawManager : MonoBehaviour
@@ -10,6 +11,7 @@ public class MawManager : MonoBehaviour
     public int skillCount;
     public Maw_S1 S1;
     public Maw_S2 S2;
+    public Maw_S3 S3;
 
     [Header("Ω√¿€")]
     public Vector2 startPos = new Vector2(44f, 1.004995f);
@@ -18,12 +20,23 @@ public class MawManager : MonoBehaviour
     [Header("¡ﬂæ” X")]
     public float centerX;
 
+    [Header("¥À «‘¡§ π¸¿ß")]
+    public float swampPositionInterval = 0.45f;
+    public float maxSwampX;
+    public float minSwampX;
+
+
+
     [HideInInspector] public bool canUseSklill = true;
+    [HideInInspector] public List<GameObject> allSwamp = new List<GameObject>();
 
     Transform currentSkillPos;
     int lastSkillNumber = 0;
+    int currentSmallSwampCount = 0;
+    float swampPositionCenter;
 
-    
+
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -83,6 +96,13 @@ public class MawManager : MonoBehaviour
 
             sk2.centerX = centerX;
         }
+        else if (skillNumber == 3)
+        {
+            Maw_S3 sk3 = Instantiate(S3, skillPos, Quaternion.identity);
+            sk = sk3;
+        }
+
+
         sk.isFacingRight = isFacingRight;
         currentSkillPos = sk.GetTransform();
     }
@@ -101,4 +121,47 @@ public class MawManager : MonoBehaviour
         
         return skillNumber;
     }
+
+    public float GetSmallSwampXPos()
+    {
+        if (currentSmallSwampCount == 0)
+        {
+            SetSmallSwampXPos();
+        }
+        currentSmallSwampCount++;
+        float newX = swampPositionCenter;
+        newX += SmallSwampMultypleValue(currentSmallSwampCount - 1) * swampPositionInterval;
+
+        return newX;
+    }
+
+    void SetSmallSwampXPos()
+    {
+        swampPositionCenter = Random.Range(minSwampX, maxSwampX);
+    }
+    
+    void ClearAllSwamp()
+    {
+        foreach (GameObject swamp in allSwamp)
+        {
+            Destroy(swamp);
+        }
+
+        allSwamp.Clear();
+        currentSmallSwampCount = 0;
+    }
+
+    int SmallSwampMultypleValue(int x)
+    {
+        if (x % 2 == 0)
+        {
+            return -x / 2;
+        }
+        else
+        {
+            return (x + 1) / 2;
+        }
+    }
+
+
 }
