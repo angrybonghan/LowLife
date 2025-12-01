@@ -53,7 +53,7 @@ MonoBehaviour:
   shootInterval: 0.025
   firePoint: {fileID: 9032681028752929068}
   smallSwamp: {fileID: 6141514941494194933, guid: 31b336ede0953a24db2ab4c4ad3ee723, type: 3}
-  swampDispersion: 3
+  swampDispersion: 1.5
   dispersionSpeed: 10
   poolCount: 4
 --- !u!70 &1948206452169787303
@@ -248,7 +248,7 @@ Transform:
   m_GameObject: {fileID: 8173502458411882157}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 2, z: 0}
+  m_LocalPosition: {x: -0.4, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

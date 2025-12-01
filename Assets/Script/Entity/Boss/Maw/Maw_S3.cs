@@ -83,7 +83,10 @@ public class Maw_S3 : MonoBehaviour, I_MawSkill
     void Attack(bool isPool)
     {
         Vector2 spawnPos = firePoint.position;
-        spawnPos.x += Random.value * (swampDispersion / 2);
+        //spawnPos.x += Random.value * (swampDispersion / 2);
+        // ¾Æ º´¤µ
+        spawnPos.x += ((Random.value - 0.5f) * 2) * swampDispersion;
+
 
         SmallSwampProjectile swamp = Instantiate(smallSwamp, spawnPos, Quaternion.identity);
         swamp.isOnlyEffect = !isPool;
