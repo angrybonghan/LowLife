@@ -82265,7 +82265,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -83236,7 +83236,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5bb6d462d9776c47b50b324d272fb59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpPower: 25
   targetY: 0
+  centerX: 0
+  tongue: {fileID: 5262637723337895224, guid: 673fbf234f4846a458a66d347c756674, type: 3}
+  aimingTime: 0
 --- !u!1 &7014529055165596723
 GameObject:
   m_ObjectHideFlags: 0
