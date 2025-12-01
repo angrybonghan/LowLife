@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 아이템 데이터베이스 (인벤토리 관리)
+/// - 아이템 개수 저장/조회/추가/삭제
+/// </summary>
 public class ItemDatabase : MonoBehaviour
 {
     public static ItemDatabase Instance;
-
     private Dictionary<string, int> itemCounts = new Dictionary<string, int>();
 
     private void Awake()
@@ -37,8 +40,6 @@ public class ItemDatabase : MonoBehaviour
     // 아이템 개수 조회
     public int GetItemCount(string itemID)
     {
-        if (itemCounts.TryGetValue(itemID, out int count))
-            return count;
-        return 0;
+        return itemCounts.TryGetValue(itemID, out int count) ? count : 0;
     }
 }

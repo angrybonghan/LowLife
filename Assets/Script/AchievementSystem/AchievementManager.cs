@@ -78,11 +78,7 @@ public class AchievementManager : MonoBehaviour
     public void OnBlockSuccess() => IncrementProgress(AchievementType.BlockSuccess);
     public void OnTeleportUse() => IncrementProgress(AchievementType.TeleportUse);
     public void OnAttackSuccess() => IncrementProgress(AchievementType.AttackSuccess);
-
-    // 비밀의 방 발견 (씬이 달라도 누적)
     public void OnDiscoverSecretRoom() => IncrementProgress(AchievementType.DiscoverSecretRoom);
-
-    // 숨겨진 NPC/엔딩 보기 (즉시 달성)
     public void OnDiscoverNPC() => CompleteInstant(AchievementType.DiscoverNPC);
     public void OnViewEnding() => CompleteInstant(AchievementType.ViewEnding);
 

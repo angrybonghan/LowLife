@@ -3,13 +3,19 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using TMPro;
 
+/// <summary>
+/// UI 매니저
+/// - 퀘스트 진행 상황 표시
+/// - 업적 달성 팝업 표시
+/// - 게임 종료 및 씬 이동 버튼 처리
+/// </summary>
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
     [Header("UI References")]
     public TextMeshProUGUI questText;       // 퀘스트 상태 및 진행 상황 표시
-    public GameObject achievementPopup;     // 업적 팝업
+    public GameObject achievementPopup;     // 업적 팝업 오브젝트
     public TextMeshProUGUI achievementText; // 업적 팝업 텍스트
 
     private void Awake()
@@ -22,7 +28,6 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        // 매 프레임마다 퀘스트 상태 갱신 → 거리 실시간 업데이트
         UpdateQuestText();
     }
 
@@ -32,7 +37,7 @@ public class UIManager : MonoBehaviour
         questText.text = "";
 
         Transform player = GameObject.FindWithTag("Player")?.transform;
-        string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        string currentScene = SceneManager.GetActiveScene().name;
 
         foreach (var quest in QuestManager.Instance.activeQuests)
         {
@@ -88,7 +93,6 @@ public class UIManager : MonoBehaviour
                 }
                 else if (quest.questType == QuestType.Delivery && player != null)
                 {
-                    // 씬에 있는 모든 DeliveryQuest 검색
                     DeliveryQuest[] deliveries = GameObject.FindObjectsOfType<DeliveryQuest>();
                     foreach (var delivery in deliveries)
                     {
@@ -106,7 +110,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // 업적 팝업 표시
     public void ShowAchievementUnlockedSO(AchievementDataSO achievement)
     {
         if (achievementPopup != null && achievementText != null)
@@ -123,7 +126,12 @@ public class UIManager : MonoBehaviour
         if (achievementPopup != null) achievementPopup.SetActive(false);
     }
 
-    // 게임 종료 버튼
+    public void ShowQuestCompleted(string questName)
+    {
+        Debug.Log($"[UI] 퀘스트 완료: {questName}");
+        // 필요하다면 퀘스트 완료 팝업 UI 추가 가능
+    }
+
     public void QuitGameByButton()
     {
         if (QuestManager.Instance != null)
@@ -143,7 +151,6 @@ public class UIManager : MonoBehaviour
 #endif
     }
 
-    // 씬 이동 버튼
     public void LoadSceneByButton(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
