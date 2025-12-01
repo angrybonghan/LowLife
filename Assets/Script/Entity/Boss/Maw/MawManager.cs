@@ -15,6 +15,10 @@ public class MawManager : MonoBehaviour
     public Maw_S1 S1;
     public Maw_S2 S2;
     public Maw_S3 S3;
+    public Maw_S4 S4;
+
+    [Header("ªÁ∏¡")]
+    public GameObject deathMaw;
 
     [Header("Ω√¿€")]
     public Vector2 startPos = new Vector2(44f, 1.004995f);
@@ -28,14 +32,20 @@ public class MawManager : MonoBehaviour
     public float maxSwampX;
     public float minSwampX;
 
+    [Header("HP")]
+    public int maxHP = 30;
+
 
     [HideInInspector] public bool canUseSklill = true;
     [HideInInspector] public List<GameObject> allSwamp = new List<GameObject>();
 
     Transform currentSkillPos;
+    int currentHP = 0;
     int lastSkillNumber = 0;
     int currentSmallSwampCount = 0;
+    float normalizedHP = 0;
     float swampPositionCenter;
+    bool halfHP = false;
 
 
     private void Awake()
@@ -48,6 +58,8 @@ public class MawManager : MonoBehaviour
             return;
         }
 
+        currentHP = maxHP;
+        normalizedHP = 1f;
     }
 
     private void Start()
@@ -89,6 +101,10 @@ public class MawManager : MonoBehaviour
             sk = sk1;
 
             sk1.centerX = centerX;
+            if (halfHP)
+            {
+                sk1.phaseCount = 2;
+            }
         }
         else if (skillNumber == 2)
         {
@@ -96,11 +112,50 @@ public class MawManager : MonoBehaviour
             sk = sk2;
 
             sk2.centerX = centerX;
+            if (halfHP)
+            {
+                sk2.jumpCount = 5;
+                sk2.jumpInterval = 0.3f;
+            }
+            else
+            {
+                sk2.jumpCount = 3;
+                sk2.jumpInterval = 0.75f;
+            }
         }
         else if (skillNumber == 3)
         {
             Maw_S3 sk3 = Instantiate(S3, skillPos, Quaternion.identity);
             sk = sk3;
+
+            if (halfHP)
+            {
+                sk3.shootCount = 25;
+                sk3.poolCount = 7;
+            }
+            else
+            {
+                sk3.shootCount = 15;
+                sk3.poolCount = 3;
+            }
+        }
+        else
+        {
+            Maw_S4 sk4 = Instantiate(S4, skillPos, Quaternion.identity);
+            sk = sk4;
+
+            sk4.centerX = centerX;
+
+            if (halfHP)
+            {
+                sk4.aimingTime = 0.7887f;
+                sk4.phaseCount = 3;
+            }
+            else
+            {
+                sk4.aimingTime = 3f;
+                sk4.phaseCount = 1;
+            }
         }
 
 
@@ -178,5 +233,29 @@ public class MawManager : MonoBehaviour
         }
     }
 
+    public void TakeDamage()
+    {
+        currentHP--;
+        Debug.Log(currentHP);
+        normalizedHP = currentHP / maxHP;
 
+        if (normalizedHP < 0.5f)
+        {
+            halfHP = true;
+        }
+
+        if (currentHP <= 0)
+        {
+            Death();
+        }
+    }
+
+    public void Death()
+    {
+        Vector2 skillPos = currentSkillPos.position;
+        Destroy(currentSkillPos.gameObject);
+
+        Instantiate(deathMaw, skillPos, Quaternion.identity);
+        StopAllCoroutines();
+    }
 }

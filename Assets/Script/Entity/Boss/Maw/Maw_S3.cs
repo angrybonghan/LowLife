@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Maw_S3 : MonoBehaviour, I_MawSkill
+public class Maw_S3 : MonoBehaviour, I_MawSkill, I_Attackable
 {
     [Header("АјАн")]
     public int shootCount = 35;
@@ -106,5 +106,24 @@ public class Maw_S3 : MonoBehaviour, I_MawSkill
     public Transform GetTransform()
     {
         return transform;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            PlayerController.instance.ImmediateDeath();
+        }
+    }
+
+    public bool CanAttack(Transform attacker)
+    {
+        MawManager.instance.TakeDamage();
+        return false;
+    }
+
+    public void OnAttack(Transform attacker)
+    {
+
     }
 }

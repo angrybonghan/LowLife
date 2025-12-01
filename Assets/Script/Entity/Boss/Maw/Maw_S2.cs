@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
-public class Maw_S2 : MonoBehaviour, I_MawSkill
+public class Maw_S2 : MonoBehaviour, I_MawSkill, I_Attackable
 {
     [Header("มกวม")]
     public int jumpCount = 3;
@@ -134,5 +134,16 @@ public class Maw_S2 : MonoBehaviour, I_MawSkill
     public Transform GetTransform()
     {
         return transform;
+    }
+
+    public bool CanAttack(Transform attacker)
+    {
+        MawManager.instance.TakeDamage();
+        return false;
+    }
+
+    public void OnAttack(Transform attacker)
+    {
+
     }
 }

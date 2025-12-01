@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
-public class Maw_S1 : MonoBehaviour, I_MawSkill
+public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
 {
     [Header("¿Ãµø")]
     public Transform wallCheckPos;
@@ -64,7 +64,7 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill
     {
         if (aiming)
         {
-            RotateObjTo(antlion, PlayerController.instance.transform.position);
+            if (PlayerController.instance != null) RotateObjTo(antlion, PlayerController.instance.transform.position);
         }
     }
 
@@ -130,7 +130,7 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill
     {
         EnemyLaser bul = Instantiate(bullet, firePoint.position, Quaternion.identity);
 
-        bul.SetTarget(PlayerController.instance.transform);
+        if (PlayerController.instance != null) bul.SetTarget(PlayerController.instance.transform);
         bul.SetDamage(damage, knockBackPower, knockBackTime);
         bul.laserDispersion = 2f;
     }
@@ -194,5 +194,16 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill
     public Transform GetTransform()
     {
         return transform;
+    }
+
+    public bool CanAttack(Transform attacker)
+    {
+        MawManager.instance.TakeDamage();
+        return false;
+    }
+
+    public void OnAttack(Transform attacker)
+    {
+
     }
 }

@@ -30,9 +30,10 @@ public class MawTongue : MonoBehaviour
 
     void Start()
     {
-        target = PlayerController.instance.transform;
+        target = transform;
+        if (PlayerController.instance != null) target = PlayerController.instance.transform;
         Vector3 startPos = Vector3.zero;
-        startPos.x = target.position.x;
+        if (target != null) startPos.x = target.position.x;
         startPos.y = backoffY;
         transform.position = startPos;
 
@@ -53,8 +54,8 @@ public class MawTongue : MonoBehaviour
             while (time < aimingTime)
             {
                 time += Time.deltaTime;
-                targetPos.x = target.position.x;
-                transform.position = Vector2.Lerp(transform.position, targetPos, 0.6f);
+                if (target != null) targetPos.x = target.position.x;
+                transform.position = Vector2.Lerp(transform.position, targetPos, 8f * Time.deltaTime);
                 yield return null;
             }
 

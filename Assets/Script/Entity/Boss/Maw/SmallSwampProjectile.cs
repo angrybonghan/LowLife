@@ -95,4 +95,13 @@ public class SmallSwampProjectile : MonoBehaviour
 
         Destroy(gameObject);
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            PlayerController.instance.OnAttack(0.5f, 1, 0.1f, transform);
+        }
+    }
+
 }

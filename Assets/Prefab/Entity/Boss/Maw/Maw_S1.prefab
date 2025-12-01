@@ -324,7 +324,7 @@ MonoBehaviour:
   phaseCount: 1
   fireRate: 0.05
   phaseInterval: 0.5
-  damage: 0.05
+  damage: 0.04
   knockBackPower: 0.3
   knockBackTime: 0.05
   bullet: {fileID: 5743128847875603410, guid: b08ec19a37345fb4db20695eeeedc29a, type: 3}
