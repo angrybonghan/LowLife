@@ -16,7 +16,7 @@ MonoBehaviour:
   questName: "\uC544\uC774\uD15C \uC804\uB2EC"
   description: "\uC544\uC774\uD15C\uC744 \uD2B9\uC815 NPC\uC5D0\uAC8C \uC804\uB2EC\uD558\uC138\uC694."
   prerequisiteQuestID: A7
-  questType: 2
+  questType: 3
   detectUp: 5
   detectDown: 5
   detectLeft: 5
@@ -25,6 +25,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   questCenterPosition: {x: 0, y: 0, z: 0}
+  targetKillCount: 0
   requiredItemID: B
   requiredItemCount: 1
   deliveryTargetNPC: QuestNPC (1)

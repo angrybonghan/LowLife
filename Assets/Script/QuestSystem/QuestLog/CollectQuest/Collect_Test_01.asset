@@ -16,7 +16,7 @@ MonoBehaviour:
   questName: "--\uC544\uC774\uD15C\uC744 \uD68D\uB4DD"
   description: "--\uC544\uC774\uD15C\uC744 \uD68D\uB4DD"
   prerequisiteQuestID: A5
-  questType: 3
+  questType: 4
   detectUp: 5
   detectDown: 5
   detectLeft: 5
@@ -25,6 +25,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   questCenterPosition: {x: 0, y: 0, z: 0}
+  targetKillCount: 0
   requiredItemID: B
   requiredItemCount: 1
   deliveryTargetNPC: 

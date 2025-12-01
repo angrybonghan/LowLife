@@ -1,10 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// 간단한 아이템 데이터 저장소.
-/// 인벤토리 없이 아이템 ID별 개수만 관리.
-/// </summary>
 public class ItemDatabase : MonoBehaviour
 {
     public static ItemDatabase Instance;

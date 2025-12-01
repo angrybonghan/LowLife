@@ -1,46 +1,43 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 /// <summary>
-/// 씬 시작 시 퀘스트들을 QuestManager에 등록하고,
-/// Combat 퀘스트라면 EnemyZone과 연결.
+/// 씬 시작 시 여러 퀘스트를 초기화하고 QuestManager에 등록.
+/// Combat 퀘스트는 EnemyZone과 연결.
 /// </summary>
 public class QuestInitializer : MonoBehaviour
 {
-    public List<QuestDataSO> questsToRegister; // 이 씬에서 사용할 퀘스트들
-    public EnemyZone[] enemyZones;             // 씬에 배치된 EnemyZone들
+    [Header("퀘스트 데이터들")]
+    public QuestDataSO[] questDatas;   // 여러 퀘스트 데이터 SO 배열
+
+    [Header("Combat 퀘스트 Zone들")]
+    public EnemyZone[] enemyZones;     // 여러 Combat 퀘스트 Zone 배열
 
     private void Start()
     {
-        foreach (var quest in questsToRegister)
+        //모든 퀘스트 등록
+        foreach (var questData in questDatas)
         {
-            QuestManager.Instance.AddToActiveQuests(quest);
+            if (questData == null) continue;
 
-            foreach (var zone in enemyZones)
+            QuestManager.Instance.AddToActiveQuests(questData);
+            Debug.Log($"[QuestInitializer] {questData.questName} 등록 완료 (타입: {questData.questType})");
+
+            //Combat 퀘스트라면 EnemyZone 연결
+            if (questData.questType == QuestType.CombatClear ||
+                questData.questType == QuestType.CombatCount)
             {
-                if (zone.questID == quest.questID)
+                foreach (var zone in enemyZones)
                 {
-                    zone.questData = quest;
-                    Debug.Log($"[QuestInitializer] EnemyZone {zone.name}에 {quest.questID} 연결 완료");
+                    if (zone == null) continue;
+
+                    // Zone에 연결할 퀘스트 ID가 같으면 매칭
+                    if (zone.questData != null && zone.questData.questID == questData.questID)
+                    {
+                        zone.questData = questData;
+                        Debug.Log($"[QuestInitializer] Combat 퀘스트 {questData.questName} → EnemyZone 연결 완료");
+                    }
                 }
             }
-        }
-    }
-
-    // Scene 뷰에서 Combat 퀘스트 감지 범위를 시각화
-    private void OnDrawGizmosSelected()
-    {
-        if (questsToRegister == null) return;
-
-        foreach (var quest in questsToRegister)
-        {
-            if (quest.questType != QuestType.Combat) continue;
-
-            Vector3 center = quest.questCenterPosition;
-            Vector3 size = new Vector3(quest.detectLeft + quest.detectRight, quest.detectUp + quest.detectDown, 1f);
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(center, size);
         }
     }
 }

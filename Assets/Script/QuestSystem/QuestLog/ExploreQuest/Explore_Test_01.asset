@@ -16,7 +16,7 @@ MonoBehaviour:
   questName: "~~\uC774\uB3D9"
   description: "\uC774\uB3D9 \uD558\uC138\uC694"
   prerequisiteQuestID: A4
-  questType: 4
+  questType: 5
   detectUp: 5
   detectDown: 5
   detectLeft: 5
@@ -25,6 +25,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   questCenterPosition: {x: 0, y: 0, z: 0}
+  targetKillCount: 0
   requiredItemID: 
   requiredItemCount: 1
   deliveryTargetNPC: 

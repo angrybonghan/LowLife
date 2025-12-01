@@ -17,6 +17,6 @@ public class QuestDialogueTrigger : MonoBehaviour, I_DialogueCallback
         }
 
         // UI °»½Å
-        FindObjectOfType<QuestUIController>()?.UpdateQuestText();
+        FindObjectOfType<UIManager>()?.UpdateQuestText();
     }
 }

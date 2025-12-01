@@ -1,131 +1,120 @@
-using UnityEngine;
 using UnityEditor;
+using UnityEditorInternal;
+using UnityEngine;
 
-// QuestDataSO의 커스텀 에디터
+/// <summary>
+/// QuestDataSO 커스텀 인스펙터.
+/// 퀘스트 타입에 따라 필요한 필드만 표시.
+/// </summary>
 [CustomEditor(typeof(QuestDataSO))]
 public class QuestDataSOEditor : Editor
 {
-    // Foldout 상태 저장용 변수들
-    private bool showCombatSettings = true;
-    private bool showDeliverySettings = true;
-    private bool showCollectSettings = true;
-    private bool showExploreSettings = true;
-    private bool showEscortSettings = true;
-    private bool showCompletionSettings = true;
-
     public override void OnInspectorGUI()
     {
-        serializedObject.Update();
+        // 대상 QuestDataSO 가져오기
+        QuestDataSO questData = (QuestDataSO)target;
 
-        // 기본 정보 섹션
-        DrawSection("퀘스트 기본 정보", new string[]
+        // 기본 정보 표시
+        EditorGUILayout.LabelField("기본 정보", EditorStyles.boldLabel);
+        questData.questID = EditorGUILayout.TextField("퀘스트 ID", questData.questID);
+        questData.questName = EditorGUILayout.TextField("퀘스트 이름", questData.questName);
+        questData.description = EditorGUILayout.TextField("퀘스트 설명", questData.description);
+        questData.prerequisiteQuestID = EditorGUILayout.TextField("선행 퀘스트 ID", questData.prerequisiteQuestID);
+
+        // 퀘스트 타입 선택
+        questData.questType = (QuestType)EditorGUILayout.EnumPopup("퀘스트 타입", questData.questType);
+
+        EditorGUILayout.Space();
+
+        // 타입별 필드 표시
+        switch (questData.questType)
         {
-            "questID", "questName", "description", "prerequisiteQuestID", "questType"
-        });
+            case QuestType.CombatClear:
+            case QuestType.CombatCount:
+                EditorGUILayout.LabelField("Combat 퀘스트 설정", EditorStyles.boldLabel);
+                questData.detectUp = EditorGUILayout.FloatField("감지 위", questData.detectUp);
+                questData.detectDown = EditorGUILayout.FloatField("감지 아래", questData.detectDown);
+                questData.detectLeft = EditorGUILayout.FloatField("감지 왼쪽", questData.detectLeft);
+                questData.detectRight = EditorGUILayout.FloatField("감지 오른쪽", questData.detectRight);
+                questData.enemyLayer = LayerMaskField("적 Layer", questData.enemyLayer);
+                questData.questCenterPosition = EditorGUILayout.Vector3Field("퀘스트 중심 위치", questData.questCenterPosition);
 
-        // questID 유효성 검사
-        SerializedProperty questID = serializedObject.FindProperty("questID");
-        if (string.IsNullOrEmpty(questID.stringValue))
-        {
-            EditorGUILayout.HelpBox("퀘스트 ID는 반드시 입력해야 합니다.", MessageType.Warning);
-        }
-
-        // 퀘스트 타입에 따라 조건 분기
-        SerializedProperty questType = serializedObject.FindProperty("questType");
-        QuestType type = (QuestType)questType.enumValueIndex;
-
-        // 퀘스트 타입별 설정 섹션
-        switch (type)
-        {
-            case QuestType.Combat:
-                showCombatSettings = EditorGUILayout.Foldout(showCombatSettings, "전투 퀘스트 설정");
-                if (showCombatSettings)
+                if (questData.questType == QuestType.CombatCount)
                 {
-                    DrawSection(null, new string[]
-                    {
-                        "detectUp", "detectDown", "detectLeft", "detectRight",
-                        "enemyLayer", "questCenterPosition"
-                    });
-                }
-                break;
-
-            case QuestType.Delivery:
-                showDeliverySettings = EditorGUILayout.Foldout(showDeliverySettings, "아이템 전달 퀘스트 설정");
-                if (showDeliverySettings)
-                {
-                    DrawSection(null, new string[]
-                    {
-                        "requiredItemID", "deliveryTargetNPC"
-                    });
+                    questData.targetKillCount = EditorGUILayout.IntField("목표 처치 수", questData.targetKillCount);
                 }
                 break;
 
             case QuestType.Collect:
-                showCollectSettings = EditorGUILayout.Foldout(showCollectSettings, "아이템 수집 퀘스트 설정");
-                if (showCollectSettings)
-                {
-                    DrawSection(null, new string[]
-                    {
-                        "requiredItemID", "requiredItemCount"
-                    });
-                }
+                EditorGUILayout.LabelField("Collect 퀘스트 설정", EditorStyles.boldLabel);
+                questData.requiredItemID = EditorGUILayout.TextField("필요 아이템 ID", questData.requiredItemID);
+                questData.requiredItemCount = EditorGUILayout.IntField("필요 아이템 개수", questData.requiredItemCount);
+                break;
+
+            case QuestType.Delivery:
+                EditorGUILayout.LabelField("Delivery 퀘스트 설정", EditorStyles.boldLabel);
+                questData.deliveryTargetNPC = EditorGUILayout.TextField("전달 대상 NPC", questData.deliveryTargetNPC);
                 break;
 
             case QuestType.Explore:
-                showExploreSettings = EditorGUILayout.Foldout(showExploreSettings, "탐험 퀘스트 설정");
-                if (showExploreSettings)
-                {
-                    DrawSection(null, new string[]
-                    {
-                        "targetSceneName", "exploreTargetPosition", "exploreRadius"
-                    });
-                }
+                EditorGUILayout.LabelField("Explore 퀘스트 설정", EditorStyles.boldLabel);
+                questData.targetSceneName = EditorGUILayout.TextField("목표 씬 이름", questData.targetSceneName);
+                questData.exploreTargetPosition = EditorGUILayout.Vector3Field("목표 위치", questData.exploreTargetPosition);
+                questData.exploreRadius = EditorGUILayout.FloatField("도달 반경", questData.exploreRadius);
                 break;
 
             case QuestType.Escort:
-                showEscortSettings = EditorGUILayout.Foldout(showEscortSettings, "호위 퀘스트 설정");
-                if (showEscortSettings)
-                {
-                    DrawSection(null, new string[]
-                    {
-                        "escortTargetSceneName", "escortTargetPosition", "escortCompleteRadius"
-                    });
-                }
+                EditorGUILayout.LabelField("Escort 퀘스트 설정", EditorStyles.boldLabel);
+                questData.escortTargetSceneName = EditorGUILayout.TextField("호위 목표 씬 이름", questData.escortTargetSceneName);
+                questData.escortTargetPosition = EditorGUILayout.Vector3Field("호위 목표 위치", questData.escortTargetPosition);
+                questData.escortCompleteRadius = EditorGUILayout.FloatField("호위 완료 반경", questData.escortCompleteRadius);
+                break;
+
+            case QuestType.Dialogue:
+                EditorGUILayout.LabelField("Dialogue 퀘스트 설정", EditorStyles.boldLabel);
+                EditorGUILayout.HelpBox("NPC와 대화하는 퀘스트입니다. 별도 설정 필요 없음.", MessageType.Info);
                 break;
         }
 
-        // 완료 시 연출 섹션
-        showCompletionSettings = EditorGUILayout.Foldout(showCompletionSettings, "퀘스트 완료 시 연출");
-        if (showCompletionSettings)
+        EditorGUILayout.Space();
+
+        // 완료 연출
+        EditorGUILayout.LabelField("완료 연출", EditorStyles.boldLabel);
+        questData.achievementID = EditorGUILayout.TextField("업적 ID", questData.achievementID);
+        questData.achievementPopup = (GameObject)EditorGUILayout.ObjectField("업적 팝업 Prefab", questData.achievementPopup, typeof(GameObject), false);
+
+        // 변경사항 저장
+        if (GUI.changed)
         {
-            DrawSection(null, new string[]
-            {
-                "achievementID", "achievementPopup"
-            });
+            EditorUtility.SetDirty(questData);
         }
-
-        // 시각적 구분선
-        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-
-        serializedObject.ApplyModifiedProperties();
     }
 
-    // 섹션 헤더와 필드 묶음 출력 함수
-    private void DrawSection(string title, string[] propertyNames)
+    /// <summary>
+    /// LayerMask를 인스펙터에서 선택할 수 있도록 표시
+    /// </summary>
+    private LayerMask LayerMaskField(string label, LayerMask selected)
     {
-        EditorGUILayout.Space();
-        if (!string.IsNullOrEmpty(title))
+        var layers = InternalEditorUtility.layers;
+        var layerNumbers = new int[layers.Length];
+        for (int i = 0; i < layers.Length; i++)
+            layerNumbers[i] = LayerMask.NameToLayer(layers[i]);
+
+        int maskWithoutEmpty = 0;
+        for (int i = 0; i < layers.Length; i++)
         {
-            EditorGUILayout.LabelField(title, EditorStyles.boldLabel);
+            if (((1 << layerNumbers[i]) & selected.value) != 0)
+                maskWithoutEmpty |= (1 << i);
         }
 
-        foreach (var propName in propertyNames)
+        maskWithoutEmpty = EditorGUILayout.MaskField(label, maskWithoutEmpty, layers);
+        int mask = 0;
+        for (int i = 0; i < layers.Length; i++)
         {
-            SerializedProperty prop = serializedObject.FindProperty(propName);
-            if (prop != null)
-            {
-                EditorGUILayout.PropertyField(prop);
-            }
+            if ((maskWithoutEmpty & (1 << i)) != 0)
+                mask |= (1 << layerNumbers[i]);
         }
+        selected.value = mask;
+        return selected;
     }
 }

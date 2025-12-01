@@ -43,7 +43,7 @@ public class DeliveryQuest : MonoBehaviour
                 QuestManager.Instance.CompleteQuest(quest);
                 Debug.Log($"[퀘스트 완료] {quest.questID} - {quest.questName} (NPC {targetNPCName}에게 {requiredItemID} 전달)");
 
-                FindObjectOfType<QuestUIController>()?.UpdateQuestText();
+                FindObjectOfType<UIManager>()?.UpdateQuestText();
             }
             else
             {

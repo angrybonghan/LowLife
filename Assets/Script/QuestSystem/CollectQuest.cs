@@ -22,6 +22,6 @@ public class CollectQuest : MonoBehaviour
             }
         }
 
-        FindObjectOfType<QuestUIController>()?.UpdateQuestText();
+        FindObjectOfType<UIManager>()?.UpdateQuestText();
     }
 }
