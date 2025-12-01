@@ -108,6 +108,7 @@ public class MawManager : MonoBehaviour
         currentSkillPos = sk.GetTransform();
     }
 
+    /* 신내림을 받았을 경우 게임이 터지는 문제를 완벽하게 해결
     int GetNextSkillNumber()
     {
         int skillNumber = Random.Range(1, skillCount + 1);
@@ -121,6 +122,19 @@ public class MawManager : MonoBehaviour
         }
         
         return skillNumber;
+    }   OH MY KAMI-SAMA
+    */ 
+
+    int GetNextSkillNumber()
+    {
+        int nextNumber = Random.Range(1, skillCount);
+
+        if (nextNumber >= lastSkillNumber)
+        {
+            nextNumber++;
+        }
+
+        return nextNumber;
     }
 
     public float GetSmallSwampXPos()
