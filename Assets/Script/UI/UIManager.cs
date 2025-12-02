@@ -18,18 +18,91 @@ public class UIManager : MonoBehaviour
     public GameObject achievementPopup;     // 업적 팝업 오브젝트
     public TextMeshProUGUI achievementText; // 업적 팝업 텍스트
 
+    [Header("ESC Menu References")]
+    public RectTransform escMenuPanel;      // ESC 메뉴 패널 RectTransform
+    public CanvasGroup escCanvasGroup;      // ESC 메뉴 페이드용 CanvasGroup
+    public Vector2 hiddenPos = new Vector2(0, -600); // 숨겨진 위치
+    public Vector2 visiblePos = new Vector2(0, 0);   // 보이는 위치
+    public float animSpeed = 5f;            // 슬라이드 속도
+    public float fadeSpeed = 5f;            // 페이드 속도
+
+    private bool isPaused = false;
+    private Coroutine escAnimCoroutine;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
+
+        // 시작 시 ESC 메뉴는 숨겨진 위치 + 투명 상태
+        if (escMenuPanel != null)
+            escMenuPanel.anchoredPosition = hiddenPos;
+
+        if (escCanvasGroup != null)
+            escCanvasGroup.alpha = 0f;
     }
 
     private void Update()
     {
         UpdateQuestText();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ToggleESCMenu();
+        }
     }
+
+    /// <summary>
+    /// ESC 메뉴 토글 (슬라이드 + 페이드 인/아웃)
+    /// </summary>
+    public void ToggleESCMenu()
+    {
+        isPaused = !isPaused;
+
+        if (escAnimCoroutine != null) StopCoroutine(escAnimCoroutine);
+
+        if (isPaused)
+        {
+            Time.timeScale = 0f; // 게임 일시정지
+            escAnimCoroutine = StartCoroutine(PlayESCAnimation(visiblePos, 1f));
+        }
+        else
+        {
+            Time.timeScale = 1f; // 게임 재개
+            escAnimCoroutine = StartCoroutine(PlayESCAnimation(hiddenPos, 0f));
+        }
+    }
+
+    /// <summary>
+    /// ESC 메뉴 애니메이션 (슬라이드 + 페이드)
+    /// </summary>
+    private IEnumerator PlayESCAnimation(Vector2 targetPos, float targetAlpha)
+    {
+        Vector2 startPos = escMenuPanel.anchoredPosition;
+        float startAlpha = escCanvasGroup.alpha;
+        float t = 0f;
+
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime * animSpeed;
+
+            // 슬라이드
+            escMenuPanel.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
+
+            // 페이드
+            escCanvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, t * fadeSpeed);
+
+            yield return null;
+        }
+
+        escMenuPanel.anchoredPosition = targetPos;
+        escCanvasGroup.alpha = targetAlpha;
+    }
+
+    public bool IsPaused => isPaused;
+
 
     public void UpdateQuestText()
     {
