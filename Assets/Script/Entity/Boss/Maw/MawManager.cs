@@ -43,6 +43,7 @@ public class MawManager : MonoBehaviour
     int currentHP = 0;
     int lastSkillNumber = 0;
     int currentSmallSwampCount = 0;
+    int totalSkillsUsed = 0;
     float normalizedHP = 0;
     float swampPositionCenter;
     bool halfHP = false;
@@ -101,7 +102,10 @@ public class MawManager : MonoBehaviour
             Destroy(currentSkillPos.gameObject);
         }
 
-        int skillNumber = GetNextSkillNumber();
+        int skillNumber;
+        if (totalSkillsUsed == 0) skillNumber = 3;
+        else skillNumber = GetNextSkillNumber();
+
         lastSkillNumber = skillNumber;
         I_MawSkill sk = null;
         if (skillNumber == 1)
@@ -170,6 +174,7 @@ public class MawManager : MonoBehaviour
 
         sk.isFacingRight = isFacingRight;
         currentSkillPos = sk.GetTransform();
+        totalSkillsUsed++;
     }
 
     /* 신내림을 받았을 경우 게임이 터지는 문제를 완벽하게 해결
@@ -245,7 +250,6 @@ public class MawManager : MonoBehaviour
     public void TakeDamage()
     {
         currentHP--;
-        Debug.Log(currentHP);
         normalizedHP = (float)currentHP / (float)maxHP;
         
         halfHP = normalizedHP <= 0.5f;

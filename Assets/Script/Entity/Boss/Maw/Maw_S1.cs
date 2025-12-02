@@ -27,6 +27,11 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
     public Transform firePoint;
     public bool isFacingRight { get; set; }
 
+    [Header("ÅºÇÇ")]
+    public Transform cartridgePos;
+    public MawCartridge cartridge;
+
+
     [Header("°³¹ÌÁö¿Á ÆÄÃ÷")]
     public GameObject antlion;
 
@@ -87,6 +92,7 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
             for (int j = 0; j < bulletCount; j++)
             {
                 Attack();
+                CameraMovement.PositionShaking(0.2f, 0.05f, fireRate);
                 yield return new WaitForSeconds(fireRate);
             }
 
@@ -133,6 +139,9 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
         if (PlayerController.instance != null) bul.SetTarget(PlayerController.instance.transform);
         bul.SetDamage(damage, knockBackPower, knockBackTime);
         bul.laserDispersion = 2f;
+
+        MawCartridge cart = Instantiate(cartridge, cartridgePos.position, Quaternion.identity);
+        cart.flyToRight = isFacingRight;
     }
 
     public void Flip()
