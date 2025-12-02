@@ -22,7 +22,6 @@ public class MawTongue : MonoBehaviour
     public GameObject spitShatter;
 
     bool isAttacking = false;
-    bool isAiming = false;
     Transform target;
     Coroutine moveCoroutine;
     Animator anim;
