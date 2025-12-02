@@ -138,12 +138,11 @@ public class Maw_S2 : MonoBehaviour, I_MawSkill, I_Attackable
 
     public bool CanAttack(Transform attacker)
     {
-        MawManager.instance.TakeDamage();
-        return false;
+        return true;
     }
 
     public void OnAttack(Transform attacker)
     {
-
+        MawManager.instance.TakeDamage();
     }
 }

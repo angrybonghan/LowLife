@@ -255,7 +255,7 @@ public class MawManager : MonoBehaviour
         Vector2 skillPos = currentSkillPos.position;
         Destroy(currentSkillPos.gameObject);
 
-        Instantiate(deathMaw, skillPos, Quaternion.identity);
+        if (deathMaw != null) Instantiate(deathMaw, skillPos, Quaternion.identity);
         StopAllCoroutines();
     }
 }

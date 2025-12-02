@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 6141514941494194933}
   - component: {fileID: 1695506776340314329}
   - component: {fileID: 8754487703914856492}
-  m_Layer: 15
+  m_Layer: 16
   m_Name: SwompShotFire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
