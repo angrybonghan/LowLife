@@ -1,47 +1,50 @@
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CircleCollider2D), typeof(Animator), typeof(AudioSource))]
 public class ShieldMovement : MonoBehaviour
 {
-    [Header("ÂüÁ¶ ¹× ¼³Á¤")]
-    public float maxShieldFlightTime = 1;      // ¹æÆĞ°¡ ³¯¾Æ°¥ ¼ö ÀÖ´Â ÃÖ´ë ½Ã°£
-    public float throwSpeed = 25f;     // ¹æÆĞ°¡ ³¯¾Æ°¡´Â ¼Óµµ
-    public float returnSpeed = 20f;    // ¹æÆĞ°¡ ÇÃ·¹ÀÌ¾î¿¡°Ô µ¹¾Æ¿À´Â ¼Óµµ
-    public float catchDistance = 0.75f; // ÇÃ·¹ÀÌ¾î¿¡°Ô ÀâÇôÁú °Å¸®
+    [Header("ì°¸ì¡° ë° ì„¤ì •")]
+    public float maxShieldFlightTime = 1;      // ë°©íŒ¨ê°€ ë‚ ì•„ê°ˆ ìˆ˜ ìˆëŠ” ìµœëŒ€ ì‹œê°„
+    public float throwSpeed = 25f;     // ë°©íŒ¨ê°€ ë‚ ì•„ê°€ëŠ” ì†ë„
+    public float returnSpeed = 20f;    // ë°©íŒ¨ê°€ í”Œë ˆì´ì–´ì—ê²Œ ëŒì•„ì˜¤ëŠ” ì†ë„
+    public float catchDistance = 0.75f; // í”Œë ˆì´ì–´ì—ê²Œ ì¡í˜€ì§ˆ ê±°ë¦¬
 
-    [Header("Å©±â")]
+    [Header("í¬ê¸°")]
     public float shieldSize = 0.35f;
 
-    [Header("·¹ÀÌ¾î")]
+    [Header("ë ˆì´ì–´")]
     public LayerMask groundLayer;
     public LayerMask returnCollisionMask;
     public LayerMask throwCollisionMask;
 
-    [Header("ÆÄÆ¼Å¬")]
+    [Header("íŒŒí‹°í´")]
     public Transform particlePos;
     public GameObject groundHitParticle;
     public GameObject entityHitParticle_shape;
     public GameObject entityHitParticle_explod;
 
-    [Header("¿ÜºÎ Á¶ÀÛ ¼³Á¤")]
-    public Transform playerPostion;    // ¹æÆĞ¸¦ ´øÁø ÇÃ·¹ÀÌ¾î À§Ä¡
-    public Vector3 throwDirection;  // ´øÁö´Â ¹æÇâ
-    public bool isReturning = false; // ÇöÀç ¹æÆĞ°¡ µ¹¾Æ¿À´Â ÁßÀÎ°¡?
+    [Header("ì™¸ë¶€ ì¡°ì‘ ì„¤ì •")]
+    public Transform playerPostion;    // ë°©íŒ¨ë¥¼ ë˜ì§„ í”Œë ˆì´ì–´ ìœ„ì¹˜
+    public Vector3 throwDirection;  // ë˜ì§€ëŠ” ë°©í–¥
+    public bool isReturning = false; // í˜„ì¬ ë°©íŒ¨ê°€ ëŒì•„ì˜¤ëŠ” ì¤‘ì¸ê°€?
 
-    [Header("ÀÜ»ó ÀÌÆåÆ®")]
+    [Header("ì”ìƒ ì´í™íŠ¸")]
     public GameObject afterEffect;
     public float afterEffectInterval;
 
-    private float currentFlightTime = 0; // ÇöÀç ³¯¾Æ°¡´Â ½Ã°£ (½Ã°£ °è»ê¿ë)
-    private float LastAfterEffect = 0;  // ¸¶Áö¸· ÀÜ»ó ½Ã°£  (½Ã°£ °è»ê¿ë)
+    private float currentFlightTime = 0; // í˜„ì¬ ë‚ ì•„ê°€ëŠ” ì‹œê°„ (ì‹œê°„ ê³„ì‚°ìš©)
+    private float LastAfterEffect = 0;  // ë§ˆì§€ë§‰ ì”ìƒ ì‹œê°„  (ì‹œê°„ ê³„ì‚°ìš©)
     private float castRadius;
 
     Vector2 lastHitPos;
 
-    // ÂüÁ¶¿ë º¯¼ö
+    // ì°¸ì¡°ìš© ë³€ìˆ˜
     private CircleCollider2D circleCol;
     private Animator anim;
     private PlayerController playerController;
+
+    List<Collider2D> alreadyHitTargets = new List<Collider2D>();
 
     public static ShieldMovement shieldInstance { get; private set; }
 
@@ -60,7 +63,7 @@ public class ShieldMovement : MonoBehaviour
         circleCol = GetComponent<CircleCollider2D>();
         anim = GetComponent<Animator>();
         
-        // ÃÊ±â ¼³Á¤
+        // ì´ˆê¸° ì„¤ì •
         circleCol.isTrigger = true;
         isReturning = false;
         LastAfterEffect = Time.time;
@@ -153,6 +156,12 @@ public class ShieldMovement : MonoBehaviour
 
         if (hit.collider != null)
         {
+            if (alreadyHitTargets.Contains(hit.collider))
+            {
+Â  Â  Â  Â  Â  Â  Â  Â  transform.position += movement;
+                return;
+Â  Â  Â  Â  Â  Â  }
+
             if (hit.collider.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
             {
                 if (targetAttackable.CanAttack(transform))
@@ -189,6 +198,11 @@ public class ShieldMovement : MonoBehaviour
             Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
             TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
             CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
+
+            if (!alreadyHitTargets.Contains(other))
+            {
+                alreadyHitTargets.Add(other);
+            }
         }
         else if (other.TryGetComponent<I_Destructible>(out I_Destructible targetDestructible))
         {
