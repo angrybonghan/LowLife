@@ -54,6 +54,8 @@ MonoBehaviour:
   backoffTime: 1
   phaseCount: 1
   aimingTime: 3
+  spit: {fileID: 1206551255559857197, guid: 35018b35fbb899e468736bd113d2639e, type: 3}
+  spitShatter: {fileID: 6338496464680792392, guid: 38081a53c92ae4748aa0b21f7597163f, type: 3}
 --- !u!61 &3343693162384742500
 BoxCollider2D:
   m_ObjectHideFlags: 0

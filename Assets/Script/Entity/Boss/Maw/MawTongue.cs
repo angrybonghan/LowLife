@@ -17,7 +17,12 @@ public class MawTongue : MonoBehaviour
     public int phaseCount = 1;
     public float aimingTime = 3f;
 
+    [Header("ħ")]
+    public GameObject spit;
+    public GameObject spitShatter;
+
     bool isAttacking = false;
+    bool isAiming = false;
     Transform target;
     Coroutine moveCoroutine;
     Animator anim;
@@ -49,7 +54,7 @@ public class MawTongue : MonoBehaviour
 
             MoveTo(targetPos, 0.3f);
             yield return new WaitForSeconds(0.3f);
-
+            Coroutine droolingCoroutine = StartCoroutine(Drooling());
             float time = 0;
             while (time < aimingTime)
             {
@@ -58,12 +63,15 @@ public class MawTongue : MonoBehaviour
                 transform.position = Vector2.Lerp(transform.position, targetPos, 8f * Time.deltaTime);
                 yield return null;
             }
+            StopCoroutine(droolingCoroutine);
 
             targetPos.y = floorY;
             isAttacking = true;
             MoveTo(targetPos, attackTime);
             yield return new WaitForSeconds(attackTime);
             isAttacking = false;
+            CameraMovement.PositionShaking(0.2f, 0.05f, 0.2f);
+            Instantiate(spitShatter, transform.position, Quaternion.identity);
             targetPos.y = backoffY;
             anim.SetTrigger("attack");
             MoveTo(targetPos, backoffTime);
@@ -72,6 +80,15 @@ public class MawTongue : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    IEnumerator Drooling()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.value * 0.3f);
+            Instantiate(spit, transform.position, Quaternion.identity);
+        }
     }
 
     void MoveTo(Vector2 targetPos, float duration)
