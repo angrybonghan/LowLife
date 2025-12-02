@@ -17,7 +17,6 @@ public class Maw_S3 : MonoBehaviour, I_MawSkill, I_Attackable
 
     bool isAttackEnd = false;
 
-
     public bool isFacingRight { get; set; }
     bool isAttacking = false;
     Animator anim;

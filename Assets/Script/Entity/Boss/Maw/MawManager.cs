@@ -264,6 +264,7 @@ public class MawManager : MonoBehaviour
     {
         ClearAllSwamp();
 
+
         Vector2 skillPos = currentSkillPos.position;
         Destroy(currentSkillPos.gameObject);
 
@@ -271,8 +272,6 @@ public class MawManager : MonoBehaviour
         {
             Maw_Deadparts dp = Instantiate(deathMaw, skillPos, Quaternion.identity);
             dp.centerX = centerX;
-
-
         }
         StopAllCoroutines();
     }

@@ -29,6 +29,7 @@ public class SmallSwampProjectile : MonoBehaviour
     private void Awake()
     {
         anim = GetComponent<Animator>();
+        MawManager.instance.allSwamp.Add(gameObject);
     }
 
     private void Start()
@@ -102,6 +103,11 @@ public class SmallSwampProjectile : MonoBehaviour
         {
             PlayerController.instance.OnAttack(0.5f, 1, 0.1f, transform);
         }
+    }
+
+    private void OnDestroy()
+    {
+        MawManager.instance.allSwamp.Remove(gameObject);
     }
 
 }
