@@ -80914,6 +80914,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6163260329811461536, guid: 0696952c541e77844a5c7c8d54ddb4f9, type: 3}
+      propertyPath: shieldPrefabs
+      value: 
+      objectReference: {fileID: 3792225553167996052, guid: 46934e08e4776d946913667ad16cef2f, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -83099,7 +83103,7 @@ MonoBehaviour:
   S2: {fileID: 2944991955404404464, guid: 732e5f261d13b2e46a0d766cfbb7aa30, type: 3}
   S3: {fileID: 7452213104021569305, guid: df31b76672eae1d42a8e0a62644b58dd, type: 3}
   S4: {fileID: 4998118943604423422, guid: 323ecd508ed5fcc4aa7f0801ab8f7a10, type: 3}
-  deathMaw: {fileID: 0}
+  deathMaw: {fileID: 1136879478402465935, guid: 8bfaa68d18b695245b18b86ef0417a4a, type: 3}
   startPos: {x: 44, y: 1.004995}
   isFacingRight: 0
   centerX: 35

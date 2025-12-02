@@ -18,7 +18,7 @@ public class MawManager : MonoBehaviour
     public Maw_S4 S4;
 
     [Header("ªÁ∏¡")]
-    public GameObject deathMaw;
+    public Maw_Deadparts deathMaw;
 
     [Header("Ω√¿€")]
     public Vector2 startPos = new Vector2(44f, 1.004995f);
@@ -69,6 +69,15 @@ public class MawManager : MonoBehaviour
         
         StartCoroutine(SkillManagerSequence());
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown((KeyCode)107))
+        {
+            Death();
+        }
+    }
+
 
     IEnumerator SkillManagerSequence()
     {
@@ -249,10 +258,18 @@ public class MawManager : MonoBehaviour
 
     public void Death()
     {
+        ClearAllSwamp();
+
         Vector2 skillPos = currentSkillPos.position;
         Destroy(currentSkillPos.gameObject);
 
-        if (deathMaw != null) Instantiate(deathMaw, skillPos, Quaternion.identity);
+        if (deathMaw != null)
+        {
+            Maw_Deadparts dp = Instantiate(deathMaw, skillPos, Quaternion.identity);
+            dp.centerX = centerX;
+
+
+        }
         StopAllCoroutines();
     }
 }
