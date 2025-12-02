@@ -33,6 +33,9 @@ public class ShieldMovement : MonoBehaviour
     public GameObject afterEffect;
     public float afterEffectInterval;
 
+    [Header("시간")]
+    public bool controlTimeAtAttack = true;
+
     private float currentFlightTime = 0; // 현재 날아가는 시간 (시간 계산용)
     private float LastAfterEffect = 0;  // 마지막 잔상 시간  (시간 계산용)
     private float castRadius;
@@ -196,7 +199,7 @@ public class ShieldMovement : MonoBehaviour
 
             Instantiate(entityHitParticle_shape, lastHitPos, Quaternion.identity);
             Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
-            TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
+            if (controlTimeAtAttack) TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
             CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
 
             if (!alreadyHitTargets.Contains(other))
