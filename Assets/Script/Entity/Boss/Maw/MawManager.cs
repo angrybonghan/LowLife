@@ -237,12 +237,9 @@ public class MawManager : MonoBehaviour
     {
         currentHP--;
         Debug.Log(currentHP);
-        normalizedHP = currentHP / maxHP;
-
-        if (normalizedHP < 0.5f)
-        {
-            halfHP = true;
-        }
+        normalizedHP = (float)currentHP / (float)maxHP;
+        
+        halfHP = normalizedHP <= 0.5f;
 
         if (currentHP <= 0)
         {
