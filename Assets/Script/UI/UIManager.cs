@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System.Collections;
 using TMPro;
 
@@ -26,6 +27,11 @@ public class UIManager : MonoBehaviour
     public float animSpeed = 5f;            // 슬라이드 속도
     public float fadeSpeed = 5f;            // 페이드 속도
 
+    [Header("Sound UI Buttons")]
+    public Button volumeUpButton;
+    public Button volumeDownButton;
+    public Button[] volumePresetButtons; // 프리셋 버튼들 (예: 20%, 50%, 80%, 100%)
+
     private bool isPaused = false;
     private Coroutine escAnimCoroutine;
 
@@ -36,12 +42,31 @@ public class UIManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        // 시작 시 ESC 메뉴는 숨겨진 위치 + 투명 상태
         if (escMenuPanel != null)
             escMenuPanel.anchoredPosition = hiddenPos;
 
         if (escCanvasGroup != null)
             escCanvasGroup.alpha = 0f;
+
+        // 버튼 이벤트 연결 (SoundManager 참조)
+        if (volumeUpButton != null)
+            volumeUpButton.onClick.AddListener(() => SoundManager.instance.IncreaseVolume());
+
+        if (volumeDownButton != null)
+            volumeDownButton.onClick.AddListener(() => SoundManager.instance.DecreaseVolume());
+
+        if (volumePresetButtons != null)
+        {
+            for (int i = 0; i < volumePresetButtons.Length; i++)
+            {
+                int index = i;
+                volumePresetButtons[index].onClick.AddListener(() =>
+                {
+                    float presetValue = (index + 1) / (float)volumePresetButtons.Length;
+                    SoundManager.instance.SetVolume(presetValue);
+                });
+            }
+        }
     }
 
     private void Update()
@@ -54,6 +79,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+
     /// <summary>
     /// ESC 메뉴 토글 (슬라이드 + 페이드 인/아웃)
     /// </summary>
@@ -65,13 +91,15 @@ public class UIManager : MonoBehaviour
 
         if (isPaused)
         {
-            Time.timeScale = 0f; // 게임 일시정지
+            Time.timeScale = 0f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(visiblePos, 1f));
+            SoundManager.instance.LowerVolumeForESC(); // ESC 열릴 때 볼륨 줄임
         }
         else
         {
-            Time.timeScale = 1f; // 게임 재개
+            Time.timeScale = 1f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(hiddenPos, 0f));
+            SoundManager.instance.RestoreVolumeAfterESC(); // ESC 닫힐 때 볼륨 복원
         }
     }
 
@@ -87,13 +115,8 @@ public class UIManager : MonoBehaviour
         while (t < 1f)
         {
             t += Time.unscaledDeltaTime * animSpeed;
-
-            // 슬라이드
             escMenuPanel.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
-
-            // 페이드
             escCanvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, t * fadeSpeed);
-
             yield return null;
         }
 

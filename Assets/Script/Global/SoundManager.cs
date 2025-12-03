@@ -6,23 +6,58 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager instance { get; private set; }
 
-    [Header("엔티티 타격음")]
+    [Header("효과음 클립")]
     public AudioClip[] entityHitSound;
 
-    float volume = 1.0f;
-    List<GameObject> allBgmPlayer = new List<GameObject>();
+    private float volume = 1.0f; // 현재 볼륨 (0.0 ~ 1.0)
+    private List<AudioSource> allBgmSources = new List<AudioSource>();
 
     private void Awake()
     {
-        if (instance == null) instance = this;
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else
         {
             Destroy(gameObject);
-            this.enabled = false;
             return;
         }
-
     }
+
+    public void SetVolume(float newVolume)
+    {
+        volume = Mathf.Clamp01(newVolume);
+        foreach (var src in allBgmSources)
+        {
+            if (src != null)
+                src.volume = volume;
+        }
+        Debug.Log($"[SoundManager] Volume set to {volume}");
+    }
+
+    public void IncreaseVolume() => SetVolume(volume + 0.1f);
+    public void DecreaseVolume() => SetVolume(volume - 0.1f);
+
+    public void LowerVolumeForESC()
+    {
+        foreach (var src in allBgmSources)
+        {
+            if (src != null)
+                src.volume = volume * 0.3f;
+        }
+    }
+
+    public void RestoreVolumeAfterESC()
+    {
+        foreach (var src in allBgmSources)
+        {
+            if (src != null)
+                src.volume = volume;
+        }
+    }
+
 
     public void PlaySoundAtPosition(Vector3 position, AudioClip clip, float volumeMultiple = 1f)
     {
@@ -55,12 +90,11 @@ public class SoundManager : MonoBehaviour
         if (entityHitSound == null || entityHitSound.Length == 0) return;
 
         int randomIndex = Random.Range(0, entityHitSound.Length);
-
         AudioClip clipToPlay = entityHitSound[randomIndex];
 
         if (clipToPlay != null)
         {
-            PlaySoundAtPosition(position, clipToPlay);
+            AudioSource.PlayClipAtPoint(clipToPlay, position, volume);
         }
     }
 
@@ -104,25 +138,24 @@ public class SoundManager : MonoBehaviour
     public void PlayLoopBgm(AudioClip clip, float pitch = 1.0f, float volumeMultiple = 1.0f)
     {
         GameObject tempBgmGO = new GameObject("TempBgmAudio");
-        allBgmPlayer.Add(tempBgmGO);
-
         AudioSource audioSource = tempBgmGO.AddComponent<AudioSource>();
         audioSource.clip = clip;
         audioSource.spatialBlend = 0f;
         audioSource.volume = volume * volumeMultiple;
         audioSource.pitch = pitch;
         audioSource.loop = true;
-
         audioSource.Play();
+
+        allBgmSources.Add(audioSource);
     }
 
     public void StopAllBgm()
     {
-        foreach (var player in allBgmPlayer)
+        foreach (var src in allBgmSources)
         {
-            Destroy(player);
+            if (src != null)
+                Destroy(src.gameObject);
         }
-
-        allBgmPlayer.Clear();
+        allBgmSources.Clear();
     }
 }
