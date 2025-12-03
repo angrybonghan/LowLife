@@ -201,6 +201,8 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         playerSound = GetComponent<PlayerSound>();
         startGravityScale = rb.gravityScale;
+
+        canControl = true;
     }
 
     private void Start()

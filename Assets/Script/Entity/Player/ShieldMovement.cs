@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(CircleCollider2D), typeof(Animator), typeof(AudioSource))]
@@ -167,6 +168,8 @@ public class ShieldMovement : MonoBehaviour
 
             if (hit.collider.TryGetComponent<I_Attackable>(out I_Attackable targetAttackable))
             {
+                alreadyHitTargets.Add(hit.collider);
+
                 if (targetAttackable.CanAttack(transform))
                 {
                     transform.position = (Vector3)hit.point - (Vector3)movement.normalized * castRadius;
@@ -201,11 +204,6 @@ public class ShieldMovement : MonoBehaviour
             Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
             if (controlTimeAtAttack) TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
             CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
-
-            if (!alreadyHitTargets.Contains(other))
-            {
-                alreadyHitTargets.Add(other);
-            }
         }
         else if (other.TryGetComponent<I_Destructible>(out I_Destructible targetDestructible))
         {
