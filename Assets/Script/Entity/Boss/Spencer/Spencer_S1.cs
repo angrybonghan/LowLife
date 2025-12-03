@@ -1,8 +1,9 @@
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Spencer_S1 : MonoBehaviour
+public class Spencer_S1 : MonoBehaviour, I_Attackable
 {
     [Header("공격 시간")]
     public float aimingTime = 1.0f;
@@ -11,31 +12,66 @@ public class Spencer_S1 : MonoBehaviour
     public SpencerArm[] arms;
 
     Animator anim;
+    bool endAttack = false;
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
+
+        arms[0].sendSignal = true;
+        arms[0].parents = this;
     }
 
 
     void Start()
     {
-        int randomWeaponNumber = Random.Range(0, 4);
-        foreach (SpencerArm arm in arms)
-        {
-            arm.weaponNumber = randomWeaponNumber;
-        }
+        StartCoroutine(SkillSequence());
     }
 
-
-    void Update()
-    {
-        
-    }
-    
 
     IEnumerator SkillSequence()
     {
-        yield return null;
+        yield return new WaitForSeconds(aimingTime);
+        foreach (SpencerArm arm in arms)
+        {
+            if (arm != null) arm.FireWeapon();
+        }
+        anim.enabled = true;
+        anim.SetTrigger("fire");
+
+        yield return new WaitUntil(() => endAttack);
+
+        
+    }
+
+    public void StartMoveArms()
+    {
+        anim.enabled = false;
+    }
+
+    public void EndMoveArms()
+    {
+        anim.SetTrigger("endAttack");
+        endAttack = true;
+    }
+
+    public void DeleteArms()
+    {
+        foreach (SpencerArm arm in arms)
+        {
+            if (arm == null) continue;
+
+            Destroy(arm.gameObject);
+        }
+    }
+
+    public bool CanAttack(Transform attacker)
+    {
+        return true;
+    }
+
+    public void OnAttack(Transform attacker)
+    {
+        
     }
 }
