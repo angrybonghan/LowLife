@@ -8,6 +8,8 @@ public class MawManager : MonoBehaviour
 
     [Header("시작")]
     public bool spawnMawAtStart = false;
+    public Vector2 startPos = new Vector2(44f, 1.004995f);
+    public bool isFacingRight = false;
 
     [Header("스킬셋")]
     public float skillInterval = 0.7887f;
@@ -19,10 +21,6 @@ public class MawManager : MonoBehaviour
 
     [Header("사망")]
     public Maw_Deadparts deathMaw;
-
-    [Header("시작")]
-    public Vector2 startPos = new Vector2(44f, 1.004995f);
-    public bool isFacingRight = false;
 
     [Header("중앙 X")]
     public float centerX;
