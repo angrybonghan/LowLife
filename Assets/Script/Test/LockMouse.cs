@@ -15,7 +15,7 @@ public class LockMouse : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -23,7 +23,7 @@ public class LockMouse : MonoBehaviour
         }
     }
 
-    void LockmodeSwitch()
+    private void LockmodeSwitch()
     {
         isMouseLocked = !isMouseLocked;
 

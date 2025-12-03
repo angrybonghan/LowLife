@@ -15,25 +15,36 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     [Header("UI References")]
-    public TextMeshProUGUI questText;       // 퀘스트 상태 및 진행 상황 표시
-    public GameObject achievementPopup;     // 업적 팝업 오브젝트
-    public TextMeshProUGUI achievementText; // 업적 팝업 텍스트
+    public TextMeshProUGUI questText;
+    public GameObject achievementPopup;
+    public TextMeshProUGUI achievementText;
 
     [Header("ESC Menu References")]
-    public RectTransform escMenuPanel;      // ESC 메뉴 패널 RectTransform
-    public CanvasGroup escCanvasGroup;      // ESC 메뉴 페이드용 CanvasGroup
-    public Vector2 hiddenPos = new Vector2(0, -600); // 숨겨진 위치
-    public Vector2 visiblePos = new Vector2(0, 0);   // 보이는 위치
-    public float animSpeed = 5f;            // 슬라이드 속도
-    public float fadeSpeed = 5f;            // 페이드 속도
+    public RectTransform escMenuPanel;
+    public CanvasGroup escCanvasGroup;
+    public Vector2 hiddenPos = new Vector2(0, -600);
+    public Vector2 visiblePos = new Vector2(0, 0);
+    public float animSpeed = 5f;
+    public float fadeSpeed = 5f;
 
     [Header("Sound UI Buttons")]
     public Button volumeUpButton;
     public Button volumeDownButton;
-    public Button[] volumePresetButtons; // 프리셋 버튼들 (예: 20%, 50%, 80%, 100%)
+    public Button[] volumePresetButtons;
+
+    [Header("Side Panel References")]
+    public RectTransform sidePanel;          // 사이드 패널 RectTransform
+    public Vector2 sideHiddenPos = new Vector2(-600f, 0f); // 숨김 위치
+    public Vector2 sideVisiblePos = new Vector2(0f, 0f);   // 표시 위치
+    public float sideAnimSpeed = 6f;
+    public float sideRotateSpeed = 6f;
 
     private bool isPaused = false;
     private Coroutine escAnimCoroutine;
+
+    private bool sideOpen = false;
+    private Coroutine sideAnimCoroutine;
+
 
     private void Awake()
     {
@@ -44,17 +55,20 @@ public class UIManager : MonoBehaviour
 
         if (escMenuPanel != null)
             escMenuPanel.anchoredPosition = hiddenPos;
-
         if (escCanvasGroup != null)
             escCanvasGroup.alpha = 0f;
+
+        if (sidePanel != null)
+        {
+            sidePanel.anchoredPosition = sideHiddenPos;
+            sidePanel.localRotation = Quaternion.Euler(0f, 90f, 0f); // 처음엔 90도 회전된 상태
+        }
 
         // 버튼 이벤트 연결 (SoundManager 참조)
         if (volumeUpButton != null)
             volumeUpButton.onClick.AddListener(() => SoundManager.instance.IncreaseVolume());
-
         if (volumeDownButton != null)
             volumeDownButton.onClick.AddListener(() => SoundManager.instance.DecreaseVolume());
-
         if (volumePresetButtons != null)
         {
             for (int i = 0; i < volumePresetButtons.Length; i++)
@@ -77,6 +91,29 @@ public class UIManager : MonoBehaviour
         {
             ToggleESCMenu();
         }
+
+        // Tab 누르고 있는 동안 열림
+        if (Input.GetKey(KeyCode.Tab))
+        {
+            if (!sideOpen)
+            {
+                sideOpen = true;
+                if (sideAnimCoroutine != null) StopCoroutine(sideAnimCoroutine);
+                sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(true));
+            }
+        }
+
+        // Tab 뗄 때 닫힘
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            if (sideOpen)
+            {
+                sideOpen = false;
+                if (sideAnimCoroutine != null) StopCoroutine(sideAnimCoroutine);
+                sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(false));
+            }
+        }
+
     }
 
 
@@ -126,6 +163,66 @@ public class UIManager : MonoBehaviour
 
     public bool IsPaused => isPaused;
 
+    public void ToggleSidePanel()
+    {
+        sideOpen = !sideOpen;
+
+        if (sideAnimCoroutine != null) StopCoroutine(sideAnimCoroutine);
+        sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(sideOpen));
+    }
+
+    private IEnumerator PlaySidePanelAnimation(bool open)
+    {
+        Vector2 startPos = sidePanel.anchoredPosition;
+        Quaternion startRot = sidePanel.localRotation;
+
+        // 목표 상태
+        Vector2 targetPos = open ? sideVisiblePos : sideHiddenPos;
+        Quaternion targetRot = open ? Quaternion.Euler(0f, 0f, 0f) : Quaternion.Euler(0f, 0f, 90f);
+
+        if (!open)
+        {
+            // 열릴 때: 회전 먼저 → 이동
+            float tRotate = 0f;
+            while (tRotate < 1f)
+            {
+                tRotate += Time.unscaledDeltaTime * sideRotateSpeed;
+                sidePanel.localRotation = Quaternion.Slerp(startRot, targetRot, Mathf.Clamp01(tRotate));
+                yield return null;
+            }
+
+            float tSlide = 0f;
+            while (tSlide < 1f)
+            {
+                tSlide += Time.unscaledDeltaTime * sideAnimSpeed;
+                sidePanel.anchoredPosition = Vector2.Lerp(startPos, targetPos, Mathf.Clamp01(tSlide));
+                yield return null;
+            }
+        }
+        else
+        {
+            // 닫힐 때: 이동 먼저 → 회전
+            float tSlide = 0f;
+            while (tSlide < 1f)
+            {
+                tSlide += Time.unscaledDeltaTime * sideAnimSpeed;
+                sidePanel.anchoredPosition = Vector2.Lerp(startPos, targetPos, Mathf.Clamp01(tSlide));
+                yield return null;
+            }
+
+            float tRotate = 0f;
+            while (tRotate < 1f)
+            {
+                tRotate += Time.unscaledDeltaTime * sideRotateSpeed;
+                sidePanel.localRotation = Quaternion.Slerp(startRot, targetRot, Mathf.Clamp01(tRotate));
+                yield return null;
+            }
+        }
+
+        // 최종 보정
+        sidePanel.anchoredPosition = targetPos;
+        sidePanel.localRotation = targetRot;
+    }
 
     public void UpdateQuestText()
     {
