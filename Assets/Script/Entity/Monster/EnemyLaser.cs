@@ -234,8 +234,9 @@ public class EnemyLaser : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void LookPos(Vector2 pos)
+    public void LookPos(Vector2 pos)
     {
+        targetPos = pos;
         Vector2 direction = targetPos - (Vector2)transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
