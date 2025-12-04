@@ -48,20 +48,19 @@ public class Spencer_S2 : MonoBehaviour
 
                 anim.SetFloat("attackArmNumber", armNumber);
                 anim.SetTrigger("attack");
-                attackRange.StartGunShot();
+                if (attackRange != null) attackRange.StartGunShot();
                 yield return new WaitForSeconds(bulletInterval);
             }
             if (phaseCount - 1 != i)
             {
                 float halfAttackInterval = attackInterval / 2;
                 yield return new WaitForSeconds(halfAttackInterval);
-                attackRange.ReloadPos();
+                if (attackRange != null) attackRange.ReloadPos();
                 yield return new WaitForSeconds(halfAttackInterval);
             }
-
-            SpencerManager.Instance.canUseSklill = true;
         }
 
+        SpencerManager.Instance.canUseSklill = true;
         anim.SetTrigger("endAttack");
         attackRange.EndAttack();
     }

@@ -20,7 +20,8 @@ public class SpencerManager : MonoBehaviour
     [HideInInspector] public bool canUseSklill = true;
     
     int lastSkillNumber = 0;
-    Transform currentSkillPos;
+    Vector2 currentSkillPos;
+    GameObject currentSkillInstance;
 
     private void Awake()
     {
@@ -32,12 +33,12 @@ public class SpencerManager : MonoBehaviour
             return;
         }
 
-        //randomWeaponNumber = 0;
         randomWeaponNumber = Random.Range(0, 3);
     }
 
     void Start()
     {
+        currentSkillPos = startPos;
         canUseSklill = false;
         if (spawnSpencerAtStart) UseSkill();
 
@@ -58,24 +59,18 @@ public class SpencerManager : MonoBehaviour
 
     void UseSkill()
     {
-        Vector2 skillPos;
-        if (currentSkillPos == null) skillPos = startPos;
-        else
-        {
-            skillPos = currentSkillPos.position;
-            Destroy(currentSkillPos.gameObject);
-        }
-
+        if (currentSkillInstance != null) Destroy(currentSkillInstance);
         int skillNumber = GetNextSkillNumber();
         lastSkillNumber = skillNumber;
 
         if (skillNumber == 1)
         {
-            Instantiate(S1, skillPos, Quaternion.identity);
+            randomWeaponNumber = Random.Range(0, 3);
+            currentSkillInstance = Instantiate(S1, currentSkillPos, Quaternion.identity).gameObject;
         }
         else if (skillNumber == 2)
         {
-            Instantiate(S2, skillPos, Quaternion.identity);
+            currentSkillInstance = Instantiate(S2, currentSkillPos, Quaternion.identity).gameObject;
         }
     }
 

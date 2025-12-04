@@ -40,10 +40,6 @@ public class SpencerArm : MonoBehaviour, I_Attackable
     private void Awake()
     {
         anim = GetComponent<Animator>();
-    }
-
-    private void Start()
-    {
         weaponNumber = SpencerManager.Instance.randomWeaponNumber;
         anim.SetInteger("weaponNumber", weaponNumber);
     }

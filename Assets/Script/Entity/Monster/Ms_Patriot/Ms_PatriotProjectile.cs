@@ -46,7 +46,7 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 
     void Start()
     {
-        targetTransform = PlayerController.instance.transform;
+        if (PlayerController.instance != null) targetTransform = PlayerController.instance.transform;
 
         AS.loop = true;
         AS.clip = thrusterSound;

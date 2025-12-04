@@ -36,6 +36,12 @@ public class SpencerAttackRange : MonoBehaviour
 
     public void ReloadPos()
     {
+        if (PlayerController.instance == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Vector2 rangePos = PlayerController.instance.transform.position;
         rangePos.y = 0;
         transform.position = rangePos;
