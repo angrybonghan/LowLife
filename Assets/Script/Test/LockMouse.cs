@@ -15,14 +15,6 @@ public class LockMouse : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            LockmodeSwitch();
-        }
-    }
-
     private void LockmodeSwitch()
     {
         isMouseLocked = !isMouseLocked;
@@ -37,5 +29,11 @@ public class LockMouse : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
+    }
+
+    public void UnlockMouseForUI()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 }

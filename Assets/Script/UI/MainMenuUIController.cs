@@ -38,10 +38,6 @@ public class MainMenuUIController : MonoBehaviour
     private bool menuStarted = false;
     private Coroutine blinkCoroutine;
 
-    [Header("버튼들")]
-    public Button exitButton;       // 나가기 버튼
-    public Button sceneMoveButton;  // 특정 씬 이동 버튼
-    public string targetSceneName;  // 이동할 씬 이름
 
     private void Start()
     {
@@ -144,21 +140,27 @@ public class MainMenuUIController : MonoBehaviour
     }
 
     // 나가기 버튼 동작
-    private void OnExitButtonClick()
+    private IEnumerator QuitAfterDelay(float delay)
     {
-        Application.Quit();
+        yield return new WaitForSeconds(delay);
+
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false; // 에디터에서 테스트 시 종료
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
 #endif
     }
 
-    // 특정 씬 이동 버튼 동작
-    private void OnSceneMoveButtonClick()
+    public void QuitGameByButton()
     {
-        if (!string.IsNullOrEmpty(targetSceneName))
-        {
-            SceneManager.LoadScene(targetSceneName);
-        }
+        if (QuestManager.Instance != null)
+            QuestSaveSystemJSON.SaveQuests(QuestManager.Instance);
+
+        StartCoroutine(QuitAfterDelay(0.8f));
     }
 
+    public void LoadSceneByButton(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
 }

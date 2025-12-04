@@ -342,6 +342,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &653853857
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 653853859}
+  - component: {fileID: 653853858}
+  m_Layer: 0
+  m_Name: NextStage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &653853858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653853857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6ad806af6bda9145af8a2e0da29e87a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextStageName: Cave_3
+--- !u!4 &653853859
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653853857}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.946734, y: -22.635735, z: -1.7635493}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &686632142
 GameObject:
   m_ObjectHideFlags: 0
@@ -83097,6 +83142,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnMawAtStart: 1
+  startPos: {x: 44, y: 1.004995}
+  isFacingRight: 0
   skillInterval: 0.7887
   skillCount: 4
   S1: {fileID: 8293331865192586833, guid: 6d20763ea0e077244ab0ddb95e8d0370, type: 3}
@@ -83104,8 +83151,6 @@ MonoBehaviour:
   S3: {fileID: 7452213104021569305, guid: df31b76672eae1d42a8e0a62644b58dd, type: 3}
   S4: {fileID: 4998118943604423422, guid: 323ecd508ed5fcc4aa7f0801ab8f7a10, type: 3}
   deathMaw: {fileID: 1136879478402465935, guid: 8bfaa68d18b695245b18b86ef0417a4a, type: 3}
-  startPos: {x: 44, y: 1.004995}
-  isFacingRight: 0
   centerX: 35
   swampPositionInterval: 1
   maxSwampX: 45
@@ -83178,3 +83223,4 @@ SceneRoots:
   - {fileID: 1063470442}
   - {fileID: 2085626778}
   - {fileID: 1953058352}
+  - {fileID: 653853859}

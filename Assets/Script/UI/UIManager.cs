@@ -14,6 +14,8 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
+    public LockMouse lockMouse; // LockMouse 스크립트 참조
+
     [Header("UI References")]
     public TextMeshProUGUI questText;
     public GameObject achievementPopup;
@@ -90,11 +92,18 @@ public class UIManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ToggleESCMenu();
+
+            if (lockMouse != null)
+            {
+                lockMouse.UnlockMouseForUI(); // 커서 해제
+            }
         }
 
         // Tab 누르고 있는 동안 열림
         if (Input.GetKey(KeyCode.Tab))
         {
+            
+
             if (!sideOpen)
             {
                 sideOpen = true;
@@ -116,10 +125,6 @@ public class UIManager : MonoBehaviour
 
     }
 
-
-    /// <summary>
-    /// ESC 메뉴 토글 (슬라이드 + 페이드 인/아웃)
-    /// </summary>
     public void ToggleESCMenu()
     {
         isPaused = !isPaused;
@@ -323,25 +328,6 @@ public class UIManager : MonoBehaviour
     {
         Debug.Log($"[UI] 퀘스트 완료: {questName}");
         // 필요하다면 퀘스트 완료 팝업 UI 추가 가능
-    }
-
-    public void QuitGameByButton()
-    {
-        if (QuestManager.Instance != null)
-            QuestSaveSystemJSON.SaveQuests(QuestManager.Instance);
-
-        StartCoroutine(QuitAfterDelay(0.8f));
-    }
-
-    private IEnumerator QuitAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
     }
 
     public void LoadSceneByButton(string sceneName)
