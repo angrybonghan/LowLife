@@ -16,8 +16,6 @@ public class Spencer_S1 : MonoBehaviour, I_Attackable
     private void Awake()
     {
         anim = GetComponent<Animator>();
-
-        arms[0].sendSignal = true;
         arms[0].parents = this;
     }
 

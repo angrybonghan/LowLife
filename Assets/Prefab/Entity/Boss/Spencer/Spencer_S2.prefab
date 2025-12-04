@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f139e283b8084c4fb96bb31ad8c5cf1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  phaseCount: 2
+  phaseCount: 1
   attackInterval: 1
   bulletInterval: 0.05
   bulletCount: 25

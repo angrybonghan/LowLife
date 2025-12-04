@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class SpencerArm : MonoBehaviour, I_Attackable
 {
+    [Header("ÆÈ ¹øÈ£")]
+    public int armNumber = 1;
+
     [Header("ÆÈ ¹üÀ§")]
     public float maxZAngle;
     public float minZAngle;
@@ -31,7 +34,6 @@ public class SpencerArm : MonoBehaviour, I_Attackable
 
 
     [HideInInspector] public Spencer_S1 parents;
-    [HideInInspector] public bool sendSignal;
     int weaponNumber;
     bool gunDrop = false;
     bool canGunDrop = false;
@@ -39,6 +41,14 @@ public class SpencerArm : MonoBehaviour, I_Attackable
 
     private void Awake()
     {
+        armNumber--;
+        if (!SpencerManager.Instance.possessWeapon[armNumber])
+        {
+            Destroy(gameObject);
+            this.enabled = false;
+            return;
+        }
+
         anim = GetComponent<Animator>();
         weaponNumber = SpencerManager.Instance.randomWeaponNumber;
         anim.SetInteger("weaponNumber", weaponNumber);
@@ -108,12 +118,17 @@ public class SpencerArm : MonoBehaviour, I_Attackable
     public void StartArmMove()
     {
         StartCoroutine(ArmMove());
-        if (sendSignal) parents.StartMoveArms();
+        parents.StartMoveArms();
         canGunDrop = true;
     }
 
     public void Destruction()
     {
+        if (CheckAllWeaponsFalse())
+        {
+            parents.EndMoveArms();
+        }
+
         Destroy(gameObject);
     }
 
@@ -144,6 +159,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
         GetComponent<Collider2D>().enabled = false;
         anim.SetTrigger("hit");
         gunDrop = true;
+        SpencerManager.Instance.possessWeapon[armNumber] = false;
     }
 
     public void GunDrop()
@@ -160,5 +176,18 @@ public class SpencerArm : MonoBehaviour, I_Attackable
             scale.x *= -1f;
             gun.transform.localScale = scale;
         }
+    }
+
+    public bool CheckAllWeaponsFalse()
+    {
+        foreach (bool hasWeapon in SpencerManager.Instance.possessWeapon)
+        {
+            if (hasWeapon)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -214,6 +214,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3561145569513805010}
     - target: {fileID: 1274899652821693030, guid: a77b05222ec44de46b07ce812e2392c3, type: 3}
+      propertyPath: armNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1274899652821693030, guid: a77b05222ec44de46b07ce812e2392c3, type: 3}
       propertyPath: maxZAngle
       value: 30
       objectReference: {fileID: 0}
@@ -314,6 +318,10 @@ PrefabInstance:
       propertyPath: parents
       value: 
       objectReference: {fileID: 3561145569513805010}
+    - target: {fileID: 1274899652821693030, guid: a77b05222ec44de46b07ce812e2392c3, type: 3}
+      propertyPath: armNumber
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1274899652821693030, guid: a77b05222ec44de46b07ce812e2392c3, type: 3}
       propertyPath: maxZAngle
       value: -20
@@ -416,6 +424,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3561145569513805010}
     - target: {fileID: 1274899652821693030, guid: a77b05222ec44de46b07ce812e2392c3, type: 3}
+      propertyPath: armNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1274899652821693030, guid: a77b05222ec44de46b07ce812e2392c3, type: 3}
       propertyPath: maxZAngle
       value: 35
       objectReference: {fileID: 0}
@@ -517,6 +529,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3561145569513805010}
     - target: {fileID: 1274899652821693030, guid: a77b05222ec44de46b07ce812e2392c3, type: 3}
+      propertyPath: armNumber
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1274899652821693030, guid: a77b05222ec44de46b07ce812e2392c3, type: 3}
       propertyPath: maxZAngle
       value: 30
       objectReference: {fileID: 0}
@@ -617,6 +633,10 @@ PrefabInstance:
       propertyPath: parents
       value: 
       objectReference: {fileID: 3561145569513805010}
+    - target: {fileID: 1274899652821693030, guid: a77b05222ec44de46b07ce812e2392c3, type: 3}
+      propertyPath: armNumber
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1274899652821693030, guid: a77b05222ec44de46b07ce812e2392c3, type: 3}
       propertyPath: maxZAngle
       value: 100

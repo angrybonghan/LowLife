@@ -15,11 +15,16 @@ public class SpencerManager : MonoBehaviour
     public Spencer_S1 S1;
     public Spencer_S2 S2;
 
+    [Header("서브 스킬셋")]
+    public Spencer_SS1 SS1;
+
 
     [HideInInspector] public int randomWeaponNumber;
     [HideInInspector] public bool canUseSklill = true;
-    
-    int lastSkillNumber = 0;
+    [HideInInspector] public bool[] possessWeapon = { true, true, true, true, true, true };
+
+        
+    int lastSkillNumber = -1;
     Vector2 currentSkillPos;
     GameObject currentSkillInstance;
 
@@ -65,8 +70,21 @@ public class SpencerManager : MonoBehaviour
 
         if (skillNumber == 1)
         {
-            randomWeaponNumber = Random.Range(0, 3);
-            currentSkillInstance = Instantiate(S1, currentSkillPos, Quaternion.identity).gameObject;
+            if (GetWeaponCount() <= 4)
+            {
+                currentSkillInstance = Instantiate(SS1, currentSkillPos, Quaternion.identity).gameObject;
+                lastSkillNumber = -1;
+
+                for (int i = 0; i < possessWeapon.Length; i++)
+                {
+                    possessWeapon[i] = true;
+                }
+            }
+            else
+            {
+                randomWeaponNumber = Random.Range(0, 3);
+                currentSkillInstance = Instantiate(S1, currentSkillPos, Quaternion.identity).gameObject;
+            }
         }
         else if (skillNumber == 2)
         {
@@ -76,6 +94,8 @@ public class SpencerManager : MonoBehaviour
 
     int GetNextSkillNumber()
     {
+        if (lastSkillNumber == -1) return Random.Range(1, skillCount + 1);
+
         int nextNumber = Random.Range(1, skillCount);
 
         if (nextNumber >= lastSkillNumber)
@@ -84,5 +104,20 @@ public class SpencerManager : MonoBehaviour
         }
 
         return nextNumber;
+    }
+
+    public int GetWeaponCount()
+    {
+        int count = 0;
+
+        foreach (bool hasWeapon in possessWeapon)
+        {
+            if (hasWeapon)
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 }
