@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Spencer_SS1 : MonoBehaviour
+public class Spencer_SS1 : MonoBehaviour, I_Attackable
 {
     [Header("재장전 시간")]
     public float reloadTime = 2f;
@@ -28,5 +28,15 @@ public class Spencer_SS1 : MonoBehaviour
     public void EndReload()
     {
         SpencerManager.Instance.canUseSklill = true;
+    }
+
+    public bool CanAttack(Transform attacker)
+    {
+        return true;
+    }
+
+    public void OnAttack(Transform attacker)
+    {
+
     }
 }

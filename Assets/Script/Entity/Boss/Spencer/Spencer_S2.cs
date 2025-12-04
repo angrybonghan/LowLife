@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class Spencer_S2 : MonoBehaviour
+public class Spencer_S2 : MonoBehaviour, I_Attackable
 {
     [Header("공격 페이즈")]
     public int phaseCount = 1;
@@ -63,6 +63,16 @@ public class Spencer_S2 : MonoBehaviour
         SpencerManager.Instance.canUseSklill = true;
         anim.SetTrigger("endAttack");
         attackRange.EndAttack();
+    }
+
+    public bool CanAttack(Transform attacker)
+    {
+        return true;
+    }
+
+    public void OnAttack(Transform attacker)
+    {
+
     }
 
 }

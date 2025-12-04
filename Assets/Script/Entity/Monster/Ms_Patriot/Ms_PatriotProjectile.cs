@@ -29,6 +29,9 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
     public AudioClip thrusterSound;
     public AudioClip[] explosionSound;
 
+    [Header("ÆÀ Å³")]
+    public bool canHitEntity = true;
+
     bool isParried = false;
     bool isDead = false;
     bool wasHitPlayer = false;
@@ -113,12 +116,16 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
                 continue;
             }
 
-            I_Attackable attackableTarget = other.GetComponent<I_Attackable>();
-
-            if (attackableTarget != null && !other.CompareTag("Player"))
+            if (canHitEntity)
             {
-                attackableTarget.OnAttack(transform);
+                I_Attackable attackableTarget = other.GetComponent<I_Attackable>();
+
+                if (attackableTarget != null && !other.CompareTag("Player"))
+                {
+                    attackableTarget.OnAttack(transform);
+                }
             }
+            
         }
 
         EffectPlayer ep = Instantiate(explosionEffect, transform.position, Quaternion.identity).GetComponent<EffectPlayer>();
@@ -171,11 +178,15 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
                     return;
                 }
 
-                I_Attackable attackableTarget = other.GetComponent<I_Attackable>();
-                if (attackableTarget != null)
+                if (canHitEntity)
                 {
-                    attackableTarget.OnAttack(transform);
+                    I_Attackable attackableTarget = other.GetComponent<I_Attackable>();
+                    if (attackableTarget != null)
+                    {
+                        attackableTarget.OnAttack(transform);
+                    }
                 }
+
             }
 
             Explode();

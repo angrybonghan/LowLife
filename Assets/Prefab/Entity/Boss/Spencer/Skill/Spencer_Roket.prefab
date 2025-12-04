@@ -71,6 +71,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: bb8a47c587a9033488266101498b0447, type: 3}
   - {fileID: 8300000, guid: aa159a34fe3633a4a8451f743fc89e8d, type: 3}
   - {fileID: 8300000, guid: ada669caf5a533d429620ebed5f95dc8, type: 3}
+  canHitEntity: 0
 --- !u!212 &964436908165355618
 SpriteRenderer:
   m_ObjectHideFlags: 0
