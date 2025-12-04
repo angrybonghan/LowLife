@@ -32,7 +32,7 @@ public class SpencerManager : MonoBehaviour
         }
 
         //randomWeaponNumber = 0;
-        randomWeaponNumber = Random.Range(0, 4);
+        randomWeaponNumber = Random.Range(0, 3);
     }
 
     void Start()
@@ -78,15 +78,13 @@ public class SpencerManager : MonoBehaviour
 
     int GetNextSkillNumber()
     {
-        //int nextNumber = Random.Range(1, skillCount);
+        int nextNumber = Random.Range(1, skillCount);
 
-        //if (nextNumber >= lastSkillNumber)
-        //{
-        //    nextNumber++;
-        //}
+        if (nextNumber >= lastSkillNumber)
+        {
+            nextNumber++;
+        }
 
-        //return nextNumber;
-
-        return 1;
+        return nextNumber;
     }
 }
