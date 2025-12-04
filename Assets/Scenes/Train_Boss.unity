@@ -1082,12 +1082,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnSpencerAtStart: 1
   startPos: {x: 0, y: -4.495001}
-  skillInterval: 0.6887
+  skillInterval: 0.5887
   skillCount: 2
   S1: {fileID: 3561145569513805010, guid: 47fd8051668f4d444a92f0c45772dd38, type: 3}
   S2: {fileID: 7813050652951634295, guid: 75fcd5b736a59af468e0ea58b3b32d62, type: 3}
+  SS0: {fileID: 2393838270333422764, guid: 61bc2d8f62fac174eb225eadb9ea06ee, type: 3}
   SS1: {fileID: 9126244257810771667, guid: fe8584c899714774cbcce26cabd8f375, type: 3}
   randomWeaponNumber: 0
+  positionNumber: 2
   canUseSklill: 1
   possessWeapon: 010101010101
 --- !u!4 &1324623348

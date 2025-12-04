@@ -190,4 +190,14 @@ public class SpencerArm : MonoBehaviour, I_Attackable
 
         return true;
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (gunDrop) return;
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            PlayerController.instance.ImmediateDeath();
+        }
+    }
 }
