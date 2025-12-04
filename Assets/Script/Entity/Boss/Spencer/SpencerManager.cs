@@ -13,6 +13,7 @@ public class SpencerManager : MonoBehaviour
     public float skillInterval = 0.6887f;
     public int skillCount;
     public Spencer_S1 S1;
+    public Spencer_S2 S2;
 
 
     [HideInInspector] public int randomWeaponNumber;
@@ -72,8 +73,10 @@ public class SpencerManager : MonoBehaviour
         {
             Instantiate(S1, skillPos, Quaternion.identity);
         }
-
-        Debug.Log(skillNumber);
+        else if (skillNumber == 2)
+        {
+            Instantiate(S2, skillPos, Quaternion.identity);
+        }
     }
 
     int GetNextSkillNumber()

@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -41,7 +40,7 @@ public class Spencer_S1 : MonoBehaviour, I_Attackable
 
         yield return new WaitUntil(() => endAttack);
 
-        
+        SpencerManager.Instance.canUseSklill = true;
     }
 
     public void StartMoveArms()
