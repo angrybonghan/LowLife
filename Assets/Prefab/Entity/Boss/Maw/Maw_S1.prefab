@@ -373,6 +373,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: bb0eacbb6d120e1428138df35eb23dea, type: 3}
   - {fileID: 8300000, guid: 6353576b12b703746bd4d98301cc8485, type: 3}
   minigunSpin: {fileID: 8300000, guid: a337460b276997349afecaa4ab75190a, type: 3}
+  minigunSpinEnd: {fileID: 8300000, guid: 2631708985b2d6d43a4d5cae02c79231, type: 3}
   fire:
   - {fileID: 8300000, guid: d5c4511176c6cf1459f27e1359a894b5, type: 3}
   - {fileID: 8300000, guid: db34a8a3fe45cf54796df78dfb80c2d1, type: 3}

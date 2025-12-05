@@ -1,5 +1,4 @@
 using System.Collections;
-using TreeEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
@@ -42,6 +41,7 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
     public AudioClip[] jumpSound;
     public AudioClip[] landSound;
     public AudioClip minigunSpin;
+    public AudioClip minigunSpinEnd;
     public AudioClip[] fire;
 
     bool canFire = false;
@@ -115,6 +115,7 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
         
         anim.SetTrigger("attackEnd");
         SoundManager.instance.StopSound("Maw_minigunSpin");
+        SoundManager.instance.PlaySoundAtPosition(transform.position, minigunSpinEnd);
         yield return new WaitUntil(() => IsGrounded());
 
         anim.SetTrigger("land");
