@@ -66,11 +66,13 @@ public class UIManager : MonoBehaviour
             sidePanel.localRotation = Quaternion.Euler(0f, 90f, 0f); // 처음엔 90도 회전된 상태
         }
 
-        // 버튼 이벤트 연결 (SoundManager 참조)
+
         if (volumeUpButton != null)
             volumeUpButton.onClick.AddListener(() => SoundManager.instance.IncreaseVolume());
+
         if (volumeDownButton != null)
             volumeDownButton.onClick.AddListener(() => SoundManager.instance.DecreaseVolume());
+
         if (volumePresetButtons != null)
         {
             for (int i = 0; i < volumePresetButtons.Length; i++)

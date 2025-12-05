@@ -52,6 +52,50 @@ public class MainMenuUIController : MonoBehaviour
     private bool menuStarted = false;              // 메뉴 시작 여부 플래그
     private Coroutine blinkCoroutine;              // 텍스트 깜빡임 코루틴 참조
 
+    [Header("사운드 조절")]
+    public Button volumeUpButton;        // 볼륨 증가 버튼
+    public Button volumeDownButton;      // 볼륨 감소 버튼
+    public Button[] volumePresetButtons; // 볼륨 프리셋 버튼들
+    public Sprite onSprite;              // 활성화 이미지
+    public Sprite offSprite;             // 비활성화 이미지
+
+    private void Awake()
+    {
+        // 볼륨 업 버튼
+        if (volumeUpButton != null)
+            volumeUpButton.onClick.AddListener(() =>
+            {
+                SoundManager.instance.IncreaseVolume();
+                SyncPresetButtonImages();
+            });
+
+        // 볼륨 다운 버튼
+        if (volumeDownButton != null)
+            volumeDownButton.onClick.AddListener(() =>
+            {
+                SoundManager.instance.DecreaseVolume();
+                SyncPresetButtonImages();
+            });
+
+        // 프리셋 버튼들
+        if (volumePresetButtons != null)
+        {
+            for (int i = 0; i < volumePresetButtons.Length; i++)
+            {
+                int index = i;
+                volumePresetButtons[index].onClick.AddListener(() =>
+                {
+                    float presetValue = (index + 1) / (float)volumePresetButtons.Length;
+                    SoundManager.instance.SetVolume(presetValue);
+                    UpdatePresetButtonImages(index);
+                });
+            }
+        }
+
+        // 씬 시작 시 저장된 볼륨 값에 맞춰 버튼 이미지 초기화
+        SyncPresetButtonImages();
+    }
+
     private void Start()
     {
         if (startButton != null)
@@ -274,6 +318,28 @@ public class MainMenuUIController : MonoBehaviour
         // 버튼 다시 등장
         yield return StartCoroutine(ShowButtonsFromCenter());
     }
+
+    private void SyncPresetButtonImages()
+    {
+        float currentVolume = SoundManager.instance.GetVolume();
+        int activeIndex = Mathf.RoundToInt(currentVolume * volumePresetButtons.Length) - 1;
+        activeIndex = Mathf.Clamp(activeIndex, 0, volumePresetButtons.Length - 1);
+
+        UpdatePresetButtonImages(activeIndex);
+    }
+
+    private void UpdatePresetButtonImages(int activeIndex)
+    {
+        for (int i = 0; i < volumePresetButtons.Length; i++)
+        {
+            Image btnImage = volumePresetButtons[i].GetComponent<Image>();
+            if (btnImage != null)
+            {
+                btnImage.sprite = (i <= activeIndex) ? onSprite : offSprite;
+            }
+        }
+    }
+
 
     private IEnumerator QuitAfterDelay(float delay)
     {

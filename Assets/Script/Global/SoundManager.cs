@@ -19,11 +19,24 @@ public class SoundManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+
+            // 저장된 볼륨 불러오기
+            volume = PlayerPrefs.GetFloat("GameVolume", 1.0f);
+            ApplyVolume();
         }
         else
         {
             Destroy(gameObject);
             return;
+        }
+    }
+
+    private void ApplyVolume()
+    {
+        foreach (var src in allLoopAudioSource)
+        {
+            if (src != null)
+                src.volume = volume;
         }
     }
 
@@ -40,6 +53,7 @@ public class SoundManager : MonoBehaviour
 
     public void IncreaseVolume() => SetVolume(volume + 0.1f);
     public void DecreaseVolume() => SetVolume(volume - 0.1f);
+    public float GetVolume() => volume;
 
     public void LowerVolumeForESC()
     {
