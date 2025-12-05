@@ -141,6 +141,13 @@ MonoBehaviour:
   maxX: 50
   targetY: 30
   floorY: -1
+  swampShootSound:
+  - {fileID: 8300000, guid: cdc161d0e5719a44baf4c29ecd78aa51, type: 3}
+  - {fileID: 8300000, guid: c25d7cd40732ee9479e2067cb51f0f36, type: 3}
+  swampLandSound:
+  - {fileID: 8300000, guid: 0007aaac95b2cf8408077ef18cdadd2c, type: 3}
+  - {fileID: 8300000, guid: 1b283ce1d1773634bafec56936658f8f, type: 3}
+  - {fileID: 8300000, guid: dc9a88a4259c0d6448b6ca391b515e15, type: 3}
 --- !u!95 &1695506776340314329
 Animator:
   serializedVersion: 5
