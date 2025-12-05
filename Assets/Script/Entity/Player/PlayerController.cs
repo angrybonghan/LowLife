@@ -1104,8 +1104,18 @@ public class PlayerController : MonoBehaviour
         float attackerX = attackerPos.position.x;
         bool attackOnRight = attackerX > myX;
 
-        if (attackOnRight == isFacingRight) return true;
-        else return false;
+        return attackOnRight == isFacingRight;
+    }
+    
+    public bool IsBlocked(Transform attackerPos)
+    {
+        if (!isShielding) return false;
+
+        float myX = transform.position.x;
+        float attackerX = attackerPos.position.x;
+        bool attackOnRight = attackerX > myX;
+
+        return attackOnRight == isFacingRight;
     }
 
 

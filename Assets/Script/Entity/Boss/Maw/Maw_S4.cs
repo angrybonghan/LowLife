@@ -20,6 +20,10 @@ public class Maw_S4 : MonoBehaviour, I_MawSkill, I_Attackable
     public float underCeiling = 2f;
     public LayerMask groundLayer;
 
+    [Header("¼Ò¸®")]
+    public AudioClip[] jumpSound;
+    public AudioClip[] landSound;
+
     public bool isFacingRight { get; set; }
     const float rayDistance = 0.05f;
     Vector2 fallDownPos;
@@ -61,6 +65,7 @@ public class Maw_S4 : MonoBehaviour, I_MawSkill, I_Attackable
         anim.SetTrigger("drop");
 
         yield return new WaitUntil(() => IsGrounded());
+        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, landSound);
         anim.SetTrigger("land");
     }
 
@@ -75,6 +80,8 @@ public class Maw_S4 : MonoBehaviour, I_MawSkill, I_Attackable
         fallDownPos.x = centerX;
         fallDownPos.x += transform.position.x >= centerX ? -5f : 5f;
         fallDownPos.y = targetY;
+
+        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, jumpSound);
     }
 
     public void EndAttack()

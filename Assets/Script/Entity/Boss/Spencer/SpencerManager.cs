@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class SpencerManager : MonoBehaviour
 {
@@ -14,11 +15,16 @@ public class SpencerManager : MonoBehaviour
     public int skillCount;
     public Spencer_S1 S1;
     public Spencer_S2 S2;
+    public Spencer_S3 S3;
     public Spencer_S4 S4;
 
     [Header("서브 스킬셋")]
     public Spencer_SS0 SS0;
     public Spencer_SS1 SS1;
+
+    [Header("거미줄")]
+    public float slownessDuration = 5f;
+    public float minSlownessSpeed = 6f;
 
     [HideInInspector] public int randomWeaponNumber;
     [HideInInspector] public int positionNumber = 2;
@@ -27,8 +33,11 @@ public class SpencerManager : MonoBehaviour
 
     int totalSkillsUsed = 0;
     int lastSkillNumber = -1;
+    float originalPlayerSpeed;
+    float currentSlownessSpeed;
     Vector2 currentSkillPos;
     GameObject currentSkillInstance;
+    Coroutine slownessCoroutine;
 
     private void Awake()
     {
@@ -45,6 +54,7 @@ public class SpencerManager : MonoBehaviour
 
     void Start()
     {
+        originalPlayerSpeed = PlayerController.instance.maxSpeed;
         currentSkillPos = startPos;
         canUseSklill = false;
         if (spawnSpencerAtStart) UseSkill();
@@ -105,6 +115,10 @@ public class SpencerManager : MonoBehaviour
             }
             else if (skillNumber == 3)
             {
+                currentSkillInstance = Instantiate(S3, currentSkillPos, Quaternion.identity).gameObject;
+            }
+            else if (skillNumber == 4)
+            {
                 currentSkillInstance = Instantiate(S4, currentSkillPos, Quaternion.identity).gameObject;
             }
         }
@@ -139,5 +153,28 @@ public class SpencerManager : MonoBehaviour
         }
 
         return count;
+    }
+
+    public void StartSlownessPlayer()
+    {
+        if (slownessCoroutine != null)
+        {
+            StopCoroutine(slownessCoroutine);
+            currentSlownessSpeed *= 0.5f;
+        }
+        else
+        {
+            currentSlownessSpeed = minSlownessSpeed;
+        }
+
+        PlayerController.instance.maxSpeed = currentSlownessSpeed;
+        slownessCoroutine = StartCoroutine(Slowness());
+    }
+
+    IEnumerator Slowness()
+    {
+        yield return new WaitForSeconds(slownessDuration);
+        PlayerController.instance.maxSpeed = originalPlayerSpeed;
+        slownessCoroutine = null;
     }
 }

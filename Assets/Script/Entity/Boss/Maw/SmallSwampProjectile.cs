@@ -21,6 +21,10 @@ public class SmallSwampProjectile : MonoBehaviour
     public float targetY;
     public float floorY;
 
+    [Header("¼Ò¸®")]
+    public AudioClip[] swampShootSound;
+    public AudioClip[] swampLandSound;
+
     bool isGoingUp = true;
     float currentDispersionSpeed = 0f;
 
@@ -35,6 +39,7 @@ public class SmallSwampProjectile : MonoBehaviour
     private void Start()
     {
         currentDispersionSpeed = dispersionSpeed * Random.Range(-1f, 1f);
+        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, swampShootSound);
     }
 
     private void Update()
@@ -94,6 +99,7 @@ public class SmallSwampProjectile : MonoBehaviour
             MawManager.instance.allSwamp.Add(newSwamp);
         }
 
+        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, swampLandSound);
         Destroy(gameObject);
     }
 

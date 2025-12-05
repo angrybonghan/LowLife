@@ -1,6 +1,6 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.FilePathAttribute;
 
 [RequireComponent(typeof(Animator),typeof(Collider2D))]
 public class Spencer_SS0 : MonoBehaviour, I_Attackable
@@ -11,7 +11,9 @@ public class Spencer_SS0 : MonoBehaviour, I_Attackable
     [Header("À§Ä¡")]
     public float centerX;
     public float positionSpacing;
-    
+
+    [HideInInspector] public bool centralUnconditionally = false;
+
 
     Animator anim;
     Collider2D col;
@@ -43,6 +45,15 @@ public class Spencer_SS0 : MonoBehaviour, I_Attackable
 
     Vector2 GetTeleportPos()
     {
+        if (centralUnconditionally)
+        {
+
+        }
+        else
+        {
+
+        }
+
         Vector2 pos = transform.position;
         pos.x = centerX;
 

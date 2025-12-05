@@ -143,6 +143,13 @@ MonoBehaviour:
   maxHorizontalJumpPower: 25
   stunDuration: 2
   centerX: 35
+  jumpSound:
+  - {fileID: 8300000, guid: f39d0f66b23d78242a214f3e7b30b566, type: 3}
+  - {fileID: 8300000, guid: 1b7e1ce929eec5149a40a291933dc664, type: 3}
+  landSound:
+  - {fileID: 8300000, guid: bf0f3b8d54415b841807547698934c28, type: 3}
+  - {fileID: 8300000, guid: bb0eacbb6d120e1428138df35eb23dea, type: 3}
+  - {fileID: 8300000, guid: 6353576b12b703746bd4d98301cc8485, type: 3}
 --- !u!70 &8471429178414871270
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

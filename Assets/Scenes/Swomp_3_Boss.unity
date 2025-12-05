@@ -82809,6 +82809,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnMawAtStart: 1
+  startPos: {x: 44, y: 1.004995}
+  isFacingRight: 0
   skillInterval: 0.7887
   skillCount: 4
   S1: {fileID: 8293331865192586833, guid: 6d20763ea0e077244ab0ddb95e8d0370, type: 3}
@@ -82816,8 +82818,6 @@ MonoBehaviour:
   S3: {fileID: 7452213104021569305, guid: df31b76672eae1d42a8e0a62644b58dd, type: 3}
   S4: {fileID: 4998118943604423422, guid: 323ecd508ed5fcc4aa7f0801ab8f7a10, type: 3}
   deathMaw: {fileID: 1136879478402465935, guid: 8bfaa68d18b695245b18b86ef0417a4a, type: 3}
-  startPos: {x: 44, y: 1.004995}
-  isFacingRight: 0
   centerX: 35
   swampPositionInterval: 1
   maxSwampX: 45
