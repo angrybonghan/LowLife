@@ -142,12 +142,12 @@ MonoBehaviour:
   targetY: 30
   floorY: -1
   swampShootSound:
-  - {fileID: 8300000, guid: cdc161d0e5719a44baf4c29ecd78aa51, type: 3}
-  - {fileID: 8300000, guid: c25d7cd40732ee9479e2067cb51f0f36, type: 3}
+  - {fileID: 8300000, guid: ef5e1621d167b364daee81cb0f706c26, type: 3}
+  - {fileID: 8300000, guid: d26afc1c0f0a964408d738a4dbd1c0f2, type: 3}
   swampLandSound:
-  - {fileID: 8300000, guid: 0007aaac95b2cf8408077ef18cdadd2c, type: 3}
-  - {fileID: 8300000, guid: 1b283ce1d1773634bafec56936658f8f, type: 3}
-  - {fileID: 8300000, guid: dc9a88a4259c0d6448b6ca391b515e15, type: 3}
+  - {fileID: 8300000, guid: da646b423a8d7a1419e0084e66fe11a9, type: 3}
+  - {fileID: 8300000, guid: c066e1dddee7e3847931dd5c8d6db086, type: 3}
+  - {fileID: 8300000, guid: b9547866da723e54db8818c5ecda9659, type: 3}
 --- !u!95 &1695506776340314329
 Animator:
   serializedVersion: 5

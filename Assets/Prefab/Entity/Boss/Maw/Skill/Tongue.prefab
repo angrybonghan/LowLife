@@ -56,8 +56,8 @@ MonoBehaviour:
   aimingTime: 3
   spit: {fileID: 1206551255559857197, guid: 35018b35fbb899e468736bd113d2639e, type: 3}
   spitShatter: {fileID: 6338496464680792392, guid: 38081a53c92ae4748aa0b21f7597163f, type: 3}
-  attackSound: {fileID: 8300000, guid: 38c7c251690ad8848844ab4928245195, type: 3}
-  backOffSound: {fileID: 8300000, guid: b0118b76210995a4098496af4f2a8a27, type: 3}
+  attackSound: {fileID: 8300000, guid: e21e3ea0d5ac45a4b9916d4088c16864, type: 3}
+  backOffSound: {fileID: 8300000, guid: efd4c7c5c5c60214387ef486eb37ddb6, type: 3}
 --- !u!61 &3343693162384742500
 BoxCollider2D:
   m_ObjectHideFlags: 0

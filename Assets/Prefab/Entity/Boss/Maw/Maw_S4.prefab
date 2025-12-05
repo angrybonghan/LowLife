@@ -143,12 +143,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 768
   jumpSound:
-  - {fileID: 8300000, guid: f39d0f66b23d78242a214f3e7b30b566, type: 3}
-  - {fileID: 8300000, guid: 1b7e1ce929eec5149a40a291933dc664, type: 3}
+  - {fileID: 8300000, guid: c705a5b82da58e845a3c4c0d16325a39, type: 3}
+  - {fileID: 8300000, guid: c2c0f837858b2174eaaa7f938365a44d, type: 3}
   landSound:
-  - {fileID: 8300000, guid: bf0f3b8d54415b841807547698934c28, type: 3}
-  - {fileID: 8300000, guid: bb0eacbb6d120e1428138df35eb23dea, type: 3}
-  - {fileID: 8300000, guid: 6353576b12b703746bd4d98301cc8485, type: 3}
+  - {fileID: 8300000, guid: 56e50eb11f73d054e98172a712d6a185, type: 3}
+  - {fileID: 8300000, guid: 58bdd70f9e4b5f045aac45da46e06622, type: 3}
+  - {fileID: 8300000, guid: 10db5d097d3ef6140898f51a39465d0a, type: 3}
 --- !u!70 &1014647126128887084
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

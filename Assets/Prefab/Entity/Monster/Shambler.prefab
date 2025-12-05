@@ -340,7 +340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10b92b98375940543a9f10b8d0ed60ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beepSound: {fileID: 8300000, guid: 7b0b2f4b2c72c9647ac5c62c727a1abe, type: 3}
+  beepSound: {fileID: 8300000, guid: d1066e93869a2764c8a48b05120facef, type: 3}
   explosionSound:
   - {fileID: 8300000, guid: bb8a47c587a9033488266101498b0447, type: 3}
   - {fileID: 8300000, guid: aa159a34fe3633a4a8451f743fc89e8d, type: 3}

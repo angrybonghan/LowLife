@@ -66,9 +66,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds:
-  - {fileID: 8300000, guid: d13a65c3b06f76049860db1d9d741682, type: 3}
-  - {fileID: 8300000, guid: 8b867248744a1db469e603776ef86089, type: 3}
-  - {fileID: 8300000, guid: d5144a97488d5084dada8867ab295100, type: 3}
+  - {fileID: 8300000, guid: cbb7a0d30c8cabb488f2da1b6e483f5a, type: 3}
+  - {fileID: 8300000, guid: 9c2980f716a56b148963844e664c53c8, type: 3}
+  - {fileID: 8300000, guid: 3e866b85f49137a49b59494bf71003c1, type: 3}
 --- !u!212 &1617513975070534742
 SpriteRenderer:
   m_ObjectHideFlags: 0
