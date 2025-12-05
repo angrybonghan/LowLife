@@ -28,7 +28,7 @@ public class TBP_AmagoTrigger : MonoBehaviour, I_TriggerBox
 
     void Trigger()
     {
-        AmagoMovementManager.instance.StartSpawnAmago();
+        AmagoMovementManager.instance.StartMoveAmago();
         StartCoroutine(SpawnSound());
     }
 

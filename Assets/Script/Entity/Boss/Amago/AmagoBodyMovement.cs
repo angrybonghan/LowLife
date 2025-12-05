@@ -100,8 +100,9 @@ public class AmagoBodyMovement : MonoBehaviour
 
     public void PlayFootstepSound()
     {
-        float pitch = Random.value;
+        if (speed <= 0) return;
 
+        float pitch = Random.value;
         SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, footStep, pitch);
     }
 
