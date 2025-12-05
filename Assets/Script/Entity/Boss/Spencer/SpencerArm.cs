@@ -98,7 +98,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
         }
         else if (weaponNumber == 1)
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 16; i++)
             {
                 Instantiate(shotgun, firePoint.position, Quaternion.identity).LookPos(aimPoint.position);
             }
