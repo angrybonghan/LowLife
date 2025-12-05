@@ -14,6 +14,7 @@ public class SpencerManager : MonoBehaviour
     public int skillCount;
     public Spencer_S1 S1;
     public Spencer_S2 S2;
+    public Spencer_S4 S4;
 
     [Header("서브 스킬셋")]
     public Spencer_SS0 SS0;
@@ -101,6 +102,10 @@ public class SpencerManager : MonoBehaviour
             else if (skillNumber == 2)
             {
                 currentSkillInstance = Instantiate(S2, currentSkillPos, Quaternion.identity).gameObject;
+            }
+            else if (skillNumber == 3)
+            {
+                currentSkillInstance = Instantiate(S4, currentSkillPos, Quaternion.identity).gameObject;
             }
         }
 
