@@ -23,14 +23,19 @@ public class SpencerManager : MonoBehaviour
     public Spencer_SS1 SS1;
 
     [Header("∞≈πÃ¡Ÿ")]
-    public float slownessDuration = 5f;
+    public float slownessDuration = 8f;
     public float minSlownessSpeed = 6f;
+
+    [Header("HP")]
+    public int maxHP = 46;
 
     [HideInInspector] public int randomWeaponNumber;
     [HideInInspector] public int positionNumber = 2;
     [HideInInspector] public bool canUseSklill = true;
     [HideInInspector] public bool[] possessWeapon = { true, true, true, true, true, true };
+    [HideInInspector] public bool halfHP = false;
 
+    int currentHP = 0;
     int totalSkillsUsed = 0;
     int lastSkillNumber = -1;
     float originalPlayerSpeed;
@@ -49,6 +54,8 @@ public class SpencerManager : MonoBehaviour
             return;
         }
 
+        currentHP = maxHP;
+        halfHP = false;
         randomWeaponNumber = Random.Range(0, 3);
     }
 
@@ -176,5 +183,27 @@ public class SpencerManager : MonoBehaviour
         yield return new WaitForSeconds(slownessDuration);
         PlayerController.instance.maxSpeed = originalPlayerSpeed;
         slownessCoroutine = null;
+    }
+
+    public void TakeDamage()
+    {
+        currentHP--;
+        Debug.Log(currentHP);
+
+        if (currentHP <= 0)
+        {
+            Death();
+            return;
+        }
+
+        if (!halfHP)
+        {
+            halfHP = 2 * currentHP <= maxHP;
+        }
+    }
+
+    void Death()
+    {
+
     }
 }

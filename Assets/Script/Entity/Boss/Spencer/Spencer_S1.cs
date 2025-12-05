@@ -5,7 +5,7 @@ using UnityEngine;
 public class Spencer_S1 : MonoBehaviour, I_Attackable
 {
     [Header("공격 시간")]
-    public float aimingTime = 1.0f;
+    public float aimingTime;
 
     [Header("팔들")]
     public SpencerArm[] arms;
@@ -16,12 +16,19 @@ public class Spencer_S1 : MonoBehaviour, I_Attackable
     private void Awake()
     {
         anim = GetComponent<Animator>();
-        arms[0].parents = this;
+        foreach (SpencerArm arm in arms)
+        {
+            arm.parents = this;
+        }
     }
-
 
     void Start()
     {
+        if (SpencerManager.Instance.halfHP)
+        {
+            aimingTime = 0.7f;
+        }
+
         StartCoroutine(SkillSequence());
     }
 
@@ -69,7 +76,7 @@ public class Spencer_S1 : MonoBehaviour, I_Attackable
 
     public void OnAttack(Transform attacker)
     {
-        
+        SpencerManager.Instance.TakeDamage();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

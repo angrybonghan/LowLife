@@ -9,11 +9,11 @@ public class Spencer_S3 : MonoBehaviour, I_Attackable
     public float centerX;
 
     [Header("АјАн")]
-    public float warningTime = 1f;
+    public float warningTime;
     public SpencerWebProjectile projectile;
-    public float projectileRadius = 2f;
-    public float attackInterval = 0.05f;
-    public int projectileCount = 25;
+    public float projectileRadius;
+    public float attackInterval;
+    public int projectileCount;
 
 
     Animator anim;
@@ -23,6 +23,16 @@ public class Spencer_S3 : MonoBehaviour, I_Attackable
     {
         anim = GetComponent<Animator>();
         col = GetComponent<Collider2D>();
+    }
+
+    private void Start()
+    {
+        if (SpencerManager.Instance.halfHP)
+        {
+            attackInterval = 0.01f;
+            projectileCount = 60;
+            warningTime = 0.4f;
+        }
     }
 
     public void GotoCenter()
@@ -78,7 +88,7 @@ public class Spencer_S3 : MonoBehaviour, I_Attackable
 
     public void OnAttack(Transform attacker)
     {
-
+        SpencerManager.Instance.TakeDamage();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

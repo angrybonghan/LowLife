@@ -1092,6 +1092,7 @@ MonoBehaviour:
   SS1: {fileID: 9126244257810771667, guid: fe8584c899714774cbcce26cabd8f375, type: 3}
   slownessDuration: 8
   minSlownessSpeed: 6
+  maxHP: 46
   randomWeaponNumber: 0
   positionNumber: 2
   canUseSklill: 1

@@ -24,6 +24,14 @@ public class Spencer_SS0 : MonoBehaviour, I_Attackable
         col = GetComponent<Collider2D>();
     }
 
+    private void Start()
+    {
+        if (SpencerManager.Instance.halfHP)
+        {
+            teleportTime = 0.35f;
+        }
+    }
+
     public void StartTeleport()
     {
         transform.position = GetTeleportPos();
@@ -101,7 +109,7 @@ public class Spencer_SS0 : MonoBehaviour, I_Attackable
 
     public void OnAttack(Transform attacker)
     {
-
+        SpencerManager.Instance.TakeDamage();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -81,10 +81,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a716466088cf7cd4382978faa8e557e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  armNumber: 1
   maxZAngle: 0
   minZAngle: 0
-  minArmMoveSpeed: 0.7
-  maxArmMoveSpeed: 0.3
+  minArmMoveSpeed: 0.3
+  maxArmMoveSpeed: 0.7
   isFacingRight: 1
   firePoint: {fileID: 4499679853049983428}
   aimPoint: {fileID: 1162703261926399175}
@@ -95,7 +96,6 @@ MonoBehaviour:
   shotgunDrop: {fileID: 3438869383047924017, guid: f7bee0d7d4fa4c0438bf4f6a360ef155, type: 3}
   roketDrop: {fileID: 7835685125076597245, guid: df27b63b3ee8249489c0644fb425486a, type: 3}
   parents: {fileID: 0}
-  sendSignal: 0
 --- !u!70 &637412702941635728
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

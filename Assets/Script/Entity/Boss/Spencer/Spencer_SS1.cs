@@ -5,13 +5,21 @@ using UnityEngine;
 public class Spencer_SS1 : MonoBehaviour, I_Attackable
 {
     [Header("재장전 시간")]
-    public float reloadTime = 2f;
+    public float reloadTime;
 
     Animator anim;
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
+    }
+
+    private void Start()
+    {
+        if (SpencerManager.Instance.halfHP)
+        {
+            reloadTime = 0.1f;
+        }
     }
 
     public void StartReload()
@@ -37,7 +45,7 @@ public class Spencer_SS1 : MonoBehaviour, I_Attackable
 
     public void OnAttack(Transform attacker)
     {
-
+        SpencerManager.Instance.TakeDamage();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

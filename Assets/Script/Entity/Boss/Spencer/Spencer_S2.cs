@@ -5,16 +5,16 @@ using UnityEngine;
 public class Spencer_S2 : MonoBehaviour, I_Attackable
 {
     [Header("공격 페이즈")]
-    public int phaseCount = 1;
-    public float attackInterval = 0.5f;
+    public int phaseCount;
+    public float attackInterval;
 
     [Header("공격")]
-    public float bulletInterval = 0.05f;
-    public int bulletCount = 25;
+    public float bulletInterval;
+    public int bulletCount;
 
     [Header("범위")]
     public SpencerAttackRange range;
-    public float xRange = 7.5f;
+    public float xRange;
 
     Animator anim;
     SpencerAttackRange attackRange;
@@ -26,6 +26,11 @@ public class Spencer_S2 : MonoBehaviour, I_Attackable
 
     private void Start()
     {
+        if (SpencerManager.Instance.halfHP)
+        {
+            phaseCount = 2;
+        }
+
         attackRange = Instantiate(range);
         attackRange.ReloadPos();
     }
@@ -72,7 +77,7 @@ public class Spencer_S2 : MonoBehaviour, I_Attackable
 
     public void OnAttack(Transform attacker)
     {
-
+        SpencerManager.Instance.TakeDamage();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

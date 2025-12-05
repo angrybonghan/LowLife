@@ -42,7 +42,6 @@ public class MawManager : MonoBehaviour
     int lastSkillNumber = 0;
     int currentSmallSwampCount = 0;
     int totalSkillsUsed = 0;
-    float normalizedHP = 0;
     float swampPositionCenter;
     bool halfHP = false;
 
@@ -58,7 +57,6 @@ public class MawManager : MonoBehaviour
         }
 
         currentHP = maxHP;
-        normalizedHP = 1f;
     }
 
     private void Start()
@@ -244,7 +242,7 @@ public class MawManager : MonoBehaviour
             return (x + 1) / 2;
         }
     }
-
+    /*
     public void TakeDamage()
     {
         currentHP--;
@@ -255,6 +253,23 @@ public class MawManager : MonoBehaviour
         if (currentHP <= 0)
         {
             Death();
+        }
+    }
+    */
+
+    public void TakeDamage()
+    {
+        currentHP--;
+
+        if (currentHP <= 0)
+        {
+            Death();
+            return;
+        }
+
+        if (!halfHP)
+        {
+            halfHP = 2 * currentHP <= maxHP;
         }
     }
 

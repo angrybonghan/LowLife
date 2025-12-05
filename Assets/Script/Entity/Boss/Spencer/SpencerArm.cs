@@ -54,6 +54,16 @@ public class SpencerArm : MonoBehaviour, I_Attackable
         anim.SetInteger("weaponNumber", weaponNumber);
     }
 
+    private void Start()
+    {
+        if (SpencerManager.Instance.halfHP)
+        {
+            minArmMoveSpeed = 0.1f;
+            maxArmMoveSpeed = 0.3f;
+        }
+    }
+
+
     IEnumerator ArmMove()
     {
         float angle1 = maxZAngle;

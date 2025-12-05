@@ -13,10 +13,10 @@ public class Spencer_S4 : MonoBehaviour, I_Attackable
     public DiffuseLaser laser;
 
     [Header("레이저 설정")]
-    public float laserDispersion = 1.0f;
-    public float timeToFire = 0.6887f;
-    public int laserCount = 35;
-    public float firingInterval = 0.05f;
+    public float laserDispersion;
+    public float timeToFire;
+    public int laserCount;
+    public float firingInterval;
 
     Collider2D col;
     Animator anim;
@@ -32,6 +32,13 @@ public class Spencer_S4 : MonoBehaviour, I_Attackable
 
     private void Start()
     {
+        if (SpencerManager.Instance.halfHP)
+        {
+            timeToFire = 1.2f;
+            laserCount = 80;
+            firingInterval = 0.015f;
+        }
+
         if (PlayerController.instance != null) player = PlayerController.instance.transform;
 
         float offset = Random.value * laserStartingRange;
@@ -80,7 +87,7 @@ public class Spencer_S4 : MonoBehaviour, I_Attackable
 
     public void OnAttack(Transform attacker)
     {
-
+        SpencerManager.Instance.TakeDamage();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
