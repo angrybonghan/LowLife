@@ -129,14 +129,15 @@ public class SoundManager : MonoBehaviour
         if (clips == null || clips.Length == 0) return;
         AudioClip clip = GetRandomSound(clips);
 
-        GameObject gameObject = new GameObject();
-        AudioSource audioSource = (AudioSource)gameObject.AddComponent(typeof(AudioSource));
+        GameObject newObject = new GameObject();
+        newObject.transform.position = position;
+        AudioSource audioSource = (AudioSource)newObject.AddComponent(typeof(AudioSource));
         audioSource.clip = clip;
         audioSource.pitch = pitch;
         audioSource.spatialBlend = 0f;
         audioSource.volume = volume * volumeMultiple;
         audioSource.Play();
-        Object.Destroy(gameObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale));
+        Object.Destroy(newObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale));
     }
 
     public void PlayLoopBgm(AudioClip clip, float pitch = 1.0f, float volumeMultiple = 1.0f)
