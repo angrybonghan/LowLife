@@ -10,49 +10,77 @@ public class MainMenuUIController : MonoBehaviour
     public Button startButton;
     public TextMeshProUGUI startText;
 
-    [Header("메인 이미지들")]
-    public RectTransform imageA;
-    public RectTransform imageB;
+    [Header("메인 이미지")]
+    public RectTransform imageLogo;                // 로고 이미지 
+    public RectTransform[] imageShield;            // 방패 이미지 
 
-    [Header("로고")]
-    public Vector2 imageAPosition = new Vector2(-200, 0);
-    public Vector2 imageASize = new Vector2(150, 150);
+    [Header("로고 설정")]
+    public Vector2 imageAPosition = new Vector2(-200, 0); // 로고 최종 위치
+    public Vector2 imageASize = new Vector2(150, 150);    // 로고 최종 크기
 
-    [Header("방패")]
-    public Vector2 imageBPosition = new Vector2(200, 0);
-    public Vector2 imageBSize = new Vector2(200, 200);
+    [Header("방패 위치 설정")]
+    public Vector2 imageBPosition = new Vector2(200, 0);   // 방패 최종 위치
+    public Vector3 shieldDefaultPosition = new Vector3(200, 0, 0); // 기본 방패 위치 (팝업 닫을 때 돌아올 위치)
 
-    [Header("버튼들")]
-    public RectTransform[] menuButtons;   // 메인 메뉴 버튼들
-    public float buttonMoveOffset = -300; // 시작 시 숨겨진 위치 오프셋
-    public float buttonAnimSpeed = 4f;
-    public float buttonDelay = 0.3f;       // 버튼 등장 간격
+    [Header("방패 크기 설정")]
+    public Vector2 imageBSize = new Vector2(200, 200);     // 방패 최종 크기
+    public Vector2 shieldStartSize = new Vector2(150, 150); // 방패 회전 시작 크기
+    public Vector2 shieldEndSize = new Vector2(200, 200);   // 방패 회전 종료 크기
+
+    [Header("방패 애니메이션 속도")]
+    public float shieldMoveSpeed = 3f;                     // 방패 이동 속도
+    public float shieldRotationTime = 1f;                  // 방패 회전 시간
+
+    [Header("버튼 설정")]
+    public RectTransform[] menuButtons;            // 메뉴 버튼들
+    public Vector3[] targetPositions;              // 버튼별 최종 위치값
+    public float buttonAnimSpeed = 4f;             // 버튼 애니메이션 속도
 
     [Header("애니메이션 속도")]
-    public float moveSpeed = 3f;
-    public float sizeSpeed = 3f;
+    public float moveSpeed = 3f;                   // 이미지 이동 속도
+    public float sizeSpeed = 3f;                   // 이미지 크기 변경 속도
 
-    [Header("팝업 UI")]
-    public GameObject[] popups;
+    [Header("팝업 설정")]
+    public RectTransform[] popups;                 // 팝업 UI RectTransform 배열
+    public Vector3[] popupTargetPositions;         // 팝업별 최종 위치값
+    public float popupAnimSpeed = 4f;              // 팝업 애니메이션 속도
+    public Vector3 popupStartScale = Vector3.zero; // 팝업 시작 크기
+    public Vector3 popupEndScale = Vector3.one;    // 팝업 최종 크기
+    public Vector3[] popupShieldPositions;         // 팝업별 방패 위치값
 
-    private bool menuStarted = false;
-    private Coroutine blinkCoroutine;
-
+    [Header("내부 상태 관리")]
+    private bool menuStarted = false;              // 메뉴 시작 여부 플래그
+    private Coroutine blinkCoroutine;              // 텍스트 깜빡임 코루틴 참조
 
     private void Start()
     {
-        // 시작 버튼 클릭 이벤트 연결
         if (startButton != null)
             startButton.onClick.AddListener(StartMenuAnimation);
 
-        // 텍스트 깜빡임 시작
         if (startText != null)
             blinkCoroutine = StartCoroutine(BlinkText());
 
-        // 시작 전에는 메뉴 버튼 꺼두기
         foreach (var btn in menuButtons)
-        {
             btn.gameObject.SetActive(false);
+
+        foreach (var popup in popups)
+            popup.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        // ESC 키 입력 감지
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // 열려 있는 팝업이 있으면 닫기
+            for (int i = 0; i < popups.Length; i++)
+            {
+                if (popups[i].gameObject.activeSelf)
+                {
+                    ClosePopup(i);
+                    break; // 하나만 닫고 종료
+                }
+            }
         }
     }
 
@@ -61,9 +89,9 @@ public class MainMenuUIController : MonoBehaviour
         while (!menuStarted)
         {
             startText.enabled = !startText.enabled;
-            yield return new WaitForSeconds(0.5f); // 0.5초마다 깜빡임
+            yield return new WaitForSeconds(0.5f);
         }
-        startText.enabled = true; // 메뉴 시작 후 텍스트는 켜진 상태로 고정
+        startText.enabled = true;
     }
 
     public void StartMenuAnimation()
@@ -71,21 +99,20 @@ public class MainMenuUIController : MonoBehaviour
         if (menuStarted) return;
         menuStarted = true;
 
-        // 깜빡임 종료
         if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
 
-        // 시작 버튼 숨김
         if (startButton != null)
             startButton.gameObject.SetActive(false);
 
-        // 이미지 연출 시작
-        if (imageA != null)
-            StartCoroutine(AnimateImage(imageA, imageAPosition, imageASize));
-        if (imageB != null)
-            StartCoroutine(AnimateImage(imageB, imageBPosition, imageBSize));
+        if (imageLogo != null)
+            StartCoroutine(AnimateImage(imageLogo, imageAPosition, imageASize));
+        if (imageShield != null)
+        {
+            StartCoroutine(AnimateImage(imageShield[0], imageBPosition, imageBSize));
+            StartCoroutine(AnimateImage(imageShield[1], imageBPosition, imageBSize));
+        }
 
-        // 버튼 등장 애니메이션 실행 (순차적으로)
-        StartCoroutine(ShowButtonsSequentially());
+        StartCoroutine(ShowButtonsFromCenter());
     }
 
     private IEnumerator AnimateImage(RectTransform target, Vector2 targetPos, Vector2 targetSize)
@@ -106,40 +133,148 @@ public class MainMenuUIController : MonoBehaviour
         target.sizeDelta = targetSize;
     }
 
-    private IEnumerator ShowButtonsSequentially()
+    private IEnumerator ShowButtonsFromCenter()
     {
         foreach (var btn in menuButtons)
         {
-            btn.gameObject.SetActive(true); // 버튼 켜기
-
-            Vector2 startPos = btn.anchoredPosition + new Vector2(0, -200);
-            Vector2 targetPos = btn.anchoredPosition;
-            btn.anchoredPosition = startPos;
-
-            float t = 0f;
-            while (t < 1f)
-            {
-                t += Time.deltaTime * buttonAnimSpeed;
-                btn.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
-                yield return null;
-            }
-
-            btn.anchoredPosition = targetPos;
-
-            // 다음 버튼 나오기 전 딜레이
-            yield return new WaitForSeconds(buttonDelay);
+            btn.gameObject.SetActive(true);
+            btn.localPosition = Vector3.zero;
         }
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * buttonAnimSpeed;
+            for (int i = 0; i < menuButtons.Length; i++)
+                menuButtons[i].localPosition = Vector3.Lerp(Vector3.zero, targetPositions[i], t);
+            yield return null;
+        }
+
+        for (int i = 0; i < menuButtons.Length; i++)
+            menuButtons[i].localPosition = targetPositions[i];
     }
 
     public void OnButtonClick(int buttonIndex)
     {
         if (buttonIndex >= 0 && buttonIndex < popups.Length)
-        {
-            popups[buttonIndex].SetActive(true);
-        }
+            StartCoroutine(ButtonsIntoShield(buttonIndex));
     }
 
-    // 나가기 버튼 동작
+    private IEnumerator ButtonsIntoShield(int buttonIndex)
+    {
+        Vector3[] startPositions = new Vector3[menuButtons.Length];
+        for (int i = 0; i < menuButtons.Length; i++)
+            startPositions[i] = menuButtons[i].localPosition;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * buttonAnimSpeed;
+            for (int i = 0; i < menuButtons.Length; i++)
+                menuButtons[i].localPosition = Vector3.Lerp(startPositions[i], Vector3.zero, t);
+            yield return null;
+        }
+
+        yield return StartCoroutine(RotateAndMoveShield(popupShieldPositions[buttonIndex], true));
+
+        yield return StartCoroutine(ShowPopupFromCenter(buttonIndex));
+    }
+
+    private IEnumerator RotateAndMoveShield(Vector3 targetPos, bool forward)
+    {
+        Vector3 startPos = imageShield[0].anchoredPosition;
+
+        // 회전 방향에 따라 크기 변화도 반대로 적용
+        Vector2 startSize = forward ? shieldStartSize : shieldEndSize;
+        Vector2 endSize = forward ? shieldEndSize : shieldStartSize;
+
+        float elapsed = 0f;
+
+        while (elapsed < shieldRotationTime)
+        {
+            elapsed += Time.deltaTime;
+            float ratio = elapsed / shieldRotationTime;
+
+            float angle = forward ? 360f * ratio : -360f * ratio;
+            imageShield[0].localRotation = Quaternion.Euler(0, 0, angle);
+            imageShield[1].localRotation = Quaternion.Euler(0, 0, angle);
+
+            imageShield[0].anchoredPosition = Vector3.Lerp(startPos, targetPos, ratio);
+            imageShield[1].anchoredPosition = Vector3.Lerp(startPos, targetPos, ratio);
+
+            imageShield[0].sizeDelta = Vector2.Lerp(startSize, endSize, ratio);
+            imageShield[1].sizeDelta = Vector2.Lerp(startSize, endSize, ratio);
+
+            yield return null;
+        }
+
+        imageShield[0].localRotation = Quaternion.identity;
+        imageShield[1].localRotation = Quaternion.identity;
+        imageShield[0].anchoredPosition = targetPos;
+        imageShield[1].anchoredPosition = targetPos;
+        imageShield[0].sizeDelta = endSize;
+        imageShield[1].sizeDelta = endSize;
+    }
+
+    private IEnumerator ShowPopupFromCenter(int popupIndex)
+    {
+        RectTransform popup = popups[popupIndex];
+        popup.gameObject.SetActive(true);
+
+        Vector3 startPos = Vector3.zero;
+        Vector3 targetPos = popupTargetPositions[popupIndex];
+        popup.localPosition = startPos;
+
+        popup.localScale = popupStartScale;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * popupAnimSpeed;
+            popup.localPosition = Vector3.Lerp(startPos, targetPos, t);
+            popup.localScale = Vector3.Lerp(popupStartScale, popupEndScale, t);
+            yield return null;
+        }
+
+        popup.localPosition = targetPos;
+        popup.localScale = popupEndScale;
+    }
+
+    public void ClosePopup(int popupIndex)
+    {
+        if (popupIndex >= 0 && popupIndex < popups.Length)
+            StartCoroutine(HidePopupIntoCenter(popupIndex));
+    }
+
+    private IEnumerator HidePopupIntoCenter(int popupIndex)
+    {
+        RectTransform popup = popups[popupIndex];
+        Vector3 startPos = popup.localPosition;
+        Vector3 targetPos = Vector3.zero;
+
+        Vector3 startScale = popupEndScale;
+        Vector3 targetScale = popupStartScale;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * popupAnimSpeed;
+            popup.localPosition = Vector3.Lerp(startPos, targetPos, t);
+            popup.localScale = Vector3.Lerp(startScale, targetScale, t);
+            yield return null;
+        }
+
+        popup.localPosition = targetPos;
+        popup.localScale = targetScale;
+        popup.gameObject.SetActive(false);
+
+        // 방패 반대 방향 회전 + 원래 위치 복귀
+        yield return StartCoroutine(RotateAndMoveShield(shieldDefaultPosition, false));
+
+        // 버튼 다시 등장
+        yield return StartCoroutine(ShowButtonsFromCenter());
+    }
+
     private IEnumerator QuitAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);

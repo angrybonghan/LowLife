@@ -85,6 +85,28 @@ public class UIManager : MonoBehaviour
         }
     }
 
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        // 씬 로드 이벤트 해제
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 특정 씬(MainMenu)에서는 UIManager 제거
+        if (scene.name == "MainMenu") // 메인 메뉴 씬 이름에 맞게 수정
+        {
+            Destroy(gameObject);
+        }
+    }
+
+
     private void Update()
     {
         UpdateQuestText();
