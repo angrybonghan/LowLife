@@ -134,7 +134,7 @@ public class SoundManager : MonoBehaviour
         AudioSource audioSource = (AudioSource)newObject.AddComponent(typeof(AudioSource));
         audioSource.clip = clip;
         audioSource.pitch = pitch;
-        audioSource.spatialBlend = 0f;
+        audioSource.spatialBlend = 1f;
         audioSource.volume = volume * volumeMultiple;
         audioSource.Play();
         Object.Destroy(newObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale));

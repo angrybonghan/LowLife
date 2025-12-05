@@ -21,6 +21,10 @@ public class MawTongue : MonoBehaviour
     public GameObject spit;
     public GameObject spitShatter;
 
+    [Header("¼Ò¸®")]
+    public AudioClip attackSound;
+    public AudioClip backOffSound;
+
     bool isAttacking = false;
     Transform target;
     Coroutine moveCoroutine;
@@ -67,14 +71,18 @@ public class MawTongue : MonoBehaviour
             targetPos.y = floorY;
             isAttacking = true;
             MoveTo(targetPos, attackTime);
+            SoundManager.instance.PlaySoundAtPosition(transform.position, attackSound);
             yield return new WaitForSeconds(attackTime);
+
             isAttacking = false;
             CameraMovement.PositionShaking(0.2f, 0.05f, 0.2f);
             Instantiate(spitShatter, transform.position, Quaternion.identity);
             targetPos.y = backoffY;
             anim.SetTrigger("attack");
             MoveTo(targetPos, backoffTime);
+            SoundManager.instance.PlaySoundAtPosition(transform.position, backOffSound);
             yield return new WaitForSeconds(backoffTime);
+
             anim.SetTrigger("default");
         }
 
