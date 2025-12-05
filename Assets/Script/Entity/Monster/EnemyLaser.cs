@@ -261,6 +261,4 @@ public class EnemyLaser : MonoBehaviour
         newScale.x = distanceToSet;
         transform.localScale = newScale;
     }
-
-    
 }
