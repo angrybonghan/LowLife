@@ -12,7 +12,8 @@ public class Spencer_SS0 : MonoBehaviour, I_Attackable
     public float centerX;
     public float positionSpacing;
 
-    [HideInInspector] public bool centralUnconditionally = false;
+    [HideInInspector] public bool useUnconditionallyLocation = false;
+    [HideInInspector] public int unconditionallyLocationNumber = -1;
 
 
     Animator anim;
@@ -53,17 +54,29 @@ public class Spencer_SS0 : MonoBehaviour, I_Attackable
 
     Vector2 GetTeleportPos()
     {
-        if (centralUnconditionally)
-        {
-
-        }
-        else
-        {
-
-        }
-
         Vector2 pos = transform.position;
         pos.x = centerX;
+
+        if (useUnconditionallyLocation)
+        {
+            if (unconditionallyLocationNumber == 1)
+            {
+                pos.x -= positionSpacing;
+                SpencerManager.Instance.positionNumber = 1;
+                return pos;
+            }
+            else if (unconditionallyLocationNumber == 3)
+            {
+                pos.x += positionSpacing;
+                SpencerManager.Instance.positionNumber = 3;
+                return pos;
+            }
+            else
+            {
+                SpencerManager.Instance.positionNumber = 2;
+                return pos;
+            }
+        }
 
         if (SpencerManager.Instance.positionNumber == 2)
         {
