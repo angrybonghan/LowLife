@@ -11,7 +11,7 @@ public class SpencerManager : MonoBehaviour
     public Vector2 startPos = new Vector2(44f, 1.004995f);
 
     [Header("½ºÅ³¼Â")]
-    public float skillInterval = 0.6887f;
+    public float skillInterval = 0.5887f;
     public int skillCount;
     public Spencer_S1 S1;
     public Spencer_S2 S2;
@@ -91,7 +91,14 @@ public class SpencerManager : MonoBehaviour
 
         if (totalSkillsUsed % 2 == 0)
         {
-            currentSkillInstance = Instantiate(SS0, currentSkillPos, Quaternion.identity).gameObject;
+            Spencer_SS0 sk = Instantiate(SS0, currentSkillPos, Quaternion.identity);
+            currentSkillInstance = sk.gameObject;
+
+            if (totalSkillsUsed == 0)
+            {
+                sk.useUnconditionallyLocation = true;
+                sk.unconditionallyLocationNumber = 3;
+            }
         }
         else
         {
@@ -198,7 +205,11 @@ public class SpencerManager : MonoBehaviour
 
         if (!halfHP)
         {
-            halfHP = 2 * currentHP <= maxHP;
+            if (currentHP * 2 <= maxHP)
+            {
+                halfHP = true;
+                skillInterval = 0.3f;
+            }
         }
     }
 
