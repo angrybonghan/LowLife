@@ -365,6 +365,18 @@ MonoBehaviour:
   cartridge: {fileID: 3587111362533677785, guid: 5785e0fefb2cc4d4b82821591818f77b, type: 3}
   antlion: {fileID: 3415517319708910973}
   centerX: 0
+  jumpSound:
+  - {fileID: 8300000, guid: f39d0f66b23d78242a214f3e7b30b566, type: 3}
+  - {fileID: 8300000, guid: 1b7e1ce929eec5149a40a291933dc664, type: 3}
+  landSound:
+  - {fileID: 8300000, guid: bf0f3b8d54415b841807547698934c28, type: 3}
+  - {fileID: 8300000, guid: bb0eacbb6d120e1428138df35eb23dea, type: 3}
+  - {fileID: 8300000, guid: 6353576b12b703746bd4d98301cc8485, type: 3}
+  minigunSpin: {fileID: 8300000, guid: a337460b276997349afecaa4ab75190a, type: 3}
+  fire:
+  - {fileID: 8300000, guid: d5c4511176c6cf1459f27e1359a894b5, type: 3}
+  - {fileID: 8300000, guid: db34a8a3fe45cf54796df78dfb80c2d1, type: 3}
+  - {fileID: 8300000, guid: fdff9dc396493f5409c3d1f5a8a91c43, type: 3}
 --- !u!70 &3243779203253197298
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(AudioSource))]
 public class SoundManager : MonoBehaviour
@@ -10,7 +11,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip[] entityHitSound;
 
     private float volume = 1.0f; // ÇöÀç º¼·ý (0.0 ~ 1.0)
-    private List<AudioSource> allBgmSources = new List<AudioSource>();
+    private List<AudioSource> allLoopAudioSource = new List<AudioSource>();
 
     private void Awake()
     {
@@ -29,7 +30,7 @@ public class SoundManager : MonoBehaviour
     public void SetVolume(float newVolume)
     {
         volume = Mathf.Clamp01(newVolume);
-        foreach (var src in allBgmSources)
+        foreach (var src in allLoopAudioSource)
         {
             if (src != null)
                 src.volume = volume;
@@ -42,7 +43,7 @@ public class SoundManager : MonoBehaviour
 
     public void LowerVolumeForESC()
     {
-        foreach (var src in allBgmSources)
+        foreach (var src in allLoopAudioSource)
         {
             if (src != null)
                 src.volume = volume * 0.3f;
@@ -51,7 +52,7 @@ public class SoundManager : MonoBehaviour
 
     public void RestoreVolumeAfterESC()
     {
-        foreach (var src in allBgmSources)
+        foreach (var src in allLoopAudioSource)
         {
             if (src != null)
                 src.volume = volume;
@@ -67,13 +68,22 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void Play2DSound(AudioClip clip, float volumeMultiple = 1f)
+    {
+        GameObject gameObject = new GameObject();
+        AudioSource audioSource = (AudioSource)gameObject.AddComponent(typeof(AudioSource));
+        audioSource.clip = clip;
+        audioSource.spatialBlend = 0f;
+        audioSource.volume = volume;
+        audioSource.Play();
+        Object.Destroy(gameObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale));
+    }
+
     public void PlayRandomSoundAtPosition(Vector3 position, AudioClip[] clips, float volumeMultiple = 1f)
     {
         if (clips == null || clips.Length == 0) return;
 
-        AudioClip clip = null;
-        int randomIndex = Random.Range(0, clips.Length);
-        clip = clips[randomIndex];
+        AudioClip clip = GetRandomSound(clips);
         AudioSource.PlayClipAtPoint(clip, position, volume * volumeMultiple);
     }
 
@@ -117,22 +127,16 @@ public class SoundManager : MonoBehaviour
     public void PlayRandomClipAtPointWithPitch(Vector3 position, AudioClip[] clips, float pitch = 1.0f, float volumeMultiple = 1.0f)
     {
         if (clips == null || clips.Length == 0) return;
+        AudioClip clip = GetRandomSound(clips);
 
-        int randomIndex = Random.Range(0, clips.Length);
-        AudioClip clip = clips[randomIndex];
-
-        GameObject tempGO = new GameObject("TempAudio");
-        tempGO.transform.position = position;
-
-        AudioSource audioSource = tempGO.AddComponent<AudioSource>();
+        GameObject gameObject = new GameObject();
+        AudioSource audioSource = (AudioSource)gameObject.AddComponent(typeof(AudioSource));
         audioSource.clip = clip;
-        audioSource.spatialBlend = 1.0f;
-
-        audioSource.volume = volume * volumeMultiple;
         audioSource.pitch = pitch;
-
+        audioSource.spatialBlend = 0f;
+        audioSource.volume = volume * volumeMultiple;
         audioSource.Play();
-        Destroy(tempGO, clip.length / Mathf.Abs(pitch));
+        Object.Destroy(gameObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale));
     }
 
     public void PlayLoopBgm(AudioClip clip, float pitch = 1.0f, float volumeMultiple = 1.0f)
@@ -146,16 +150,42 @@ public class SoundManager : MonoBehaviour
         audioSource.loop = true;
         audioSource.Play();
 
-        allBgmSources.Add(audioSource);
+        allLoopAudioSource.Add(audioSource);
     }
 
-    public void StopAllBgm()
+    public void PlayLoopSoundAtPosition(Vector3 position, AudioClip clip, string soundName, float volumeMultiple = 1.0f)
     {
-        foreach (var src in allBgmSources)
+        GameObject tempBgmGO = new GameObject(soundName);
+        tempBgmGO.transform.position = position;
+        AudioSource audioSource = tempBgmGO.AddComponent<AudioSource>();
+        audioSource.clip = clip;
+        audioSource.spatialBlend = 1f;
+        audioSource.volume = volume * volumeMultiple;
+        audioSource.loop = true;
+        audioSource.Play();
+    }
+
+    public void StopSound(string soundName)
+    {
+        AudioSource[] allAudioSources = FindObjectsOfType<AudioSource>();
+
+        foreach (AudioSource audioSource in allAudioSources)
+        {
+            if (audioSource.gameObject.name == soundName)
+            {
+                Destroy(audioSource.gameObject);
+            }
+        }
+    }
+
+    public void StopAllLoopSounds()
+    {
+        foreach (AudioSource src in allLoopAudioSource)
         {
             if (src != null)
                 Destroy(src.gameObject);
         }
-        allBgmSources.Clear();
+
+        allLoopAudioSource.Clear();
     }
 }

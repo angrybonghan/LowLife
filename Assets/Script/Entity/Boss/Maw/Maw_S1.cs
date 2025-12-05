@@ -1,4 +1,5 @@
 using System.Collections;
+using TreeEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
@@ -31,12 +32,17 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
     public Transform cartridgePos;
     public MawCartridge cartridge;
 
-
     [Header("°³¹ÌÁö¿Á ÆÄÃ÷")]
     public GameObject antlion;
 
     [Header("Áß¾Ó X")]
     public float centerX;
+
+    [Header("¼Ò¸®")]
+    public AudioClip[] jumpSound;
+    public AudioClip[] landSound;
+    public AudioClip minigunSpin;
+    public AudioClip[] fire;
 
     bool canFire = false;
     bool aiming = false;
@@ -76,6 +82,7 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
     IEnumerator SkillSequence()
     {
         yield return new WaitUntil(() => IsTouchingWall());
+        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, landSound);
 
         anim.SetTrigger("readyToAttack");
         anim.SetTrigger("fireReady");
@@ -83,6 +90,7 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
         rb.gravityScale = 0;
 
         yield return new WaitUntil(() => canFire);
+        SoundManager.instance.PlayLoopSoundAtPosition(transform.position, minigunSpin, "Maw_minigunSpin");
         aiming = true;
         yield return new WaitForSeconds(1.5f);
 
@@ -104,11 +112,13 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
             }
         }
         aiming = false;
+        
         anim.SetTrigger("attackEnd");
-
+        SoundManager.instance.StopSound("Maw_minigunSpin");
         yield return new WaitUntil(() => IsGrounded());
 
         anim.SetTrigger("land");
+        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, landSound);
         MawManager.instance.canUseSklill = true;
     }
 
@@ -121,6 +131,7 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
     {
         int sigh = isFacingRight? 1 : -1;
         rb.velocity = new Vector2(horizontalJumpPower * sigh, verticalJumpPower);
+        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, jumpSound);
     }
 
     public void Drop()
@@ -142,6 +153,8 @@ public class Maw_S1 : MonoBehaviour, I_MawSkill, I_Attackable
 
         MawCartridge cart = Instantiate(cartridge, cartridgePos.position, Quaternion.identity);
         cart.flyToRight = isFacingRight;
+
+        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, fire);
     }
 
     public void Flip()
