@@ -49,6 +49,7 @@ public class Spencer_S3 : MonoBehaviour, I_Attackable
     {
         yield return new WaitForSeconds(warningTime);
         anim.SetTrigger("attack");
+        col.enabled = true;
         for (int i = 0; i < projectileCount; i++)
         {
             FiringProjectile();
