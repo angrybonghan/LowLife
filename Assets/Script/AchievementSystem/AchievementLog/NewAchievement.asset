@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b29f46dca744d4bb60f95c9ff6589a, type: 3}
   m_Name: NewAchievement
   m_EditorClassIdentifier: 
-  achievementID: 
-  title: 
-  description: 
+  achievementID: 01
+  title: a
+  description: a
+  hint: 
   rewardTitle: 
-  type: 2
-  targetEnemyType: 
+  type: 0
+  targetEnemyType: a
   targetItemID: 
   targetQuestID: 
   targetSceneName: 

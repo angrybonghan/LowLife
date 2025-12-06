@@ -40,6 +40,9 @@ public class AchievementDataSO : ScriptableObject
     [Tooltip("UI에 표시될 업적 설명")]
     [TextArea] public string description;
 
+    [Tooltip("업적 달성 전 UI에 표시될 힌트")]
+    [TextArea] public string hint;
+
     [Tooltip("업적 달성 시 표시/지급될 리워드 명")]
     public string rewardTitle;
 
