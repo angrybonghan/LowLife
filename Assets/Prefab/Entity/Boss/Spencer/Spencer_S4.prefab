@@ -49,9 +49,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   centerX: 0
   laserStartingRange: 5
-  startY: 14
+  startY: 12
   laser: {fileID: 6897064498682070859, guid: 9539d1d5157537640a22322719815d2c, type: 3}
-  laserDispersion: 2
+  laserDispersion: 1
   timeToFire: 0.6887
   laserCount: 35
   firingInterval: 0.015

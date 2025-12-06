@@ -28,7 +28,7 @@ public class AmagoMovementManager : MonoBehaviour
     Vector3 lastSpawnPartPos;
 
     int layerNumber = -10;
-    bool canSpawnAmago = false;
+    bool canMoveAmago = false;
     List<AmagoBodyMovement> allBody = new List<AmagoBodyMovement>();
     AmagoHeadMovement head;
 
@@ -43,16 +43,24 @@ public class AmagoMovementManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        SummonFullAmago();
+    }
+
     void Update()
     {
-        if (!canSpawnAmago) return;
+        if (!canMoveAmago) return;
         UpdateSpeed();
     }
 
-    public void StartSpawnAmago()
+    public void StartMoveAmago()
     {
-        canSpawnAmago = true;
+        canMoveAmago = true;
+    }
 
+    void SummonFullAmago()
+    {
         head = Instantiate(headPrefab, transform.position, Quaternion.identity);
 
         head.transform.position = transform.position;
@@ -67,10 +75,11 @@ public class AmagoMovementManager : MonoBehaviour
 
             if (maxBodyCount - 1 == i) SummonBody(lastSpawnPartPos, i).lastBody = true;
             else SummonBody(lastSpawnPartPos, i);
-            
+
             layerNumber--;
         }
 
+        SetAmagoSpeed(0);
         StartCoroutine(ReloadBdyAnimation());
     }
 

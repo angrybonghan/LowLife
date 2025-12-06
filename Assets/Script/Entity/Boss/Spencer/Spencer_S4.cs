@@ -37,6 +37,7 @@ public class Spencer_S4 : MonoBehaviour, I_Attackable
             timeToFire = 1.2f;
             laserCount = 80;
             firingInterval = 0.015f;
+            laserDispersion = 2.0f;
         }
 
         if (PlayerController.instance != null) player = PlayerController.instance.transform;
