@@ -14,7 +14,7 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
-    public LockMouse lockMouse; // LockMouse 스크립트 참조
+    public LockMouse lockMouse;
 
     [Header("UI References")]
     public TextMeshProUGUI questText;
@@ -33,11 +33,13 @@ public class UIManager : MonoBehaviour
     public Button volumeUpButton;
     public Button volumeDownButton;
     public Button[] volumePresetButtons;
+    public Sprite onSprite;
+    public Sprite offSprite;
 
     [Header("Side Panel References")]
-    public RectTransform sidePanel;          // 사이드 패널 RectTransform
-    public Vector2 sideHiddenPos = new Vector2(-600f, 0f); // 숨김 위치
-    public Vector2 sideVisiblePos = new Vector2(0f, 0f);   // 표시 위치
+    public RectTransform sidePanel;
+    public Vector2 sideHiddenPos = new Vector2(-600f, 0f);
+    public Vector2 sideVisiblePos = new Vector2(0f, 0f);
     public float sideAnimSpeed = 6f;
     public float sideRotateSpeed = 6f;
 
@@ -67,12 +69,23 @@ public class UIManager : MonoBehaviour
         }
 
 
+        // 볼륨 업 버튼
         if (volumeUpButton != null)
-            volumeUpButton.onClick.AddListener(() => SoundManager.instance.IncreaseVolume());
+            volumeUpButton.onClick.AddListener(() =>
+            {
+                SoundManager.instance.IncreaseVolume();
+                SyncPresetButtonImages();
+            });
 
+        // 볼륨 다운 버튼
         if (volumeDownButton != null)
-            volumeDownButton.onClick.AddListener(() => SoundManager.instance.DecreaseVolume());
+            volumeDownButton.onClick.AddListener(() =>
+            {
+                SoundManager.instance.DecreaseVolume();
+                SyncPresetButtonImages();
+            });
 
+        // 프리셋 버튼들
         if (volumePresetButtons != null)
         {
             for (int i = 0; i < volumePresetButtons.Length; i++)
@@ -82,13 +95,17 @@ public class UIManager : MonoBehaviour
                 {
                     float presetValue = (index + 1) / (float)volumePresetButtons.Length;
                     SoundManager.instance.SetVolume(presetValue);
+                    UpdatePresetButtonImages(index);
                 });
             }
         }
+
+        // 씬 시작 시 저장된 볼륨 값에 맞춰 버튼 이미지 초기화
+        SyncPresetButtonImages();
     }
 
 
-    private void OnEnable()
+private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -149,6 +166,28 @@ public class UIManager : MonoBehaviour
 
     }
 
+    private void SyncPresetButtonImages()
+    {
+        float currentVolume = SoundManager.instance.GetVolume();
+        int activeIndex = Mathf.RoundToInt(currentVolume * volumePresetButtons.Length) - 1;
+        activeIndex = Mathf.Clamp(activeIndex, 0, volumePresetButtons.Length - 1);
+
+        UpdatePresetButtonImages(activeIndex);
+    }
+
+    private void UpdatePresetButtonImages(int activeIndex)
+    {
+        for (int i = 0; i < volumePresetButtons.Length; i++)
+        {
+            Image btnImage = volumePresetButtons[i].GetComponent<Image>();
+            if (btnImage != null)
+            {
+                btnImage.sprite = (i <= activeIndex) ? onSprite : offSprite;
+            }
+        }
+    }
+
+
     public void ToggleESCMenu()
     {
         isPaused = !isPaused;
@@ -169,9 +208,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// ESC 메뉴 애니메이션 (슬라이드 + 페이드)
-    /// </summary>
     private IEnumerator PlayESCAnimation(Vector2 targetPos, float targetAlpha)
     {
         Vector2 startPos = escMenuPanel.anchoredPosition;
@@ -211,7 +247,7 @@ public class UIManager : MonoBehaviour
 
         if (!open)
         {
-            // 열릴 때: 회전 먼저 → 이동
+            // 열릴 때: 회전 먼저 -> 이동
             float tRotate = 0f;
             while (tRotate < 1f)
             {
@@ -230,7 +266,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            // 닫힐 때: 이동 먼저 → 회전
+            // 닫힐 때: 이동 먼저 -> 회전
             float tSlide = 0f;
             while (tSlide < 1f)
             {
@@ -266,6 +302,9 @@ public class UIManager : MonoBehaviour
             QuestState state = QuestManager.Instance.GetQuestState(quest.questID);
             string stateText = state == QuestState.NotStarted ? "미시작" :
                                state == QuestState.InProgress ? "진행 중" : "완료";
+
+            if (state != QuestState.InProgress) continue;
+
 
             string questLine = $"{quest.questName} - {stateText}";
 
@@ -332,6 +371,35 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void ShowQuestCompleted(string questName)
+    {
+        Debug.Log($"[UI] 퀘스트 완료: {questName}");
+
+        // Tab 효과 (사이드 패널 열기)
+        if (!sideOpen)
+        {
+            sideOpen = true;
+            if (sideAnimCoroutine != null) StopCoroutine(sideAnimCoroutine);
+            sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(true));
+        }
+
+        // 클리어 메시지 표시
+        if (questText != null)
+        {
+            questText.text = $" 퀘스트 클리어!\n{questName}\n다음 퀘스트를 진행하세요!";
+        }
+
+        // 필요하다면 일정 시간 후 다시 진행 중인 퀘스트 목록 갱신
+        StartCoroutine(ShowNextQuestAfterDelay(2f));
+    }
+
+    private IEnumerator ShowNextQuestAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        UpdateQuestText(); // 다음 진행 중인 퀘스트 표시
+    }
+
+
     public void ShowAchievementUnlockedSO(AchievementDataSO achievement)
     {
         if (achievementPopup != null && achievementText != null)
@@ -346,12 +414,6 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         if (achievementPopup != null) achievementPopup.SetActive(false);
-    }
-
-    public void ShowQuestCompleted(string questName)
-    {
-        Debug.Log($"[UI] 퀘스트 완료: {questName}");
-        // 필요하다면 퀘스트 완료 팝업 UI 추가 가능
     }
 
     public void LoadSceneByButton(string sceneName)
