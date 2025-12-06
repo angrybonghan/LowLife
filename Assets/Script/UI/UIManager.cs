@@ -165,10 +165,8 @@ private void OnEnable()
         }
 
         // Tab 누르고 있는 동안 열림
-        if (Input.GetKey(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            
-
             if (!sideOpen)
             {
                 sideOpen = true;
@@ -186,8 +184,8 @@ private void OnEnable()
                 if (sideAnimCoroutine != null) StopCoroutine(sideAnimCoroutine);
                 sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(false));
             }
-        }
 
+        }
     }
 
     private void UpdateESCMenuSelection()
@@ -286,41 +284,42 @@ private void OnEnable()
         Vector2 targetPos = open ? sideVisiblePos : sideHiddenPos;
         Quaternion targetRot = open ? Quaternion.Euler(0f, 0f, 0f) : Quaternion.Euler(0f, 0f, 90f);
 
-        if (!open)
+        if (open)
         {
-            // 열릴 때: 회전 먼저 -> 이동
-            float tRotate = 0f;
-            while (tRotate < 1f)
-            {
-                tRotate += Time.unscaledDeltaTime * sideRotateSpeed;
-                sidePanel.localRotation = Quaternion.Slerp(startRot, targetRot, Mathf.Clamp01(tRotate));
-                yield return null;
-            }
-
+            
+            // 이동 먼저 -> 회전
             float tSlide = 0f;
             while (tSlide < 1f)
             {
                 tSlide += Time.unscaledDeltaTime * sideAnimSpeed;
                 sidePanel.anchoredPosition = Vector2.Lerp(startPos, targetPos, Mathf.Clamp01(tSlide));
+                yield return null;
+            }
+
+            float tRotate = 0f;
+            while (tRotate < 1f)
+            {
+                tRotate += Time.unscaledDeltaTime * sideRotateSpeed;
+                sidePanel.localRotation = Quaternion.Slerp(startRot, targetRot, Mathf.Clamp01(tRotate));
                 yield return null;
             }
         }
         else
         {
-            // 닫힐 때: 이동 먼저 -> 회전
-            float tSlide = 0f;
-            while (tSlide < 1f)
-            {
-                tSlide += Time.unscaledDeltaTime * sideAnimSpeed;
-                sidePanel.anchoredPosition = Vector2.Lerp(startPos, targetPos, Mathf.Clamp01(tSlide));
-                yield return null;
-            }
-
+            // 회전 먼저 -> 이동
             float tRotate = 0f;
             while (tRotate < 1f)
             {
                 tRotate += Time.unscaledDeltaTime * sideRotateSpeed;
                 sidePanel.localRotation = Quaternion.Slerp(startRot, targetRot, Mathf.Clamp01(tRotate));
+                yield return null;
+            }
+
+            float tSlide = 0f;
+            while (tSlide < 1f)
+            {
+                tSlide += Time.unscaledDeltaTime * sideAnimSpeed;
+                sidePanel.anchoredPosition = Vector2.Lerp(startPos, targetPos, Mathf.Clamp01(tSlide));
                 yield return null;
             }
         }
@@ -416,7 +415,7 @@ private void OnEnable()
     {
         Debug.Log($"[UI] 퀘스트 완료: {questName}");
 
-        // 사이드 패널 잠깐 열기 효과
+        // 사이드 패널 열기 애니메이션
         if (!sideOpen)
         {
             sideOpen = true;
@@ -427,13 +426,12 @@ private void OnEnable()
         // 클리어 메시지 표시
         if (questText != null)
         {
-            questText.text = $"퀘스트 클리어!\n{questName}\n다음 퀘스트를 진행하세요!";
+            questText.text = $"퀘스트 완료!\n{questName}\n다음 퀘스트를 진행하세요.";
         }
 
-        // 일정 시간 뒤 사이드 패널 닫고 다음 퀘스트 표시
+        // 일정 시간 뒤 닫고 다음 퀘스트 표시
         StartCoroutine(HideQuestClearEffectAfterDelay(3f));
     }
-
 
     private IEnumerator HideQuestClearEffectAfterDelay(float delay)
     {

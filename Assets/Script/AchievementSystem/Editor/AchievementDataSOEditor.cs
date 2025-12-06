@@ -17,6 +17,7 @@ public class AchievementDataSOEditor : Editor
         ach.achievementID = EditorGUILayout.TextField("Achievement ID", ach.achievementID);
         ach.title = EditorGUILayout.TextField("Title", ach.title);
         ach.description = EditorGUILayout.TextField("Description", ach.description);
+        ach.rewardTitle = EditorGUILayout.TextField("»Ú∆Æ º≥∏Ì", ach.hint);
         ach.rewardTitle = EditorGUILayout.TextField("Reward Title", ach.rewardTitle);
 
         EditorGUILayout.Space();
