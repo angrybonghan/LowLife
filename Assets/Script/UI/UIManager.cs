@@ -416,7 +416,7 @@ private void OnEnable()
     {
         Debug.Log($"[UI] 퀘스트 완료: {questName}");
 
-        // Tab 효과 (사이드 패널 열기)
+        // 사이드 패널 잠깐 열기 효과
         if (!sideOpen)
         {
             sideOpen = true;
@@ -427,19 +427,29 @@ private void OnEnable()
         // 클리어 메시지 표시
         if (questText != null)
         {
-            questText.text = $" 퀘스트 클리어!\n{questName}\n다음 퀘스트를 진행하세요!";
+            questText.text = $"퀘스트 클리어!\n{questName}\n다음 퀘스트를 진행하세요!";
         }
 
-        // 필요하다면 일정 시간 후 다시 진행 중인 퀘스트 목록 갱신
-        StartCoroutine(ShowNextQuestAfterDelay(2f));
+        // 일정 시간 뒤 사이드 패널 닫고 다음 퀘스트 표시
+        StartCoroutine(HideQuestClearEffectAfterDelay(3f));
     }
 
-    private IEnumerator ShowNextQuestAfterDelay(float delay)
+
+    private IEnumerator HideQuestClearEffectAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        UpdateQuestText(); // 다음 진행 중인 퀘스트 표시
-    }
 
+        // 사이드 패널 닫기
+        if (sideOpen)
+        {
+            sideOpen = false;
+            if (sideAnimCoroutine != null) StopCoroutine(sideAnimCoroutine);
+            sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(false));
+        }
+
+        // 다음 진행 중인 퀘스트 표시
+        UpdateQuestText();
+    }
 
     public void ShowAchievementUnlockedSO(AchievementDataSO achievement)
     {
