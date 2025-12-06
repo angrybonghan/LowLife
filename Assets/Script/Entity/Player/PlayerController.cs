@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
     public GameObject ShieldSprite;  // 방패 스프라이트
 
     [Header("방패 도약")]
+    public bool canShieldLeap = true;    // 방패 도약 사용 가능 여부
     public float shieldLeapShieldGaugeDecrease = 0.5f;  // 방패 도약에서 감소되는 방패 게이지 수치
     public float minShieldLeapShieldGauge = 0.5f;   // 방패 도약을 하기 위해 필요한 최소 방패 게이지 수치
     public GameObject shieldLeapAirEffectPrefab; // 방패 도약 이펙트 프리팹 - 공중
@@ -119,7 +120,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isTouchingClimbableWall = false; // 붙을 수 있는 벽에 닿아 있는가?
     private bool isTouchingAnyWall = false;     // 벽에 닿아 있는가? (모든 벽)
-    private bool isWallSliding = false;         // 월 슬라이딩 도중인가?
+    [HideInInspector] public bool isWallSliding = false;         // 월 슬라이딩 도중인가?
 
     // =========================================================================
     // 공격 및 방패 상태 (Attack & Shield)
@@ -378,7 +379,7 @@ public class PlayerController : MonoBehaviour
         ThrowCooldownHandler();
 
         if (!canControl) return;
-        ShieldLeapHandler();
+        if (canShieldLeap) ShieldLeapHandler();
         RangedAttackHandler();
     }
 
