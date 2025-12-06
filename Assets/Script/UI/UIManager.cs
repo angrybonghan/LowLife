@@ -29,6 +29,10 @@ public class UIManager : MonoBehaviour
     public float animSpeed = 5f;
     public float fadeSpeed = 5f;
 
+    [Header("ESC Menu Buttons")]
+    public Button[] escMenuButtons;
+    private int selectedIndex = 0;
+
     [Header("Sound UI Buttons")]
     public Button volumeUpButton;
     public Button volumeDownButton;
@@ -140,6 +144,26 @@ private void OnEnable()
             }
         }
 
+        if (isPaused && escMenuButtons.Length > 0)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                selectedIndex = (selectedIndex - 1 + escMenuButtons.Length) % escMenuButtons.Length;
+                UpdateESCMenuSelection();
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                selectedIndex = (selectedIndex + 1) % escMenuButtons.Length;
+                UpdateESCMenuSelection();
+            }
+
+            // Enter 키로 선택된 버튼 실행
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                escMenuButtons[selectedIndex].onClick.Invoke();
+            }
+        }
+
         // Tab 누르고 있는 동안 열림
         if (Input.GetKey(KeyCode.Tab))
         {
@@ -164,6 +188,23 @@ private void OnEnable()
             }
         }
 
+    }
+
+    private void UpdateESCMenuSelection()
+    {
+        for (int i = 0; i < escMenuButtons.Length; i++)
+        {
+            var colors = escMenuButtons[i].colors;
+            if (i == selectedIndex)
+            {
+                colors.normalColor = Color.yellow; // 선택된 버튼 강조 색
+            }
+            else
+            {
+                colors.normalColor = Color.white; // 기본 색
+            }
+            escMenuButtons[i].colors = colors;
+        }
     }
 
     private void SyncPresetButtonImages()
