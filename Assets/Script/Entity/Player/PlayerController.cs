@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
@@ -11,7 +10,7 @@ public class PlayerController : MonoBehaviour
     public float maxSpeed = 12; // 최고 속도
     public float jumpForce = 10;    // 점프 힘
     public float quickTrunDuration = 0.3f;    // 퀵턴 최대 길이
-    public float shieldSpeed​Multiplier = 0.35f;   // 방패로 인한 감속도 배율
+    public float shieldSpeedMultiplier = 0.35f;   // 방패로 인한 감속도 배율
 
     [Header("대쉬")]
     public float dashDuration = 0.25f;  // 대쉬 유지 시간
@@ -473,7 +472,7 @@ public class PlayerController : MonoBehaviour
         hasShield = false;
         ShieldSprite.SetActive(false);
 
-        shieldInstance = Instantiate(shieldPrefabs, shieldSummonPos.position, quaternion.identity);
+        shieldInstance = Instantiate(shieldPrefabs, shieldSummonPos.position, Quaternion.identity);
         Vector2 shootDirection = CrosshairController.instance.transform.position - transform.position;
 
         shieldScript = global::ShieldMovement.shieldInstance;
@@ -716,7 +715,7 @@ public class PlayerController : MonoBehaviour
         Quaternion effectRotation;
         if (isFacingRight)
         {
-            effectRotation = quaternion.identity;
+            effectRotation = Quaternion.identity;
         }
         else
         {
@@ -856,7 +855,7 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = new Vector2(dashDirection * dashSpeed, dashVerticalVelocity);
 
-        GameObject newDashEffect = Instantiate(dashEffect, transform.position, quaternion.identity);
+        GameObject newDashEffect = Instantiate(dashEffect, transform.position, Quaternion.identity);
         newDashEffect.transform.localScale = new Vector3(
             newDashEffect.transform.localScale.x * dashDirection,
             newDashEffect.transform.localScale.y,
@@ -1162,8 +1161,7 @@ public class PlayerController : MonoBehaviour
         isShielding = false;
 
         float sign = isFacingRight ? -1 : 1;
-        // 삼항!!!!!!!!!!! 으악!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        rb.velocity = new Vector3(stunImpactStrength * sign, stunImpactStrength, 0f);
+        rb.velocity = new Vector2(stunImpactStrength * sign, stunImpactStrength);
 
         anim.SetTrigger("trigger_flyAway_start");
 
@@ -1194,8 +1192,8 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
-        Instantiate(deathParticle, transform.position, quaternion.identity);
-        Instantiate(dummyShield, transform.position, quaternion.identity);
+        Instantiate(deathParticle, transform.position, Quaternion.identity);
+        Instantiate(dummyShield, transform.position, Quaternion.identity);
         CameraMovement.PositionShaking(0.1f, 0.05f, 1);
         GameManager.instance.PlayerDeath();
         Destroy(gameObject);
