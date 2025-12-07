@@ -21,6 +21,13 @@ public static class SaveSystemJSON
 
     public static void DataSaveQuests(QuestManager questManager)
     {
+        // 전달된 QuestManager가 null이면 저장을 시도하지 않음
+        if (questManager == null)
+        {
+            Debug.LogWarning("QuestManager가 null임");
+            return;
+        }
+
         string json = JsonUtility.ToJson(new QuestSaveWrapper(questManager), true);
         string encrypted = Encrypt(json, encryptionKey);
         File.WriteAllText(questFilePath, encrypted);
@@ -198,10 +205,38 @@ public class QuestSaveWrapper
         activeQuestIDs = new List<string>();
         questStates = new List<int>();
 
+        // manager 또는 activeQuests가 null일 경우를 처리
+        if (manager == null)
+        {
+            Debug.LogWarning("QuestSaveWrapper가 null QuestManager임");
+            return;
+        }
+        if (manager.activeQuests == null)
+        {
+            Debug.LogWarning("QuestManager.activeQuests가 null임");
+            return;
+        }
+
         foreach (var quest in manager.activeQuests)
         {
-            activeQuestIDs.Add(quest.questID);
-            questStates.Add((int)manager.questStates[quest.questID]);
+            if (quest == null)
+            {
+                continue;
+            }
+
+            // 퀘스트 ID 추가 (null이면 빈 문자열로 처리)
+            string qid = quest.questID ?? string.Empty;
+            activeQuestIDs.Add(qid);
+
+            // 퀘스트 상태 가져오기; 문제가 있으면 기본값 0 사용
+            if (manager.questStates != null && manager.questStates.ContainsKey(qid))
+            {
+                questStates.Add((int)manager.questStates[qid]);
+            }
+            else
+            {
+                questStates.Add(0);
+            }
         }
     }
 
