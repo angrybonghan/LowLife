@@ -34,7 +34,7 @@ public class QuestManager : MonoBehaviour
             }
 
             // 저장된 상태 불러오기
-            SaveSystemJSON.LoadQuests(this);
+            SaveSystemJSON.DataLoadQuests(this);
         }
         else
         {
@@ -45,7 +45,7 @@ public class QuestManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         // 게임 종료 시 자동 저장
-        SaveSystemJSON.SaveQuests(this);
+        SaveSystemJSON.DataSaveQuests(this);
     }
 
     public void AddToActiveQuests(QuestDataSO quest)
@@ -77,7 +77,7 @@ public class QuestManager : MonoBehaviour
         {
             questStates[questID] = QuestState.InProgress;
             Debug.Log($"[퀘스트 시작] {quest.questName}");
-            SaveSystemJSON.SaveQuests(this);
+            SaveSystemJSON.DataSaveQuests(this);
             FindObjectOfType<UIManager>()?.UpdateQuestText();
         }
     }
@@ -88,7 +88,7 @@ public class QuestManager : MonoBehaviour
 
         questStates[quest.questID] = QuestState.Completed;
         Debug.Log($"[퀘스트 완료] {quest.questName}");
-        SaveSystemJSON.SaveQuests(this);
+        SaveSystemJSON.DataSaveQuests(this);
         FindObjectOfType<UIManager>()?.UpdateQuestText();
 
         // 선행 퀘스트 완료 시 자동 시작

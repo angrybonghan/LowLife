@@ -4,59 +4,141 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Collections.Generic;
 
-/// <summary>
-/// JSON + AES 암호화 기반 퀘스트 저장 시스템.
-/// QuestManager와 연동해서 퀘스트 상태를 파일로 저장/불러오기/초기화.
-/// </summary>
 public static class SaveSystemJSON
 {
-    private static string filePath = Application.persistentDataPath + "/questData.json";
+    private static string questFilePath = Application.persistentDataPath + "/questData.json";
+    private static string stageFilePath = Application.persistentDataPath + "/stageData.json";
     private static string encryptionKey = "MySecretKey12345";
 
-    // 저장 이벤트 (UI에서 구독 가능)
-    public static System.Action<string> OnDataSaved;
+    // 저장 제외할 씬 목록
+    private static HashSet<string> excludedScenes = new HashSet<string>
+    {
+        "MainMenu",
+        "PlayerDeathLoading",
+        "StageLoading_1",
+        "GameStartLoding"
+    };
 
-    public static void SaveQuests(QuestManager questManager)
+    public static void DataSaveQuests(QuestManager questManager)
     {
         string json = JsonUtility.ToJson(new QuestSaveWrapper(questManager), true);
         string encrypted = Encrypt(json, encryptionKey);
-        File.WriteAllText(filePath, encrypted);
+        File.WriteAllText(questFilePath, encrypted);
 
-        // 마지막 저장 시간 기록
         string saveTime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        PlayerPrefs.SetString("LastSaveTime", saveTime);
+        PlayerPrefs.SetString("LastQuestSaveTime", saveTime);
         PlayerPrefs.Save();
-
-        Debug.Log($"[퀘스트 저장 완료 - JSON 암호화] 마지막 저장: {saveTime}");
-
-        // 이벤트 호출 → UIManager에서 받아서 표시
-        OnDataSaved?.Invoke(saveTime);
     }
 
-    public static string GetLastSaveTime()
+    public static void DataLoadQuests(QuestManager questManager)
     {
-        return PlayerPrefs.GetString("LastSaveTime", "저장 기록 없음");
-    }
+        if (!File.Exists(questFilePath)) return;
 
-    public static void LoadQuests(QuestManager questManager)
-    {
-        if (!File.Exists(filePath)) return;
-
-        string encrypted = File.ReadAllText(filePath);
+        string encrypted = File.ReadAllText(questFilePath);
         string decrypted = Decrypt(encrypted, encryptionKey);
 
         QuestSaveWrapper wrapper = JsonUtility.FromJson<QuestSaveWrapper>(decrypted);
         wrapper.ApplyToManager(questManager);
+    }
 
-        Debug.Log("[퀘스트 불러오기 완료 - JSON 복호화]");
+    // 마지막 스테이지 저장 (저장 제외 씬은 무시)
+    public static void DataSaveStage(string stageName)
+    {
+        if (excludedScenes.Contains(stageName))
+        {
+            Debug.Log($"[저장 제외] {stageName} 씬은 저장하지 않음");
+            return;
+        }
+
+        string json = JsonUtility.ToJson(new StageSaveWrapper(stageName), true);
+        string encrypted = Encrypt(json, encryptionKey);
+        File.WriteAllText(stageFilePath, encrypted);
+
+        Debug.Log($"[스테이지 저장 완료] {stageName}");
+    }
+
+    public static string DataLoadStage(string defaultStage = "Swomp_1")
+    {
+        if (!File.Exists(stageFilePath)) return defaultStage;
+
+        string encrypted = File.ReadAllText(stageFilePath);
+        string decrypted = Decrypt(encrypted, encryptionKey);
+
+        StageSaveWrapper wrapper = JsonUtility.FromJson<StageSaveWrapper>(decrypted);
+        return wrapper.currentStageName;
+    }
+
+    // 클리어한 스테이지 누적 저장 (저장 제외 씬은 무시)
+    public static void DataSaveClearedStage(string stageName)
+    {
+        if (excludedScenes.Contains(stageName))
+        {
+            Debug.Log($"[저장 제외] {stageName} 씬은 클리어 목록에 추가하지 않음");
+            return;
+        }
+
+        StageListWrapper wrapper;
+
+        if (File.Exists(stageFilePath))
+        {
+            string encrypted = File.ReadAllText(stageFilePath);
+            string decrypted = Decrypt(encrypted, encryptionKey);
+            wrapper = JsonUtility.FromJson<StageListWrapper>(decrypted);
+        }
+        else
+        {
+            wrapper = new StageListWrapper();
+        }
+
+        if (!wrapper.clearedStages.Contains(stageName))
+        {
+            wrapper.clearedStages.Add(stageName);
+        }
+
+        string json = JsonUtility.ToJson(wrapper, true);
+        string encryptedSave = Encrypt(json, encryptionKey);
+        File.WriteAllText(stageFilePath, encryptedSave);
+
+        Debug.Log($"[스테이지 클리어 저장] {stageName}");
+    }
+
+    public static List<string> DataLoadClearedStages()
+    {
+        if (!File.Exists(stageFilePath)) return new List<string>();
+
+        string encrypted = File.ReadAllText(stageFilePath);
+        string decrypted = Decrypt(encrypted, encryptionKey);
+
+        StageListWrapper wrapper = JsonUtility.FromJson<StageListWrapper>(decrypted);
+        return wrapper.clearedStages;
     }
 
     public static void ClearQuests()
     {
-        if (File.Exists(filePath))
+        if (File.Exists(questFilePath)) File.Delete(questFilePath);
+    }
+
+    public static void ClearStage()
+    {
+        if (File.Exists(stageFilePath)) File.Delete(stageFilePath);
+    }
+
+    public static void DataResetByKey(string key)
+    {
+        switch (key)
         {
-            File.Delete(filePath);
-            Debug.Log("[퀘스트 저장 데이터 초기화]");
+            case "Quest":
+                ClearQuests();
+                PlayerPrefs.DeleteKey("LastQuestSaveTime");
+                break;
+            case "Stage":
+                ClearStage();
+                break;
+            case "All":
+                ClearQuests();
+                ClearStage();
+                PlayerPrefs.DeleteKey("LastQuestSaveTime");
+                break;
         }
     }
 
@@ -87,6 +169,22 @@ public static class SaveSystemJSON
             return Encoding.UTF8.GetString(decrypted);
         }
     }
+}
+
+[System.Serializable]
+public class StageSaveWrapper
+{
+    public string currentStageName;
+    public StageSaveWrapper(string stageName)
+    {
+        currentStageName = stageName;
+    }
+}
+
+[System.Serializable]
+public class StageListWrapper
+{
+    public List<string> clearedStages = new List<string>();
 }
 
 [System.Serializable]

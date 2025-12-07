@@ -360,8 +360,19 @@ public class MainMenuUIController : MonoBehaviour
         StartCoroutine(QuitAfterDelay(0.8f));
     }
 
-    public void LoadSceneByButton(string sceneName)
+    public void LoadSceneByButton(string defaultSceneName)
     {
-        SceneManager.LoadScene(sceneName);
+        // 저장된 스테이지 불러오기
+        string stageName = SaveSystemJSON.DataLoadStage();
+
+        // 저장된 데이터가 없으면 기본값(defaultSceneName)으로 시작
+        if (string.IsNullOrEmpty(stageName))
+        {
+            SceneManager.LoadScene(defaultSceneName);
+        }
+        else
+        {
+            SceneManager.LoadScene(stageName);
+        }
     }
 }

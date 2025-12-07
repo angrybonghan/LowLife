@@ -7,10 +7,11 @@ public class DataResetByKey : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.C))
         {
-            Debug.Log("[키 입력 감지: Ctrl+Alt+C] 퀘스트 데이터 초기화 실행");
+            Debug.Log("[키 입력 감지: Ctrl+Alt+C] 퀘스트 + 스테이지 데이터 초기화 실행");
 
             // 저장 데이터 초기화
             SaveSystemJSON.ClearQuests();
+            SaveSystemJSON.ClearStage();
 
             // QuestManager 메모리 상태도 초기화
             var qm = QuestManager.Instance;

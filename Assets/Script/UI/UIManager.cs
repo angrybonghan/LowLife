@@ -14,8 +14,6 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
-    public LockMouse lockMouse;
-
     [Header("UI References")]
     public TextMeshProUGUI questText;
     public GameObject achievementPopup;
@@ -64,7 +62,9 @@ public class UIManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        SaveSystemJSON.OnDataSaved += UpdateSaveTimeText;
+        // 저장된 마지막 퀘스트 저장 시간 불러와서 UI에 반영
+        string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
+        UpdateSaveTimeText(lastTime);
 
         if (escMenuPanel != null)
             escMenuPanel.anchoredPosition = hiddenPos;
@@ -76,7 +76,6 @@ public class UIManager : MonoBehaviour
             sidePanel.anchoredPosition = sideHiddenPos;
             sidePanel.localRotation = Quaternion.Euler(0f, 90f, 0f); // 처음엔 90도 회전된 상태
         }
-
 
         // 볼륨 업 버튼
         if (volumeUpButton != null)
@@ -113,18 +112,10 @@ public class UIManager : MonoBehaviour
         SyncPresetButtonImages();
     }
 
-
-private void OnEnable()
+    private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
-
-    private void OnDestroy()
-    {
-        // 이벤트 해제 (메모리 누수 방지)
-        SaveSystemJSON.OnDataSaved -= UpdateSaveTimeText;
-    }
-
 
     private void OnDisable()
     {
@@ -143,11 +134,10 @@ private void OnEnable()
 
     private void Start()
     {
-        // 게임 시작 시 저장 기록 불러오기
-        string lastTime = SaveSystemJSON.GetLastSaveTime();
+        // 게임 시작 시 퀘스트 저장 기록 불러오기
+        string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
         UpdateSaveTimeText(lastTime);
     }
-
 
     private void Update()
     {
@@ -156,11 +146,6 @@ private void OnEnable()
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ToggleESCMenu();
-
-            if (lockMouse != null)
-            {
-                lockMouse.UnlockMouseForUI(); // 커서 해제
-            }
         }
 
         if (isPaused && escMenuButtons.Length > 0)
@@ -490,8 +475,16 @@ private void OnEnable()
         if (achievementPopup != null) achievementPopup.SetActive(false);
     }
 
-    public void LoadSceneByButton(string sceneName)
+    public void ExitToMainMenu()
     {
-        SceneManager.LoadScene(sceneName);
+        // 현재 진행 중인 스테이지 저장
+        string currentStage = SceneManager.GetActiveScene().name;
+        SaveSystemJSON.DataSaveStage(currentStage);
+
+        // 퀘스트 상태 저장
+        SaveSystemJSON.DataSaveQuests(QuestManager.Instance);
+
+        // 메인 메뉴 씬으로 이동
+        SceneManager.LoadScene("MainMenu");
     }
 }

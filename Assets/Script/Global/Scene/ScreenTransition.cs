@@ -24,6 +24,9 @@ public class ScreenTransition : MonoBehaviour
     private GameObject currentCurtain;
     private Image curtainImage;
 
+    // 저장 여부 플래그
+    private bool shouldSaveData = true;
+
     private void Awake()
     {
         if (Instance == null)
@@ -37,10 +40,8 @@ public class ScreenTransition : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 인수 : 목표 Scene - 로딩 Scene - 페이드 커튼 색상 - 페이드 아웃 이전 대기 시간 - 페이드 아웃 지속시간 - 보장할 최소 로딩 시간 - 페이드 인 지속시간 - 페이드 아웃 후 대기 시간
-    /// </summary>
-    static public void ScreenTransitionGoto(string SceneName, string LoadingSceneName, Color CurtainColor, float WaitTime1, float FadeOutTime, float LoadingTime, float FadeInTime, float WaitTime2)
+    public static void ScreenTransitionGoto(string SceneName, string LoadingSceneName, Color CurtainColor,
+        float WaitTime1, float FadeOutTime, float LoadingTime, float FadeInTime, float WaitTime2, bool saveData = true)
     {
         if (Instance == null)
         {
@@ -58,6 +59,7 @@ public class ScreenTransition : MonoBehaviour
         Instance.LoadingTime = LoadingTime;
         Instance.FadeInTime = FadeInTime;
         Instance.WaitTime2 = WaitTime2;
+        Instance.shouldSaveData = saveData; // 저장 여부 설정
 
         Instance.StartTransitionInternal();
     }
@@ -95,6 +97,8 @@ public class ScreenTransition : MonoBehaviour
 
         if (LoadingTime <= 0f)
         {
+            SaveCurrentSceneData();
+
             SceneManager.LoadScene(SceneName);
             yield return null;
 
@@ -102,6 +106,8 @@ public class ScreenTransition : MonoBehaviour
         }
         else
         {
+            SaveCurrentSceneData();
+
             SceneManager.LoadScene(LoadingSceneName);
             yield return null;
 
@@ -113,17 +119,15 @@ public class ScreenTransition : MonoBehaviour
     {
         isRoading = true;
 
-        //씬 로딩 즉시 시작
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(SceneName);
-        asyncLoad.allowSceneActivation = false; // 로딩 완료 후 즉시 활성화 방지
+        asyncLoad.allowSceneActivation = false;
 
-        // 최소 로딩 시간 확보
         yield return new WaitForSeconds(LoadingTime);
 
-        // 실제 로딩 시간 확보
         while (asyncLoad.progress < 0.9f) yield return null;
 
-        // 로딩 완료 후 목표 씬으로 전환
+        SaveCurrentSceneData();
+
         asyncLoad.allowSceneActivation = true;
         yield return null;
         isRoading = false;
@@ -148,10 +152,8 @@ public class ScreenTransition : MonoBehaviour
         Color initialColor = CurtainColor;
         curtainImage.color = new Color(initialColor.r, initialColor.g, initialColor.b, 1f);
 
-        // 커튼 페이드 인 (투명해짐)
         yield return StartCoroutine(FadeCurtain(curtainImage, 0f, FadeInTime));
 
-        // 두 번째 대기 시간
         if (WaitTime2 > 0)
         {
             yield return new WaitForSeconds(WaitTime2);
@@ -206,5 +208,19 @@ public class ScreenTransition : MonoBehaviour
             }
         }
         image.color = new Color(image.color.r, image.color.g, image.color.b, targetAlpha);
+    }
+
+    // 현재 씬과 퀘스트 상태 저장 (죽었을 때는 건너뜀)
+    private void SaveCurrentSceneData()
+    {
+        if (!shouldSaveData) return;
+
+        string currentStage = SceneManager.GetActiveScene().name;
+        SaveSystemJSON.DataSaveStage(currentStage);
+        SaveSystemJSON.DataSaveQuests(QuestManager.Instance);
+
+        string saveTime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        PlayerPrefs.SetString("LastQuestSaveTime", saveTime);
+        PlayerPrefs.Save();
     }
 }
