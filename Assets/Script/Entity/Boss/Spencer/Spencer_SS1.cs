@@ -7,6 +7,9 @@ public class Spencer_SS1 : MonoBehaviour, I_Attackable
     [Header("재장전 시간")]
     public float reloadTime;
 
+    [Header("소리")]
+    public AudioClip[] reloadSound;
+
     Animator anim;
 
     private void Awake()
@@ -53,6 +56,14 @@ public class Spencer_SS1 : MonoBehaviour, I_Attackable
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerController.instance.ImmediateDeath();
+        }
+    }
+
+    public void PlayReloadSound()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, reloadSound, Random.Range(0.5f, 1.5f));
         }
     }
 }

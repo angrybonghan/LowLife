@@ -95,6 +95,15 @@ MonoBehaviour:
   revolverDrop: {fileID: 8734219331058119352, guid: 8a36a3752f6c45445bc67ea7c57845c1, type: 3}
   shotgunDrop: {fileID: 3438869383047924017, guid: f7bee0d7d4fa4c0438bf4f6a360ef155, type: 3}
   roketDrop: {fileID: 7835685125076597245, guid: df27b63b3ee8249489c0644fb425486a, type: 3}
+  gunOutSounds:
+  - {fileID: 8300000, guid: f36018c8edd2c8748ab223a8d7fb37e1, type: 3}
+  revolverFireSounds:
+  - {fileID: 8300000, guid: 0a20d8143b317a146b36d3968d44c4ae, type: 3}
+  shotgunFireSounds:
+  - {fileID: 8300000, guid: e959fee6e5458da4487f5b83dff28be5, type: 3}
+  - {fileID: 8300000, guid: e34862b82fb12cb47aa16609e97f9850, type: 3}
+  roketFireSounds:
+  - {fileID: 8300000, guid: 7182d5529f90124489ec58c57553d096, type: 3}
   parents: {fileID: 0}
 --- !u!70 &637412702941635728
 CapsuleCollider2D:
