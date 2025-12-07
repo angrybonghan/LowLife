@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class TrainTunnelMovement : MonoBehaviour
@@ -28,10 +29,17 @@ public class TrainTunnelMovement : MonoBehaviour
     public Sprite_Animator backgroundCurtain;
     public Sprite_Animator frontCurtain;
 
+    [Header("스피드라인")]
+    public Vector2 speedLineSpawnPosition;
+    public TrainTunnelSpeedLine speedLinePrefab;
+    public float minSpeedLineInterval = 0.05f;
+    public float maxSpeedLineInterval = 0.3f;
+
     bool isActive = false;
     bool hasEndPoint = false;
     bool needEndPoint = false;
     const float resetDistance = 3000f;
+    Coroutine speedLineRoutine = null;
 
     private void Awake()
     {
@@ -102,6 +110,12 @@ public class TrainTunnelMovement : MonoBehaviour
         isActive = false;
         hasEndPoint = false;
         needEndPoint = false;
+
+        if (speedLineRoutine != null)
+        {
+            StopCoroutine(speedLineRoutine);
+            speedLineRoutine = null;
+        }
     }
 
     public void StartTunnel()
@@ -118,6 +132,11 @@ public class TrainTunnelMovement : MonoBehaviour
         frontCurtain.SetAlpha(0.7f, 0.37887f);
 
         isActive = true;
+
+        if (speedLinePrefab != null && speedLineRoutine == null)
+        {
+            speedLineRoutine = StartCoroutine(SpawnSpeedLinesLoop());
+        }
     }
 
     public void EndTunnel()
@@ -125,6 +144,12 @@ public class TrainTunnelMovement : MonoBehaviour
         if (!isActive) return;
         backgroundCurtain.SetAlpha(1, 0);
         needEndPoint = true;
+
+        if (speedLineRoutine != null)
+        {
+            StopCoroutine(speedLineRoutine);
+            speedLineRoutine = null;
+        }
     }
 
     public void SpriteDeleted()
@@ -159,6 +184,23 @@ public class TrainTunnelMovement : MonoBehaviour
         bg.isTunnel = true;
 
         SetNextSpritePosition();
+    }
+
+    IEnumerator SpawnSpeedLinesLoop()
+    {
+        while (isActive && !needEndPoint)
+        {
+            SpawnSpeedLine();
+            float wait = Random.Range(minSpeedLineInterval, maxSpeedLineInterval);
+            yield return new WaitForSeconds(wait);
+        }
+        speedLineRoutine = null;
+    }
+
+    void SpawnSpeedLine()
+    {
+        if (speedLinePrefab == null) return;
+        Instantiate(speedLinePrefab, speedLineSpawnPosition, Quaternion.identity);
     }
 
     void SetNextSpritePosition()

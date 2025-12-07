@@ -1252,6 +1252,10 @@ MonoBehaviour:
   startPosition: {x: 30, y: 1}
   backgroundCurtain: {fileID: 2088973761}
   frontCurtain: {fileID: 1860193303}
+  speedLineSpawnPosition: {x: 23, y: 0}
+  speedLinePrefab: {fileID: 272658675849722346, guid: 98aff8784832fb44e904e6b5dd69cdaf, type: 3}
+  minSpeedLineInterval: 0
+  maxSpeedLineInterval: 0.1
 --- !u!1 &1360142121
 GameObject:
   m_ObjectHideFlags: 0
@@ -2012,8 +2016,8 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 888551633}
   - {fileID: 754440089}
+  - {fileID: 888551633}
   - {fileID: 192283072}
   - {fileID: 578570654}
   - {fileID: 1888905719}
