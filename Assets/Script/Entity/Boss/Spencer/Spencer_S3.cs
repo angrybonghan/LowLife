@@ -1,5 +1,4 @@
 using System.Collections;
-//using UnityEditor.Search;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator), typeof(Collider2D))]
@@ -14,6 +13,9 @@ public class Spencer_S3 : MonoBehaviour, I_Attackable
     public float projectileRadius;
     public float attackInterval;
     public int projectileCount;
+
+    [Header("¼Ò¸®")]
+    public AudioClip attackSound;
 
 
     Animator anim;
@@ -74,6 +76,8 @@ public class Spencer_S3 : MonoBehaviour, I_Attackable
 
         SpencerWebProjectile proj = Instantiate(projectile, projectilePos, Quaternion.identity);
         proj.DontLookPos(transform.position);
+
+        SoundManager.instance.PlaySoundAtPositionWithPitch(transform.position, attackSound, Random.Range(0.8f, 1.2f));
     }
 
     public void EndAttack()
