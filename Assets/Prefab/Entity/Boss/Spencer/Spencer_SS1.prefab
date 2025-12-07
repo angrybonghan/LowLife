@@ -132,6 +132,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   reloadTime: 0.3
+  reloadSound:
+  - {fileID: 8300000, guid: 650a50c2625f85c4b8526a9b03e3a627, type: 3}
+  - {fileID: 8300000, guid: 5c57da75e9c238b4fb51611136ff0ae2, type: 3}
 --- !u!70 &5889351852089498569
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

@@ -10,7 +10,6 @@ public class TrainBackgroundMovement : MonoBehaviour
 
     [Header("스프라이트 배경")]
     public float spriteInterval = 10f;
-    public float spriteSize = 3f;
 
     [Header("스프라이트")]
     public float spriteScale = 3f;
@@ -21,7 +20,8 @@ public class TrainBackgroundMovement : MonoBehaviour
 
     int spriteCount = 0;
     int currentSpriteIndex = 0;
-    Vector2 SpriteLocalposition;
+    const float resetDistance = 3000f;
+    Vector2 spriteLocalposition;
 
     void Start()
     {
@@ -33,6 +33,19 @@ public class TrainBackgroundMovement : MonoBehaviour
     {
         Vector2 move = new Vector2(-moveSpeed * Time.deltaTime, 0f);
         transform.position += (Vector3)move;
+
+        if (transform.position.x <= -resetDistance)
+        {
+            float overshoot = transform.position.x;
+            transform.position = new Vector3(0, 0, transform.position.z);
+
+            foreach (Transform child in transform)
+            {
+                child.localPosition += new Vector3(overshoot, 0, 0);
+            }
+
+            spriteLocalposition += new Vector2(overshoot, 0f);
+        }
     }
 
     void StartSet()
@@ -46,13 +59,14 @@ public class TrainBackgroundMovement : MonoBehaviour
     public void SpawnNewSprite()
     {
         GameObject go = new GameObject("TrainBackground");
-        TrainBackground bg = go.AddComponent<TrainBackground>();
+        TrainBackgroundSprite bg = go.AddComponent<TrainBackgroundSprite>();
         go.transform.SetParent(transform);
-        go.transform.localPosition = SpriteLocalposition;
+        go.transform.localPosition = spriteLocalposition;
 
         bg.SetSize(spriteScale);
-        bg.SetSprite(backgroundSprites[currentSpriteIndex]);
+        bg.SetSprite(backgroundSprites[currentSpriteIndex], -100);
         bg.endXPosition = endXPosition;
+        bg.isTunnel = false;
         bg.manager = this;
 
         SetNextSpritePosition();
@@ -60,7 +74,7 @@ public class TrainBackgroundMovement : MonoBehaviour
 
     void SetNextSpritePosition()
     {
-        SpriteLocalposition = new Vector2(SpriteLocalposition.x + spriteInterval, SpriteLocalposition.y);
+        spriteLocalposition = new Vector2(spriteLocalposition.x + spriteInterval, spriteLocalposition.y);
         currentSpriteIndex++;
         if (currentSpriteIndex >= spriteCount)
         {

@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
     {
         Color fadeColor = new Color32(30, 30, 30, 255);
         string currentSceneName = SceneManager.GetActiveScene().name;
-
-        ScreenTransition.ScreenTransitionGoto(currentSceneName, "PlayerDeathLoading", fadeColor, 2, 0.5f, 2, 0.5f, 0, false);
+        ScreenTransition.ScreenTransitionGoto(currentSceneName, "PlayerDeathLoading", fadeColor, 2, 0.5f, 0.7887f, 0.5f, 0);
     }
 }
