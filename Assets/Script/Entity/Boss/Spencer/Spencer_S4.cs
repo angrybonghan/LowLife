@@ -90,6 +90,16 @@ public class Spencer_S4 : MonoBehaviour, I_Attackable
         SpencerManager.Instance.canUseSklill = true;
     }
 
+    public void PlayTeleportStartSound()
+    {
+        SpencerManager.Instance.PlayTeleportSound(true, transform.position);
+    }
+
+    public void PlayTeleportEndSound()
+    {
+        SpencerManager.Instance.PlayTeleportSound(false, transform.position);
+    }
+
     public bool CanAttack(Transform attacker)
     {
         return true;
