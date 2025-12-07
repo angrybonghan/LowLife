@@ -23,6 +23,7 @@ public class Spencer_S4 : MonoBehaviour, I_Attackable
     Vector2 absurdSpace = new(0b11111101001, 0b10010110101);    // 그냥 아주 먼 아무 공간, 레이저 생성 위치에 사용됨
     Vector2 attackOrigin;
     Transform player;
+    bool callTunnel = false;
 
     private void Awake()
     {
@@ -38,6 +39,8 @@ public class Spencer_S4 : MonoBehaviour, I_Attackable
             laserCount = 80;
             firingInterval = 0.015f;
             laserDispersion = 2.0f;
+            callTunnel = true;
+            TrainTunnelMovement.instance.StartTunnel();
         }
 
         if (PlayerController.instance != null) player = PlayerController.instance.transform;
@@ -60,6 +63,12 @@ public class Spencer_S4 : MonoBehaviour, I_Attackable
         {
             FiringLaser();
             yield return new WaitForSeconds(firingInterval);
+        }
+
+        if (callTunnel)
+        {
+            yield return new WaitForSeconds(timeToFire);
+            TrainTunnelMovement.instance.EndTunnel();
         }
 
         anim.SetTrigger("end");

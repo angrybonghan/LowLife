@@ -1067,7 +1067,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1324623347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1243,8 +1243,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 300
   endXPosition: -30
-  spriteInterval: 18
-  spriteScale: 18
+  spriteInterval: 19
+  spriteScale: 19
   tunnelStart: {fileID: 21300000, guid: 2a5829d5168210a418fdb8ff434c5f7a, type: 3}
   tunnelLoop: {fileID: 21300000, guid: 5f382d37f2cc01448999641f7d74270b, type: 3}
   tunnelEnd: {fileID: 21300000, guid: 2cf9ceda1341dee4da986c0852ecb5ee, type: 3}
