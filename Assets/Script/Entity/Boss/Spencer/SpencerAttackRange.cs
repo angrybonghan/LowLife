@@ -46,7 +46,7 @@ public class SpencerAttackRange : MonoBehaviour
         rangePos.y = 0;
         transform.position = rangePos;
 
-        anim.SetTrigger("start");
+        if (anim != null) anim.SetTrigger("start");
     }
 
     IEnumerator WaitGunDelay()
@@ -78,7 +78,7 @@ public class SpencerAttackRange : MonoBehaviour
 
     public void EndAttack()
     {
-        anim.SetTrigger("end");
+        if (anim != null) anim.SetTrigger("end");
     }
 
     public void Destruction()

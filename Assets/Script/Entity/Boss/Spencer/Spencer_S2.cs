@@ -31,11 +31,15 @@ public class Spencer_S2 : MonoBehaviour, I_Attackable
     {
         if (SpencerManager.Instance.halfHP)
         {
-            phaseCount = 2;
+            phaseCount = 3;
+            bulletCount = 10;
+            bulletInterval = 0.04f;
+            xRange = 3f;
         }
 
         attackRange = Instantiate(range);
         attackRange.ReloadPos();
+        attackRange.xRange = xRange;
     }
 
     public void StartAttack()
@@ -45,7 +49,6 @@ public class Spencer_S2 : MonoBehaviour, I_Attackable
 
     IEnumerator SkillSequence()
     {
-        
         for (int i = 0; i < phaseCount; i++)
         {
             float armNumber = Random.value;
