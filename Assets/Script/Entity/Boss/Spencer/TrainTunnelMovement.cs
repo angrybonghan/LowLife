@@ -24,6 +24,10 @@ public class TrainTunnelMovement : MonoBehaviour
     public Vector2 startPosition;
     Vector2 spriteLocalposition;
 
+    [Header("°¡¸²¸·")]
+    public Sprite_Animator backgroundCurtain;
+    public Sprite_Animator frontCurtain;
+
     bool isActive = false;
     bool hasEndPoint = false;
     bool needEndPoint = false;
@@ -111,13 +115,15 @@ public class TrainTunnelMovement : MonoBehaviour
             SpawnNewSprite(tunnelLoop);
         }
 
+        frontCurtain.SetAlpha(0.7f, 0.37887f);
+
         isActive = true;
     }
 
     public void EndTunnel()
     {
         if (!isActive) return;
-
+        backgroundCurtain.SetAlpha(1, 0);
         needEndPoint = true;
     }
 
@@ -128,6 +134,8 @@ public class TrainTunnelMovement : MonoBehaviour
         if (needEndPoint)
         {
             SpawnNewSprite(tunnelEnd);
+            backgroundCurtain.SetAlpha(0, 1);
+            frontCurtain.SetAlpha(0, 0.1f);
             hasEndPoint = true;
         }
         else
