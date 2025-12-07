@@ -138,6 +138,7 @@ MonoBehaviour:
   projectileRadius: 1.5
   attackInterval: 0.03
   projectileCount: 35
+  attackSound: {fileID: 8300000, guid: e5be37b8b64228f4d83a171dc934a456, type: 3}
 --- !u!70 &8889174501967124215
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
