@@ -1093,6 +1093,7 @@ MonoBehaviour:
   slownessDuration: 8
   minSlownessSpeed: 6
   maxHP: 46
+  teleportSound: {fileID: 8300000, guid: 160e02fd2c9e3644eb88fd050d120b94, type: 3}
   randomWeaponNumber: 0
   positionNumber: 2
   canUseSklill: 1

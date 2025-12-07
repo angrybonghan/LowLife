@@ -28,6 +28,9 @@ public class SpencerManager : MonoBehaviour
     [Header("HP")]
     public int maxHP = 46;
 
+    [Header("¼Ò¸®")]
+    public AudioClip teleportSound;
+
     [HideInInspector] public int randomWeaponNumber;
     [HideInInspector] public int positionNumber = 2;
     [HideInInspector] public bool canUseSklill = true;
@@ -210,6 +213,12 @@ public class SpencerManager : MonoBehaviour
                 skillInterval = 0.3f;
             }
         }
+    }
+
+    public void PlayTeleportSound(bool isStart, Vector3 pos)
+    {
+        float peatch = isStart ? Random.Range(2f, 1.2f) : Random.Range(1f, 1f);
+        SoundManager.instance.PlaySoundAtPositionWithPitch(pos, teleportSound, peatch);
     }
 
     void Death()
