@@ -62,6 +62,8 @@ MonoBehaviour:
   afterParryCollisionMask:
     serializedVersion: 2
     m_Bits: 768
+  fireSound: {fileID: 8300000, guid: 0a20d8143b317a146b36d3968d44c4ae, type: 3}
+  aimingSound: {fileID: 8300000, guid: 10545facd31da184ba276f325d922e89, type: 3}
 --- !u!1 &7129200868351099970
 GameObject:
   m_ObjectHideFlags: 0
