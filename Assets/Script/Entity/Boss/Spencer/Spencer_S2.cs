@@ -16,6 +16,9 @@ public class Spencer_S2 : MonoBehaviour, I_Attackable
     public SpencerAttackRange range;
     public float xRange;
 
+    [Header("¼Ò¸®")]
+    public AudioClip gunshotSounds;
+
     Animator anim;
     SpencerAttackRange attackRange;
 
@@ -86,6 +89,11 @@ public class Spencer_S2 : MonoBehaviour, I_Attackable
         {
             PlayerController.instance.ImmediateDeath();
         }
+    }
+
+    public void PlayGunshotSound()
+    {
+        SoundManager.instance.PlaySoundAtPositionWithPitch(transform.position, gunshotSounds, Random.Range(0.5f, 1.5f));
     }
 
 }

@@ -120,7 +120,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void PlayClipAtPointWithPitch(Vector3 position, AudioClip clip, float pitch = 1.0f, float volumeMultiple = 1.0f)
+    public void PlaySoundAtPositionWithPitch(Vector3 position, AudioClip clip, float pitch = 1.0f, float volumeMultiple = 1.0f)
     {
         GameObject tempGO = new GameObject("TempAudio");
         tempGO.transform.position = position;

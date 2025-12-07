@@ -138,6 +138,7 @@ MonoBehaviour:
   bulletCount: 25
   range: {fileID: 892250799513276428, guid: b1474e5de80af6c4484af26b50438772, type: 3}
   xRange: 7.5
+  gunshotSounds: {fileID: 8300000, guid: 0a20d8143b317a146b36d3968d44c4ae, type: 3}
 --- !u!70 &7457072225037440993
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
