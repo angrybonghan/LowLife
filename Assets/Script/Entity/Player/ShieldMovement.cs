@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(CircleCollider2D), typeof(Animator), typeof(AudioSource))]
