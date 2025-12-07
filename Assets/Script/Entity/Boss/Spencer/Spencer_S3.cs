@@ -96,6 +96,16 @@ public class Spencer_S3 : MonoBehaviour, I_Attackable
         SpencerManager.Instance.TakeDamage();
     }
 
+    public void PlayTeleportStartSound()
+    {
+        SpencerManager.Instance.PlayTeleportSound(true, transform.position);
+    }
+
+    public void PlayTeleportEndSound()
+    {
+        SpencerManager.Instance.PlayTeleportSound(false, transform.position);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
