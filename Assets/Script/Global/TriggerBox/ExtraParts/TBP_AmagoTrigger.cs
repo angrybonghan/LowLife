@@ -37,8 +37,8 @@ public class TBP_AmagoTrigger : MonoBehaviour, I_TriggerBox
         SoundManager.instance.PlaySoundAtPosition(new Vector3(14, -32, Camera.main.transform.position.z), spawnSound);
         yield return new WaitForSeconds(0.5f);
 
-        SoundManager.instance.PlayLoopBgm(bgmLoop, 1f, 0.7f);
-        SoundManager.instance.PlayLoopBgm(amagoBgm, 1f, 0.5f);
+        SoundManager.instance.PlayLoopBgm(bgmLoop, "AmagoSoundLoop", 1f, 0.7f);
+        SoundManager.instance.PlayLoopBgm(amagoBgm, "vsAmagoBGM", 1f, 0.5f);
 
         while (true)
         {

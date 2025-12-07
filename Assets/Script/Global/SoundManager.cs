@@ -152,9 +152,9 @@ public class SoundManager : MonoBehaviour
         Object.Destroy(newObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale));
     }
 
-    public void PlayLoopBgm(AudioClip clip, float pitch = 1.0f, float volumeMultiple = 1.0f)
+    public void PlayLoopBgm(AudioClip clip, string soundName, float pitch = 1.0f, float volumeMultiple = 1.0f)
     {
-        GameObject tempBgmGO = new GameObject("TempBgmAudio");
+        GameObject tempBgmGO = new GameObject(soundName);
         AudioSource audioSource = tempBgmGO.AddComponent<AudioSource>();
         audioSource.clip = clip;
         audioSource.spatialBlend = 0f;
@@ -176,6 +176,8 @@ public class SoundManager : MonoBehaviour
         audioSource.volume = volume * volumeMultiple;
         audioSource.loop = true;
         audioSource.Play();
+
+        allLoopAudioSource.Add(audioSource);
     }
 
     public void StopSound(string soundName)

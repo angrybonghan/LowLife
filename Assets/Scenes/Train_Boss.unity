@@ -1062,12 +1062,12 @@ GameObject:
   - component: {fileID: 1324623348}
   - component: {fileID: 1324623347}
   m_Layer: 0
-  m_Name: BossManaget
+  m_Name: BossManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1324623347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1256,6 +1256,9 @@ MonoBehaviour:
   speedLinePrefab: {fileID: 272658675849722346, guid: 98aff8784832fb44e904e6b5dd69cdaf, type: 3}
   minSpeedLineInterval: 0
   maxSpeedLineInterval: 0.1
+  tunnelEnterSound: {fileID: 8300000, guid: 7399acedd6ddca74588eba3c34bc3ad6, type: 3}
+  tunnelLoopSound: {fileID: 8300000, guid: 0c869c7fff58ef44da66d227c9e48f1f, type: 3}
+  tunnelExitSound: {fileID: 8300000, guid: 2f784728f2e1fb04a8e3c96f9da40f3c, type: 3}
 --- !u!1 &1360142121
 GameObject:
   m_ObjectHideFlags: 0

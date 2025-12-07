@@ -35,6 +35,12 @@ public class TrainTunnelMovement : MonoBehaviour
     public float minSpeedLineInterval = 0.05f;
     public float maxSpeedLineInterval = 0.3f;
 
+    [Header("¼Ò¸®")]
+    public AudioClip tunnelEnterSound;
+    public AudioClip tunnelLoopSound;
+    public AudioClip tunnelExitSound;
+
+
     bool isActive = false;
     bool hasEndPoint = false;
     bool needEndPoint = false;
@@ -137,6 +143,15 @@ public class TrainTunnelMovement : MonoBehaviour
         {
             speedLineRoutine = StartCoroutine(SpawnSpeedLinesLoop());
         }
+
+        StartCoroutine(PlayTunnelEnterSound());
+    }
+
+    IEnumerator PlayTunnelEnterSound()
+    {
+        SoundManager.instance.PlaySoundAtPosition(Vector3.zero, tunnelEnterSound);
+        yield return new WaitForSeconds(0.35f);
+        SoundManager.instance.PlayLoopBgm(tunnelLoopSound, "TrainTunnelLoop", 1.2f, 0.35f);
     }
 
     public void EndTunnel()
@@ -150,6 +165,9 @@ public class TrainTunnelMovement : MonoBehaviour
             StopCoroutine(speedLineRoutine);
             speedLineRoutine = null;
         }
+
+        SoundManager.instance.StopSound("TrainTunnelLoop");
+        SoundManager.instance.PlaySoundAtPosition(Vector3.zero, tunnelExitSound);
     }
 
     public void SpriteDeleted()
