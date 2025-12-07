@@ -354,8 +354,8 @@ public class MainMenuUIController : MonoBehaviour
 
     public void QuitGameByButton()
     {
-        if (QuestManager.Instance != null)
-            QuestSaveSystemJSON.SaveQuests(QuestManager.Instance);
+        /*if (QuestManager.Instance != null)
+            SaveSystemJSON.SaveQuests(QuestManager.Instance);*/
 
         StartCoroutine(QuitAfterDelay(0.8f));
     }

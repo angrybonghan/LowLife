@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using static UnityEditor.FilePathAttribute;
+//using static UnityEditor.FilePathAttribute;
 
 [RequireComponent(typeof(Animator),typeof(Collider2D))]
 public class Spencer_SS0 : MonoBehaviour, I_Attackable

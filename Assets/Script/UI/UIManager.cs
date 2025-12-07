@@ -53,6 +53,9 @@ public class UIManager : MonoBehaviour
     private bool sideOpen = false;
     private Coroutine sideAnimCoroutine;
 
+    public TextMeshProUGUI saveTimeText; // 마지막 저장 시간 표시용
+
+
 
     private void Awake()
     {
@@ -60,6 +63,8 @@ public class UIManager : MonoBehaviour
         else Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
+
+        SaveSystemJSON.OnDataSaved += UpdateSaveTimeText;
 
         if (escMenuPanel != null)
             escMenuPanel.anchoredPosition = hiddenPos;
@@ -114,6 +119,13 @@ private void OnEnable()
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    private void OnDestroy()
+    {
+        // 이벤트 해제 (메모리 누수 방지)
+        SaveSystemJSON.OnDataSaved -= UpdateSaveTimeText;
+    }
+
+
     private void OnDisable()
     {
         // 씬 로드 이벤트 해제
@@ -127,6 +139,13 @@ private void OnEnable()
         {
             Destroy(gameObject);
         }
+    }
+
+    private void Start()
+    {
+        // 게임 시작 시 저장 기록 불러오기
+        string lastTime = SaveSystemJSON.GetLastSaveTime();
+        UpdateSaveTimeText(lastTime);
     }
 
 
@@ -409,6 +428,12 @@ private void OnEnable()
 
             questText.text += questLine + "\n";
         }
+    }
+
+    public void UpdateSaveTimeText(string time)
+    {
+        if (saveTimeText != null)
+            saveTimeText.text = $"마지막 저장: {time}";
     }
 
     public void ShowQuestCompleted(string questName)
