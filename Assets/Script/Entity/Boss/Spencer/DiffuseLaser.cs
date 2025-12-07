@@ -30,6 +30,10 @@ public class DiffuseLaser : MonoBehaviour
     public LayerMask collisionMask;
     public LayerMask afterParryCollisionMask;
 
+    [Header("¼Ò¸®")]
+    public AudioClip fireSound;
+    public AudioClip aimingSound;
+
     private const float maxRayDistance = 100f;
 
     bool isParryed = false;
@@ -60,6 +64,8 @@ public class DiffuseLaser : MonoBehaviour
     {
         if (timeToFire > 0)
         {
+            SoundManager.instance.PlaySoundAtPosition(transform.position, aimingSound);
+
             spriteRenderer.color = lockOnColor;
             float elapsedTime = 0f;
             while (elapsedTime < timeToFire)
@@ -122,6 +128,7 @@ public class DiffuseLaser : MonoBehaviour
             }
         }
 
+        SoundManager.instance.PlaySoundAtPositionWithPitch(transform.position, fireSound, Random.Range(0.9f, 1.1f));
         StartCoroutine(Co_ShrinkAndDestroy());
     }
 
