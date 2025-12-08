@@ -453,6 +453,7 @@ public class PlayerController : MonoBehaviour
             CameraMovement.PositionShaking(0.1f, 0.05f, 0.2f);
         }
     }
+
     void RangedAttackHandler()
     {
         if (!canThrow || !hasShield || isThrowingShield || isWallSliding || isParrying || isShielding || isQuickTurning) return;

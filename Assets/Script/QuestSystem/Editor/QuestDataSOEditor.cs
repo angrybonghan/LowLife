@@ -78,11 +78,6 @@ public class QuestDataSOEditor : Editor
 
         EditorGUILayout.Space();
 
-        // 완료 연출
-        EditorGUILayout.LabelField("완료 연출", EditorStyles.boldLabel);
-        questData.achievementID = EditorGUILayout.TextField("업적 ID", questData.achievementID);
-        questData.achievementPopup = (GameObject)EditorGUILayout.ObjectField("업적 팝업 Prefab", questData.achievementPopup, typeof(GameObject), false);
-
         // 변경사항 저장
         if (GUI.changed)
         {
