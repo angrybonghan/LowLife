@@ -4,6 +4,9 @@ public class LetterBoxController : MonoBehaviour
 {
     public static LetterBoxController Instance { get; private set; }
 
+    [Header("½ÃÀÛ")]
+    public bool disableAtStart = true;
+
     [Header("ÆÄÃ÷")]
     public LetterBox_Animator[] lb;
     public TMPugui_Animator text;
@@ -22,6 +25,14 @@ public class LetterBoxController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (disableAtStart)
+        {
+            SetEnableImmediate(false);
+        }
+    }
+
     public void ToggleEnable()
     {
         foreach (LetterBox_Animator currentLB in lb)
@@ -35,6 +46,14 @@ public class LetterBoxController : MonoBehaviour
         foreach (LetterBox_Animator currentLB in lb)
         {
             currentLB.SetLetterBoxEnable(isEnable, enableTime);
+        }
+    }
+
+    public void SetEnableImmediate(bool isEnable)
+    {
+        foreach (LetterBox_Animator currentLB in lb)
+        {
+            currentLB.SetLetterBoxEnable(isEnable, 0);
         }
     }
 
