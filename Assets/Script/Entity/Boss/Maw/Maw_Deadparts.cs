@@ -13,6 +13,9 @@ public class Maw_Deadparts : MonoBehaviour
     [Header("레이어/캐스트")]
     public LayerMask groundLayer;
 
+    [Header("소리")]
+    public AudioClip deadSound;
+
     const float rayDistance = 0.05f;
 
     Animator anim;
@@ -32,6 +35,8 @@ public class Maw_Deadparts : MonoBehaviour
         }
 
         StartCoroutine(DeadpartSequence());
+
+        SoundManager.instance.PlaySoundAtPosition(transform.position, deadSound);
     }
 
 

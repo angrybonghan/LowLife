@@ -81210,7 +81210,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueBubblePrefab: {fileID: 7636360115096308400, guid: 938e5ad1cbceb0340a14cafb3e1ea59b, type: 3}
-  dialogueTypingSound: {fileID: 0}
+  dialogueTypingSound: {fileID: 8300000, guid: 28955fd637b6f2f478360b57a2684e22, type: 3}
 --- !u!114 &1444965839
 MonoBehaviour:
   m_ObjectHideFlags: 0

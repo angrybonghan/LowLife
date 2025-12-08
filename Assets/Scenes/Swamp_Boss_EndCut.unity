@@ -65168,6 +65168,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1407940655}
   - component: {fileID: 1407940654}
+  - component: {fileID: 1407940657}
   - component: {fileID: 1407940656}
   m_Layer: 0
   m_Name: AnimationLoot
@@ -65243,6 +65244,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1407940657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407940653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b20011272d60fd44976737e1f93c2d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stuckSound: {fileID: 8300000, guid: f187c896ee95d114995e6ef5c6d88126, type: 3}
 --- !u!1 &1444965835
 GameObject:
   m_ObjectHideFlags: 0
