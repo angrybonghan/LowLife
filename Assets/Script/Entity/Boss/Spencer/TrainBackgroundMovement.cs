@@ -38,7 +38,7 @@ public class TrainBackgroundMovement : MonoBehaviour
         if (transform.position.x <= -resetDistance)
         {
             float overshoot = transform.position.x;
-            transform.position = new Vector3(0, 0, transform.position.z);
+            transform.position = new Vector3(0, transform.position.y, transform.position.z);
 
             foreach (Transform child in transform)
             {

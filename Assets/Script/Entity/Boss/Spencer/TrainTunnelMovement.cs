@@ -92,7 +92,7 @@ public class TrainTunnelMovement : MonoBehaviour
         if (transform.position.x <= -resetDistance)
         {
             float overshoot = transform.position.x;
-            transform.position = new Vector3(0, 0, transform.position.z);
+            transform.position = new Vector3(0, transform.position.y, transform.position.z);
 
             foreach (Transform child in transform)
             {
@@ -144,6 +144,8 @@ public class TrainTunnelMovement : MonoBehaviour
             speedLineRoutine = StartCoroutine(SpawnSpeedLinesLoop());
         }
 
+        RandomTreeSpawner.instance.canSpawn = false;
+
         StartCoroutine(PlayTunnelEnterSound());
     }
 
@@ -168,6 +170,7 @@ public class TrainTunnelMovement : MonoBehaviour
 
         SoundManager.instance.StopSound("TrainTunnelLoop");
         SoundManager.instance.PlaySoundAtPosition(Vector3.zero, tunnelExitSound);
+        RandomTreeSpawner.instance.canSpawn = true;
     }
 
     public void SpriteDeleted()
