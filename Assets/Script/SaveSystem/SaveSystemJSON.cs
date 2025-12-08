@@ -8,6 +8,7 @@ public static class SaveSystemJSON
 {
     private static string questFilePath = Application.persistentDataPath + "/questData.json";
     private static string stageFilePath = Application.persistentDataPath + "/stageData.json";
+    private static string achievementFilePath = Application.persistentDataPath + "/achievementData.json"; //업적 저장 파일
     private static string encryptionKey = "MySecretKey12345";
 
     // 저장 제외할 씬 목록
@@ -19,9 +20,9 @@ public static class SaveSystemJSON
         "GameStartLoding"
     };
 
+    //퀘스트 저장/로드
     public static void DataSaveQuests(QuestManager questManager)
     {
-        // 전달된 QuestManager가 null이면 저장을 시도하지 않음
         if (questManager == null)
         {
             Debug.LogWarning("QuestManager가 null임");
@@ -48,7 +49,7 @@ public static class SaveSystemJSON
         wrapper.ApplyToManager(questManager);
     }
 
-    // 마지막 스테이지 저장 (저장 제외 씬은 무시)
+    //스테이지 저장/로드
     public static void DataSaveStage(string stageName)
     {
         if (excludedScenes.Contains(stageName))
@@ -75,7 +76,6 @@ public static class SaveSystemJSON
         return wrapper.currentStageName;
     }
 
-    // 클리어한 스테이지 누적 저장 (저장 제외 씬은 무시)
     public static void DataSaveClearedStage(string stageName)
     {
         if (excludedScenes.Contains(stageName))
@@ -120,6 +120,36 @@ public static class SaveSystemJSON
         return wrapper.clearedStages;
     }
 
+    // 업적 저장/로드
+    public static void DataSaveAchievements(AchievementManager achievementManager)
+    {
+        if (achievementManager == null)
+        {
+            Debug.LogWarning("AchievementManager가 null임");
+            return;
+        }
+
+        string json = JsonUtility.ToJson(new AchievementSaveWrapper(achievementManager), true);
+        string encrypted = Encrypt(json, encryptionKey);
+        File.WriteAllText(achievementFilePath, encrypted);
+
+        Debug.Log("[업적 저장 완료]");
+    }
+
+    public static void DataLoadAchievements(AchievementManager achievementManager)
+    {
+        if (!File.Exists(achievementFilePath)) return;
+
+        string encrypted = File.ReadAllText(achievementFilePath);
+        string decrypted = Decrypt(encrypted, encryptionKey);
+
+        AchievementSaveWrapper wrapper = JsonUtility.FromJson<AchievementSaveWrapper>(decrypted);
+        wrapper.ApplyToManager(achievementManager);
+
+        Debug.Log("[업적 로드 완료]");
+    }
+
+    // 데이터 초기화
     public static void ClearQuests()
     {
         if (File.Exists(questFilePath)) File.Delete(questFilePath);
@@ -128,6 +158,11 @@ public static class SaveSystemJSON
     public static void ClearStage()
     {
         if (File.Exists(stageFilePath)) File.Delete(stageFilePath);
+    }
+
+    public static void ClearAchievements()
+    {
+        if (File.Exists(achievementFilePath)) File.Delete(achievementFilePath);
     }
 
     public static void DataResetByKey(string key)
@@ -141,14 +176,19 @@ public static class SaveSystemJSON
             case "Stage":
                 ClearStage();
                 break;
+            case "Achievement":
+                ClearAchievements();
+                break;
             case "All":
                 ClearQuests();
                 ClearStage();
+                ClearAchievements();
                 PlayerPrefs.DeleteKey("LastQuestSaveTime");
                 break;
         }
     }
 
+    // 암호화/복호화
     private static string Encrypt(string plainText, string key)
     {
         byte[] keyBytes = Encoding.UTF8.GetBytes(key.PadRight(32));
@@ -178,6 +218,7 @@ public static class SaveSystemJSON
     }
 }
 
+//Wrapper Classes
 [System.Serializable]
 public class StageSaveWrapper
 {
@@ -205,30 +246,15 @@ public class QuestSaveWrapper
         activeQuestIDs = new List<string>();
         questStates = new List<int>();
 
-        // manager 또는 activeQuests가 null일 경우를 처리
-        if (manager == null)
-        {
-            Debug.LogWarning("QuestSaveWrapper가 null QuestManager임");
-            return;
-        }
-        if (manager.activeQuests == null)
-        {
-            Debug.LogWarning("QuestManager.activeQuests가 null임");
-            return;
-        }
+        if (manager == null || manager.activeQuests == null) return;
 
         foreach (var quest in manager.activeQuests)
         {
-            if (quest == null)
-            {
-                continue;
-            }
+            if (quest == null) continue;
 
-            // 퀘스트 ID 추가 (null이면 빈 문자열로 처리)
             string qid = quest.questID ?? string.Empty;
             activeQuestIDs.Add(qid);
 
-            // 퀘스트 상태 가져오기; 문제가 있으면 기본값 0 사용
             if (manager.questStates != null && manager.questStates.ContainsKey(qid))
             {
                 questStates.Add((int)manager.questStates[qid]);
@@ -249,6 +275,37 @@ public class QuestSaveWrapper
             {
                 manager.AddToActiveQuests(quest);
                 manager.ForceSetQuestState(activeQuestIDs[i], (QuestState)questStates[i]);
+            }
+        }
+    }
+}
+
+[System.Serializable]
+public class AchievementSaveWrapper
+{
+    public List<string> achievementIDs = new List<string>();
+    public List<bool> unlockedStates = new List<bool>();
+    public List<int> currentCounts = new List<int>();
+
+    public AchievementSaveWrapper(AchievementManager manager)
+    {
+        foreach (var ach in manager.achievements)
+        {
+            achievementIDs.Add(ach.achievementID);
+            unlockedStates.Add(ach.isUnlocked);
+            currentCounts.Add(ach.currentCount);
+        }
+    }
+
+    public void ApplyToManager(AchievementManager manager)
+    {
+        for (int i = 0; i < achievementIDs.Count; i++)
+        {
+            var ach = manager.achievements.Find(a => a.achievementID == achievementIDs[i]);
+            if (ach != null)
+            {
+                ach.isUnlocked = unlockedStates[i];
+                ach.currentCount = currentCounts[i];
             }
         }
     }

@@ -34,7 +34,6 @@ public class PlayerPositionChecker : MonoBehaviour
                 if (distance <= quest.exploreRadius)
                 {
                     Debug.Log($"[Explore 완료] {quest.questID} - {quest.questName}");
-                    UIManager.Instance?.ShowQuestCompleted(quest.questName);
                     QuestManager.Instance.CompleteQuest(quest);
                 }
             }
@@ -46,7 +45,6 @@ public class PlayerPositionChecker : MonoBehaviour
                 if (distance <= quest.escortCompleteRadius)
                 {
                     Debug.Log($"[Escort 완료] {quest.questID} - {quest.questName}");
-                    UIManager.Instance?.ShowQuestCompleted(quest.questName);
                     QuestManager.Instance.CompleteQuest(quest);
                 }
             }

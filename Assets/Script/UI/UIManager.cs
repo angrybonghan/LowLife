@@ -134,6 +134,9 @@ public class UIManager : MonoBehaviour
     {
         UpdateQuestText();
 
+        string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
+        UpdateSaveTimeText(lastTime);
+
         // ESC 메뉴 입력 처리
         if (Input.GetKeyDown(KeyCode.Escape))
         {

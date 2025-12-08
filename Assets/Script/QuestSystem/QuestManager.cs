@@ -84,6 +84,8 @@ public class QuestManager : MonoBehaviour
 
     public void CompleteQuest(QuestDataSO quest)
     {
+        UIManager.Instance?.ShowQuestCompleted(quest.questName);
+
         if (questStates[quest.questID] != QuestState.InProgress) return;
 
         questStates[quest.questID] = QuestState.Completed;

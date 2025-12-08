@@ -33,7 +33,6 @@ public class ExploreQuest : MonoBehaviour
             if (distance <= quest.exploreRadius)
             {
                 Debug.Log($"[Explore ¿Ï·á] {quest.questID} - {quest.questName}");
-                UIManager.Instance?.ShowQuestCompleted(quest.questName);
                 QuestManager.Instance.CompleteQuest(quest);
             }
         }

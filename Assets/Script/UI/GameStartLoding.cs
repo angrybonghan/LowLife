@@ -55,7 +55,7 @@ public class GameStartManager : MonoBehaviour
         if (fadeCanvas != null)
         {
             float t = 0f;
-            while (t < 1f)
+            while (t < fadeDuration)
             {
                 t += Time.deltaTime / fadeDuration;
                 fadeCanvas.alpha = Mathf.Lerp(0f, 1f, t);

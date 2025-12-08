@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_DialogueCallback
 {
-    [Header("이름(특수 NPC일 경우)")]
+    [Header("이름(특수 NPC(업적)일 경우)")]
     public string npcID; // Inspector에서 특정 NPC ID 지정
 
     [Header("대화")]
