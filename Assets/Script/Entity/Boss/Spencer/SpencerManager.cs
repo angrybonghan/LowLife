@@ -24,6 +24,7 @@ public class SpencerManager : MonoBehaviour
     public Spencer_SS1 SS1;
 
     [Header("∞≈πÃ¡Ÿ")]
+    public Sprite web;
     public float slownessDuration = 8f;
     public float minSlownessSpeed = 6f;
 
@@ -46,6 +47,7 @@ public class SpencerManager : MonoBehaviour
     float currentSlownessSpeed;
     Vector2 currentSkillPos;
     GameObject currentSkillInstance;
+    GameObject webObject;
     Coroutine slownessCoroutine;
 
     private void Awake()
@@ -186,14 +188,52 @@ public class SpencerManager : MonoBehaviour
         }
 
         PlayerController.instance.maxSpeed = currentSlownessSpeed;
+        SpawnWeb();
         slownessCoroutine = StartCoroutine(Slowness());
     }
 
+    void SpawnWeb()
+    {
+        if (webObject != null)
+        {
+            Destroy(webObject);
+        }
+
+        webObject = new GameObject("SpiderWeb");
+        SpriteRenderer sr = webObject.AddComponent<SpriteRenderer>();
+        sr.sprite = web;
+        sr.sortingOrder = 30;
+        webObject.transform.localScale = Vector3.one * 5f;
+        if (PlayerController.instance != null)
+            webObject.transform.position = PlayerController.instance.transform.position;
+        else
+            webObject.transform.position = Vector3.one * 9999;
+    }
+
+
     IEnumerator Slowness()
     {
-        yield return new WaitForSeconds(slownessDuration);
+        float time = 0;
+        while (time < slownessDuration)
+        {
+            time += Time.deltaTime;
+            if (webObject != null)
+            {
+                if (PlayerController.instance != null)
+                    webObject.transform.position = PlayerController.instance.transform.position;
+                else
+                    webObject.transform.position = Vector3.one * 9999;
+            }
+            yield return null;
+        }
+
         PlayerController.instance.maxSpeed = originalPlayerSpeed;
         slownessCoroutine = null;
+
+        if (webObject != null)
+        {
+            Destroy(webObject);
+        }
     }
 
     public void TakeDamage()

@@ -1487,6 +1487,7 @@ MonoBehaviour:
   S4: {fileID: 5803003017940182522, guid: 0bc287c10e4c82749ab96c8b229fa8b8, type: 3}
   SS0: {fileID: 2393838270333422764, guid: 61bc2d8f62fac174eb225eadb9ea06ee, type: 3}
   SS1: {fileID: 9126244257810771667, guid: fe8584c899714774cbcce26cabd8f375, type: 3}
+  web: {fileID: 21300000, guid: e541f4e75b93b294384a0e83c64c51b6, type: 3}
   slownessDuration: 8
   minSlownessSpeed: 6
   maxHP: 32
