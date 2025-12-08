@@ -11,7 +11,7 @@ public class AchievementUI : MonoBehaviour
         // 창이 열릴 때 업적 목록 갱신
         RefreshAchievements();
 
-        // 업적 달성 이벤트 구독 → 자동 갱신
+        // 업적 달성 이벤트 구독 -> 자동 갱신
         AchievementManager.Instance.OnAchievementUnlocked += RefreshAchievements;
     }
 

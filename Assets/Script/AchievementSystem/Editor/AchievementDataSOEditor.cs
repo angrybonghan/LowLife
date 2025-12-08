@@ -17,7 +17,7 @@ public class AchievementDataSOEditor : Editor
         ach.achievementID = EditorGUILayout.TextField("Achievement ID", ach.achievementID);
         ach.title = EditorGUILayout.TextField("Title", ach.title);
         ach.description = EditorGUILayout.TextField("Description", ach.description);
-        ach.rewardTitle = EditorGUILayout.TextField("»Ú∆Æ º≥∏Ì", ach.hint);
+        ach.hint = EditorGUILayout.TextField("Hint", ach.hint);
         ach.rewardTitle = EditorGUILayout.TextField("Reward Title", ach.rewardTitle);
 
         EditorGUILayout.Space();
@@ -44,6 +44,7 @@ public class AchievementDataSOEditor : Editor
             case AchievementType.TeleportUse:
             case AchievementType.AttackSuccess:
             case AchievementType.DiscoverSecretRoom:
+            case AchievementType.PlayerDeathCount:
                 ach.targetCount = EditorGUILayout.IntField("Target Count", ach.targetCount);
                 break;
 
