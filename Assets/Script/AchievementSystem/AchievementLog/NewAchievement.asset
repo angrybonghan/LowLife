@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: NewAchievement
   m_EditorClassIdentifier: 
   achievementID: 01
-  title: a
-  description: a
-  hint: 
-  rewardTitle: 
-  type: 0
+  title: "\uCD5C\uCD08\uC758 \uD76C\uB4E0"
+  description: "\uD76C\uB4E0\uBC29 \uBC1C\uACAC"
+  hint: "\uB9F5\uC744 \uAD6C\uC11D\uAD6C\uC11D \uB3CC\uB77C\uB2E4\uB140 \uBCF4\uC138\uC694."
+  type: 6
   targetEnemyType: a
   targetItemID: 
   targetQuestID: 
   targetSceneName: 
-  targetCount: 0
+  targetNPCID: 
+  targetCount: 1
   isUnlocked: 0
   currentCount: 0

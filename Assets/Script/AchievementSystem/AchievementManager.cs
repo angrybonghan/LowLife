@@ -82,8 +82,13 @@ public class AchievementManager : MonoBehaviour
     public void OnTeleportUse() => IncrementProgress(AchievementType.TeleportUse);
     public void OnAttackSuccess() => IncrementProgress(AchievementType.AttackSuccess);
     public void OnDiscoverSecretRoom() => IncrementProgress(AchievementType.DiscoverSecretRoom);
-    public void OnDiscoverNPC() => CompleteInstant(AchievementType.DiscoverNPC);
     public void OnViewEnding() => CompleteInstant(AchievementType.ViewEnding);
+
+    // 특정 NPC와 대화 업적
+    public void OnTalkToNPC(string npcID)
+    {
+        CompleteInstant(AchievementType.TalkToNPC, ach => ach.targetNPCID == npcID);
+    }
 
     // 특정 씬 진입 (씬 이름 정확히 비교)
     public void OnSceneEntered(string sceneName)

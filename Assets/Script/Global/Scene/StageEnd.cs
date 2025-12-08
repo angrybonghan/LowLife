@@ -46,6 +46,7 @@ public class StageEnd : MonoBehaviour
                 CameraMovement.PositionZoom(zoom, moveDuration);
             }
 
+            AchievementManager.Instance.OnSceneEntered(nextScene);
             ScreenTransition.ScreenTransitionGoto(nextScene, loadingScene, Color.black, WaitTime1, fadeOutTime, 2, 0.5f, 0);
 
             foreach (GameObject obj in disableAtAction)

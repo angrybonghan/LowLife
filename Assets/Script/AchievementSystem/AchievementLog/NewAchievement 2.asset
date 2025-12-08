@@ -16,12 +16,12 @@ MonoBehaviour:
   title: c
   description: c
   hint: 
-  rewardTitle: 
-  type: 0
+  type: 9
   targetEnemyType: a
   targetItemID: 
   targetQuestID: 
   targetSceneName: 
+  targetNPCID: 
   targetCount: 0
   isUnlocked: 0
   currentCount: 0

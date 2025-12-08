@@ -55,7 +55,10 @@ public class AchievementDataSOEditor : Editor
                 ach.targetSceneName = EditorGUILayout.TextField("Target Scene Name", ach.targetSceneName);
                 break;
 
-            case AchievementType.DiscoverNPC:
+            case AchievementType.TalkToNPC:
+                ach.targetNPCID = EditorGUILayout.TextField("Target NPC ID", ach.targetNPCID);
+                break;
+
             case AchievementType.ViewEnding:
                 EditorGUILayout.HelpBox("이 업적은 특정 이벤트 발생 시 즉시 달성됩니다.", MessageType.Info);
                 break;

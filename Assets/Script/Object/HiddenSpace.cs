@@ -10,12 +10,14 @@ public class HiddenSpace : MonoBehaviour
     private Coroutine fadeCoroutine;
 
     private float targetAlpha;
-
     private bool hasPlayer = false;
 
     private const string PLAYER_TAG = "Player";
 
     GameObject playerObject;    // 플레이어 오브젝트
+
+    // 업적 플래그 (방마다 한 번만 업적 발생)
+    private bool achievementTriggered = false;
 
     private void Awake()
     {
@@ -49,6 +51,13 @@ public class HiddenSpace : MonoBehaviour
 
             StopCurrentFadeCoroutine();
             fadeCoroutine = StartCoroutine(FadeToTargetAlpha());
+
+            // 업적 처리: 방마다 한 번만 호출
+            if (!achievementTriggered)
+            {
+                AchievementManager.Instance?.OnDiscoverSecretRoom();
+                achievementTriggered = true;
+            }
         }
     }
 
@@ -65,6 +74,7 @@ public class HiddenSpace : MonoBehaviour
             }
         }
     }
+
     private void StopCurrentFadeCoroutine()
     {
         if (fadeCoroutine != null)
@@ -89,7 +99,7 @@ public class HiddenSpace : MonoBehaviour
             yield return null;
         }
 
-        // 반복문 종료 후 최종적으로 목표 알파값으로 설정합니다.
+        // 반복문 종료 후 최종적으로 목표 알파값으로 설정
         SetAlpha(targetAlpha);
 
         fadeCoroutine = null;

@@ -18,7 +18,7 @@ public enum AchievementType
 
     // 단발(이벤트 기반)
     CompleteQuest,     // 특정 퀘스트 완료 (questID)
-    DiscoverNPC,       // 숨겨진 NPC 발견 (이벤트 발생 시 즉시 달성)
+    TalkToNPC,       // 숨겨진 NPC 발견 (이벤트 발생 시 즉시 달성)
     ViewEnding,        // 엔딩 보기 (이벤트 발생 시 즉시 달성)
     EnterScene         // 특정 씬 진입 (sceneName)
 }
@@ -45,6 +45,7 @@ public class AchievementDataSO : ScriptableObject
     public string targetItemID;
     public string targetQuestID;
     public string targetSceneName;
+    public string targetNPCID;
     public int targetCount;
 
     [Header("진행 상태 (런타임)")]

@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_DialogueCallback
 {
+    [Header("이름(특수 NPC일 경우)")]
+    public string npcID; // Inspector에서 특정 NPC ID 지정
+
     [Header("대화")]
     public DialogueSO dialogue;
 
@@ -26,6 +29,11 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
 
     public void OnDialogueEnd()
     {
+        if (!string.IsNullOrEmpty(npcID))
+        {
+            AchievementManager.Instance?.OnTalkToNPC(npcID);
+        }
+
         StartCoroutine(DialogueEndFunc());
     }
 
