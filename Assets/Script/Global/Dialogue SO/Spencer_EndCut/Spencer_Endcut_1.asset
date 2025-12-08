@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9db7c75ec0ef7474ca851159be2cdcb6, type: 3}
+  m_Name: Spencer_Endcut_1
+  m_EditorClassIdentifier: 
+  section:
+  - bubblePosition: {x: 0, y: -3, z: 0}
+    bubbleBodyOffset: -2
+    isTailDown: 1
+    sentence:
+    - "\uC6D0\uD558\uB294 \uAC8C \uBB50\uC57C?"
+    - "\uC65C \uAE30\uC2B5\uD588\uC9C0?"
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: 4.6, y: -1, z: 0}
+    bubbleBodyOffset: 2
+    isTailDown: 1
+    sentence:
+    - "\uB124 \uC54C \uBC14\uB294 \uC544\uB2C8\uC9C0."
+    - "\uB124\uAC00 \uAC00\uC9C4 \uBB3C\uAC74\uB9CC \uB118\uACA8."
+    - "\uADF8\uB7FC \uC5EC\uC655\uD55C\uD14C\uB294..."
+    - "\uC544\uBB34 \uC77C \uC5C6\uC744 \uAC70\uC57C."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: 0, y: -3, z: 0}
+    bubbleBodyOffset: -2
+    isTailDown: 1
+    sentence:
+    - "... \uBB50? \uBB3C\uAC74?"
+    - "\"\uBB3C\uAC74\"\uC774 \uBB54\uB370?"
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: 4.6, y: -1, z: 0}
+    bubbleBodyOffset: 2
+    isTailDown: 1
+    sentence:
+    - ...
+    - "\uC5B4\uB514 \uC228\uACBC\uC5B4?"
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: 0, y: -3, z: 0}
+    bubbleBodyOffset: -2
+    isTailDown: 1
+    sentence:
+    - "\uC228\uAE34 \uAC70 \uC5C6\uC5B4."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0

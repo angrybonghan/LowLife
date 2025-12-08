@@ -7,6 +7,9 @@ public class DialogManager : MonoBehaviour
 
     public DialogueBubble dialogueBubblePrefab;
 
+    [Header("소리")]
+    public AudioClip dialogueTypingSound;
+
     bool isTyping;         // 현재 타이핑 중인지 여부
     bool skipInputDetected = false; // 스킵 키가 입력되었는지 여부
 
@@ -99,7 +102,7 @@ public class DialogManager : MonoBehaviour
             {
                 if (string.IsNullOrWhiteSpace(sentence)) continue;
 
-                yield return StartCoroutine(TypeSentence(sentence, line.intervalTime, line.typingSound, line.canSkip));
+                yield return StartCoroutine(TypeSentence(sentence, line.intervalTime, line.canSkip));
 
                 if (line.canSkip && line.autoSkip)
                 {
@@ -130,7 +133,7 @@ public class DialogManager : MonoBehaviour
         StopDialogue();
     }
 
-    IEnumerator TypeSentence(string fullSentence, float intervalTime, AudioClip[] typingSounds, bool canSkipTyping)
+    IEnumerator TypeSentence(string fullSentence, float intervalTime, bool canSkipTyping)
     {
         skipInputDetected = false;
         isTyping = true;
@@ -152,11 +155,7 @@ public class DialogManager : MonoBehaviour
             currentText += fullSentence[i];
             currentBubbleInstance.SetText(currentText);
 
-            if (typingSounds != null && typingSounds.Length > 0)
-            {
-                AudioClip clipToPlay = typingSounds[Random.Range(0, typingSounds.Length)];
-                SoundManager.instance.PlaySoundAtPosition(currentBubblePos, clipToPlay);
-            }
+            SoundManager.instance.PlaySoundAtPosition(currentBubblePos, dialogueTypingSound);
 
             yield return new WaitForSeconds(intervalTime);
         }

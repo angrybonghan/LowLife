@@ -48,6 +48,9 @@ EditorBuildSettings:
     path: Assets/Scenes/LoadingScene/StageLoading_1.unity
     guid: f8b71296fadd62d48bcf04cffc312475
   - enabled: 1
+    path: Assets/Scenes/Train_Boss_EndCut.unity
+    guid: b8d07a3792823434baa4cb65fad1c717
+  - enabled: 1
     path: Assets/Scenes/Swomp_2.unity
     guid: 27f7c3f78da29214e9e8330cf6c52d78
   - enabled: 1
