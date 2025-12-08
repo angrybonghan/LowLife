@@ -16,6 +16,19 @@ public class CutsceneManager : MonoBehaviour, I_DialogueCallback
     [Header("레터박스")]
     public bool useLetterbox = true;
 
+    [Header("퀘스트 클리어")]
+    public bool isClearQuest;
+    public string questID;
+
+    [Header("퀘스트 부여")]
+    public bool isGiveQuest;
+    public string giveQuestID;
+
+    [Header("업적 클리어")]
+    public bool isClearAchievement;
+    public string achievementID;
+
+
 
     int currentDialogueIndex = 0;
 
@@ -37,6 +50,17 @@ public class CutsceneManager : MonoBehaviour, I_DialogueCallback
         {
             LetterBoxController.Instance.SetEnable(true);
         }
+
+        if (isClearQuest)
+        {
+            QuestDataSO quest = QuestManager.Instance?.GetQuestData(questID);
+            if (quest != null) QuestManager.Instance.CompleteQuest(quest);
+        }
+
+        if (isClearAchievement)
+        {
+            AchievementManager.Instance?.OnTalkToNPC(achievementID);
+        }
     }
 
     public void CallDialogue()
@@ -52,6 +76,11 @@ public class CutsceneManager : MonoBehaviour, I_DialogueCallback
 
     public void LoadNextScene()
     {
+        if (isGiveQuest)
+        {
+            QuestManager.Instance.StartQuest(giveQuestID);
+        }
+
         ScreenTransition.ScreenTransitionGoto(
             nextSceneName,
             loadingSceneName,
