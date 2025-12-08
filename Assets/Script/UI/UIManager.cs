@@ -9,15 +9,28 @@ using TMPro;
 /// - 퀘스트 진행 상황 표시
 /// - 업적 달성 팝업 표시
 /// - 게임 종료 및 씬 이동 버튼 처리
+/// - ESC 메뉴 및 서브 창 관리
+/// - 볼륨 조절 (버튼 + 키보드)
 /// </summary>
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
+    public bool IsPaused => isPaused;
+
     [Header("UI References")]
     public TextMeshProUGUI questText;
-    public GameObject achievementPopup;
-    public TextMeshProUGUI achievementText;
+    public RectTransform achievementPopupPanel;
+    public TextMeshProUGUI achievementTitleText;
+    public TextMeshProUGUI achievementDescText;
+
+    [Header("Achievement Popup Animation")]
+    public Vector2 popupHiddenPos = new Vector2(0, -400);
+    public Vector2 popupVisiblePos = new Vector2(0, 0);
+    public float popupAnimSpeed = 6f;
+    public float achievementPopupDuration = 3f;
+
+    private Coroutine achievementAnimCoroutine;
 
     [Header("ESC Menu References")]
     public RectTransform escMenuPanel;
@@ -31,9 +44,12 @@ public class UIManager : MonoBehaviour
     public Button[] escMenuButtons;
     private int selectedIndex = 0;
 
+    [Header("ESC Sub Windows")]
+    public GameObject settingsWindow;
+    public GameObject achievementWindow;
+    private GameObject activeSubWindow;
+
     [Header("Sound UI Buttons")]
-    public Button volumeUpButton;
-    public Button volumeDownButton;
     public Button[] volumePresetButtons;
     public Sprite onSprite;
     public Sprite offSprite;
@@ -47,53 +63,41 @@ public class UIManager : MonoBehaviour
 
     private bool isPaused = false;
     private Coroutine escAnimCoroutine;
-
     private bool sideOpen = false;
     private Coroutine sideAnimCoroutine;
 
     public TextMeshProUGUI saveTimeText; // 마지막 저장 시간 표시용
 
-
-
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // 저장된 마지막 퀘스트 저장 시간 불러와서 UI에 반영
         string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
         UpdateSaveTimeText(lastTime);
 
+        // ESC 메뉴 기본 닫힘 상태
         if (escMenuPanel != null)
             escMenuPanel.anchoredPosition = hiddenPos;
         if (escCanvasGroup != null)
             escCanvasGroup.alpha = 0f;
 
+        // 사이드 패널 기본 닫힘 상태
         if (sidePanel != null)
         {
             sidePanel.anchoredPosition = sideHiddenPos;
-            sidePanel.localRotation = Quaternion.Euler(0f, 90f, 0f); // 처음엔 90도 회전된 상태
+            sidePanel.localRotation = Quaternion.Euler(0f, 90f, 0f);
         }
 
-        // 볼륨 업 버튼
-        if (volumeUpButton != null)
-            volumeUpButton.onClick.AddListener(() =>
-            {
-                SoundManager.instance.IncreaseVolume();
-                SyncPresetButtonImages();
-            });
+        // ESC 관련 서브 창들 닫기
+        if (settingsWindow != null) settingsWindow.SetActive(false);
+        if (achievementWindow != null) achievementWindow.SetActive(false);
 
-        // 볼륨 다운 버튼
-        if (volumeDownButton != null)
-            volumeDownButton.onClick.AddListener(() =>
-            {
-                SoundManager.instance.DecreaseVolume();
-                SyncPresetButtonImages();
-            });
-
-        // 프리셋 버튼들
         if (volumePresetButtons != null)
         {
             for (int i = 0; i < volumePresetButtons.Length; i++)
@@ -108,33 +112,20 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        // 씬 시작 시 저장된 볼륨 값에 맞춰 버튼 이미지 초기화
         SyncPresetButtonImages();
     }
 
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        // 씬 로드 이벤트 해제
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
+    private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
+    private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 특정 씬(MainMenu)에서는 UIManager 제거
-        if (scene.name == "MainMenu") // 메인 메뉴 씬 이름에 맞게 수정
-        {
+        if (scene.name == "MainMenu")
             Destroy(gameObject);
-        }
     }
 
     private void Start()
     {
-        // 게임 시작 시 퀘스트 저장 기록 불러오기
         string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
         UpdateSaveTimeText(lastTime);
     }
@@ -143,6 +134,7 @@ public class UIManager : MonoBehaviour
     {
         UpdateQuestText();
 
+        // ESC 메뉴 입력 처리
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ToggleESCMenu();
@@ -161,14 +153,13 @@ public class UIManager : MonoBehaviour
                 UpdateESCMenuSelection();
             }
 
-            // Enter 키로 선택된 버튼 실행
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 escMenuButtons[selectedIndex].onClick.Invoke();
             }
         }
 
-        // Tab 누르고 있는 동안 열림
+        // Tab 키로 사이드 패널 열고 닫기
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (!sideOpen)
@@ -178,8 +169,6 @@ public class UIManager : MonoBehaviour
                 sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(true));
             }
         }
-
-        // Tab 뗄 때 닫힘
         if (Input.GetKeyUp(KeyCode.Tab))
         {
             if (sideOpen)
@@ -188,7 +177,18 @@ public class UIManager : MonoBehaviour
                 if (sideAnimCoroutine != null) StopCoroutine(sideAnimCoroutine);
                 sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(false));
             }
+        }
 
+        // 좌/우 키로 볼륨 조절
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            SoundManager.instance.DecreaseVolume();
+            SyncPresetButtonImages();
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            SoundManager.instance.IncreaseVolume();
+            SyncPresetButtonImages();
         }
     }
 
@@ -197,14 +197,7 @@ public class UIManager : MonoBehaviour
         for (int i = 0; i < escMenuButtons.Length; i++)
         {
             var colors = escMenuButtons[i].colors;
-            if (i == selectedIndex)
-            {
-                colors.normalColor = Color.yellow; // 선택된 버튼 강조 색
-            }
-            else
-            {
-                colors.normalColor = Color.white; // 기본 색
-            }
+            colors.normalColor = (i == selectedIndex) ? Color.yellow : Color.white;
             escMenuButtons[i].colors = colors;
         }
     }
@@ -214,7 +207,6 @@ public class UIManager : MonoBehaviour
         float currentVolume = SoundManager.instance.GetVolume();
         int activeIndex = Mathf.RoundToInt(currentVolume * volumePresetButtons.Length) - 1;
         activeIndex = Mathf.Clamp(activeIndex, 0, volumePresetButtons.Length - 1);
-
         UpdatePresetButtonImages(activeIndex);
     }
 
@@ -224,30 +216,33 @@ public class UIManager : MonoBehaviour
         {
             Image btnImage = volumePresetButtons[i].GetComponent<Image>();
             if (btnImage != null)
-            {
                 btnImage.sprite = (i <= activeIndex) ? onSprite : offSprite;
-            }
         }
     }
 
-
     public void ToggleESCMenu()
     {
-        isPaused = !isPaused;
+        // ESC 누를 때 서브 창이 열려 있으면 먼저 닫기
+        if (activeSubWindow != null)
+        {
+            CloseActiveSubWindow();
+            return;
+        }
 
+        isPaused = !isPaused;
         if (escAnimCoroutine != null) StopCoroutine(escAnimCoroutine);
 
         if (isPaused)
         {
             Time.timeScale = 0f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(visiblePos, 1f));
-            SoundManager.instance.LowerVolumeForESC(); // ESC 열릴 때 볼륨 줄임
+            SoundManager.instance.LowerVolumeForESC();
         }
         else
         {
             Time.timeScale = 1f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(hiddenPos, 0f));
-            SoundManager.instance.RestoreVolumeAfterESC(); // ESC 닫힐 때 볼륨 복원
+            SoundManager.instance.RestoreVolumeAfterESC();
         }
     }
 
@@ -269,12 +264,9 @@ public class UIManager : MonoBehaviour
         escCanvasGroup.alpha = targetAlpha;
     }
 
-    public bool IsPaused => isPaused;
-
     public void ToggleSidePanel()
     {
         sideOpen = !sideOpen;
-
         if (sideAnimCoroutine != null) StopCoroutine(sideAnimCoroutine);
         sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(sideOpen));
     }
@@ -284,14 +276,11 @@ public class UIManager : MonoBehaviour
         Vector2 startPos = sidePanel.anchoredPosition;
         Quaternion startRot = sidePanel.localRotation;
 
-        // 목표 상태
         Vector2 targetPos = open ? sideVisiblePos : sideHiddenPos;
         Quaternion targetRot = open ? Quaternion.Euler(0f, 0f, 0f) : Quaternion.Euler(0f, 0f, 90f);
 
         if (open)
         {
-            
-            // 이동 먼저 -> 회전
             float tSlide = 0f;
             while (tSlide < 1f)
             {
@@ -310,7 +299,6 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            // 회전 먼저 -> 이동
             float tRotate = 0f;
             while (tRotate < 1f)
             {
@@ -328,7 +316,6 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        // 최종 보정
         sidePanel.anchoredPosition = targetPos;
         sidePanel.localRotation = targetRot;
     }
@@ -344,69 +331,62 @@ public class UIManager : MonoBehaviour
         foreach (var quest in QuestManager.Instance.activeQuests)
         {
             QuestState state = QuestManager.Instance.GetQuestState(quest.questID);
-            string stateText = state == QuestState.NotStarted ? "미시작" :
-                               state == QuestState.InProgress ? "진행 중" : "완료";
-
             if (state != QuestState.InProgress) continue;
 
+            string questLine = $"{quest.questName} - 진행 중";
 
-            string questLine = $"{quest.questName} - {stateText}";
-
-            if (state == QuestState.InProgress)
+            if (quest.questType == QuestType.CombatCount)
             {
-                if (quest.questType == QuestType.CombatCount)
+                int killed = QuestManager.Instance.GetKillCount(quest.questID);
+                questLine += $" (처치: {killed}/{quest.targetKillCount})";
+            }
+            else if (quest.questType == QuestType.CombatClear)
+            {
+                EnemyZone zone = FindObjectOfType<EnemyZone>();
+                if (zone != null && zone.questData == quest)
                 {
-                    int killed = QuestManager.Instance.GetKillCount(quest.questID);
-                    questLine += $" (처치: {killed}/{quest.targetKillCount})";
+                    int remaining = zone.GetRemainingEnemies();
+                    questLine += $" (남은 적: {remaining})";
                 }
-                else if (quest.questType == QuestType.CombatClear)
+            }
+            else if (quest.questType == QuestType.Explore && player != null && currentScene == quest.targetSceneName)
+            {
+                float distance = Vector3.Distance(player.position, quest.exploreTargetPosition);
+                questLine += $" (목표까지 {distance:F1}cm)";
+            }
+            else if (quest.questType == QuestType.Escort && player != null && currentScene == quest.escortTargetSceneName)
+            {
+                float distance = Vector3.Distance(player.position, quest.escortTargetPosition);
+                questLine += $" (목표까지 {distance:F1}cm)";
+            }
+            else if (quest.questType == QuestType.Collect)
+            {
+                int count = ItemDatabase.Instance.GetItemCount(quest.requiredItemID);
+                questLine += $" (수집: {count}/{quest.requiredItemCount})";
+            }
+            else if (quest.questType == QuestType.Dialogue && player != null)
+            {
+                QuestDialogueTrigger[] triggers = GameObject.FindObjectsOfType<QuestDialogueTrigger>();
+                foreach (var trigger in triggers)
                 {
-                    EnemyZone zone = FindObjectOfType<EnemyZone>();
-                    if (zone != null && zone.questData == quest)
+                    if (trigger.questID == quest.questID)
                     {
-                        int remaining = zone.GetRemainingEnemies();
-                        questLine += $" (남은 적: {remaining})";
+                        float distance = Vector3.Distance(player.position, trigger.transform.position);
+                        questLine += $" (NPC까지 {distance:F1}cm)";
+                        break;
                     }
                 }
-                else if (quest.questType == QuestType.Explore && player != null && currentScene == quest.targetSceneName)
+            }
+            else if (quest.questType == QuestType.Delivery && player != null)
+            {
+                DeliveryQuest[] deliveries = GameObject.FindObjectsOfType<DeliveryQuest>();
+                foreach (var delivery in deliveries)
                 {
-                    float distance = Vector3.Distance(player.position, quest.exploreTargetPosition);
-                    questLine += $" (목표까지 {distance:F1}m)";
-                }
-                else if (quest.questType == QuestType.Escort && player != null && currentScene == quest.escortTargetSceneName)
-                {
-                    float distance = Vector3.Distance(player.position, quest.escortTargetPosition);
-                    questLine += $" (목표까지 {distance:F1}m)";
-                }
-                else if (quest.questType == QuestType.Collect)
-                {
-                    int count = ItemDatabase.Instance.GetItemCount(quest.requiredItemID);
-                    questLine += $" (수집: {count}/{quest.requiredItemCount})";
-                }
-                else if (quest.questType == QuestType.Dialogue && player != null)
-                {
-                    QuestDialogueTrigger[] triggers = GameObject.FindObjectsOfType<QuestDialogueTrigger>();
-                    foreach (var trigger in triggers)
+                    if (delivery.questID == quest.questID)
                     {
-                        if (trigger.questID == quest.questID)
-                        {
-                            float distance = Vector3.Distance(player.position, trigger.transform.position);
-                            questLine += $" (NPC까지 {distance:F1}m)";
-                            break;
-                        }
-                    }
-                }
-                else if (quest.questType == QuestType.Delivery && player != null)
-                {
-                    DeliveryQuest[] deliveries = GameObject.FindObjectsOfType<DeliveryQuest>();
-                    foreach (var delivery in deliveries)
-                    {
-                        if (delivery.questID == quest.questID)
-                        {
-                            float distance = Vector3.Distance(player.position, delivery.transform.position);
-                            questLine += $" (전달 NPC까지 {distance:F1}m)";
-                            break;
-                        }
+                        float distance = Vector3.Distance(player.position, delivery.transform.position);
+                        questLine += $" (전달 NPC까지 {distance:F1}cm)";
+                        break;
                     }
                 }
             }
@@ -425,7 +405,6 @@ public class UIManager : MonoBehaviour
     {
         Debug.Log($"[UI] 퀘스트 완료: {questName}");
 
-        // 사이드 패널 열기 애니메이션
         if (!sideOpen)
         {
             sideOpen = true;
@@ -433,13 +412,9 @@ public class UIManager : MonoBehaviour
             sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(true));
         }
 
-        // 클리어 메시지 표시
         if (questText != null)
-        {
             questText.text = $"퀘스트 완료!\n{questName}\n다음 퀘스트를 진행하세요.";
-        }
 
-        // 일정 시간 뒤 닫고 다음 퀘스트 표시
         StartCoroutine(HideQuestClearEffectAfterDelay(3f));
     }
 
@@ -447,7 +422,6 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        // 사이드 패널 닫기
         if (sideOpen)
         {
             sideOpen = false;
@@ -455,36 +429,80 @@ public class UIManager : MonoBehaviour
             sideAnimCoroutine = StartCoroutine(PlaySidePanelAnimation(false));
         }
 
-        // 다음 진행 중인 퀘스트 표시
         UpdateQuestText();
     }
 
-    public void ShowAchievementUnlockedSO(AchievementDataSO achievement)
+    public void ShowAchievementUnlocked(string title, string description)
     {
-        if (achievementPopup != null && achievementText != null)
-        {
-            achievementPopup.SetActive(true);
-            achievementText.text = $"업적 달성!\n{achievement.title}\n칭호: {achievement.rewardTitle}";
-            StartCoroutine(HideAchievementPopupAfterDelay(3f));
-        }
+        achievementPopupPanel.gameObject.SetActive(true);
+        achievementTitleText.text = title;
+        achievementDescText.text = description;
+
+        if (achievementAnimCoroutine != null) StopCoroutine(achievementAnimCoroutine);
+        achievementAnimCoroutine = StartCoroutine(PlayAchievementPopupAnimation(true));
+
+        StartCoroutine(HideAchievementPopupAfterDelay(achievementPopupDuration));
     }
 
     private IEnumerator HideAchievementPopupAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        if (achievementPopup != null) achievementPopup.SetActive(false);
+        HideAchievementPopup();
+    }
+
+    private IEnumerator PlayAchievementPopupAnimation(bool show)
+    {
+        Vector2 startPos = achievementPopupPanel.anchoredPosition;
+        Vector2 targetPos = show ? popupVisiblePos : popupHiddenPos;
+        float t = 0f;
+
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime * popupAnimSpeed;
+            achievementPopupPanel.anchoredPosition = Vector2.Lerp(startPos, targetPos, t);
+            yield return null;
+        }
+
+        achievementPopupPanel.anchoredPosition = targetPos;
+
+        if (!show)
+            achievementPopupPanel.gameObject.SetActive(false);
+    }
+
+    public void HideAchievementPopup()
+    {
+        if (achievementAnimCoroutine != null) StopCoroutine(achievementAnimCoroutine);
+        achievementAnimCoroutine = StartCoroutine(PlayAchievementPopupAnimation(false));
     }
 
     public void ExitToMainMenu()
     {
-        // 현재 진행 중인 스테이지 저장
         string currentStage = SceneManager.GetActiveScene().name;
         SaveSystemJSON.DataSaveStage(currentStage);
-
-        // 퀘스트 상태 저장
         SaveSystemJSON.DataSaveQuests(QuestManager.Instance);
-
-        // 메인 메뉴 씬으로 이동
         SceneManager.LoadScene("MainMenu");
+    }
+
+    private void CloseActiveSubWindow()
+    {
+        if (activeSubWindow != null)
+        {
+            activeSubWindow.SetActive(false);
+            activeSubWindow = null;
+        }
+    }
+
+    public void OpenSettingsWindow()
+    {
+        CloseActiveSubWindow();
+        settingsWindow.SetActive(true);
+        activeSubWindow = settingsWindow;
+    }
+
+    public void OpenAchievementWindow()
+    {
+        CloseActiveSubWindow();
+        achievementWindow.SetActive(true);
+        activeSubWindow = achievementWindow;
     }
 }

@@ -21,6 +21,7 @@ public class EscortQuest : MonoBehaviour
         if (distance <= quest.escortCompleteRadius)
         {
             Debug.Log($"[퀘스트: {questID}] 호위 완료 - NPC가 {quest.escortTargetSceneName}의 목표 위치에 도착");
+            UIManager.Instance?.ShowQuestCompleted(quest.questName);
             QuestManager.Instance.CompleteQuest(quest);
         }
     }

@@ -36,7 +36,6 @@ public class AchievementDataSO : ScriptableObject
     public string title;           // 업적 이름
     [TextArea] public string description; // 업적 설명
     [TextArea] public string hint;        // 힌트
-    public string rewardTitle;     // 리워드 이름
 
     [Header("조건 타입")]
     public AchievementType type;
