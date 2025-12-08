@@ -18,7 +18,6 @@ public class AchievementDataSOEditor : Editor
         ach.title = EditorGUILayout.TextField("Title", ach.title);
         ach.description = EditorGUILayout.TextField("Description", ach.description);
         ach.hint = EditorGUILayout.TextField("Hint", ach.hint);
-        ach.rewardTitle = EditorGUILayout.TextField("Reward Title", ach.rewardTitle);
 
         EditorGUILayout.Space();
 
