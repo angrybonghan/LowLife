@@ -17,7 +17,8 @@ public static class SaveSystemJSON
         "MainMenu",
         "PlayerDeathLoading",
         "StageLoading_1",
-        "GameStartLoding"
+        "GameStartLoding",
+        "StageSelect"
     };
 
     //퀘스트 저장/로드

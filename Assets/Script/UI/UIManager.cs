@@ -91,7 +91,7 @@ public class UIManager : MonoBehaviour
         if (sidePanel != null)
         {
             sidePanel.anchoredPosition = sideHiddenPos;
-            sidePanel.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            sidePanel.localRotation = Quaternion.Euler(0f, 0f, 90f);
         }
 
         // ESC 관련 서브 창들 닫기
@@ -120,7 +120,7 @@ public class UIManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainMenu")
+        if (scene.name == "MainMenu" || scene.name == "PlayerDeathLoading" || scene.name == "StageLoading_1")
             Destroy(gameObject);
     }
 

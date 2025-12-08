@@ -380,4 +380,9 @@ public class MainMenuUIController : MonoBehaviour
             SceneManager.LoadScene(stageName);
         }
     }
+
+    public void LoadSpecificScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
 }
