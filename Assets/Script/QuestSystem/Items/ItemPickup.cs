@@ -26,6 +26,8 @@ public class ItemPickup : MonoBehaviour
 
         if (distance <= interactRange && Input.GetKeyDown(KeyCode.F))
         {
+            AchievementManager.Instance?.OnItemCollected(itemID, 1);
+
             // 아이템 데이터에 저장
             ItemDatabase.Instance.AddItem(itemID);
 

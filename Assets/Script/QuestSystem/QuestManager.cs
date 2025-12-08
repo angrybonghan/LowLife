@@ -91,6 +91,8 @@ public class QuestManager : MonoBehaviour
         SaveSystemJSON.DataSaveQuests(this);
         FindObjectOfType<UIManager>()?.UpdateQuestText();
 
+        AchievementManager.Instance?.OnQuestCompleted(quest.questID);
+
         // 선행 퀘스트 완료 시 자동 시작
         foreach (var nextQuest in activeQuests)
         {

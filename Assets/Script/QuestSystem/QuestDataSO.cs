@@ -32,10 +32,6 @@ public class QuestDataSO : ScriptableObject
     public string escortTargetSceneName;
     public Vector3 escortTargetPosition;
     public float escortCompleteRadius = 2f;
-
-    // 완료 연출
-    public string achievementID;
-    public GameObject achievementPopup;
 }
 
 public enum QuestType
