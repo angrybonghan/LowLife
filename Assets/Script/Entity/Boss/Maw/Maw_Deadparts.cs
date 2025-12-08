@@ -26,6 +26,11 @@ public class Maw_Deadparts : MonoBehaviour
 
     void Start()
     {
+        if (centerX <= transform.position.x)
+        {
+            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+        }
+
         StartCoroutine(DeadpartSequence());
     }
 
@@ -48,5 +53,10 @@ public class Maw_Deadparts : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, rayDistance, groundLayer);
 
         return hit.collider != null;
+    }
+
+    public void NextScene()
+    {
+        ScreenTransition.ScreenTransitionGoto("Swamp_Boss_EndCut", "nope", Color.black, 0, 0, 0f, 0.2f, 0);
     }
 }
