@@ -1664,7 +1664,7 @@ MonoBehaviour:
   speedLineSpawnPosition: {x: 23, y: 0}
   speedLinePrefab: {fileID: 272658675849722346, guid: 98aff8784832fb44e904e6b5dd69cdaf, type: 3}
   minSpeedLineInterval: 0
-  maxSpeedLineInterval: 0.1
+  maxSpeedLineInterval: 0.075
   tunnelEnterSound: {fileID: 8300000, guid: 7399acedd6ddca74588eba3c34bc3ad6, type: 3}
   tunnelLoopSound: {fileID: 8300000, guid: 0c869c7fff58ef44da66d227c9e48f1f, type: 3}
   tunnelExitSound: {fileID: 8300000, guid: 2f784728f2e1fb04a8e3c96f9da40f3c, type: 3}
@@ -1825,6 +1825,81 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: 2
+--- !u!1 &1682643017
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1682643018}
+  - component: {fileID: 1682643019}
+  m_Layer: 0
+  m_Name: RandomTreeSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1682643018
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682643017}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1682643019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682643017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 636769c0abf93f34e93d994329f34a3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minSpawnIntervalFront: 0.3
+  maxSpawnIntervalFront: 2
+  minFrontTreeScale: 4
+  maxFrontTreeScale: 7
+  frontTreeSpawnPoint: {x: 25, y: -11.5}
+  frontTreeSprites:
+  - {fileID: 21300000, guid: 4a0a9c0e79f44a040b626488ff6e0f6c, type: 3}
+  - {fileID: 21300000, guid: 185679f37f4d88d408641ceb0c07a090, type: 3}
+  - {fileID: 21300000, guid: 9294d7da73740d1478b5e742f65a7841, type: 3}
+  - {fileID: 21300000, guid: c23a55c3ac40380499f6e9d687e9fd39, type: 3}
+  - {fileID: 21300000, guid: 05f5951765a1e7c4786d1d1e0d7db61b, type: 3}
+  - {fileID: 21300000, guid: 2d3a215ecf2f3db43b893420169663b9, type: 3}
+  - {fileID: 21300000, guid: 2d12c5e7ce7834b4cb0befaaa24ada4f, type: 3}
+  sortingOrderFront: 3
+  minSpawnIntervalBack: 0.3
+  maxSpawnIntervalBack: 3
+  minBackTreeScale: 6
+  maxBackTreeScale: 15
+  backTreeSpawnPoint: {x: 25, y: -11.5}
+  backTreeSprites:
+  - {fileID: 21300000, guid: 106537e0faa12824991de0a8d0d900ab, type: 3}
+  - {fileID: 21300000, guid: 8cd248320d60b804eb2c157e20a3fa9b, type: 3}
+  - {fileID: 21300000, guid: 37f132329b4cc204591e5ec0ddbb360e, type: 3}
+  - {fileID: 21300000, guid: bb2a584824ef9224a8fc79e6c89ef441, type: 3}
+  - {fileID: 21300000, guid: 7adca0e38c9c2e14e908accf385a2137, type: 3}
+  - {fileID: 21300000, guid: 8083f6a77396a0a40babc938ad7840bd, type: 3}
+  - {fileID: 21300000, guid: ed912931ac7a0844b9ebb5124af6289c, type: 3}
+  sortingOrderBack: -3
+  endXPosition: -40
+  moveSpeed: 100
+  canSpawn: 1
 --- !u!1 &1726658270
 GameObject:
   m_ObjectHideFlags: 0
@@ -2326,7 +2401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5278217998590119289, guid: 0696952c541e77844a5c7c8d54ddb4f9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.52
+      value: -5.685051
       objectReference: {fileID: 0}
     - target: {fileID: 5278217998590119289, guid: 0696952c541e77844a5c7c8d54ddb4f9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2482,3 +2557,4 @@ SceneRoots:
   - {fileID: 1941866702}
   - {fileID: 807894359}
   - {fileID: 348579978}
+  - {fileID: 1682643018}
