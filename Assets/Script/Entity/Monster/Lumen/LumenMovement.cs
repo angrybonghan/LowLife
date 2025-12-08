@@ -1,9 +1,13 @@
 using System.Collections;
+using UnityEditorInternal.Profiling.Memory.Experimental.FileFormat;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
 public class LumenMovement : MonoBehaviour, I_Attackable
 {
+    [Header("적 이름")]
+    public string enemyType;
+
     [Header("움직임")]
     public float trunDuration = 0.5f;   // 회전 대기 시간
 
@@ -426,6 +430,7 @@ public class LumenMovement : MonoBehaviour, I_Attackable
             yield return null;
         }
 
+        AchievementManager.Instance?.OnEnemyKilled(enemyType);
         Destroy(gameObject);
     }
 

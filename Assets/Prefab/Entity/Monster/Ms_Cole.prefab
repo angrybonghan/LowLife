@@ -83,6 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b50a69771a7af8947be089aa6dc80193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Ms_Cole
   maxSpeed: 5
   moveRadius: 3
   trunDuration: 0.5

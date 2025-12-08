@@ -4,6 +4,9 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(BoxCollider2D))]
 public class StingSoldierMovement : MonoBehaviour, I_Attackable
 {
+    [Header("적 이름")]
+    public string enemyType;
+
     [Header("움직임")]
     public float maxSpeed = 5; // 최대 움직임 속도
     public float accelerationRate = 50f; // 가속도
@@ -260,7 +263,6 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         }
     }
 
-
     public Vector2 GetOptimalAttackPosition()
     {   
         Vector2 myPos = transform.position;
@@ -453,6 +455,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
             yield return null;
         }
 
+        AchievementManager.Instance?.OnEnemyKilled(enemyType);
         Destroy(gameObject);
     }
 }

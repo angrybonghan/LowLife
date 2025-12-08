@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b15f36b3b409ab74288d8ea790d5d297, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Rash
   attackRange: 12
   dashChrgeTime: 0.3333333
   dashSpeed: 40

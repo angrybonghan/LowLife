@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class AmbushMovement : MonoBehaviour, I_Attackable
 {
+    [Header("적 이름")]
+    public string enemyType;
+
     [Header("움직임")]
     public float maxSpeed = 5.5f; // 최대 움직임 속도
     public float moveRadius = 5; // 대기 상태에 들어간 위치로부터 최대 탐색 범위. 이 범위는 지형에 따라 조절될 수 있음.
@@ -590,6 +593,7 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
             yield return null;
         }
 
+        AchievementManager.Instance?.OnEnemyKilled(enemyType);
         Destroy(gameObject);
     }
 

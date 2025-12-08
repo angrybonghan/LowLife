@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f384a0026d07cda4a85176f9ba9ada43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Maw
   centerX: 35
   groundLayer:
     serializedVersion: 2

@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 216ce9d5d56325641aadc316b4a0158a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Sting Soldier
   maxSpeed: 12
   accelerationRate: 4
   moveRange: 3

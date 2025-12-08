@@ -132,6 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daaa5ab09a863db4db5b5bcaa8482598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Spiny
   moveSpeed: 5
   moveRadius: 5
   rotationTime: 0.5

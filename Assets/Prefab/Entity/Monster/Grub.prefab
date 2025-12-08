@@ -1070,6 +1070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09ad4e3ba4a07b542885cbfc1ad6edd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Grub
   bodies:
   - {fileID: 5638909942013738738}
   - {fileID: 1063638936092778731}

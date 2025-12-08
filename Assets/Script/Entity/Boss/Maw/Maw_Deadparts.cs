@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(Animator), typeof(CapsuleCollider2D))]
 public class Maw_Deadparts : MonoBehaviour
 {
+    [Header("Àû ÀÌ¸§")]
+    public string enemyType;
+
     [Header("Áß¾Ó X")]
     public float centerX;
 
@@ -30,6 +33,8 @@ public class Maw_Deadparts : MonoBehaviour
     IEnumerator DeadpartSequence()
     {
         yield return new WaitUntil(() => IsGrounded());
+
+        AchievementManager.Instance?.OnEnemyKilled(enemyType);
         anim.SetTrigger("land");
     }
 

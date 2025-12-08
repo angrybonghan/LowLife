@@ -24,4 +24,5 @@ public class GameManager : MonoBehaviour
         string currentSceneName = SceneManager.GetActiveScene().name;
         ScreenTransition.ScreenTransitionGoto(currentSceneName, "PlayerDeathLoading", fadeColor, 2, 0.5f, 0.7887f, 0.5f, 0);
     }
+
 }

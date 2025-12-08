@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f82b5f18da96b24fb0137f875a37b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Wiggle
   moveSpeed: 5
   moveRadius: 2
   rotationTime: 0.5

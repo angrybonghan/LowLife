@@ -1,7 +1,11 @@
+using UnityEditorInternal.Profiling.Memory.Experimental.FileFormat;
 using UnityEngine;
 
 public class GrubBodyController : MonoBehaviour
 {
+    [Header("적 이름")]
+    public string enemyType;
+
     [Header("몸 스크립트")]
     public GrubBody[] bodies;
 
@@ -60,6 +64,7 @@ public class GrubBodyController : MonoBehaviour
 
         SoundManager.instance.PlayEntityHitSound(transform.position);
 
+        AchievementManager.Instance?.OnEnemyKilled(enemyType);
         Destroy(gameObject);
     }
 }

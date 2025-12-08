@@ -81,6 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26566dd474503164f9a2a0c8bcb2ccc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Lumen
   trunDuration: 0.6777778
   headObj: {fileID: 4702578207919034278}
   armObj: {fileID: 3368715782472053329}

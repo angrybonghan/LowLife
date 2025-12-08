@@ -447,7 +447,7 @@ GameObject:
   - component: {fileID: 4291444572016318303}
   - component: {fileID: 4565243528094843878}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -550,7 +550,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d6cbdb113a57484385b65a3471adb5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockMouse: {fileID: 0}
   questText: {fileID: 8571685246865102508}
   achievementPopup: {fileID: 0}
   achievementText: {fileID: 0}
@@ -663,6 +662,30 @@ PrefabInstance:
       propertyPath: m_CullTransparentMesh
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3045347357236301896, guid: 8da9ae85adcceac43b8dc3eb537cba55, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3045347357236301896, guid: 8da9ae85adcceac43b8dc3eb537cba55, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2205c810832ab5142a1b43a09f4e54bd, type: 3}
+    - target: {fileID: 3458012280955661619, guid: 8da9ae85adcceac43b8dc3eb537cba55, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3458012280955661619, guid: 8da9ae85adcceac43b8dc3eb537cba55, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2205c810832ab5142a1b43a09f4e54bd, type: 3}
+    - target: {fileID: 3532760060797223011, guid: 8da9ae85adcceac43b8dc3eb537cba55, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3532760060797223011, guid: 8da9ae85adcceac43b8dc3eb537cba55, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2205c810832ab5142a1b43a09f4e54bd, type: 3}
     - target: {fileID: 3855419232534621091, guid: 8da9ae85adcceac43b8dc3eb537cba55, type: 3}
       propertyPath: m_Alpha
       value: 1

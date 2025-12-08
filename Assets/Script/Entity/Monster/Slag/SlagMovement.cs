@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]
 public class SlagMovement : MonoBehaviour, I_Attackable
 {
+    [Header("적 이름")]
+    public string enemyType;
+
     [Header("움직임")]
     public float maxSpeed = 8; // 최대 움직임 속도
     public float moveRadius; // 대기 상태에 들어간 위치로부터 최대 탐색 범위. 이 범위는 지형에 따라 조절될 수 있음.
@@ -503,6 +506,7 @@ public class SlagMovement : MonoBehaviour, I_Attackable
             yield return null;
         }
 
+        AchievementManager.Instance?.OnEnemyKilled(enemyType);
         Destroy(gameObject);
     }
 

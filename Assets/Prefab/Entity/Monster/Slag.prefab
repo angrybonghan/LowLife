@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28a8d4efe6cf0d543912bb4a4dd858c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Slag
   maxSpeed: 8
   moveRadius: 3
   trunDuration: 0.5

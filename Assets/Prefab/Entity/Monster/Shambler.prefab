@@ -293,6 +293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a840d0ec7718cc346a44cdab6c819c19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Shambler
   maxSpeed: 2
   moveRadius: 3
   trunDuration: 1

@@ -5,6 +5,9 @@ using System.Linq;
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CircleCollider2D))]
 public class RashMovement : MonoBehaviour, I_Attackable
 {
+    [Header("적 이름")]
+    public string enemyType;
+
     [Header("공격")]
     public float attackRange = 5; // 공격의 범위
     public float dashChrgeTime = 5; // 공격의 충전 시간
@@ -292,6 +295,7 @@ public class RashMovement : MonoBehaviour, I_Attackable
             yield return null;
         }
 
+        AchievementManager.Instance?.OnEnemyKilled(enemyType);
         Destroy(gameObject);
     }
 

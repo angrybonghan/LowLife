@@ -4,6 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D), typeof(Animator), typeof(Rigidbody2D))]
 public class WiggleMovement : MonoBehaviour, I_Attackable
 {
+    [Header("적 이름")]
+    public string enemyType;
 
     [Header("움직임")]
     public float moveSpeed = 5; // 움직임 속도
@@ -217,6 +219,7 @@ public class WiggleMovement : MonoBehaviour, I_Attackable
             yield return null;
         }
 
+        AchievementManager.Instance?.OnEnemyKilled(enemyType);
         Destroy(gameObject);
     }
 }

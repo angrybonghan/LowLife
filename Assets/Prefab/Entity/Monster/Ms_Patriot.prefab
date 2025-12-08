@@ -146,6 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40fd7531cdb9b094fa8f3925030d9422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Ms_Patriot
   maxSpeed: 2.75
   moveRadius: 5
   trunDuration: 0.5

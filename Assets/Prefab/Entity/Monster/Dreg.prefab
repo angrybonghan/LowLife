@@ -83,6 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4914b66abf341304790d56bdace7fe02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: Dreg
   maxSpeed: 5
   moveRadius: 2
   trunDuration: 1
