@@ -91,6 +91,8 @@ public class AchievementManager : MonoBehaviour
         CompleteInstant(AchievementType.EnterScene, ach => ach.targetSceneName == sceneName);
     }
 
+    public void OnPlayerDeath() => IncrementProgress(AchievementType.PlayerDeathCount);
+
     // 诀利 崔己 贸府
     private void UnlockAchievement(AchievementDataSO ach)
     {

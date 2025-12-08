@@ -451,6 +451,8 @@ public class PlayerController : MonoBehaviour
             DepleteShieldGauge(shieldLeapShieldGaugeDecrease);
             CameraMovement.RotationShaking(1f, 0.05f, 0.2f);
             CameraMovement.PositionShaking(0.1f, 0.05f, 0.2f);
+
+            AchievementManager.Instance?.OnTeleportUse();
         }
     }
 
@@ -725,7 +727,7 @@ public class PlayerController : MonoBehaviour
 
         Instantiate(parryEffect, transform.position, effectRotation);
 
-        parryCount++;
+        AchievementManager.Instance?.OnParrySuccess();
     }
 
     void ShieldHandler()
@@ -1136,7 +1138,12 @@ public class PlayerController : MonoBehaviour
             if (attackOnRight == isFacingRight)
             {
                 AddDamageToShield(damage);
-                if (shieldGauge != 0) AddKnockback(knockbackPower, knockbacktime);
+                if (shieldGauge != 0)
+                {
+                    AchievementManager.Instance?.OnBlockSuccess();
+
+                    AddKnockback(knockbackPower, knockbacktime);
+                }
             }
             else Death();
         }
@@ -1197,6 +1204,8 @@ public class PlayerController : MonoBehaviour
         Instantiate(dummyShield, transform.position, Quaternion.identity);
         CameraMovement.PositionShaking(0.1f, 0.05f, 1);
         GameManager.instance.PlayerDeath();
+
+        AchievementManager.Instance?.OnPlayerDeath();
         Destroy(gameObject);
     }
 

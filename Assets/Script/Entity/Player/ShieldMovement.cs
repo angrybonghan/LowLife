@@ -203,6 +203,8 @@ public class ShieldMovement : MonoBehaviour
             Instantiate(entityHitParticle_explod, lastHitPos, Quaternion.identity);
             if (controlTimeAtAttack) TimeManager.StartTimedSlowMotion(0.2f, 0.2f);
             CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
+
+            AchievementManager.Instance?.OnAttackSuccess();
         }
         else if (other.TryGetComponent<I_Destructible>(out I_Destructible targetDestructible))
         {

@@ -14,6 +14,7 @@ public enum AchievementType
     TeleportUse,       // 순간이동 사용 (targetCount)
     AttackSuccess,     // 공격 성공 (targetCount)
     DiscoverSecretRoom,// 비밀의 방 발견 (targetCount = 전체 방 수)
+    PlayerDeathCount,  //플레이어 죽음 횟수 업적 추가
 
     // 단발(이벤트 기반)
     CompleteQuest,     // 특정 퀘스트 완료 (questID)
@@ -31,45 +32,23 @@ public enum AchievementType
 public class AchievementDataSO : ScriptableObject
 {
     [Header("기본 정보")]
-    [Tooltip("업적 식별용 고유 ID (저장/네트워크/디버그용 키)")]
-    public string achievementID;
-
-    [Tooltip("UI에 표시될 업적 이름")]
-    public string title;
-
-    [Tooltip("UI에 표시될 업적 설명")]
-    [TextArea] public string description;
-
-    [Tooltip("업적 달성 전 UI에 표시될 힌트")]
-    [TextArea] public string hint;
-
-    [Tooltip("업적 달성 시 표시/지급될 리워드 명")]
-    public string rewardTitle;
+    public string achievementID;   // 업적 고유 ID
+    public string title;           // 업적 이름
+    [TextArea] public string description; // 업적 설명
+    [TextArea] public string hint;        // 힌트
+    public string rewardTitle;     // 리워드 이름
 
     [Header("조건 타입")]
-    [Tooltip("업적 달성 조건 타입")]
     public AchievementType type;
 
     [Header("조건 파라미터")]
-    [Tooltip("KillEnemy 조건일 때 목표 적 타입 (Enemy.enemyType과 동일 문자열)")]
     public string targetEnemyType;
-
-    [Tooltip("CollectItem 조건일 때 목표 아이템 ID")]
     public string targetItemID;
-
-    [Tooltip("CompleteQuest 조건일 때 목표 퀘스트 ID")]
     public string targetQuestID;
-
-    [Tooltip("EnterScene 조건일 때 목표 씬 이름 (Scene.name과 동일)")]
     public string targetSceneName;
-
-    [Tooltip("반복(횟수 기반) 조건의 목표 수치 (예: 100번, 50개 등)")]
     public int targetCount;
 
     [Header("진행 상태 (런타임)")]
-    [Tooltip("업적 달성 여부")]
     public bool isUnlocked;
-
-    [Tooltip("현재 진행 카운트 (반복 조건용)")]
     public int currentCount;
 }
