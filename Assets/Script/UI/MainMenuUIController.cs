@@ -113,6 +113,11 @@ public class MainMenuUIController : MonoBehaviour
 
     private void Update()
     {
+        if(Input.GetKey(KeyCode.Space))
+        {
+            StartMenuAnimation();
+        }
+
         // ESC 키 입력 감지
         if (Input.GetKeyDown(KeyCode.Escape))
         {

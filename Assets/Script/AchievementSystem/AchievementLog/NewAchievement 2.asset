@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: NewAchievement 2
   m_EditorClassIdentifier: 
   achievementID: 03
-  title: c
-  description: c
-  hint: 
-  type: 9
-  targetEnemyType: a
+  title: "\uC6B0\uBB3C\uC548 \uAC1C\uAD6C\uB9AC"
+  description: "\uAC1C\uAD6C\uB9AC \uBCF4\uC2A4\uB97C \uC8FD\uC774\uC138\uC694"
+  hint: "\uAC1C\uAD74 \uAC1C\uAE00"
+  type: 0
+  targetEnemyType: Maw
   targetItemID: 
   targetQuestID: 
   targetSceneName: 
   targetNPCID: 
-  targetCount: 0
+  targetCount: 1
   isUnlocked: 0
   currentCount: 0
