@@ -16,9 +16,11 @@ public class TrainTunnelMovement : MonoBehaviour
 
     [Header("스프라이트")]
     public float spriteScale = 3f;
-    public Sprite tunnelStart;
+    public Sprite tunnelStart_F;
+    public Sprite tunnelStart_B;
     public Sprite tunnelLoop;
-    public Sprite tunnelEnd;
+    public Sprite tunnelEnd_F;
+    public Sprite tunnelEnd_B;
 
     [Header("터널 시작")]
     public int startSpriteCount = 5;
@@ -128,11 +130,13 @@ public class TrainTunnelMovement : MonoBehaviour
     {
         ResetTunnel();
 
-        SpawnNewSprite(tunnelStart);
+        SpawnNewSprite(tunnelStart_F, 4);
+        UndoSpritePosition();
+        SpawnNewSprite(tunnelStart_B, -4);
 
         for (int i = 0; i < startSpriteCount - 1; i++)
         {
-            SpawnNewSprite(tunnelLoop);
+            SpawnNewSprite(tunnelLoop, -4);
         }
 
         frontCurtain.SetAlpha(0.7f, 0.37887f);
@@ -179,25 +183,27 @@ public class TrainTunnelMovement : MonoBehaviour
 
         if (needEndPoint)
         {
-            SpawnNewSprite(tunnelEnd);
+            SpawnNewSprite(tunnelEnd_F, 4);
+            UndoSpritePosition();
+            SpawnNewSprite(tunnelEnd_B, -4);
             backgroundCurtain.SetAlpha(0, 1);
             frontCurtain.SetAlpha(0, 0.1f);
             hasEndPoint = true;
         }
         else
         {
-            SpawnNewSprite(tunnelLoop);
+            SpawnNewSprite(tunnelLoop, -4);
         }
     }
 
-    void SpawnNewSprite(Sprite sprite)
+    void SpawnNewSprite(Sprite sprite, int sortLayer)
     {
         GameObject go = new GameObject("TrainTunnel");
         TrainBackgroundSprite bg = go.AddComponent<TrainBackgroundSprite>();
         go.transform.SetParent(transform);
         go.transform.localPosition = spriteLocalposition;
 
-        bg.SetSprite(sprite, -50);
+        bg.SetSprite(sprite, sortLayer);
         bg.SetSize(spriteScale);
         bg.endXPosition = endXPosition;
 
@@ -227,6 +233,11 @@ public class TrainTunnelMovement : MonoBehaviour
     void SetNextSpritePosition()
     {
         spriteLocalposition += new Vector2(spriteInterval, 0f);
+    }
+
+    void UndoSpritePosition()
+    {
+        spriteLocalposition -= new Vector2(spriteInterval, 0f);
     }
 
     bool hasChildren()

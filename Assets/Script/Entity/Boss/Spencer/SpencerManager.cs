@@ -4,6 +4,8 @@ using UnityEngine;
 public class SpencerManager : MonoBehaviour
 {
     public static SpencerManager Instance;
+    [Header("적 이름")]
+    public string enemyType;
 
     [Header("시작")]
     public bool spawnSpencerAtStart = false;
@@ -223,6 +225,8 @@ public class SpencerManager : MonoBehaviour
 
     void Death()
     {
+        AchievementManager.Instance?.OnEnemyKilled(enemyType);
 
+        
     }
 }
