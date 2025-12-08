@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Laser: {fileID: 7129200868351099970}
   timeToFire: 0.3
-  lockOnColor: {r: 1, g: 0, b: 0, a: 0.19607843}
+  lockOnColor: {r: 1, g: 1, b: 0, a: 0.19607843}
   laserDispersion: 1
   damage: 0.3
   knockbackPower: 1
@@ -55,7 +55,7 @@ MonoBehaviour:
   laserThickness: 0.2
   shrinkTime: 0.1
   startColor: {r: 1, g: 0, b: 0, a: 1}
-  endColor: {r: 0, g: 0, b: 0, a: 1}
+  endColor: {r: 0, g: 0, b: 0, a: 0}
   collisionMask:
     serializedVersion: 2
     m_Bits: 2816
