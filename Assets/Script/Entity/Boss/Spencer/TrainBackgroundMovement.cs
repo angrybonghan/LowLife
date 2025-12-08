@@ -14,6 +14,7 @@ public class TrainBackgroundMovement : MonoBehaviour
     [Header("스프라이트")]
     public float spriteScale = 3f;
     public Sprite[] backgroundSprites;
+    public int sortLayer = -100;
 
     [Header("시작")]
     public int startSpriteCount = 5;
@@ -64,7 +65,7 @@ public class TrainBackgroundMovement : MonoBehaviour
         go.transform.localPosition = spriteLocalposition;
 
         bg.SetSize(spriteScale);
-        bg.SetSprite(backgroundSprites[currentSpriteIndex], -100);
+        bg.SetSprite(backgroundSprites[currentSpriteIndex], sortLayer);
         bg.endXPosition = endXPosition;
         bg.isTunnel = false;
         bg.manager = this;
