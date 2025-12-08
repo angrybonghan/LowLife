@@ -18,7 +18,6 @@ public class DialogueLine
     public bool canSkip; // 플레이어가 이 대사를 임의의 지정된 키로 넘길 수 있는지에 대한 여부. true면 넘길 수 있음.
     public bool autoSkip; // 자동 스킵의 여부. true면 문자열 하나가 전부 재생되었을 때, autoSkipIntervalTime 초 대기 후 자동으로 다음 대사로 넘어감
     public float autoSkipIntervalTime; // 자동 스킵에서 대기할 시간
-    public AudioClip[] typingSound;   // 글자 하나가 나올 때마다 재생될 랜덤 소리 (입력되지 않으면 재생되지 않음)
 }
 
 [CreateAssetMenu(fileName = "Totally Awesome Dialogue", menuName = "Dialogue/New Dialogue")]
