@@ -129,6 +129,7 @@ public class DiffuseLaser : MonoBehaviour
         }
 
         SoundManager.instance.PlaySoundAtPositionWithPitch(transform.position, fireSound, Random.Range(0.9f, 1.1f));
+        CameraMovement.PositionShaking(0.4f, 0.05f, 0.1f);
         StartCoroutine(Co_ShrinkAndDestroy());
     }
 

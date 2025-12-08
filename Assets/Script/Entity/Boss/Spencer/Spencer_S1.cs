@@ -42,7 +42,7 @@ public class Spencer_S1 : MonoBehaviour, I_Attackable
         }
         anim.enabled = true;
         anim.SetTrigger("fire");
-
+        
         yield return new WaitUntil(() => endAttack);
 
         SpencerManager.Instance.canUseSklill = true;

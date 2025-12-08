@@ -20,7 +20,6 @@ public class TrainBackgroundSprite : MonoBehaviour
             {
                 if (manager != null) manager.SpawnNewSprite();
             }
-            
         }
     }
 

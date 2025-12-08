@@ -78,6 +78,7 @@ public class Spencer_S3 : MonoBehaviour, I_Attackable
         proj.DontLookPos(transform.position);
 
         SoundManager.instance.PlaySoundAtPositionWithPitch(transform.position, attackSound, Random.Range(0.8f, 1.2f));
+        CameraMovement.PositionShaking(0.1f, 0.05f, attackInterval);
     }
 
     public void EndAttack()

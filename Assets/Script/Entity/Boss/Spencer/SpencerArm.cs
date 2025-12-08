@@ -115,6 +115,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
             proj.laserThickness = 0.1f;
 
             SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, revolverFireSounds, Random.Range(0.5f, 1.5f));
+            CameraMovement.PositionShaking(0.5f, 0.05f, 0.2f);
         }
         else if (weaponNumber == 1)
         {
@@ -124,6 +125,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
             }
 
             SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, shotgunFireSounds, Random.Range(0.5f, 1.5f));
+            CameraMovement.PositionShaking(0.75f, 0.05f, 0.2f);
         }
         else
         {
@@ -131,6 +133,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
             proj.SetFacing(aimPoint.position);
 
             SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, roketFireSounds, Random.Range(0.5f, 1.5f));
+            CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
         }
     }
 
