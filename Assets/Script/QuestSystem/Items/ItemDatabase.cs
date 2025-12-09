@@ -15,20 +15,48 @@ public class ItemDatabase : MonoBehaviour
         if (Instance == null) Instance = this;
     }
 
-    // 아이템 추가
+    // 아이템 1개 추가
     public void AddItem(string itemID)
     {
+        AddItem(itemID, 1);
+    }
+
+    // 아이템 여러 개 추가
+    public void AddItem(string itemID, int amount)
+    {
+        if (string.IsNullOrEmpty(itemID))
+        {
+            Debug.LogWarning("[ItemDatabase] 잘못된 itemID 요청");
+            return;
+        }
+
+        if (amount <= 0)
+        {
+            Debug.LogWarning("[ItemDatabase] 0 이하의 개수는 추가할 수 없음");
+            return;
+        }
+
         if (!itemCounts.ContainsKey(itemID))
             itemCounts[itemID] = 0;
 
-        itemCounts[itemID]++;
-        Debug.Log($"[아이템 데이터] {itemID} 획득 → 현재 {itemCounts[itemID]}개");
+        itemCounts[itemID] += amount;
+        Debug.Log($"[아이템 데이터] {itemID} {amount}개 획득 → 현재 {itemCounts[itemID]}개");
     }
 
     // 아이템 제거
     public void RemoveItem(string itemID, int amount)
     {
-        if (!itemCounts.ContainsKey(itemID)) return;
+        if (string.IsNullOrEmpty(itemID))
+        {
+            Debug.LogWarning("[ItemDatabase] 잘못된 itemID 요청");
+            return;
+        }
+
+        if (!itemCounts.ContainsKey(itemID))
+        {
+            Debug.LogWarning($"[ItemDatabase] {itemID}는 인벤토리에 없음");
+            return;
+        }
 
         itemCounts[itemID] -= amount;
         if (itemCounts[itemID] <= 0)
