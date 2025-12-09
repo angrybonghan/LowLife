@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Cutscenes_Bar
   m_EditorClassIdentifier: 
   questID: B_1_1
-  questName: 
-  description: 
+  questName: "\uC220\uC9D1\uC5D0\uC11C \uB299\uC740 \uAC1C\uBBF8\uC640 \uB300\uD654"
+  description: "\uC220\uC9D1\uC5D0\uC11C \uB299\uC740 \uAC1C\uBBF8\uC640 \uB300\uD654\uD574
+    \uC815\uBCF4\uB97C \uC5BB\uC73C\uC138\uC694"
   prerequisiteQuestID: 
   questType: 7
   detectUp: 5
