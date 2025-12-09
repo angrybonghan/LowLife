@@ -214,32 +214,37 @@ public class UIManager : MonoBehaviour
 
     private void SyncPresetButtonImages()
     {
-        float currentVolume = 1f; // 기본값
+        float currentVolume = 1f;
 
-        // SoundManager 인스턴스 null 체크
         if (SoundManager.instance != null)
         {
             currentVolume = SoundManager.instance.GetVolume();
         }
         else
         {
-            Debug.LogWarning("SoundManager 인스턴스가 없음! 기본 볼륨값 사용");
+            Debug.LogWarning("SoundManager 인스턴스 없음! 기본 볼륨값 사용");
         }
 
         int activeIndex = Mathf.RoundToInt(currentVolume * volumePresetButtons.Length) - 1;
-        activeIndex = Mathf.Clamp(activeIndex, 0, volumePresetButtons.Length - 1);
+
+        // 볼륨이 0일 때는 -1로 처리해서 아무 버튼도 켜지지 않게
+        if (currentVolume <= 0f)
+        {
+            activeIndex = -1;
+        }
 
         UpdatePresetButtonImages(activeIndex);
     }
-
-
     private void UpdatePresetButtonImages(int activeIndex)
     {
         for (int i = 0; i < volumePresetButtons.Length; i++)
         {
             Image btnImage = volumePresetButtons[i].GetComponent<Image>();
             if (btnImage != null)
-                btnImage.sprite = (i <= activeIndex) ? onSprite : offSprite;
+            {
+                // activeIndex가 -1이면 모두 offSprite
+                btnImage.sprite = (activeIndex >= 0 && i <= activeIndex) ? onSprite : offSprite;
+            }
         }
     }
 

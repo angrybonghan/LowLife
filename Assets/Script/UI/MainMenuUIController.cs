@@ -334,9 +334,25 @@ public class MainMenuUIController : MonoBehaviour
 
     private void SyncPresetButtonImages()
     {
-        float currentVolume = SoundManager.instance.GetVolume();
+        float currentVolume = 0f;
+
+        if (SoundManager.instance != null)
+        {
+            currentVolume = SoundManager.instance.GetVolume();
+        }
+
+        // 기본 계산
         int activeIndex = Mathf.RoundToInt(currentVolume * volumePresetButtons.Length) - 1;
-        activeIndex = Mathf.Clamp(activeIndex, 0, volumePresetButtons.Length - 1);
+
+        // 볼륨이 0일 때는 -1로 처리 모든 버튼 off
+        if (currentVolume <= 0f)
+        {
+            activeIndex = -1;
+        }
+        else
+        {
+            activeIndex = Mathf.Clamp(activeIndex, 0, volumePresetButtons.Length - 1);
+        }
 
         UpdatePresetButtonImages(activeIndex);
     }
@@ -348,7 +364,8 @@ public class MainMenuUIController : MonoBehaviour
             Image btnImage = volumePresetButtons[i].GetComponent<Image>();
             if (btnImage != null)
             {
-                btnImage.sprite = (i <= activeIndex) ? onSprite : offSprite;
+                // activeIndex가 -1이면 모든 버튼 offSprite
+                btnImage.sprite = (activeIndex >= 0 && i <= activeIndex) ? onSprite : offSprite;
             }
         }
     }
