@@ -89,15 +89,23 @@ public class SoundManager : MonoBehaviour
         Object.Destroy(tempGO, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale) + 1);
     }
 
-    public void Play2DSound(AudioClip clip, float volumeMultiple = 1f)
+    public void Play2DSound(AudioClip clip, float volumeMultiple = 1f, float pitch = 1.0f)
     {
         GameObject gameObject = new GameObject();
         AudioSource audioSource = (AudioSource)gameObject.AddComponent(typeof(AudioSource));
         audioSource.clip = clip;
         audioSource.spatialBlend = 0f;
         audioSource.volume = volume;
+        audioSource.pitch = pitch;
         audioSource.Play();
         Object.Destroy(gameObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale) + 1);
+    }
+
+    public void PlayRandom2DSound(AudioClip[] clips, float volumeMultiple = 1f, float pitch = 1.0f)
+    {
+        if (clips == null || clips.Length == 0) return;
+        AudioClip clip = GetRandomSound(clips);
+        Play2DSound(clip, volumeMultiple, pitch);
     }
 
     public void PlayRandomSoundAtPosition(Vector3 position, AudioClip[] clips, float volumeMultiple = 1f)
