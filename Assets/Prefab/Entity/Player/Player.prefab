@@ -98,6 +98,7 @@ MonoBehaviour:
   dashEffect: {fileID: 1877804497623792628, guid: 7b377459c6d19e54183b58215d31df69, type: 3}
   shieldEquipDuration: 0.2
   parryDuration: 0.2
+  blockEffect: {fileID: 6823912844399083318, guid: 188d15f1800ed0d4da1e8c77b16850b5, type: 3}
   parryEffect: {fileID: 917781209060386199, guid: 7da7b29c97ea0084fa94d18ae1c9ade1, type: 3}
   shieldRechargeDuration: 3
   maxShieldGaugeColor: {r: 0, g: 1, b: 0, a: 1}
@@ -189,6 +190,7 @@ MonoBehaviour:
   bigCloth:
   - {fileID: 8300000, guid: 83247ef8814196a4cb27c48c34af7a35, type: 3}
   - {fileID: 8300000, guid: b5fd0863b22ace340a85a6006ad5588d, type: 3}
+  shieldBlockSound: {fileID: 0}
   parrySound: {fileID: 8300000, guid: d4941e091e20bad4e8f8bd855296f263, type: 3}
   deathSound: {fileID: 8300000, guid: a43cf3de6a1937a41b37b09509e91664, type: 3}
 --- !u!114 &2530227124491807116

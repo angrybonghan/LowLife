@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [Header("방패")]
     public float shieldEquipDuration = 0.2f;   // 방패를 꺼내는 시간
     public float parryDuration = 0.4f;  // 방패로 튕겨내는 시간
+    public GameObject blockEffect; // 방패로 막을 때 파티클
     public GameObject parryEffect;  // 패링할 때 파티클
 
     [Header("방패 게이지")]
@@ -1149,8 +1151,12 @@ public class PlayerController : MonoBehaviour
                 if (shieldGauge != 0)
                 {
                     AchievementManager.Instance?.OnBlockSuccess();
-
+                    Instantiate(blockEffect, transform.position, quaternion.identity);
                     AddKnockback(knockbackPower, knockbacktime);
+                }
+                else
+                {
+                    Stun();
                 }
             }
             else Death();
@@ -1167,8 +1173,6 @@ public class PlayerController : MonoBehaviour
     {
         shieldGauge -= damage;
         shieldGauge = Mathf.Clamp01(shieldGauge);
-
-        if (shieldGauge == 0) Stun();
     }
 
     void Stun()

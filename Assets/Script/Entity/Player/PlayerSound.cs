@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun, Stick, WallKick, BigCloth, Cloth, ShieldLerp, Death };
+public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun, Stick, WallKick, BigCloth, Cloth, ShieldLerp, Death, Block };
 
 public class PlayerSound : MonoBehaviour
 {
@@ -28,7 +28,8 @@ public class PlayerSound : MonoBehaviour
     public AudioClip[] cloth;
     public AudioClip[] bigCloth;
 
-    [Header("패링")]
+    [Header("막기, 패링")]
+    public AudioClip shieldBlockSound;
     public AudioClip parrySound;
 
     [Header("죽음")]
@@ -70,6 +71,9 @@ public class PlayerSound : MonoBehaviour
                 break;
             case playerSoundType.Parry:
                 clip = parrySound;
+                break;
+            case playerSoundType.Block:
+                clip = shieldBlockSound;
                 break;
             case playerSoundType.Death:
                 clip = deathSound;
