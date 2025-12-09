@@ -115,7 +115,7 @@ public class SoundManager : MonoBehaviour
         int randomIndex = Random.Range(0, clips.Length);
         return clips[randomIndex];
     }
-
+    
     public void PlayEntityHitSound(Vector3 position)
     {
         if (entityHitSound == null || entityHitSound.Length == 0) return;
