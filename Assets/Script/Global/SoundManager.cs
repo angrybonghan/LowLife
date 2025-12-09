@@ -41,13 +41,19 @@ public class SoundManager : MonoBehaviour
     public void SetVolume(float newVolume)
     {
         volume = Mathf.Clamp01(newVolume);
+
         foreach (var src in allLoopAudioSource)
         {
             if (src != null)
                 src.volume = volume;
         }
+
+        PlayerPrefs.SetFloat("GameVolume", volume);
+        PlayerPrefs.Save();
+
         Debug.Log($"[SoundManager] Volume set to {volume}");
     }
+
 
     public void IncreaseVolume() => SetVolume(volume + 0.1f);
     public void DecreaseVolume() => SetVolume(volume - 0.1f);

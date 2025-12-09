@@ -29,6 +29,12 @@ public class DeliveryQuest : MonoBehaviour
         {
             npcObject.transform.position = new Vector3(startPoint.x, startPoint.y, npcObject.transform.position.z);
         }
+
+        if (removeNpcOnComplete && QuestManager.Instance.GetQuestState(questID) == QuestState.Completed)
+        {
+            RemoveNpcImmediate();
+        }
+
     }
 
     private void Update()
@@ -79,5 +85,13 @@ public class DeliveryQuest : MonoBehaviour
 
         Destroy(npc);
         Debug.Log("[NPC 제거] Vector2 기반 이동 후 제거됨");
+    }
+
+    private void RemoveNpcImmediate()
+    {
+        if (npcObject != null)
+        {
+            npcObject.SetActive(false); // 비활성화 -> 씬 로드 시 상태 유지 가능
+        }
     }
 }

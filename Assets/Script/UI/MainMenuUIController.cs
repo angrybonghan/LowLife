@@ -134,6 +134,17 @@ public class MainMenuUIController : MonoBehaviour
                 }
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            SoundManager.instance.DecreaseVolume();
+            SyncPresetButtonImages();
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            SoundManager.instance.IncreaseVolume();
+            SyncPresetButtonImages();
+        }
     }
 
     private IEnumerator BlinkText()
