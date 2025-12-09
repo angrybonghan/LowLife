@@ -3,19 +3,11 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 
-/// <summary>
-/// UI 매니저
-/// - 퀘스트 진행 상황 표시
-/// - 업적 달성 팝업 표시
-/// - 게임 종료 및 씬 이동 버튼 처리
-/// - ESC 메뉴 및 서브 창 관리
-/// - 볼륨 조절 (버튼 + 키보드)
-/// </summary>
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
-
     public bool IsPaused => isPaused;
 
     [Header("UI References")]
@@ -29,7 +21,6 @@ public class UIManager : MonoBehaviour
     public Vector2 popupVisiblePos = new Vector2(0, 0);
     public float popupAnimSpeed = 6f;
     public float achievementPopupDuration = 3f;
-
     private Coroutine achievementAnimCoroutine;
 
     [Header("ESC Menu References")]
@@ -61,12 +52,15 @@ public class UIManager : MonoBehaviour
     public float sideAnimSpeed = 6f;
     public float sideRotateSpeed = 6f;
 
+    [Header("Execution control")]
+    public bool disableUIManager = false;
+
     private bool isPaused = false;
     private Coroutine escAnimCoroutine;
     private bool sideOpen = false;
     private Coroutine sideAnimCoroutine;
 
-    public TextMeshProUGUI saveTimeText; // 마지막 저장 시간 표시용
+    public TextMeshProUGUI saveTimeText;
 
     private void Awake()
     {
@@ -81,20 +75,15 @@ public class UIManager : MonoBehaviour
         string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
         UpdateSaveTimeText(lastTime);
 
-        // ESC 메뉴 기본 닫힘 상태
-        if (escMenuPanel != null)
-            escMenuPanel.anchoredPosition = hiddenPos;
-        if (escCanvasGroup != null)
-            escCanvasGroup.alpha = 0f;
+        if (escMenuPanel != null) escMenuPanel.anchoredPosition = hiddenPos;
+        if (escCanvasGroup != null) escCanvasGroup.alpha = 0f;
 
-        // 사이드 패널 기본 닫힘 상태
         if (sidePanel != null)
         {
             sidePanel.anchoredPosition = sideHiddenPos;
             sidePanel.localRotation = Quaternion.Euler(0f, 0f, 90f);
         }
 
-        // ESC 관련 서브 창들 닫기
         if (settingsWindow != null) settingsWindow.SetActive(false);
         if (achievementWindow != null) achievementWindow.SetActive(false);
 
@@ -106,7 +95,8 @@ public class UIManager : MonoBehaviour
                 volumePresetButtons[index].onClick.AddListener(() =>
                 {
                     float presetValue = (index + 1) / (float)volumePresetButtons.Length;
-                    SoundManager.instance.SetVolume(presetValue);
+                    if (SoundManager.instance != null)
+                        SoundManager.instance.SetVolume(presetValue);
                     UpdatePresetButtonImages(index);
                 });
             }
@@ -115,14 +105,46 @@ public class UIManager : MonoBehaviour
         SyncPresetButtonImages();
     }
 
-    private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
-    private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
+    
+
+    private void OnEnable()
+    {
+        if (disableUIManager) return;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    private void OnDisable()
+    {
+        if (disableUIManager) return;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        
+
         if (scene.name == "MainMenu" || scene.name == "PlayerDeathLoading" || scene.name == "StageLoading_1")
-            Destroy(gameObject);
+        {
+            disableUIManager = true;
+
+            // UIManager는 계속 활성화 상태 유지
+            // 대신 내부 UI 요소만 비활성화
+            if (escMenuPanel != null) escMenuPanel.gameObject.SetActive(false);
+            if (sidePanel != null) sidePanel.gameObject.SetActive(false);
+            if (questText != null) questText.gameObject.SetActive(false);
+            if (achievementPopupPanel != null) achievementPopupPanel.gameObject.SetActive(false);
+        }
+        else
+        {
+            disableUIManager = false;
+
+            // 게임 씬에서는 다시 활성화
+            if (escMenuPanel != null) escMenuPanel.gameObject.SetActive(true);
+            if (sidePanel != null) sidePanel.gameObject.SetActive(true);
+            if (questText != null) questText.gameObject.SetActive(true);
+            if (achievementPopupPanel != null) achievementPopupPanel.gameObject.SetActive(true);
+        }
     }
+
 
     private void Start()
     {
@@ -132,16 +154,14 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
+        if (disableUIManager) return; // 전체 차단
+
         UpdateQuestText();
 
         string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
         UpdateSaveTimeText(lastTime);
 
-        // ESC 메뉴 입력 처리
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            ToggleESCMenu();
-        }
+        if (Input.GetKeyDown(KeyCode.Escape)) ToggleESCMenu();
 
         if (isPaused && escMenuButtons.Length > 0)
         {
@@ -157,12 +177,9 @@ public class UIManager : MonoBehaviour
             }
 
             if (Input.GetKeyDown(KeyCode.Return))
-            {
                 escMenuButtons[selectedIndex].onClick.Invoke();
-            }
         }
 
-        // Tab 키로 사이드 패널 열고 닫기
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (!sideOpen)
@@ -182,15 +199,14 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        // 좌/우 키로 볼륨 조절
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            SoundManager.instance.DecreaseVolume();
+            if (SoundManager.instance != null) SoundManager.instance.DecreaseVolume();
             SyncPresetButtonImages();
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            SoundManager.instance.IncreaseVolume();
+            if (SoundManager.instance != null) SoundManager.instance.IncreaseVolume();
             SyncPresetButtonImages();
         }
     }
@@ -207,24 +223,15 @@ public class UIManager : MonoBehaviour
 
     private void SyncPresetButtonImages()
     {
-        float currentVolume = 1f; // 기본값
-
-        // SoundManager 인스턴스 null 체크
+        float currentVolume = 1f;
         if (SoundManager.instance != null)
-        {
             currentVolume = SoundManager.instance.GetVolume();
-        }
-        else
-        {
-            Debug.LogWarning("SoundManager 인스턴스가 없음! 기본 볼륨값 사용");
-        }
 
         int activeIndex = Mathf.RoundToInt(currentVolume * volumePresetButtons.Length) - 1;
         activeIndex = Mathf.Clamp(activeIndex, 0, volumePresetButtons.Length - 1);
 
         UpdatePresetButtonImages(activeIndex);
     }
-
 
     private void UpdatePresetButtonImages(int activeIndex)
     {
@@ -238,7 +245,6 @@ public class UIManager : MonoBehaviour
 
     public void ToggleESCMenu()
     {
-        // ESC 누를 때 서브 창이 열려 있으면 먼저 닫기
         if (activeSubWindow != null)
         {
             CloseActiveSubWindow();
@@ -252,13 +258,13 @@ public class UIManager : MonoBehaviour
         {
             Time.timeScale = 0f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(visiblePos, 1f));
-            SoundManager.instance.LowerVolumeForESC();
+            if (SoundManager.instance != null) SoundManager.instance.LowerVolumeForESC();
         }
         else
         {
             Time.timeScale = 1f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(hiddenPos, 0f));
-            SoundManager.instance.RestoreVolumeAfterESC();
+            if (SoundManager.instance != null) SoundManager.instance.RestoreVolumeAfterESC();
         }
     }
 
@@ -335,7 +341,6 @@ public class UIManager : MonoBehaviour
         sidePanel.anchoredPosition = targetPos;
         sidePanel.localRotation = targetRot;
     }
-
     public void UpdateQuestText()
     {
         if (questText == null) return;
@@ -496,6 +501,7 @@ public class UIManager : MonoBehaviour
         string currentStage = SceneManager.GetActiveScene().name;
         SaveSystemJSON.DataSaveStage(currentStage);
         SaveSystemJSON.DataSaveQuests(QuestManager.Instance);
+        SaveSystemJSON.DataSaveAchievements(AchievementManager.Instance); // 업적 저장 추가
         SceneManager.LoadScene("MainMenu");
     }
 
