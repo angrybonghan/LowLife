@@ -65257,6 +65257,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stuckSound: {fileID: 8300000, guid: f187c896ee95d114995e6ef5c6d88126, type: 3}
+  smashSound: {fileID: 8300000, guid: fc51614abd6d3434a9d5d5ef85b5882f, type: 3}
+  headRollSound: {fileID: 8300000, guid: 3f942ec586b82b8449f630fd42df8915, type: 3}
 --- !u!1 &1444965835
 GameObject:
   m_ObjectHideFlags: 0
@@ -66039,6 +66041,10 @@ PrefabInstance:
     - target: {fileID: 9013860045396669601, guid: 1f6d9d15517e5384d9f359a0a18614fb, type: 3}
       propertyPath: m_Name
       value: UIManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 9013860045396669601, guid: 1f6d9d15517e5384d9f359a0a18614fb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
