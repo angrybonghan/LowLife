@@ -299,7 +299,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 3072
   deadParts: {fileID: 8622578611247153932, guid: 8c29f4c4f81193a4eb3b88bae56d7e21, type: 3}
-  beepSound: {fileID: 8300000, guid: 7b0b2f4b2c72c9647ac5c62c727a1abe, type: 3}
+  beepSound: {fileID: 8300000, guid: d1066e93869a2764c8a48b05120facef, type: 3}
   explosionSound:
   - {fileID: 8300000, guid: bb8a47c587a9033488266101498b0447, type: 3}
   - {fileID: 8300000, guid: aa159a34fe3633a4a8451f743fc89e8d, type: 3}

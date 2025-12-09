@@ -74,10 +74,19 @@ public class SoundManager : MonoBehaviour
 
     public void PlaySoundAtPosition(Vector3 position, AudioClip clip, float volumeMultiple = 1f)
     {
-        if (clip != null)
-        {
-            AudioSource.PlayClipAtPoint(clip, position, volume * volumeMultiple);
-        }
+        if (clip == null) return;
+
+        GameObject tempGO = new GameObject("TempAudio");
+        tempGO.transform.position = position;
+
+        AudioSource audioSource = tempGO.AddComponent<AudioSource>();
+        audioSource.clip = clip;
+        audioSource.spatialBlend = 1.0f;
+
+        audioSource.volume = volume * volumeMultiple;
+
+        audioSource.Play();
+        Object.Destroy(tempGO, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale) + 1);
     }
 
     public void Play2DSound(AudioClip clip, float volumeMultiple = 1f)
@@ -88,7 +97,7 @@ public class SoundManager : MonoBehaviour
         audioSource.spatialBlend = 0f;
         audioSource.volume = volume;
         audioSource.Play();
-        Object.Destroy(gameObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale));
+        Object.Destroy(gameObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale) + 1);
     }
 
     public void PlayRandomSoundAtPosition(Vector3 position, AudioClip[] clips, float volumeMultiple = 1f)
@@ -133,7 +142,7 @@ public class SoundManager : MonoBehaviour
         audioSource.pitch = pitch;
 
         audioSource.Play();
-        Destroy(tempGO, clip.length / Mathf.Abs(pitch));
+        Object.Destroy(tempGO, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale) + 1);
     }
 
     public void PlayRandomClipAtPointWithPitch(Vector3 position, AudioClip[] clips, float pitch = 1.0f, float volumeMultiple = 1.0f)
@@ -149,7 +158,7 @@ public class SoundManager : MonoBehaviour
         audioSource.spatialBlend = 1f;
         audioSource.volume = volume * volumeMultiple;
         audioSource.Play();
-        Object.Destroy(newObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale));
+        Object.Destroy(newObject, clip.length * ((Time.timeScale < 0.01f) ? 0.01f : Time.timeScale) + 1);
     }
 
     public void PlayLoopBgm(AudioClip clip, string soundName, float pitch = 1.0f, float volumeMultiple = 1.0f)
