@@ -10,22 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22b057228469eed4a8851095ee04d16e, type: 3}
-  m_Name: Swomp_2_Enemy_01
+  m_Name: Cutscenes_Bar
   m_EditorClassIdentifier: 
-  questID: S_2_1
-  questName: "\uC5F4\uC1E0\uB97C \uAC00\uC9C4 \uB3D9\uB8CC \uAD6C\uCD9C"
-  description: "\uC5F4\uC1E0\uB97C \uAC00\uC9C4 \uB3D9\uB8CC \uAD6C\uCD9C\uD558\uC5EC
-    \uC5F4\uC1E0\uB97C \uD68D\uB4DD \uD558\uC138\uC694"
-  prerequisiteQuestID: B_1_1
-  questType: 1
-  detectUp: 10
+  questID: B_1_1
+  questName: 
+  description: 
+  prerequisiteQuestID: 
+  questType: 7
+  detectUp: 5
   detectDown: 5
-  detectLeft: 25
-  detectRight: 3
+  detectLeft: 5
+  detectRight: 5
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 1024
-  questCenterPosition: {x: 83, y: -18, z: 0}
+    m_Bits: 0
+  questCenterPosition: {x: 0, y: 0, z: 0}
   targetKillCount: 0
   requiredItemID: 
   requiredItemCount: 1
@@ -36,4 +35,4 @@ MonoBehaviour:
   escortTargetSceneName: 
   escortTargetPosition: {x: 0, y: 0, z: 0}
   escortCompleteRadius: 2
-  cutsceneID: 
+  cutsceneID: Bar

@@ -5,6 +5,7 @@ using UnityEngine;
 /// 퀘스트 상태 및 진행도 관리.
 /// - 저장/불러오기 담당
 /// - 퀘스트 시작/완료 시 상태 갱신 및 저장
+/// - 컷씬 퀘스트 자동 클리어 지원
 /// </summary>
 public enum QuestState { NotStarted, InProgress, Completed }
 
@@ -17,29 +18,26 @@ public class QuestManager : MonoBehaviour
 
     public List<QuestDataSO> activeQuests = new List<QuestDataSO>();
     public Dictionary<string, QuestState> questStates = new Dictionary<string, QuestState>();
-
     private Dictionary<string, int> questKillCounts = new Dictionary<string, int>();
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-
-            // 모든 퀘스트 등록 (한 번만)
-            foreach (var quest in allQuests)
-            {
-                AddToActiveQuests(quest);
-            }
-
-            // 저장된 상태 불러오기
-            SaveSystemJSON.DataLoadQuests(this);
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        // 모든 퀘스트 등록
+        foreach (var quest in allQuests)
+        {
+            AddToActiveQuests(quest);
+        }
+
+        // 저장된 상태 불러오기
+        SaveSystemJSON.DataLoadQuests(this);
     }
 
     private void OnApplicationQuit()
@@ -54,7 +52,6 @@ public class QuestManager : MonoBehaviour
         {
             activeQuests.Add(quest);
 
-            // 이미 저장된 상태가 있으면 덮어쓰지 않음
             if (!questStates.ContainsKey(quest.questID))
                 questStates[quest.questID] = QuestState.NotStarted;
             else
@@ -78,20 +75,18 @@ public class QuestManager : MonoBehaviour
             questStates[questID] = QuestState.InProgress;
             Debug.Log($"[퀘스트 시작] {quest.questName}");
             SaveSystemJSON.DataSaveQuests(this);
-            FindObjectOfType<UIManager>()?.UpdateQuestText();
+            UIManager.Instance?.UpdateQuestText();
         }
     }
 
     public void CompleteQuest(QuestDataSO quest)
     {
-        UIManager.Instance?.ShowQuestCompleted(quest.questName);
-
         if (questStates[quest.questID] != QuestState.InProgress) return;
 
         questStates[quest.questID] = QuestState.Completed;
         Debug.Log($"[퀘스트 완료] {quest.questName}");
         SaveSystemJSON.DataSaveQuests(this);
-        FindObjectOfType<UIManager>()?.UpdateQuestText();
+        UIManager.Instance?.UpdateQuestText();
 
         AchievementManager.Instance?.OnQuestCompleted(quest.questID);
 
@@ -112,13 +107,37 @@ public class QuestManager : MonoBehaviour
     {
         questStates[questID] = state;
         Debug.Log($"[로드 적용] {questID} → {state}");
-        FindObjectOfType<UIManager>()?.UpdateQuestText();
+        UIManager.Instance?.UpdateQuestText();
     }
 
-    // 진행도 관리
-    public void UpdateKillCount(string questID, int killed) =>
+    // 진행도 관리 (CombatCount 자동 클리어)
+    public void UpdateKillCount(string questID, int killed)
+    {
         questKillCounts[questID] = killed;
+        var quest = GetQuestData(questID);
+        if (quest != null && quest.questType == QuestType.CombatCount &&
+            killed >= quest.targetKillCount)
+        {
+            CompleteQuest(quest);
+        }
+    }
 
     public int GetKillCount(string questID) =>
         questKillCounts.TryGetValue(questID, out int count) ? count : 0;
+
+    // 컷씬 퀘스트 클리어 처리 (CutsceneManager에서 호출)
+    public void CompleteCutsceneQuest(string cutsceneID)
+    {
+        foreach (var quest in activeQuests)
+        {
+            if (quest.questType == QuestType.Cutscene &&
+                quest.cutsceneID == cutsceneID &&
+                GetQuestState(quest.questID) == QuestState.InProgress)
+            {
+                CompleteQuest(quest);
+                Debug.Log($"[QuestManager] 컷씬({cutsceneID}) 완료 → 퀘스트 클리어: {quest.questName}");
+                break;
+            }
+        }
+    }
 }

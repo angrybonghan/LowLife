@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class CutsceneManager : MonoBehaviour, I_DialogueCallback
 {
+    [Header("ÄÆ¾À ID")]
+    public string cutsceneID; // ÇöÀç ÄÆ¾ÀÀÇ ID
+
     [Header("Æ®¸®°Å")]
     public string triggerName = "next";
 
@@ -18,22 +21,11 @@ public class CutsceneManager : MonoBehaviour, I_DialogueCallback
     [Header("·¹ÅÍ¹Ú½º")]
     public bool useLetterbox = true;
 
-    [Header("Äù½ºÆ® Å¬¸®¾î")]
-    public bool isClearQuest;
-    public string questID;
-
-    [Header("Äù½ºÆ® ºÎ¿©")]
-    public bool isGiveQuest;
-    public string giveQuestID;
-
     [Header("¾÷Àû Å¬¸®¾î")]
     public bool isClearAchievement;
     public string achievementID;
 
-
-
     int currentDialogueIndex = 0;
-
     Animator anim;
 
     private void Awake()
@@ -44,31 +36,22 @@ public class CutsceneManager : MonoBehaviour, I_DialogueCallback
     void Start()
     {
         if (callDialogueOnStart)
-        {
             CallDialogue();
-        }
 
         if (useLetterbox)
-        {
             LetterBoxController.Instance.SetEnable(true);
-        }
-
-        if (isClearQuest)
-        {
-            QuestDataSO quest = QuestManager.Instance?.GetQuestData(questID);
-            if (quest != null) QuestManager.Instance.CompleteQuest(quest);
-        }
 
         if (isClearAchievement)
-        {
             AchievementManager.Instance?.OnTalkToNPC(achievementID);
-        }
     }
 
     public void CallDialogue()
     {
-        DialogManager.instance.StartDialogue(dialogueSOs[currentDialogueIndex], gameObject);
-        currentDialogueIndex++;
+        if (dialogueSOs.Length > currentDialogueIndex)
+        {
+            DialogManager.instance.StartDialogue(dialogueSOs[currentDialogueIndex], gameObject);
+            currentDialogueIndex++;
+        }
     }
 
     public void OnDialogueEnd()
@@ -78,11 +61,10 @@ public class CutsceneManager : MonoBehaviour, I_DialogueCallback
 
     public void LoadNextScene()
     {
-        if (isGiveQuest)
-        {
-            QuestManager.Instance.StartQuest(giveQuestID);
-        }
+        // ÄÆ¾À Äù½ºÆ® Å¬¸®¾î ÆÇÁ¤
+        QuestManager.Instance?.CompleteCutsceneQuest(cutsceneID);
 
+        // ¾À ÀüÈ¯
         ScreenTransition.ScreenTransitionGoto(
             nextSceneName,
             loadingSceneName,

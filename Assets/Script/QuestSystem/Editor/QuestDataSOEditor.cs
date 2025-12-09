@@ -74,6 +74,12 @@ public class QuestDataSOEditor : Editor
                 EditorGUILayout.LabelField("Dialogue 퀘스트 설정", EditorStyles.boldLabel);
                 EditorGUILayout.HelpBox("NPC와 대화하는 퀘스트입니다. 별도 설정 필요 없음.", MessageType.Info);
                 break;
+
+            case QuestType.Cutscene:
+                EditorGUILayout.LabelField("Cutscene 퀘스트 설정", EditorStyles.boldLabel);
+                questData.cutsceneID = EditorGUILayout.TextField("컷씬 ID", questData.cutsceneID);
+                EditorGUILayout.HelpBox("지정한 컷씬이 끝나면 자동으로 클리어되는 퀘스트입니다.", MessageType.Info);
+                break;
         }
 
         EditorGUILayout.Space();

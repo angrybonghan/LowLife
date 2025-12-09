@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22b057228469eed4a8851095ee04d16e, type: 3}
-  m_Name: NewQuest
+  m_Name: Cutscenes
   m_EditorClassIdentifier: 
   questID: 
   questName: 
   description: 
   prerequisiteQuestID: 
-  questType: 1
+  questType: 7
   detectUp: 5
   detectDown: 5
   detectLeft: 5
@@ -25,6 +25,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   questCenterPosition: {x: 0, y: 0, z: 0}
+  targetKillCount: 0
   requiredItemID: 
   requiredItemCount: 1
   deliveryTargetNPC: 
@@ -34,5 +35,4 @@ MonoBehaviour:
   escortTargetSceneName: 
   escortTargetPosition: {x: 0, y: 0, z: 0}
   escortCompleteRadius: 2
-  achievementID: 
-  achievementPopup: {fileID: 0}
+  cutsceneID: 

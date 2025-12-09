@@ -32,6 +32,9 @@ public class QuestDataSO : ScriptableObject
     public string escortTargetSceneName;
     public Vector3 escortTargetPosition;
     public float escortCompleteRadius = 2f;
+
+    //Cutscene
+    public string cutsceneID;
 }
 
 public enum QuestType
@@ -42,5 +45,6 @@ public enum QuestType
     Delivery,       // 아이템 전달
     Collect,        // 아이템 수집
     Explore,        // 특정 위치 도달
-    Escort          // NPC 호위
+    Escort,         // NPC 호위
+    Cutscene        // 컷신
 }
