@@ -48,6 +48,9 @@ EditorBuildSettings:
     path: Assets/Scenes/StageSelect.unity
     guid: f6f5dcfb6c9e5434ab1ab6431dc2bc91
   - enabled: 1
+    path: Assets/Scenes/Swomp_3_Boss.unity
+    guid: 0e0d066f1209bc6428a55c0edc39dc3f
+  - enabled: 1
     path: Assets/Scenes/Test/PlayerMovementTest.unity
     guid: ba619262351df314590a5a638fed615c
   - enabled: 1
