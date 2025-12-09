@@ -8,6 +8,7 @@ public class SpritePlayer : MonoBehaviour
     public Sprite[] frames;
 
     private SpriteRenderer sr;
+    private Coroutine animCoroutine;
 
     private void Awake()
     {
@@ -22,7 +23,8 @@ public class SpritePlayer : MonoBehaviour
             return;
         }
 
-        StartCoroutine(StartAnimation());
+        // 코루틴 핸들을 저장
+        animCoroutine = StartCoroutine(StartAnimation());
     }
 
     IEnumerator StartAnimation()
@@ -37,9 +39,13 @@ public class SpritePlayer : MonoBehaviour
         }
     }
 
-    public void SetSize(float size)
+    //외부에서 호출할 수 있는 정지 함수
+    public void StopAnimation()
     {
-        Vector2 newSize = new Vector2(size, size);
-        transform.localScale = newSize;
+        if (animCoroutine != null)
+        {
+            StopCoroutine(animCoroutine);
+            animCoroutine = null;
+        }
     }
 }

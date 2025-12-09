@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_DialogueCallback
 {
-    [Header("NPC ID (업적용)")]
+    [Header("NPC ID")]
     public string npcID;
 
     [Header("퀘스트 연결")]
@@ -27,8 +27,28 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
     public Sprite startDialogueSprite;   // 대화 시작 시 스프라이트
     public Sprite endDialogueSprite;     // 대화 종료 시 스프라이트
 
+
+    private void Start()
+    {
+        // 씬 시작 시 PlayerPrefs 확인
+        if (npcRenderer != null && endDialogueSprite != null && !string.IsNullOrEmpty(npcID))
+        {
+            int talked = PlayerPrefs.GetInt("NPC_" + npcID + "_Talked", 0);
+            if (talked == 1)
+            {
+                npcRenderer.sprite = endDialogueSprite;
+            }
+        }
+    }
+
     public void InInteraction()
     {
+        var spritePlayer = GetComponent<SpritePlayer>();
+        if (spritePlayer != null)
+        {
+            spritePlayer.StopAnimation();
+        }
+
         PlayerController.instance.AllStop();
         PlayerHandler.instance.PlayerGoto(playerPos, duration, facingRight);
 
@@ -118,6 +138,12 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
         if (npcRenderer != null && endDialogueSprite != null)
         {
             npcRenderer.sprite = endDialogueSprite;
+
+            if (!string.IsNullOrEmpty(npcID))
+            {
+                PlayerPrefs.SetInt("NPC_" + npcID + "_Talked", 1);
+                PlayerPrefs.Save();
+            }
         }
 
         StartCoroutine(DialogueEndFunc());

@@ -1,56 +1,80 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class DataResetByKey : MonoBehaviour
 {
-    void Update()
+    public TextMeshProUGUI CleerText;
+
+    private void Start()
     {
-        // Ctrl + Alt + C 입력 시 전체 데이터 초기화
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.C))
+        CleerText.gameObject.SetActive(false);
+    }
+
+    public void ResetCode()
+    {
+        Debug.Log("[Ctrl+Alt+C] 전체 데이터 초기화 실행");
+        SaveSystemJSON.DataResetByKey("All");
+        SaveSystemJSON.ClearItems();
+
+        PlayerPrefs.DeleteAll();   // 모든 PlayerPrefs 데이터 삭제
+        PlayerPrefs.Save();        // 즉시 반영
+        Debug.Log("[저장 초기화] 모든 게임 데이터가 초기화되었습니다.");
+
+        // QuestManager 메모리 상태 초기화
+        var qm = QuestManager.Instance;
+        if (qm != null)
         {
-            Debug.Log("[Ctrl+Alt+C] 전체 데이터 초기화 실행");
-            SaveSystemJSON.DataResetByKey("All");
-            SaveSystemJSON.ClearItems();
+            qm.questStates.Clear();
+            qm.activeQuests.Clear();
 
-            // QuestManager 메모리 상태 초기화
-            var qm = QuestManager.Instance;
-            if (qm != null)
+            foreach (var quest in qm.allQuests)
             {
-                qm.questStates.Clear();
-                qm.activeQuests.Clear();
-
-                // allQuests에 있는 퀘스트를 다시 등록 (NotStarted 상태로)
-                foreach (var quest in qm.allQuests)
-                {
-                    qm.AddToActiveQuests(quest);
-                }
-            }
-
-            // AchievementManager 메모리 상태 초기화
-            var am = AchievementManager.Instance;
-            if (am != null)
-            {
-                foreach (var ach in am.achievements)
-                {
-                    ach.isUnlocked = false;
-                    ach.currentCount = 0;
-                }
-            }
-
-            // ItemDatabase 메모리 상태 초기화
-            var itemDB = ItemDatabase.Instance;
-            if (itemDB != null)
-            {
-                itemDB.items.Clear();
-            }
-
-            // UI 반영
-            var uiManager = FindObjectOfType<UIManager>();
-            if (uiManager != null)
-            {
-                uiManager.UpdateQuestText();
-                uiManager.UpdateSaveTimeText("초기화됨");
+                qm.AddToActiveQuests(quest);
             }
         }
+
+        // AchievementManager 메모리 상태 초기화
+        var am = AchievementManager.Instance;
+        if (am != null)
+        {
+            foreach (var ach in am.achievements)
+            {
+                ach.isUnlocked = false;
+                ach.currentCount = 0;
+            }
+        }
+
+        // ItemDatabase 메모리 상태 초기화
+        var itemDB = ItemDatabase.Instance;
+        if (itemDB != null)
+        {
+            itemDB.items.Clear();
+        }
+
+        // UI 반영
+        var uiManager = FindObjectOfType<UIManager>();
+        if (uiManager != null)
+        {
+            uiManager.UpdateQuestText();
+            uiManager.UpdateSaveTimeText("초기화됨");
+        }
+
+        // 잠깐 표시할 텍스트 실행
+        if (CleerText != null)
+        {
+            StartCoroutine(ShowResetText());
+        }
+    }
+
+    private IEnumerator ShowResetText()
+    {
+        CleerText.text = "데이터가 초기화되었습니다!";
+        CleerText.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(2f); // 2초 동안 표시
+
+        CleerText.gameObject.SetActive(false);
     }
 }

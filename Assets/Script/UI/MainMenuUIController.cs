@@ -62,6 +62,9 @@ public class MainMenuUIController : MonoBehaviour
     [Header("버튼 클릭 사운드 클립들")]
     public AudioClip[] buttonClickSounds;
 
+    [Header("초기화 버튼")]
+    public GameObject ClaerPopupPanel;
+
     private void Awake()
     {
         // 볼륨 업 버튼
@@ -112,6 +115,9 @@ public class MainMenuUIController : MonoBehaviour
 
         foreach (var popup in popups)
             popup.gameObject.SetActive(false);
+
+        if (ClaerPopupPanel != null) ClaerPopupPanel.SetActive(false);
+
     }
 
     private void Update()
@@ -420,5 +426,15 @@ public class MainMenuUIController : MonoBehaviour
     public void LoadSpecificScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void OpenClearPopup()
+    {
+        if (ClaerPopupPanel != null) ClaerPopupPanel.SetActive(true);
+    }
+
+    public void CloseClearPopup()
+    {
+        if (ClaerPopupPanel != null) ClaerPopupPanel.SetActive(false);
     }
 }
