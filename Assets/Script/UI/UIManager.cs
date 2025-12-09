@@ -66,6 +66,9 @@ public class UIManager : MonoBehaviour
     private bool sideOpen = false;
     private Coroutine sideAnimCoroutine;
 
+    [Header("ESC 사운드")]
+    public AudioClip EscSound;
+
     public TextMeshProUGUI saveTimeText; // 마지막 저장 시간 표시용
 
     private void Awake()
@@ -248,8 +251,17 @@ public class UIManager : MonoBehaviour
         isPaused = !isPaused;
         if (escAnimCoroutine != null) StopCoroutine(escAnimCoroutine);
 
+        if (SoundManager.instance != null && EscSound != null)
+        {
+            Debug.Log("[UIManager] ESC 사운드 재생");
+            float randomPitch = Random.Range(0.9f, 1.1f);
+            SoundManager.instance.Play2DSound(EscSound, 1f, randomPitch);
+        }
+
         if (isPaused)
         {
+            
+
             Time.timeScale = 0f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(visiblePos, 1f));
             SoundManager.instance.LowerVolumeForESC();

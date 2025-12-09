@@ -3236,6 +3236,11 @@ MonoBehaviour:
   - {fileID: 748011310}
   onSprite: {fileID: 21300000, guid: 37fc2eb77b6c1d94b9c607c69ed3c221, type: 3}
   offSprite: {fileID: 21300000, guid: 04fd87b358cb0a64a96e58867b17b161, type: 3}
+  buttonClickSounds:
+  - {fileID: 8300000, guid: ea8d18b09dd6cfc4db9589a8731749d9, type: 3}
+  - {fileID: 8300000, guid: 79094adc9381b994c80d4f59fe0a5e6b, type: 3}
+  - {fileID: 8300000, guid: fca4586a3160b8c4fafa903fb4632ac6, type: 3}
+  - {fileID: 8300000, guid: 2dd6229b967da8a4cb0c6edbae198ab7, type: 3}
 --- !u!1 &1575434081
 GameObject:
   m_ObjectHideFlags: 0

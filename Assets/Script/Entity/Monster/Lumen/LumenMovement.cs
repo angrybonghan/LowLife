@@ -1,5 +1,5 @@
 using System.Collections;
-using UnityEditorInternal.Profiling.Memory.Experimental.FileFormat;
+//using UnityEditorInternal.Profiling.Memory.Experimental.FileFormat;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator), typeof(CapsuleCollider2D))]

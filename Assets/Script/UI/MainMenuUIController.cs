@@ -59,6 +59,9 @@ public class MainMenuUIController : MonoBehaviour
     public Sprite onSprite;              // 활성화 이미지
     public Sprite offSprite;             // 비활성화 이미지
 
+    [Header("버튼 클릭 사운드 클립들")]
+    public AudioClip[] buttonClickSounds;
+
     private void Awake()
     {
         // 볼륨 업 버튼
@@ -205,6 +208,11 @@ public class MainMenuUIController : MonoBehaviour
 
     public void OnButtonClick(int buttonIndex)
     {
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayRandom2DSound(buttonClickSounds, 1f, 1f);
+        }
+
         if (buttonIndex >= 0 && buttonIndex < popups.Length)
             StartCoroutine(ButtonsIntoShield(buttonIndex));
     }
