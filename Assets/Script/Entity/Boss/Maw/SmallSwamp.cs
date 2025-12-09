@@ -39,6 +39,7 @@ public class SmallSwamp : MonoBehaviour
                 if (currentSpaceCount >= spaceCount)
                 {
                     ReleasePlayer();
+                    StartCoroutine(Co_ReleasePlayer());
                 }
             }
         }
@@ -52,8 +53,6 @@ public class SmallSwamp : MonoBehaviour
         pc.transform.position = transform.position + Vector3.up;
         PlayerController.canControl = true;
         pc.ExternalJump(jumpOutPower);
-
-        StartCoroutine(Co_ReleasePlayer());
     }
 
     IEnumerator Co_ReleasePlayer()
@@ -93,5 +92,10 @@ public class SmallSwamp : MonoBehaviour
         {
             CatchPlayer();
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (isPlayerCatched) ReleasePlayer();
     }
 }
