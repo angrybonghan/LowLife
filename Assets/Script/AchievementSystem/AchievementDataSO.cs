@@ -48,6 +48,9 @@ public class AchievementDataSO : ScriptableObject
     public string targetNPCID;
     public int targetCount;
 
+    [Header("아이콘 설정")]
+    public Sprite unlockedIcon;
+
     [Header("진행 상태 (런타임)")]
     public bool isUnlocked;
     public int currentCount;

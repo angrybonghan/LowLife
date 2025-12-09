@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b29f46dca744d4bb60f95c9ff6589a, type: 3}
   m_Name: NewAchievement 2
   m_EditorClassIdentifier: 
-  achievementID: 03
+  achievementID: 003
   title: "\uC6B0\uBB3C\uC548 \uAC1C\uAD6C\uB9AC"
   description: "\uAC1C\uAD6C\uB9AC \uBCF4\uC2A4\uB97C \uC8FD\uC774\uC138\uC694"
   hint: "\uAC1C\uAD74 \uAC1C\uAE00"
@@ -23,5 +23,6 @@ MonoBehaviour:
   targetSceneName: 
   targetNPCID: 
   targetCount: 1
+  unlockedIcon: {fileID: 21300000, guid: e19270e15019dd74e955850e1e0949fe, type: 3}
   isUnlocked: 0
   currentCount: 0

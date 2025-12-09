@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b29f46dca744d4bb60f95c9ff6589a, type: 3}
   m_Name: NewAchievement 1
   m_EditorClassIdentifier: 
-  achievementID: 02
+  achievementID: 002
   title: "\uB77C\uC790\uB85C"
   description: "\uC8FD\uC74C\uC5D0\uC11C \uB3CC\uC544\uC628\uC790"
   hint: "\uC8FD\uC74C\uC73C\uB85C \uBD80\uD130...."

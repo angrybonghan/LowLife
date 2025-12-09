@@ -61,15 +61,17 @@ public class UIManager : MonoBehaviour
     public float sideAnimSpeed = 6f;
     public float sideRotateSpeed = 6f;
 
+    [Header("ESC 사운드")]
+    public AudioClip EscSound;
+
+    public TextMeshProUGUI saveTimeText; // 마지막 저장 시간 표시용
+
     private bool isPaused = false;
     private Coroutine escAnimCoroutine;
     private bool sideOpen = false;
     private Coroutine sideAnimCoroutine;
 
-    [Header("ESC 사운드")]
-    public AudioClip EscSound;
-
-    public TextMeshProUGUI saveTimeText; // 마지막 저장 시간 표시용
+    private LockMouse lockMouse;
 
     private void Awake()
     {
@@ -80,6 +82,8 @@ public class UIManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        
+        lockMouse = FindObjectOfType<LockMouse>();
 
         string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
         UpdateSaveTimeText(lastTime);
@@ -241,7 +245,6 @@ public class UIManager : MonoBehaviour
 
     public void ToggleESCMenu()
     {
-        // ESC 누를 때 서브 창이 열려 있으면 먼저 닫기
         if (activeSubWindow != null)
         {
             CloseActiveSubWindow();
@@ -253,18 +256,18 @@ public class UIManager : MonoBehaviour
 
         if (SoundManager.instance != null && EscSound != null)
         {
-            Debug.Log("[UIManager] ESC 사운드 재생");
             float randomPitch = Random.Range(0.9f, 1.1f);
             SoundManager.instance.Play2DSound(EscSound, 1f, randomPitch);
         }
 
         if (isPaused)
         {
-            
-
             Time.timeScale = 0f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(visiblePos, 1f));
             SoundManager.instance.LowerVolumeForESC();
+
+            // ESC 메뉴 열릴 때 마우스 UI용으로 풀기
+            lockMouse?.UnlockMouseForUI();
         }
         else
         {

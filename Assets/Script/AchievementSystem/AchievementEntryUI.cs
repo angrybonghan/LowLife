@@ -35,15 +35,19 @@ public class AchievementEntryUI : MonoBehaviour
         {
             descriptionText.text = $"달성됨 - {achievement.description}";
             if (lockImage != null) lockImage.SetActive(false);
+
+            // 아이콘 교체 (달성 아이콘만 사용)
+            if (statusIcon != null && achievement.unlockedIcon != null)
+                statusIcon.sprite = achievement.unlockedIcon;
         }
         else
         {
             descriptionText.text = $"힌트: {achievement.hint}";
             if (lockImage != null) lockImage.SetActive(true);
-        }
 
-        // 아이콘 색상 변경
-        if (statusIcon != null)
-            statusIcon.color = achievement.isUnlocked ? Color.yellow : Color.gray;
+            // 달성 전에는 아이콘을 기본 회색 처리
+            if (statusIcon != null)
+                statusIcon.color = Color.gray;
+        }
     }
 }

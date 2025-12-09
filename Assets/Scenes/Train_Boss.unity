@@ -1630,7 +1630,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f05a999a81baa4da5322291228e9c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 
+  enemyType: Shambler
   spawnSpencerAtStart: 1
   startPos: {x: 0, y: -4.495001}
   skillInterval: 0.5887

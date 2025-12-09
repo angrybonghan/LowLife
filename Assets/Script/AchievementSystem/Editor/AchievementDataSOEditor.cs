@@ -4,6 +4,7 @@ using UnityEditor;
 /// <summary>
 /// 업적 데이터 인스펙터 커스텀 에디터
 /// - 조건 타입에 맞는 필드만 노출해서 실수를 줄이고 가독성을 높임
+/// - 아이콘 설정 추가
 /// </summary>
 [CustomEditor(typeof(AchievementDataSO))]
 public class AchievementDataSOEditor : Editor
@@ -63,6 +64,12 @@ public class AchievementDataSOEditor : Editor
                 EditorGUILayout.HelpBox("이 업적은 특정 이벤트 발생 시 즉시 달성됩니다.", MessageType.Info);
                 break;
         }
+
+        EditorGUILayout.Space();
+
+        // 아이콘 설정
+        EditorGUILayout.LabelField("아이콘 설정", EditorStyles.boldLabel);
+        ach.unlockedIcon = (Sprite)EditorGUILayout.ObjectField("Unlocked Icon", ach.unlockedIcon, typeof(Sprite), false);
 
         EditorGUILayout.Space();
 
