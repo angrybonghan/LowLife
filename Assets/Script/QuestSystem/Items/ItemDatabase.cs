@@ -1,73 +1,60 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
-/// <summary>
-/// 아이템 데이터베이스 (인벤토리 관리)
-/// - 아이템 개수 저장/조회/추가/삭제
-/// </summary>
 public class ItemDatabase : MonoBehaviour
 {
     public static ItemDatabase Instance;
-    private Dictionary<string, int> itemCounts = new Dictionary<string, int>();
+
+    // 아이템 상태 저장용 Dictionary
+    public Dictionary<string, int> items = new Dictionary<string, int>();
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            LoadItems(); // 게임 시작 시 저장된 아이템 불러오기
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    // 아이템 1개 추가
-    public void AddItem(string itemID)
+    public void AddItem(string itemID, int count)
     {
-        AddItem(itemID, 1);
+        if (items.ContainsKey(itemID))
+            items[itemID] += count;
+        else
+            items[itemID] = count;
+
+        SaveItems();
     }
 
-    // 아이템 여러 개 추가
-    public void AddItem(string itemID, int amount)
+    public void RemoveItem(string itemID, int count)
     {
-        if (string.IsNullOrEmpty(itemID))
+        if (items.ContainsKey(itemID))
         {
-            Debug.LogWarning("[ItemDatabase] 잘못된 itemID 요청");
-            return;
+            items[itemID] -= count;
+            if (items[itemID] <= 0) items.Remove(itemID);
+            SaveItems();
         }
-
-        if (amount <= 0)
-        {
-            Debug.LogWarning("[ItemDatabase] 0 이하의 개수는 추가할 수 없음");
-            return;
-        }
-
-        if (!itemCounts.ContainsKey(itemID))
-            itemCounts[itemID] = 0;
-
-        itemCounts[itemID] += amount;
-        Debug.Log($"[아이템 데이터] {itemID} {amount}개 획득 → 현재 {itemCounts[itemID]}개");
     }
 
-    // 아이템 제거
-    public void RemoveItem(string itemID, int amount)
-    {
-        if (string.IsNullOrEmpty(itemID))
-        {
-            Debug.LogWarning("[ItemDatabase] 잘못된 itemID 요청");
-            return;
-        }
-
-        if (!itemCounts.ContainsKey(itemID))
-        {
-            Debug.LogWarning($"[ItemDatabase] {itemID}는 인벤토리에 없음");
-            return;
-        }
-
-        itemCounts[itemID] -= amount;
-        if (itemCounts[itemID] <= 0)
-            itemCounts.Remove(itemID);
-
-        Debug.Log($"[아이템 데이터] {itemID} {amount}개 전달 → 남은 {GetItemCount(itemID)}개");
-    }
-
-    // 아이템 개수 조회
     public int GetItemCount(string itemID)
     {
-        return itemCounts.TryGetValue(itemID, out int count) ? count : 0;
+        return items.ContainsKey(itemID) ? items[itemID] : 0;
+    }
+
+    // SaveSystemJSON 연동
+    public void SaveItems()
+    {
+        SaveSystemJSON.DataSaveItems(this);
+    }
+
+    public void LoadItems()
+    {
+        SaveSystemJSON.DataLoadItems(this);
     }
 }

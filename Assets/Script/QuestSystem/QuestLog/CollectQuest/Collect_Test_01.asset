@@ -26,7 +26,7 @@ MonoBehaviour:
     m_Bits: 0
   questCenterPosition: {x: 0, y: 0, z: 0}
   targetKillCount: 0
-  requiredItemID: B
+  requiredItemID: Key
   requiredItemCount: 1
   deliveryTargetNPC: 
   targetSceneName: 
@@ -35,5 +35,3 @@ MonoBehaviour:
   escortTargetSceneName: 
   escortTargetPosition: {x: 0, y: 0, z: 0}
   escortCompleteRadius: 2
-  achievementID: 
-  achievementPopup: {fileID: 0}

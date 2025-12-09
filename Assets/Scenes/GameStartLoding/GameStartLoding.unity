@@ -204,6 +204,7 @@ GameObject:
   - component: {fileID: 807832520}
   - component: {fileID: 807832519}
   - component: {fileID: 807832518}
+  - component: {fileID: 807832524}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -378,6 +379,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &807832524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807832517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e26eb42b0372f4f468d6afc2a5656ba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1002857384
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,13 +699,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allQuests:
-  - {fileID: 11400000, guid: 4e791551dbe8da7419d33a9db4324897, type: 2}
-  - {fileID: 11400000, guid: bf418f64e0cd8314bbcc267057db61af, type: 2}
-  - {fileID: 11400000, guid: fd596561fb01dc04a8972cd2b22faa22, type: 2}
+  - {fileID: 11400000, guid: a4a7a8952d537db429cff9ad54d53aa3, type: 2}
+  - {fileID: 11400000, guid: 10553e542076c6b42ae4468c584f938c, type: 2}
+  - {fileID: 11400000, guid: 5b0b42cdb5a308b419997deadf7b33a0, type: 2}
   - {fileID: 11400000, guid: 1037fe0381b37524ca8cd13b2a8c98b2, type: 2}
-  - {fileID: 11400000, guid: ba2d24e7799c26941adbbca0547e4277, type: 2}
-  - {fileID: 11400000, guid: 3a133369109240c4c8eeaf8a96029ebb, type: 2}
-  - {fileID: 11400000, guid: ac593fba74963304f92cfbbdbce7d29c, type: 2}
   activeQuests: []
 --- !u!4 &1547883906
 Transform:

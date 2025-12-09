@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9db7c75ec0ef7474ca851159be2cdcb6, type: 3}
+  m_Name: NPCRescue
+  m_EditorClassIdentifier: 
+  section:
+  - bubblePosition: {x: 83, y: -18.2, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 0
+    sentence:
+    - "\uAD6C\uD574 \uC8FC\uC154\uC11C \uAC10\uC0AC \uD569\uB2C8\uB2E4."
+    - "\uC5EC\uAE30 \uC5F4\uC1E0\uC694."
+    intervalTime: 0.05
+    canSkip: 0
+    autoSkip: 0
+    autoSkipIntervalTime: 0

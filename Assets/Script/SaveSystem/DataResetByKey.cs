@@ -5,14 +5,14 @@ public class DataResetByKey : MonoBehaviour
 {
     void Update()
     {
+        // Ctrl + Alt + C 입력 시 전체 데이터 초기화
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.C))
         {
-            Debug.Log("[키 입력 감지: Ctrl+Alt+C] 퀘스트 + 스테이지 + 업적 데이터 전체 초기화 실행");
-
-            // 저장 데이터 초기화 (퀘스트, 스테이지, 업적 모두)
+            Debug.Log("[Ctrl+Alt+C] 전체 데이터 초기화 실행");
             SaveSystemJSON.DataResetByKey("All");
+            SaveSystemJSON.ClearItems();
 
-            // QuestManager 메모리 상태도 초기화
+            // QuestManager 메모리 상태 초기화
             var qm = QuestManager.Instance;
             if (qm != null)
             {
@@ -26,7 +26,7 @@ public class DataResetByKey : MonoBehaviour
                 }
             }
 
-            // AchievementManager 메모리 상태도 초기화
+            // AchievementManager 메모리 상태 초기화
             var am = AchievementManager.Instance;
             if (am != null)
             {
@@ -35,6 +35,13 @@ public class DataResetByKey : MonoBehaviour
                     ach.isUnlocked = false;
                     ach.currentCount = 0;
                 }
+            }
+
+            // ItemDatabase 메모리 상태 초기화
+            var itemDB = ItemDatabase.Instance;
+            if (itemDB != null)
+            {
+                itemDB.items.Clear();
             }
 
             // UI 반영
