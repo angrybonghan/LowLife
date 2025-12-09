@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9db7c75ec0ef7474ca851159be2cdcb6, type: 3}
+  m_Name: Queen_1
+  m_EditorClassIdentifier: 
+  section:
+  - bubblePosition: {x: -0.75, y: -0.5, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - ...
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -8.5, y: 1.75, z: 0}
+    bubbleBodyOffset: 3
+    isTailDown: 1
+    sentence:
+    - "\uB9D0\uD558\uAC70\uB77C."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -0.75, y: -0.5, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - "\uBD84\uBD80\uB97C \uBC1B\uB4E4\uC5B4 \uBC18\uB780\uAD70 \uC218\uC7A5\uC758
+      \uC228\uC744 \uB04A\uC5C8\uC2B5\uB2C8\uB2E4."
+    - "\uC5EC\uC655\uB2D8."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -8.5, y: 1.75, z: 0}
+    bubbleBodyOffset: 3
+    isTailDown: 1
+    sentence:
+    - "\uC218\uACE0\uD588\uB2E4, \uC784\uAE30."
+    - "\uB124 \uCDA9\uC131\uC2EC\uC740 \uC758\uC2EC\uD560 \uBC14\uAC00 \uC5C6\uAD6C\uB098."
+    - "\uD558\uC9C0\uB9CC \uC784\uAE30, \uAE30\uC068\uC740 \uC624\uB798\uAC00\uC9C0
+      \uBABB\uD560 \uAC83\uC774\uB2E4."
+    - "\uC655\uAD6D\uC758 \uC874\uB9DD\uC744 \uB4A4\uD754\uB4DC\uB294 \uC704\uAE30\uAC00
+      \uB2E5\uCCE4\uB2E4."
+    - "\uB098\uC758 \uD798\uC774\uC790, \uC774 \uC655\uAD6D\uC758 \uC0DD\uBA85\uC778"
+    - "\"\uD638\uBC15\"\uC774 \uB3C4\uB451\uB9DE\uC558\uB2E4."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -0.75, y: -0.5, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - ...
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -8.5, y: 1.75, z: 0}
+    bubbleBodyOffset: 3
+    isTailDown: 1
+    sentence:
+    - "\uD638\uBC15\uC744 \uAC00\uC838\uAC04 \uC790\uB97C \uCC3E\uC544\uB0B4\uB77C."
+    - "\uADF8 \uC790\uAC00 \uC5B4\uB514\uC5D0 \uC228\uC5B4 \uC788\uB4E0,"
+    - "\uC5B4\uB5A4 \uC874\uC7AC\uC774\uB4E0 \uC0C1\uAD00 \uC5C6\uB2E4."
+    - "\uD638\uBC15\uC744 \uB418\uCC3E\uC544\uB77C."
+    - "\uADF8\uB9AC\uACE0 \uADF8 \uBD88\uACBD\uD55C \uC790\uB97C \uBC18\uB4DC\uC2DC
+      \uCC99\uACB0\uD574 \uC8FD\uC5EC\uB77C."
+    - "\uC54C\uACA0\uB290\uB0D0?"
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -0.75, y: -0.5, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - "\uB124."
+    - "\uBA85 \uBC1B\uB4E4\uACA0\uC2B5\uB2C8\uB2E4."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -8.5, y: 1.75, z: 0}
+    bubbleBodyOffset: 3
+    isTailDown: 1
+    sentence:
+    - "\uB098\uC911\uC5D0 \uC784\uBB34\uB97C \uB2E4\uC2DC \uD655\uC778\uD558\uB824\uBA74
+      TAB \uD0A4\uB97C \uB20C\uB7EC\uB77C."
+    - ...
+    - "\uB124\uAC00 \uD560 \uB9D0\uC774 \uC788\uC5B4 \uBCF4\uC774\uB294\uAD6C\uB098."
+    - "\uB9D0\uD574\uBCF4\uC544\uB77C."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -0.75, y: -0.5, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - "\uD669\uC1A1\uD558\uC635\uB2C8\uB2E4."
+    - "\uD639\uC2DC..."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -0.75, y: -0.5, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - "\"TAB \uD0A4\" \uAC00 \uBB34\uC5C7\uC785\uB2C8\u3132"
+    intervalTime: 0.05
+    canSkip: 0
+    autoSkip: 1
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -8.5, y: 1.75, z: 0}
+    bubbleBodyOffset: 3
+    isTailDown: 1
+    sentence:
+    - "\uB124 \uC54C \uBC14\uB294 \uC544\uB2C8\uB2E4."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -0.75, y: -0.5, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - "\uC5EC\uC655\uB2D8\uC758 \uAE4A\uC740 \uB73B\uC744 \uD5E4\uC544\uB838\uC2B5\uB2C8\uB2E4."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
