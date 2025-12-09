@@ -190,8 +190,9 @@ MonoBehaviour:
   bigCloth:
   - {fileID: 8300000, guid: 83247ef8814196a4cb27c48c34af7a35, type: 3}
   - {fileID: 8300000, guid: b5fd0863b22ace340a85a6006ad5588d, type: 3}
-  shieldBlockSound: {fileID: 0}
+  shieldBlockSound: {fileID: 8300000, guid: cf7202e7523e21947aee9a24ec51c5a4, type: 3}
   parrySound: {fileID: 8300000, guid: d4941e091e20bad4e8f8bd855296f263, type: 3}
+  fallSound: {fileID: 8300000, guid: a1975b8f06280864d87c56f9b8859fa3, type: 3}
   deathSound: {fileID: 8300000, guid: a43cf3de6a1937a41b37b09509e91664, type: 3}
 --- !u!114 &2530227124491807116
 MonoBehaviour:

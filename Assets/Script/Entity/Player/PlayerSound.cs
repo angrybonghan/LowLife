@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun, Stick, WallKick, BigCloth, Cloth, ShieldLerp, Death, Block };
+public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun, Stick, WallKick, BigCloth, Cloth, ShieldLerp, Death, Block, Fall };
 
 public class PlayerSound : MonoBehaviour
 {
@@ -31,6 +31,9 @@ public class PlayerSound : MonoBehaviour
     [Header("¸·±â, ÆÐ¸µ")]
     public AudioClip shieldBlockSound;
     public AudioClip parrySound;
+
+    [Header("³Ñ¾îÁü")]
+    public AudioClip fallSound;
 
     [Header("Á×À½")]
     public AudioClip deathSound;
@@ -74,9 +77,14 @@ public class PlayerSound : MonoBehaviour
                 break;
             case playerSoundType.Block:
                 clip = shieldBlockSound;
-                break;
+                float pitch = Random.Range(0.8f, 1.2f);
+                SoundManager.instance.PlaySoundAtPositionWithPitch(transform.position, clip, pitch);
+                return;
             case playerSoundType.Death:
                 clip = deathSound;
+                break;
+            case playerSoundType.Fall:
+                clip = fallSound;
                 break;
         }
 

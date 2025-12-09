@@ -1152,10 +1152,12 @@ public class PlayerController : MonoBehaviour
                 {
                     AchievementManager.Instance?.OnBlockSuccess();
                     Instantiate(blockEffect, transform.position, quaternion.identity);
+                    playerSound.PlaySound(playerSoundType.Block);
                     AddKnockback(knockbackPower, knockbacktime);
                 }
                 else
                 {
+                    playerSound.PlaySound(playerSoundType.BigCloth);
                     Stun();
                 }
             }
