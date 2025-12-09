@@ -36,6 +36,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Test/ObjectSample.unity
     guid: 35ec0ef90503f5f4a939956762162385
   - enabled: 1
+    path: Assets/Scenes/CutScene/DownTown_Bar_1.unity
+    guid: 217335dfe6d1c0347bef39fa45672b90
+  - enabled: 1
     path: Assets/Scenes/Test/Props Storage.unity
     guid: a01e9b51d190e3f4bab0d0251c8e2f62
   - enabled: 1
