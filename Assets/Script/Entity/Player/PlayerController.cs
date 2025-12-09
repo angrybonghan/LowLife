@@ -138,6 +138,7 @@ public class PlayerController : MonoBehaviour
     private bool isEquippingShield = false;   // 방패를 꺼내는 중인가?
     private bool isThrowingShield = false;    // 방패를 던지는 중인가?
     [HideInInspector] public bool isParrying = false;          // 패링 중인가?
+    bool canPlayParrySound = true;    // 패링 사운드를 재생할 수 있는가?
     private bool isAttacking = false;         // 공격 중인가?
     private bool allowDashCancel = false;     // 공격 도중 대쉬로 취소 가능 여부
     [HideInInspector] public bool hasShield = true;             // 방패를 가지고 있는지 여부
@@ -451,6 +452,7 @@ public class PlayerController : MonoBehaviour
             DepleteShieldGauge(shieldLeapShieldGaugeDecrease);
             CameraMovement.RotationShaking(1f, 0.05f, 0.2f);
             CameraMovement.PositionShaking(0.1f, 0.05f, 0.2f);
+            playerSound.PlaySound(playerSoundType.ShieldLerp);
 
             AchievementManager.Instance?.OnTeleportUse();
         }
@@ -702,7 +704,7 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                isParrying = true;
+                canPlayParrySound = isParrying = true;
                 currentParryDuration = 0;
                 anim.SetTrigger("trigger_parry");
             }
@@ -726,6 +728,12 @@ public class PlayerController : MonoBehaviour
         }
 
         Instantiate(parryEffect, transform.position, effectRotation);
+
+        if (canPlayParrySound)
+        {
+            canPlayParrySound = false;
+            playerSound.PlaySound(playerSoundType.Parry);
+        }
 
         AchievementManager.Instance?.OnParrySuccess();
     }
@@ -1204,6 +1212,7 @@ public class PlayerController : MonoBehaviour
         Instantiate(dummyShield, transform.position, Quaternion.identity);
         CameraMovement.PositionShaking(0.1f, 0.05f, 1);
         GameManager.instance.PlayerDeath();
+        playerSound.PlaySound(playerSoundType.Death);
 
         AchievementManager.Instance?.OnPlayerDeath();
         Destroy(gameObject);

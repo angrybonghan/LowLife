@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun, Stick, WallKick, BigCloth, Cloth };
+public enum playerSoundType { FootStep, Throw, Jump, Dash, Parry, QuickTrun, Stick, WallKick, BigCloth, Cloth, ShieldLerp, Death };
 
 public class PlayerSound : MonoBehaviour
 {
@@ -13,8 +13,9 @@ public class PlayerSound : MonoBehaviour
     [Header("ƒ¸ ≈œ")]
     public AudioClip[] quickTrunSound;
 
-    [Header("πÊ∆– ≈ı√¥")]
+    [Header("πÊ∆– ≈ı√¥, µµæ‡")]
     public AudioClip[] throwSound;
+    public AudioClip shieldLerp;
 
     [Header("∫Æ ∞¸∑√")]
     public AudioClip stickSound;
@@ -27,11 +28,16 @@ public class PlayerSound : MonoBehaviour
     public AudioClip[] cloth;
     public AudioClip[] bigCloth;
 
+    [Header("∆–∏µ")]
+    public AudioClip parrySound;
+
+    [Header("¡◊¿Ω")]
+    public AudioClip deathSound;
+
 
     public void PlaySound(playerSoundType type)
     {
         AudioClip clip = null;
-        int randomIndex = 0;
 
         switch (type)
         {
@@ -39,12 +45,10 @@ public class PlayerSound : MonoBehaviour
                 clip = GetMaterialFootstepSound();
                 break;
             case playerSoundType.Throw:
-                randomIndex = Random.Range(0, throwSound.Length);
-                clip = throwSound[randomIndex];
+                clip = SoundManager.instance.GetRandomSound(throwSound);
                 break;
             case playerSoundType.QuickTrun:
-                randomIndex = Random.Range(0, quickTrunSound.Length);
-                clip = quickTrunSound[randomIndex];
+                clip = SoundManager.instance.GetRandomSound(quickTrunSound);
                 break;
             case playerSoundType.Stick:
                 clip = stickSound;
@@ -56,12 +60,19 @@ public class PlayerSound : MonoBehaviour
                 clip = dashSound;
                 break;
             case playerSoundType.Cloth:
-                randomIndex = Random.Range(0, cloth.Length);
-                clip = cloth[randomIndex];
+                clip = SoundManager.instance.GetRandomSound(cloth);
                 break;
             case playerSoundType.BigCloth:
-                randomIndex = Random.Range(0, bigCloth.Length);
-                clip = bigCloth[randomIndex];
+                clip = SoundManager.instance.GetRandomSound(bigCloth);
+                break;
+            case playerSoundType.ShieldLerp:
+                clip = shieldLerp;
+                break;
+            case playerSoundType.Parry:
+                clip = parrySound;
+                break;
+            case playerSoundType.Death:
+                clip = deathSound;
                 break;
         }
 

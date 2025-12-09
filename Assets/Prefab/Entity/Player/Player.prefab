@@ -127,6 +127,7 @@ MonoBehaviour:
   shieldSummonPos: {fileID: 2832086274755950019}
   shieldPrefabs: {fileID: 3792225553167996052, guid: da7b4a41f559e7f42a3a741cde7f72b3, type: 3}
   ShieldSprite: {fileID: 3548910215429135363}
+  canShieldLeap: 1
   shieldLeapShieldGaugeDecrease: 0.75
   minShieldLeapShieldGauge: 0.5
   shieldLeapAirEffectPrefab: {fileID: 4021274216835747486, guid: 218c4e81d9baa014b945b995954b5d7e, type: 3}
@@ -134,6 +135,7 @@ MonoBehaviour:
   shieldLeapWallSlideEffectPrefab: {fileID: 3255466628281366065, guid: 4f01e12eb07b0204aa5e048e91971aa9, type: 3}
   dummyShield: {fileID: 1249094244407886384, guid: 87afe3abecbe57b42b62fe12f2d79906, type: 3}
   deathParticle: {fileID: 5519408069291609531, guid: 9ee8269af20c8f745b94b78fc04798d1, type: 3}
+  isWallSliding: 0
   parryCount: 0
   isShielding: 0
   isParrying: 0
@@ -176,6 +178,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 28cb8444afdf9cb48bee07b431a15c00, type: 3}
   - {fileID: 8300000, guid: 0c3fcf6989854c5418a51dd2983d1d16, type: 3}
   - {fileID: 8300000, guid: 3aefe7ec3641c6840a2a4fb75fcd22b9, type: 3}
+  shieldLerp: {fileID: 8300000, guid: a34e93a6eb0739b4c8ec0ae2d4bf2251, type: 3}
   stickSound: {fileID: 8300000, guid: 4f561c7005a47944aa0bfa8e17fe20e8, type: 3}
   wallKickSound: {fileID: 8300000, guid: 13bb0b77f388c9f4596a4097da341bbc, type: 3}
   dashSound: {fileID: 8300000, guid: c6eb3639b63975c419a7d16f66bca2b9, type: 3}
@@ -186,6 +189,8 @@ MonoBehaviour:
   bigCloth:
   - {fileID: 8300000, guid: 83247ef8814196a4cb27c48c34af7a35, type: 3}
   - {fileID: 8300000, guid: b5fd0863b22ace340a85a6006ad5588d, type: 3}
+  parrySound: {fileID: 8300000, guid: d4941e091e20bad4e8f8bd855296f263, type: 3}
+  deathSound: {fileID: 8300000, guid: a43cf3de6a1937a41b37b09509e91664, type: 3}
 --- !u!114 &2530227124491807116
 MonoBehaviour:
   m_ObjectHideFlags: 0
