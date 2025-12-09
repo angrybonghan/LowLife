@@ -7,12 +7,17 @@ public class SmallSwamp : MonoBehaviour
     public int spaceCount = 5;
     public float jumpOutPower = 16f;
 
+    [Header("æ∆¿Ãƒ‹")]
+    public SpriteRenderer spaceIcon;
+
     bool canCatchPlayer = true;
     bool isPlayerCatched = false;
     int currentSpaceCount = 0;
 
     PlayerController pc;
     Vector3 playerOffset;
+
+    Coroutine jumpIconBlinkCoroutine = null;
 
     private void Start()
     {
@@ -42,6 +47,8 @@ public class SmallSwamp : MonoBehaviour
     void ReleasePlayer()
     {
         isPlayerCatched = false;
+        if (jumpIconBlinkCoroutine != null) StopCoroutine(jumpIconBlinkCoroutine);
+        spaceIcon.color = Color.clear;
         pc.transform.position = transform.position + Vector3.up;
         PlayerController.canControl = true;
         pc.ExternalJump(jumpOutPower);
@@ -63,6 +70,19 @@ public class SmallSwamp : MonoBehaviour
 
         pc.AllStop();
         PlayerController.canControl = false;
+
+        jumpIconBlinkCoroutine = StartCoroutine(JumpIconBlink());
+    }
+
+    IEnumerator JumpIconBlink()
+    {
+        while (true)
+        {
+            spaceIcon.color = Color.red;
+            yield return new WaitForSeconds(0.1f);
+            spaceIcon.color = Color.white;
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
