@@ -44,6 +44,7 @@ public class Maw_Deadparts : MonoBehaviour
     {
         yield return new WaitUntil(() => IsGrounded());
 
+        QuestManager.Instance.OnBossKilled(this.enemyType);
         AchievementManager.Instance?.OnEnemyKilled(enemyType);
         anim.SetTrigger("land");
     }

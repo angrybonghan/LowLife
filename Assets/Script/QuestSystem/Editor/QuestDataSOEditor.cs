@@ -80,6 +80,11 @@ public class QuestDataSOEditor : Editor
                 questData.cutsceneID = EditorGUILayout.TextField("컷씬 ID", questData.cutsceneID);
                 EditorGUILayout.HelpBox("지정한 컷씬이 끝나면 자동으로 클리어되는 퀘스트입니다.", MessageType.Info);
                 break;
+            case QuestType.BossKill:
+                EditorGUILayout.LabelField("BossKill 퀘스트 설정", EditorStyles.boldLabel);
+                questData.bossID = EditorGUILayout.TextField("보스 ID", questData.bossID);
+                EditorGUILayout.HelpBox("지정한 보스를 처치하면 클리어되는 퀘스트입니다.", MessageType.Info);
+                break;
         }
 
         EditorGUILayout.Space();

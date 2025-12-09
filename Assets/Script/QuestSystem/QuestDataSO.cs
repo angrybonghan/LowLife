@@ -35,6 +35,9 @@ public class QuestDataSO : ScriptableObject
 
     //Cutscene
     public string cutsceneID;
+
+    // BossKill
+    public string bossID;
 }
 
 public enum QuestType
@@ -46,5 +49,6 @@ public enum QuestType
     Collect,        // 아이템 수집
     Explore,        // 특정 위치 도달
     Escort,         // NPC 호위
-    Cutscene        // 컷신
+    Cutscene,       // 컷신
+    BossKill        // 보스 처치
 }

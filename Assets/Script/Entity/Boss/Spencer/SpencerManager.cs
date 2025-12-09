@@ -265,6 +265,7 @@ public class SpencerManager : MonoBehaviour
 
     void Death()
     {
+        QuestManager.Instance.OnBossKilled(this.enemyType);
         AchievementManager.Instance?.OnEnemyKilled(enemyType);
 
         ScreenTransition.ScreenTransitionGoto("Train_Boss_EndCut", "nope", Color.black, 0, 0, 0f, 0.2f, 0);

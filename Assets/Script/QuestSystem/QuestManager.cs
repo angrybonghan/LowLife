@@ -140,4 +140,20 @@ public class QuestManager : MonoBehaviour
             }
         }
     }
+
+    public void OnBossKilled(string bossID)
+    {
+        foreach (var quest in activeQuests)
+        {
+            if (quest.questType == QuestType.BossKill &&
+                quest.bossID == bossID &&
+                GetQuestState(quest.questID) == QuestState.InProgress)
+            {
+                CompleteQuest(quest);
+                Debug.Log($"[QuestManager] 보스({bossID}) 처치 → 퀘스트 클리어: {quest.questName}");
+                break;
+            }
+        }
+    }
+
 }
