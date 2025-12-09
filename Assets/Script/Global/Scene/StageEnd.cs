@@ -20,6 +20,7 @@ public class StageEnd : MonoBehaviour
     [Header("스테이지")]
     public float WaitTime1 = 1f;
     public float fadeOutTime = 1.2887f;
+    public bool hasLoadingScene = true;
     public string loadingScene = "StageLoading_1";
     public string nextScene = "Swomp_2";
 
@@ -51,7 +52,7 @@ public class StageEnd : MonoBehaviour
             }
 
             if (AchievementManager.Instance != null) AchievementManager.Instance.OnSceneEntered(nextScene);
-            ScreenTransition.ScreenTransitionGoto(nextScene, loadingScene, Color.black, WaitTime1, fadeOutTime, 2, 0.5f, 0);
+            ScreenTransition.ScreenTransitionGoto(nextScene, loadingScene, Color.black, WaitTime1, fadeOutTime, hasLoadingScene ? 2 : 0, 0.5f, 0);
 
             foreach (GameObject obj in disableAtAction)
             {

@@ -1418,10 +1418,11 @@ MonoBehaviour:
   cameraPos: {x: 142, y: 17}
   zoom: 10
   moveDuration: 0.5
-  WaitTime1: 0.5
-  fadeOutTime: 1.2887
+  WaitTime1: 0
+  fadeOutTime: 0.5
+  hasLoadingScene: 0
   loadingScene: StageLoading_1
-  nextScene: Swomp_1
+  nextScene: Honeycomb_Fall
   disableAtAction:
   - {fileID: 956464508}
   canCrosshairToggle: 0
