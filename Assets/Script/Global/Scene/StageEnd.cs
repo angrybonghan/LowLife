@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class StageEnd : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class StageEnd : MonoBehaviour
     [Header("비활성화될 오브젝트")]
     public GameObject[] disableAtAction;
 
+    [Header("조준점")]
+    public bool canCrosshairToggle = true;
+
     bool canAction = true;
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -35,7 +39,7 @@ public class StageEnd : MonoBehaviour
         {
             canAction = false;
 
-            CrosshairController.instance.ToggleSprite(false);
+            if (canCrosshairToggle) CrosshairController.instance.ToggleSprite(false);
 
             PlayerController.instance.AllStop();
             if (canPlayerMove) PlayerHandler.instance.PlayerMoveForwardTo(targetX);
@@ -46,7 +50,7 @@ public class StageEnd : MonoBehaviour
                 CameraMovement.PositionZoom(zoom, moveDuration);
             }
 
-            AchievementManager.Instance.OnSceneEntered(nextScene);
+            if (AchievementManager.Instance != null) AchievementManager.Instance.OnSceneEntered(nextScene);
             ScreenTransition.ScreenTransitionGoto(nextScene, loadingScene, Color.black, WaitTime1, fadeOutTime, 2, 0.5f, 0);
 
             foreach (GameObject obj in disableAtAction)

@@ -49,9 +49,10 @@ public class GameSceneStart : MonoBehaviour
         {
             if (trackPlayer) CameraMovement.TargetTracking(PlayerController.instance.transform, Vector3.up);
             else CameraMovement.DollyTo(cameraPos, cameraMoveDuration);
+
+            CameraMovement.PositionZoom(cameraZoom, cameraMoveDuration);
         }
 
-        CameraMovement.PositionZoom(cameraZoom, cameraMoveDuration);
 
         if (hideCrosshairAtStart)
         {

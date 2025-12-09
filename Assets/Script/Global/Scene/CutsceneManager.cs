@@ -7,6 +7,8 @@ public class CutsceneManager : MonoBehaviour, I_DialogueCallback
 
     [Header("≥° Scene")]
     public string nextSceneName = "Swomp_1";
+    public bool useLoadingScene = true;
+    public float fadeOutTime = 1.0f;
     public string loadingSceneName = "StageLoading_1";
 
     [Header("¥Î»≠")]
@@ -86,9 +88,9 @@ public class CutsceneManager : MonoBehaviour, I_DialogueCallback
             loadingSceneName,
             Color.black,
             0f,
-            1.0f,
-            2.0f,
-            1.0f,
+            fadeOutTime,
+            useLoadingScene ? 2.0f : 0,
+            0.7887f,
             0f
         );
     }
