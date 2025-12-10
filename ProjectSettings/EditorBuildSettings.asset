@@ -48,6 +48,9 @@ EditorBuildSettings:
     path: Assets/Scenes/CutScene/Train_Inside.unity
     guid: ec1bb77edd179fc4ba39ea2dfd1ea429
   - enabled: 1
+    path: Assets/Scenes/CutScene/Swomp_3_Cut.unity
+    guid: 1dc8cebeb8b56af4194ec5315488e2df
+  - enabled: 1
     path: Assets/Scenes/Test/ObjectSample.unity
     guid: 35ec0ef90503f5f4a939956762162385
   - enabled: 1
@@ -71,6 +74,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CutScene/TheEnd_2.unity
     guid: 5beeeb7c5e5930d4288e1486861e9b71
+  - enabled: 1
+    path: Assets/Scenes/Train_Station.unity
+    guid: 77028672dd785ad42b0beea89d538207
   - enabled: 1
     path: Assets/Scenes/LoadingScene/StageLoading_1.unity
     guid: f8b71296fadd62d48bcf04cffc312475
