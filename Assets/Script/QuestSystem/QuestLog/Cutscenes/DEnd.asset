@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22b057228469eed4a8851095ee04d16e, type: 3}
   m_Name: DEnd
   m_EditorClassIdentifier: 
-  questID: T_1_2
-  questName: "\uAE30\uAD00\uC0AC\uB97C \uAD6C\uCD9C \uD558\uC138\uC694"
-  description: "\uB3D9\uAD74\uC5D0\uC11C \uAE30\uAD00\uC0AC\uB97C \uAD6C\uCD9C \uD558\uC138\uC694"
-  prerequisiteQuestID: T_1_1
+  questID: END_1
+  questName: "\uD638\uBC15\uC744 \uC5BB\uC73C\uC138\uC694."
+  description: "\uC624\uBC15\uC744 \uC5BB\uC73C\uC138\uC694."
+  prerequisiteQuestID: T_1_2
   questType: 7
   detectUp: 10
   detectDown: 5
@@ -35,5 +35,5 @@ MonoBehaviour:
   escortTargetSceneName: 
   escortTargetPosition: {x: 0, y: 0, z: 0}
   escortCompleteRadius: 2
-  cutsceneID: Save
+  cutsceneID: END
   bossID: 

@@ -361,10 +361,14 @@ public class UIManager : MonoBehaviour
         Transform player = GameObject.FindWithTag("Player")?.transform;
         string currentScene = SceneManager.GetActiveScene().name;
 
+        bool hasActiveQuest = false;
+
         foreach (var quest in QuestManager.Instance.activeQuests)
         {
             QuestState state = QuestManager.Instance.GetQuestState(quest.questID);
             if (state != QuestState.InProgress) continue;
+
+            hasActiveQuest = true; // 진행중인 퀘스트 발견
 
             string questLine = $"{quest.questName} - 진행 중";
 
@@ -425,6 +429,12 @@ public class UIManager : MonoBehaviour
             }
 
             questText.text += questLine + "\n";
+        }
+
+
+        if (!hasActiveQuest)
+        {
+            questText.text = "진행중인 퀘스트가 없습니다";
         }
     }
 
