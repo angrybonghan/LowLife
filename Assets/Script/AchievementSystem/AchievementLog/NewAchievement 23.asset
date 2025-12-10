@@ -23,5 +23,6 @@ MonoBehaviour:
   targetSceneName: Cave_1
   targetNPCID: 
   targetCount: 100
+  unlockedIcon: {fileID: 21300000, guid: 4988d57627c9f7a489568740ff638068, type: 3}
   isUnlocked: 0
   currentCount: 0

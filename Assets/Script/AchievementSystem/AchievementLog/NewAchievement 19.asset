@@ -23,5 +23,6 @@ MonoBehaviour:
   targetSceneName: 
   targetNPCID: 
   targetCount: 50
+  unlockedIcon: {fileID: 21300000, guid: 4d47c49c3be53bd419c596b227779fe2, type: 3}
   isUnlocked: 0
   currentCount: 0
