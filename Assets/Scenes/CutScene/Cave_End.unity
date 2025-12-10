@@ -55503,7 +55503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cutsceneID: 
   triggerName: next
-  nextSceneName: Swomp_1
+  nextSceneName: Train_Inside
   useLoadingScene: 1
   fadeOutTime: 1
   loadingSceneName: StageLoading_1
