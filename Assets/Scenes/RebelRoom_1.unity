@@ -109015,7 +109015,7 @@ MonoBehaviour:
   moveDuration: 0.5
   WaitTime1: 1.288
   fadeOutTime: 1.2887
-  hasLoadingScene: 1
+  hasLoadingScene: 0
   loadingScene: StageLoading_1
   nextScene: RebelRoom_End
   disableAtAction:
