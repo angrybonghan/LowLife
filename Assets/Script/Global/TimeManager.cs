@@ -24,21 +24,21 @@ public class TimeManager : MonoBehaviour
         Time.timeScale = nomalTimeScale;
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            FadeTimeScale(1, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.O))
-        {
-            FadeTimeScale(1, 0.2f);
-        }
-        else if (Input.GetKeyDown(KeyCode.P))
-        {
-            FadeTimeScale(1, 1);
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.I))
+    //    {
+    //        FadeTimeScale(1, 0);
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.O))
+    //    {
+    //        FadeTimeScale(1, 0.2f);
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.P))
+    //    {
+    //        FadeTimeScale(1, 1);
+    //    }
+    //}
 
     private void LateUpdate()
     {

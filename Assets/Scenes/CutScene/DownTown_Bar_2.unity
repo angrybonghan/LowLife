@@ -175,7 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cutsceneID: Bar_2
   triggerName: next
-  nextSceneName: Swomp_1
+  nextSceneName: Train_Station
   useLoadingScene: 1
   fadeOutTime: 1.2887
   loadingSceneName: StageLoading_1

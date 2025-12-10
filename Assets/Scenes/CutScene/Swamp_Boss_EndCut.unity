@@ -65329,7 +65329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cutsceneID: 
   triggerName: next
-  nextSceneName: Swomp_1
+  nextSceneName: DownTown_Bar_2
   useLoadingScene: 1
   fadeOutTime: 1
   loadingSceneName: StageLoading_1
