@@ -123,7 +123,7 @@ public class UIManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainMenu" || scene.name == "PlayerDeathLoading" || scene.name == "StageLoading_1" || scene.name == "Swomp_3_Cut")
+        if (scene.name == "MainMenu" || scene.name == "PlayerDeathLoading" || scene.name == "StageLoading_1" || scene.name == "Swomp_3_Cut" || scene.name == "GameStartLoding")
             Destroy(gameObject);
     }
 
