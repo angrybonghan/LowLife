@@ -19,26 +19,18 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
     public bool facingRight = true;
 
     [Header("아이템 보상")]
-    public string rewardItemID;
-    public int rewardItemCount = 1;
+    public string rewardItemID;     // 대화 종료 후 지급할 아이템 ID
+    public int rewardItemCount = 1; // 지급할 개수
 
     [Header("NPC 이미지 변경 (SpriteRenderer)")]
-    public SpriteRenderer npcRenderer;
-    public Sprite startDialogueSprite;
-    public Sprite endDialogueSprite;
+    public SpriteRenderer npcRenderer;   // 월드 오브젝트 SpriteRenderer 연결
+    public Sprite startDialogueSprite;   // 대화 시작 시 스프라이트
+    public Sprite endDialogueSprite;     // 대화 종료 시 스프라이트
 
-    [Header("대화후 다음씬으로 갈건가?")]
-    public string nextSceneName;
-    public bool NextScene = false;
-
-    [Header("로딩씬 옵션")]
-    public bool useLoadingScene = true;
-    public string loadingSceneName = "StageLoading_1";
-    public float waitTimeBeforeFade = 1f;
-    public float fadeOutTime = 1.2f;
 
     private void Start()
     {
+        // 씬 시작 시 PlayerPrefs 확인
         if (npcRenderer != null && endDialogueSprite != null && !string.IsNullOrEmpty(npcID))
         {
             int talked = PlayerPrefs.GetInt("NPC_" + npcID + "_Talked", 0);
@@ -52,18 +44,27 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
     public void InInteraction()
     {
         var spritePlayer = GetComponent<SpritePlayer>();
-        if (spritePlayer != null) spritePlayer.StopAnimation();
+        if (spritePlayer != null)
+        {
+            spritePlayer.StopAnimation();
+        }
 
         PlayerController.instance.AllStop();
         PlayerHandler.instance.PlayerGoto(playerPos, duration, facingRight);
 
+        // 대화 시작 시 이미지 변경
         if (npcRenderer != null && startDialogueSprite != null)
+        {
             npcRenderer.sprite = startDialogueSprite;
+        }
 
         QuestDataSO quest = null;
         if (!string.IsNullOrEmpty(questID))
+        {
             quest = QuestManager.Instance.GetQuestData(questID);
+        }
 
+        // 선행 퀘스트 확인
         if (quest != null && !string.IsNullOrEmpty(quest.prerequisiteQuestID))
         {
             var preState = QuestManager.Instance.GetQuestState(quest.prerequisiteQuestID);
@@ -77,10 +78,15 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
             }
         }
 
+        // 퀘스트 대화 또는 기본 대화 실행
         if (quest != null && questDialogue != null)
+        {
             DialogManager.instance.StartDialogue(questDialogue, gameObject);
+        }
         else if (defaultDialogue != null)
+        {
             DialogManager.instance.StartDialogue(defaultDialogue, gameObject);
+        }
 
         PlayerController.canControl = false;
     }
@@ -88,8 +94,11 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
     public void OnDialogueEnd()
     {
         if (!string.IsNullOrEmpty(npcID))
+        {
             AchievementManager.Instance?.OnTalkToNPC(npcID);
+        }
 
+        // 퀘스트 처리
         if (!string.IsNullOrEmpty(questID))
         {
             var quest = QuestManager.Instance.GetQuestData(questID);
@@ -101,13 +110,16 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
                     QuestManager.Instance.StartQuest(questID);
 
                     if (quest.questType == QuestType.Dialogue)
+                    {
                         QuestManager.Instance.CompleteQuest(quest);
+                    }
 
                     FindObjectOfType<UIManager>()?.UpdateQuestText();
                 }
             }
         }
 
+        // 아이템 보상 처리
         if (!string.IsNullOrEmpty(rewardItemID) && rewardItemCount > 0)
         {
             if (ItemDatabase.Instance != null)
@@ -122,6 +134,7 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
             }
         }
 
+        // 대화 종료 시 이미지 변경
         if (npcRenderer != null && endDialogueSprite != null)
         {
             npcRenderer.sprite = endDialogueSprite;
@@ -142,21 +155,8 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
         PlayerController.canControl = true;
 
         if (TryGetComponent<InteractionManager>(out InteractionManager interactionManager))
-            interactionManager.ResetInteraction();
-
-        // StageEnd처럼 로딩씬 -> 다음 씬 전환
-        if (NextScene && !string.IsNullOrEmpty(nextSceneName))
         {
-            ScreenTransition.ScreenTransitionGoto(
-                nextSceneName,
-                loadingSceneName,
-                Color.black,
-                waitTimeBeforeFade,
-                fadeOutTime,
-                useLoadingScene ? 2 : 0,
-                0.5f,
-                0
-            );
+            interactionManager.ResetInteraction();
         }
     }
 }
