@@ -44,7 +44,7 @@ public static class SaveSystemJSON
         File.WriteAllText(stageFilePath, encrypted);
     }
 
-    public static string DataLoadStage(string defaultStage = "Swomp_1")
+    public static string DataLoadStage(string defaultStage = "RebelRoom_1")
     {
         if (!File.Exists(stageFilePath)) return defaultStage;
         string encrypted = File.ReadAllText(stageFilePath);

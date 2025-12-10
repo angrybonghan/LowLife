@@ -23,7 +23,14 @@ public class StageSelectPosition : MonoBehaviour
         }
 
         stageInfo.StageSceneName = stageSceneName;
-        stageInfo.isUnlocked = true;
+
+        // SaveSystemJSON에서 클리어된 스테이지 목록 불러오기
+        var clearedStages = SaveSystemJSON.DataLoadClearedStages();
+
+        // 저장된 목록에 stageSceneName이 있으면 잠금 해제
+        stageInfo.isUnlocked = clearedStages.Contains(stageSceneName);
+
         stageInfo.stageSelectPosition = transform.position;
+        stageInfo.positionRef = this; // 참조 저장
     }
 }
