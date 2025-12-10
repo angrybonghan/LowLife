@@ -891,6 +891,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Curtain
       objectReference: {fileID: 0}
+    - target: {fileID: 2493190656365405472, guid: 3922ee7f4d68ba0459627010208f741e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8111879518869593663, guid: 3922ee7f4d68ba0459627010208f741e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

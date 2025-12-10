@@ -17,7 +17,8 @@ MonoBehaviour:
     bubbleBodyOffset: 0
     isTailDown: 1
     sentence:
-    - test pos
+    - "\uBB50\uC57C?"
+    - "\uAE30\uCC28 \uC6B4\uD589 \uC65C \uC548 \uD574?"
     intervalTime: 0.05
     canSkip: 1
     autoSkip: 0
@@ -26,7 +27,7 @@ MonoBehaviour:
     bubbleBodyOffset: 0
     isTailDown: 1
     sentence:
-    - test pos
+    - "\uC800\uC57C \uBAA8\uB974\uC8E0?"
     intervalTime: 0.05
     canSkip: 1
     autoSkip: 0

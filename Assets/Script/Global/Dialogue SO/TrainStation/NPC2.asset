@@ -17,7 +17,9 @@ MonoBehaviour:
     bubbleBodyOffset: 0
     isTailDown: 1
     sentence:
-    - test pos
+    - "\uC544\uB2C8 \uC624\uB79C\uB9CC\uC5D0 \uAC00\uC871\uC744 \uB9CC\uB098\uB7EC
+      \uAC00\uC57C \uB418\uB294\uB370"
+    - "\uAE30\uAD00\uC0AC\uAC00 \uC5C6\uB2E4\uB2C8!!"
     intervalTime: 0.05
     canSkip: 1
     autoSkip: 0
