@@ -145,9 +145,9 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        if (uiDisabled) return;
-
         UpdateCursorVisibility();
+
+        if (uiDisabled) return;
         UpdateQuestText();
 
         string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
@@ -278,19 +278,21 @@ public class UIManager : MonoBehaviour
     {
         string currentScene = SceneManager.GetActiveScene().name;
 
-        // ESC 메뉴 열려있거나 MainMenu 씬일 때는 커서 자유롭게 표시
+        //ESC 메뉴가 열려있거나 MainMenu 씬일 때는 커서 항상 표시
         if (isPaused || currentScene == "MainMenu")
         {
             Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None; // 중앙 고정 해제
         }
         else
         {
-            // 커서 이미지를 숨기지 않고 항상 표시
-            Cursor.visible = true;
+            // ESC 메뉴 닫혔을 때는 커서 숨김
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.None; // 중앙 고정은 하지 않음
         }
     }
 
-    private IEnumerator PlayESCAnimation(Vector2 targetPos, float targetAlpha)
+private IEnumerator PlayESCAnimation(Vector2 targetPos, float targetAlpha)
     {
         Vector2 startPos = escMenuPanel.anchoredPosition;
         float startAlpha = escCanvasGroup.alpha;
