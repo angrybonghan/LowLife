@@ -36,6 +36,45 @@ public class StageSelectManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
+    private void Start()
+    {
+        // 시작할 때 현재 선택된 스테이지의 잠금 여부를 확인해서 아이콘 갱신
+        UpdateLockIcon();
+    }
+
+    void UpdateLockIcon()
+    {
+        if (lockIcon == null || stage == null || stageNumber < 1 || stageNumber > stage.Length) return;
+
+        var stageInfo = stage[stageNumber - 1];
+        if (stageInfo == null) return;
+
+        // SaveSystemJSON에서 클리어된 스테이지 목록 다시 확인
+        var clearedStages = SaveSystemJSON.DataLoadClearedStages();
+        stageInfo.isUnlocked = clearedStages.Contains(stageInfo.StageSceneName);
+
+        // 잠금 아이콘 표시/숨김
+        lockIcon.gameObject.SetActive(!stageInfo.isUnlocked);
+    }
+
+    bool MoveStage(int stageNumber)
+    {
+        if (isMoving || stage == null || stageNumber < 1 || stageNumber > stage.Length) return false;
+
+        var stageInfo = stage[stageNumber - 1];
+        if (stageInfo == null) return false;
+
+        Vector2 targetPos = stageInfo.stageSelectPosition;
+        isMoving = true;
+        StartCoroutine(MoveCoroutine(targetPos, moveDuration));
+        this.stageNumber = stageNumber;
+
+        // 이동할 때도 잠금 아이콘 갱신
+        UpdateLockIcon();
+
+        return true;
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
@@ -55,27 +94,6 @@ public class StageSelectManager : MonoBehaviour
         {
             TryStartStage();
         }
-    }
-
-    bool MoveStage(int stageNumber)
-    {
-        if (isMoving || stage == null || stageNumber < 1 || stageNumber > stage.Length) return false;
-
-        var stageInfo = stage[stageNumber - 1];
-        if (stageInfo == null) return false;
-
-        Vector2 targetPos = stageInfo.stageSelectPosition;
-        isMoving = true;
-        StartCoroutine(MoveCoroutine(targetPos, moveDuration));
-        this.stageNumber = stageNumber;
-
-        // 잠금 아이콘 표시/숨김 처리
-        if (lockIcon != null)
-        {
-            lockIcon.gameObject.SetActive(!stageInfo.isUnlocked);
-        }
-
-        return true;
     }
 
     IEnumerator MoveCoroutine(Vector2 targetPos, float duration)

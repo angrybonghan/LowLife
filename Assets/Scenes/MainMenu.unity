@@ -630,14 +630,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1527925460}
         m_TargetAssemblyTypeName: MainMenuUIController, Assembly-CSharp
-        m_MethodName: OnButtonClick
-        m_Mode: 3
+        m_MethodName: LoadSceneByButton
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 1
           m_FloatArgument: 0
-          m_StringArgument: Swomp_1
+          m_StringArgument: RebelRoom_1
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &146492033
@@ -5912,7 +5912,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2056687371
 RectTransform:
   m_ObjectHideFlags: 0
