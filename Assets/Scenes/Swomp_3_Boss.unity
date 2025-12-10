@@ -14913,6 +14913,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78652cc0df96cc346bc08ecedcae69c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1825688365
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1825688367}
+  - component: {fileID: 1825688366}
+  m_Layer: 0
+  m_Name: BGM
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1825688366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825688365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21e3bdcb6847dea4fa1ac66963964b0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundClip: {fileID: 8300000, guid: f9adb22513ce4454688551d8a926292a, type: 3}
+  loopSoundName: LoopBGM
+  is3D: 0
+  soundPosition: {x: 0, y: 0, z: 0}
+--- !u!4 &1825688367
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825688365}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.4314775, y: 0.088780105, z: -0.5287748}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1942726497
 GameObject:
   m_ObjectHideFlags: 0
@@ -15252,3 +15300,4 @@ SceneRoots:
   - {fileID: 1953058352}
   - {fileID: 1329925713}
   - {fileID: 4617730985490376634}
+  - {fileID: 1825688367}

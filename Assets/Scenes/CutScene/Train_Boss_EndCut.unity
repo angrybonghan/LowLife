@@ -1789,8 +1789,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abb0284e270cd924db30dc9b40c63335, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cutsceneID: 
   triggerName: next
-  nextSceneName: Swomp_1
+  nextSceneName: TheEnd
   useLoadingScene: 1
   fadeOutTime: 1
   loadingSceneName: StageLoading_1
@@ -1799,10 +1800,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d432d631b9cd8ac4dbe5f37bbd9b4981, type: 2}
   - {fileID: 11400000, guid: 8e4932ebe4548484b9811cdbaaf789c9, type: 2}
   useLetterbox: 1
-  isClearQuest: 0
-  questID: 
-  isGiveQuest: 0
-  giveQuestID: 
   isClearAchievement: 0
   achievementID: 
 --- !u!114 &1473288596

@@ -66,6 +66,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Test/PlayerMovementTest.unity
     guid: ba619262351df314590a5a638fed615c
   - enabled: 1
+    path: Assets/Scenes/CutScene/TheEnd.unity
+    guid: 7ff45ba8baea5b14ab1332934a95ca6b
+  - enabled: 1
+    path: Assets/Scenes/CutScene/TheEnd_2.unity
+    guid: 5beeeb7c5e5930d4288e1486861e9b71
+  - enabled: 1
     path: Assets/Scenes/LoadingScene/StageLoading_1.unity
     guid: f8b71296fadd62d48bcf04cffc312475
   - enabled: 1
