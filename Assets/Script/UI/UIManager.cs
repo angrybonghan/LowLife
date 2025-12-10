@@ -71,6 +71,9 @@ public class UIManager : MonoBehaviour
     private bool sideOpen = false;
     private Coroutine sideAnimCoroutine;
 
+    private bool uiDisabled = false; // 특정 씬에서 UI 동작을 막는 플래그
+
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -123,8 +126,15 @@ public class UIManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainMenu" || scene.name == "PlayerDeathLoading" || scene.name == "StageLoading_1" || scene.name == "Swomp_3_Cut")
-            Destroy(gameObject);
+        if (scene.name == "MainMenu" || scene.name == "PlayerDeathLoading"
+            || scene.name == "StageLoading_1" || scene.name == "Swomp_3_Cut")
+        {
+            uiDisabled = true;   // UIManager는 살아있지만 동작만 막음
+        }
+        else
+        {
+            uiDisabled = false;  // 다른 씬에서는 정상 동작
+        }
     }
 
     private void Start()
@@ -135,6 +145,8 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
+        if (uiDisabled) return;
+
         UpdateCursorVisibility();
         UpdateQuestText();
 
@@ -262,20 +274,19 @@ public class UIManager : MonoBehaviour
         UpdateCursorVisibility();
     }
 
-    void UpdateCursorVisibility()
+    private void UpdateCursorVisibility()
     {
         string currentScene = SceneManager.GetActiveScene().name;
 
-        // ESC 메뉴 열려있거나 MainMenu 씬일 때만 커서 표시
+        // ESC 메뉴 열려있거나 MainMenu 씬일 때는 커서 자유롭게 표시
         if (isPaused || currentScene == "MainMenu")
         {
             Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None; // 중앙 고정 해제
         }
         else
         {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.None; // 중앙 고정 풀고 커서만 숨김
+            // 커서 이미지를 숨기지 않고 항상 표시
+            Cursor.visible = true;
         }
     }
 
@@ -520,6 +531,8 @@ public class UIManager : MonoBehaviour
 
     public void ExitToMainMenu()
     {
+        ToggleESCMenu();
+
         string currentStage = SceneManager.GetActiveScene().name;
         SaveSystemJSON.DataSaveStage(currentStage);
         SaveSystemJSON.DataSaveQuests(QuestManager.Instance);
