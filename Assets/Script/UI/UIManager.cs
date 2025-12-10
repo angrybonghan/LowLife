@@ -71,8 +71,6 @@ public class UIManager : MonoBehaviour
     private bool sideOpen = false;
     private Coroutine sideAnimCoroutine;
 
-    private LockMouse lockMouse;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -82,8 +80,6 @@ public class UIManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        
-        lockMouse = FindObjectOfType<LockMouse>();
 
         string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
         UpdateSaveTimeText(lastTime);
@@ -139,6 +135,7 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
+        UpdateCursorVisibility();
         UpdateQuestText();
 
         string lastTime = PlayerPrefs.GetString("LastQuestSaveTime", "저장 기록 없음");
@@ -214,27 +211,12 @@ public class UIManager : MonoBehaviour
 
     private void SyncPresetButtonImages()
     {
-        float currentVolume = 1f;
-
-        if (SoundManager.instance != null)
-        {
-            currentVolume = SoundManager.instance.GetVolume();
-        }
-        else
-        {
-            Debug.LogWarning("SoundManager 인스턴스 없음! 기본 볼륨값 사용");
-        }
-
+        float currentVolume = SoundManager.instance != null ? SoundManager.instance.GetVolume() : 1f;
         int activeIndex = Mathf.RoundToInt(currentVolume * volumePresetButtons.Length) - 1;
-
-        // 볼륨이 0일 때는 -1로 처리해서 아무 버튼도 켜지지 않게
-        if (currentVolume <= 0f)
-        {
-            activeIndex = -1;
-        }
-
+        if (currentVolume <= 0f) activeIndex = -1;
         UpdatePresetButtonImages(activeIndex);
     }
+
     private void UpdatePresetButtonImages(int activeIndex)
     {
         for (int i = 0; i < volumePresetButtons.Length; i++)
@@ -242,7 +224,6 @@ public class UIManager : MonoBehaviour
             Image btnImage = volumePresetButtons[i].GetComponent<Image>();
             if (btnImage != null)
             {
-                // activeIndex가 -1이면 모두 offSprite
                 btnImage.sprite = (activeIndex >= 0 && i <= activeIndex) ? onSprite : offSprite;
             }
         }
@@ -270,15 +251,31 @@ public class UIManager : MonoBehaviour
             Time.timeScale = 0f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(visiblePos, 1f));
             SoundManager.instance.LowerVolumeForESC();
-
-            // ESC 메뉴 열릴 때 마우스 UI용으로 풀기
-            lockMouse?.UnlockMouseForUI();
         }
         else
         {
             Time.timeScale = 1f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(hiddenPos, 0f));
             SoundManager.instance.RestoreVolumeAfterESC();
+        }
+
+        UpdateCursorVisibility();
+    }
+
+    void UpdateCursorVisibility()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        // ESC 메뉴 열려있거나 MainMenu 씬일 때만 커서 표시
+        if (isPaused || currentScene == "MainMenu")
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None; // 중앙 고정 해제
+        }
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.None; // 중앙 고정 풀고 커서만 숨김
         }
     }
 

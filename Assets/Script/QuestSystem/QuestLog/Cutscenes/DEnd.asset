@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22b057228469eed4a8851095ee04d16e, type: 3}
+  m_Name: DEnd
+  m_EditorClassIdentifier: 
+  questID: T_1_2
+  questName: "\uAE30\uAD00\uC0AC\uB97C \uAD6C\uCD9C \uD558\uC138\uC694"
+  description: "\uB3D9\uAD74\uC5D0\uC11C \uAE30\uAD00\uC0AC\uB97C \uAD6C\uCD9C \uD558\uC138\uC694"
+  prerequisiteQuestID: T_1_1
+  questType: 7
+  detectUp: 10
+  detectDown: 5
+  detectLeft: 25
+  detectRight: 25
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  questCenterPosition: {x: -13, y: -24, z: 0}
+  targetKillCount: 0
+  requiredItemID: 
+  requiredItemCount: 1
+  deliveryTargetNPC: 
+  targetSceneName: 
+  exploreTargetPosition: {x: 0, y: 0, z: 0}
+  exploreRadius: 3
+  escortTargetSceneName: 
+  escortTargetPosition: {x: 0, y: 0, z: 0}
+  escortCompleteRadius: 2
+  cutsceneID: Save
+  bossID: 
