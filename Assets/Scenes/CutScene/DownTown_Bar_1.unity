@@ -132,6 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 249339359}
   - component: {fileID: 249339360}
+  - component: {fileID: 249339362}
   - component: {fileID: 249339361}
   m_Layer: 0
   m_Name: AnimationLoot
@@ -210,6 +211,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &249339362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249339358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b54c05e27aade804e87a700e81123bb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunShotSound: {fileID: 8300000, guid: 0a20d8143b317a146b36d3968d44c4ae, type: 3}
+  shieldBlockSound: {fileID: 8300000, guid: cf7202e7523e21947aee9a24ec51c5a4, type: 3}
 --- !u!1 &254040429
 GameObject:
   m_ObjectHideFlags: 0
@@ -1292,7 +1307,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 0
+    rgba: 391007822
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -2243,7 +2258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcb8ebaec32f37b48a37e34d90860caf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockMouseAtStart: 1
 --- !u!114 &1508017617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2558,6 +2572,54 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1932437202
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1932437203}
+  - component: {fileID: 1932437204}
+  m_Layer: 0
+  m_Name: BGM
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1932437203
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1932437202}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.8569167, y: -0.50137985, z: -0.037373733}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1932437204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1932437202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21e3bdcb6847dea4fa1ac66963964b0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundClip: {fileID: 8300000, guid: 9ff32654ef14a5c4ea2861ffd882d048, type: 3}
+  loopSoundName: LoopBGM
+  is3D: 0
+  soundPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &1959675728
 GameObject:
   m_ObjectHideFlags: 0
@@ -2739,3 +2801,4 @@ SceneRoots:
   - {fileID: 991472999}
   - {fileID: 1186269684}
   - {fileID: 249339359}
+  - {fileID: 1932437203}
