@@ -1605,7 +1605,7 @@ MonoBehaviour:
   imaginationTime: 0
   fadeTime: 2
   startAlpha: 0
-  targetAlpha: 0.3
+  targetAlpha: 1
   destroyAfterImagination: 0
 --- !u!4 &456914973
 Transform:
@@ -3737,7 +3737,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9013860045396669601, guid: 1f6d9d15517e5384d9f359a0a18614fb, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -107246,7 +107246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueBubblePrefab: {fileID: 7636360115096308400, guid: 938e5ad1cbceb0340a14cafb3e1ea59b, type: 3}
-  dialogueTypingSound: {fileID: 0}
+  dialogueTypingSound: {fileID: 8300000, guid: 28955fd637b6f2f478360b57a2684e22, type: 3}
 --- !u!114 &1386693405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107947,7 +107947,7 @@ MonoBehaviour:
   imaginationTime: 0
   fadeTime: 2
   startAlpha: 0
-  targetAlpha: 0.3
+  targetAlpha: 1
   destroyAfterImagination: 0
 --- !u!4 &1659483668
 Transform:
@@ -108007,7 +108007,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1670447197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108454,7 +108454,7 @@ MonoBehaviour:
   imaginationTime: 0
   fadeTime: 2
   startAlpha: 0
-  targetAlpha: 0.3
+  targetAlpha: 1
   destroyAfterImagination: 0
 --- !u!4 &1772647355
 Transform:
@@ -108923,7 +108923,7 @@ MonoBehaviour:
   fadeOutTime: 1.2887
   hasLoadingScene: 1
   loadingScene: StageLoading_1
-  nextScene: Honeycomb_QueenRoom
+  nextScene: RebelRoom_End
   disableAtAction:
   - {fileID: 597109911}
   canCrosshairToggle: 1

@@ -30,6 +30,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Test/EntityTest.unity
     guid: 2addd8996ccbd214cbd99ebe0c834ad6
   - enabled: 1
+    path: Assets/Scenes/CutScene/RebelRoom_End.unity
+    guid: ddfdd347f548e4844b0c9df929628f82
+  - enabled: 1
     path: Assets/Scenes/Test/Obj_DefaultBaseStorage.unity
     guid: 1977cc1d24bb0f145aea26afe6d0afa6
   - enabled: 1
