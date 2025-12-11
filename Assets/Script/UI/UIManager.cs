@@ -78,7 +78,6 @@ public class UIManager : MonoBehaviour
         "MainMenu",
         "PlayerDeathLoading",
         "StageLoading_1",
-        "Swomp_3_Cut",
         "GameStartLoding"
         // Scene이 추가될 때 여기에 추가할 것
     };

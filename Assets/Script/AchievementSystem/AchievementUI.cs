@@ -12,7 +12,10 @@ public class AchievementUI : MonoBehaviour
         RefreshAchievements();
 
         // 업적 달성 이벤트 구독 -> 자동 갱신
-        AchievementManager.Instance.OnAchievementUnlocked += RefreshAchievements;
+        if (AchievementManager.Instance != null)
+        {
+            AchievementManager.Instance.OnAchievementUnlocked += RefreshAchievements;
+        }
     }
 
     private void OnDisable()
@@ -30,11 +33,14 @@ public class AchievementUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        // 업적 리스트 표시
-        foreach (var ach in AchievementManager.Instance.achievements)
+        if (AchievementManager.Instance != null)
         {
-            var entry = Instantiate(achievementEntryPrefab, contentParent);
-            entry.GetComponent<AchievementEntryUI>().Setup(ach);
+            // 업적 리스트 표시
+            foreach (var ach in AchievementManager.Instance.achievements)
+            {
+                var entry = Instantiate(achievementEntryPrefab, contentParent);
+                entry.GetComponent<AchievementEntryUI>().Setup(ach);
+            }
         }
     }
 }

@@ -37,6 +37,9 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
     public float waitTimeBeforeFade = 1f;
     public float fadeOutTime = 1.2f;
 
+    [Header("스프라이트 플레이어 설정")]
+    public bool stopSpritePlayerAtStart = false;
+
     private void Start()
     {
         if (npcRenderer != null && endDialogueSprite != null && !string.IsNullOrEmpty(npcID))
@@ -51,9 +54,12 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
 
     public void InInteraction()
     {
-        var spritePlayer = GetComponent<SpritePlayer>();
-        if (spritePlayer != null) spritePlayer.StopAnimation();
-
+        if (stopSpritePlayerAtStart)
+        {
+            var spritePlayer = GetComponent<SpritePlayer>();
+            if (spritePlayer != null) spritePlayer.StopAnimation();
+        }
+        
         PlayerController.instance.AllStop();
         PlayerHandler.instance.PlayerGoto(playerPos, duration, facingRight);
 
