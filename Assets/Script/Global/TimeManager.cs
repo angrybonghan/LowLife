@@ -9,6 +9,7 @@ public class TimeManager : MonoBehaviour
 
     float timedSlowMotionValue = 1;
     float fadeTimeScaleValue = 1;
+    float setTimeScaleValue = 1;
 
     Coroutine fadeTimeScaleCoroutine;
 
@@ -45,7 +46,7 @@ public class TimeManager : MonoBehaviour
         if (UIManager.Instance != null && UIManager.Instance.IsPaused)
             return;
 
-        Time.timeScale = nomalTimeScale * timedSlowMotionValue * fadeTimeScaleValue;
+        Time.timeScale = nomalTimeScale * timedSlowMotionValue * fadeTimeScaleValue * setTimeScaleValue;
     }
 
     public static void ResetTime()
@@ -61,7 +62,7 @@ public class TimeManager : MonoBehaviour
         if (UIManager.Instance != null && UIManager.Instance.IsPaused)
             return;
 
-        Time.timeScale = value * instance.nomalTimeScale;
+        instance.setTimeScaleValue = value;
     }
 
     /// <summary>
@@ -88,12 +89,13 @@ public class TimeManager : MonoBehaviour
     /// <summary>
     /// 인수 : 기간(작동시간) - 목표 타임스케일
     /// </summary>
-    public static void FadeTimeScale(float duration, float timeScale)
+    public static void FadeTimeScale(float duration, float startTimeScale, float timeScale)
     {
         if (UIManager.Instance != null && UIManager.Instance.IsPaused)
             return;
 
         timeScale = Mathf.Max(timeScale, 0);
+        instance.fadeTimeScaleValue = Mathf.Max(startTimeScale, 0);
         if (instance.fadeTimeScaleCoroutine != null) instance.StopCoroutine(instance.fadeTimeScaleCoroutine);
         instance.fadeTimeScaleCoroutine = instance.StartCoroutine(instance.Co_FadeTimeScale(duration, timeScale));
     }
@@ -102,7 +104,7 @@ public class TimeManager : MonoBehaviour
     {
         if (duration > 0)
         {
-            float startScale = Time.timeScale;
+            float startScale = fadeTimeScaleValue;
             float time = 0f;
 
             while (time < duration)

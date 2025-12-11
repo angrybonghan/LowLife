@@ -8,6 +8,7 @@ public class PlayerHandler : MonoBehaviour
 
     private Coroutine PlayerGotoCoroutine;
     private Coroutine PlayerMoveForwardCoroutine;
+    private bool isPlayerFacingRight;
 
     private void Awake()
     {
@@ -71,6 +72,7 @@ public class PlayerHandler : MonoBehaviour
         Vector2 lookPos = new Vector2(targetX, transform.position.y);
         PlayerController.instance.AllStop();
         PlayerController.instance.LookPos(lookPos);
+        isPlayerFacingRight = PlayerController.instance.isFacingRight;
         PlayerController.instance.SetSpeed(true);
         PlayerController.canControl = false;
 
@@ -96,6 +98,9 @@ public class PlayerHandler : MonoBehaviour
     bool HasArrived(Vector3 pos)
     {
         float distance = Vector3.Distance(transform.position, pos);
-        return distance <= 0.1f;
+        if (distance <= 0.1f) return true;
+
+        bool isToRight = pos.x > transform.position.x;
+        return !((isToRight && isPlayerFacingRight) || (!isToRight && !isPlayerFacingRight));
     }
 }

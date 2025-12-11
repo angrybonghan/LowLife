@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
     private float currentKnockbacktime = 0; // 넉백의 길이 (시간)
     private float knockbackDirection = 1;   // 넉백 방향
 
-    private bool isFacingRight = true;      // 오른쪽을 바라보고 있는가? (방향 전환)
+    [HideInInspector] public bool isFacingRight = true;      // 오른쪽을 바라보고 있는가? (방향 전환)
     private bool isRunning = false;         // 움직이는 중인가?
     private bool hasInput = false;          // 유효한 입력이 있는가? (A 또는 D)
     private bool hasKnockback = false;      // 넉백 값이 있는지
@@ -715,8 +715,7 @@ public class PlayerController : MonoBehaviour
 
     public void ParrySuccess()
     {
-        TimeManager.SetTimeScale(0.025f);
-        TimeManager.FadeTimeScale(0.778f, 1f);
+        TimeManager.FadeTimeScale(0.778f, 0, 1f);
         CameraMovement.RotationShaking(1f, 0.05f, 0.2f);
 
         Quaternion effectRotation;

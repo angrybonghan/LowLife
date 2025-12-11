@@ -51,6 +51,8 @@ public class ScreenTransition : MonoBehaviour
 
         if (isTransitioning) return;
 
+        DialogManager.instance?.StopDialogue();
+
         Instance.SceneName = SceneName;
         Instance.LoadingSceneName = LoadingSceneName;
         Instance.CurtainColor = CurtainColor;
