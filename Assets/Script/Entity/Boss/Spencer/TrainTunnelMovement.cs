@@ -82,14 +82,14 @@ public class TrainTunnelMovement : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            StartTunnel();
-        }
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            EndTunnel();
-        }
+        //if (Input.GetKeyDown(KeyCode.N))
+        //{
+        //    StartTunnel();
+        //}
+        //if (Input.GetKeyDown(KeyCode.M))
+        //{
+        //    EndTunnel();
+        //}
 
         if (transform.position.x <= -resetDistance)
         {
