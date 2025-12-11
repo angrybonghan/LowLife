@@ -23,10 +23,7 @@ public class LetterBoxController : MonoBehaviour
             this.enabled = false;
             return;
         }
-    }
 
-    private void Start()
-    {
         if (disableAtStart)
         {
             SetEnableImmediate(false);
