@@ -17,9 +17,11 @@ MonoBehaviour:
     bubbleBodyOffset: 0
     isTailDown: 1
     sentence:
-    - "\uC544\uB2C8 \uC624\uB79C\uB9CC\uC5D0 \uAC00\uC871\uC744 \uB9CC\uB098\uB7EC
-      \uAC00\uC57C \uB418\uB294\uB370"
-    - "\uAE30\uAD00\uC0AC\uAC00 \uC5C6\uB2E4\uB2C8!!"
+    - "\uACE0\uC591\uC774\uB294 \uC11C\uBC84\uB97C \uC7AC\uBD80\uD305\uD588\uB2E4."
+    - "\uC774\uC720\uB294 \uD654\uC694\uC77C\uC774\uC5C8\uAE30 \uB54C\uBB38\uC774\uB2E4."
+    - "\uD654\uC694\uC77C\uC740 \uD30C\uB780\uC0C9\uC774 \uAC00\uC7A5 \uBB34\uAC70\uC6B4
+      \uC694\uC77C\uB85C\n\uC54C\uB824\uC838 \uC788\uB2E4."
+    - "\uBB34\uAC8C\uB294 \uC2DC\uAC04\uC758 \uBC00\uB3C4\uC640 \uBC18\uBE44\uB840\uD55C\uB2E4."
     intervalTime: 0.05
     canSkip: 1
     autoSkip: 0
@@ -28,7 +30,7 @@ MonoBehaviour:
     bubbleBodyOffset: 0
     isTailDown: 1
     sentence:
-    - test pos
+    - ???????
     intervalTime: 0.05
     canSkip: 1
     autoSkip: 0

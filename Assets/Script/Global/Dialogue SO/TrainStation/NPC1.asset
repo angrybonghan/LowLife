@@ -19,6 +19,7 @@ MonoBehaviour:
     sentence:
     - "\uBB50\uC57C?"
     - "\uAE30\uCC28 \uC6B4\uD589 \uC65C \uC548 \uD574?"
+    - "\uADF8\uB140\uAC00 \uAE30\uB2E4\uB9B0\uB2E4\uACE0!!"
     intervalTime: 0.05
     canSkip: 1
     autoSkip: 0
@@ -27,7 +28,38 @@ MonoBehaviour:
     bubbleBodyOffset: 0
     isTailDown: 1
     sentence:
-    - "\uC800\uC57C \uBAA8\uB974\uC8E0?"
+    - "\uADF8\uB140?"
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -7.33, y: -5, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - "\uB0B4 \uC5EC\uC790\uCE5C\uAD6C\uC57C!"
+    - "\uC774\uB984\uC740 \"\uB9E4\uBBF8\" \uC528\uC57C!"
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -9.5, y: -4.5, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - "\uB9E4\uBBF8 \uC774\uB984\uC774 \"\uB9E4\uBBF8\"\uC57C?"
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: -7.33, y: -5, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - "\uC544\uB2C8\uC57C!"
+    - "\"\uB9E4\uBBF8\" \uC528\uB294 \uBC14\uD034\uBC8C\uB798\uC57C!"
+    - "\uC624\uC624\uC624 \uC0AC\uB791\uC2A4\uB7EC\uC6B4 \uADF8\uB300!"
+    - "\uC73C\uC5EC\u3153\uC5B4\uC5B4\uC5B4\uC5B4 \u3160\u3160\u3160\u3160\n\u3160\u3160\u3160\u3160\u3160\u3160\u3160\u3160\u3160\u3160\u3160"
     intervalTime: 0.05
     canSkip: 1
     autoSkip: 0

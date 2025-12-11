@@ -38,6 +38,14 @@ public class InteractionManager : MonoBehaviour
 
     void Update()
     {
+        if (ScreenTransition.Instance != null)
+        {
+            if (ScreenTransition.isTransitioning)
+            {
+                InteractionOff();
+                return;
+            }
+        }
         if (!canInteraction || !isPlayerInRange) return;
 
         // 선행 퀘스트 체크

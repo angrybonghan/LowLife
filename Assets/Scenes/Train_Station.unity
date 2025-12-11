@@ -408,6 +408,7 @@ MonoBehaviour:
   loadingSceneName: StageLoading_1
   waitTimeBeforeFade: 1
   fadeOutTime: 1.2
+  stopSpritePlayerAtStart: 0
 --- !u!114 &222434804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,6 +609,7 @@ MonoBehaviour:
   loadingSceneName: StageLoading_1
   waitTimeBeforeFade: 1
   fadeOutTime: 1.2
+  stopSpritePlayerAtStart: 0
 --- !u!114 &260718363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2889,8 +2891,9 @@ MonoBehaviour:
   NextScene: 1
   useLoadingScene: 1
   loadingSceneName: StageLoading_1
-  waitTimeBeforeFade: 1
-  fadeOutTime: 1.2
+  waitTimeBeforeFade: 0
+  fadeOutTime: 0.3
+  stopSpritePlayerAtStart: 0
 --- !u!1 &1842037722
 GameObject:
   m_ObjectHideFlags: 0

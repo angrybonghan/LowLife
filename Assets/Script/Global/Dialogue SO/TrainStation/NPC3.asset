@@ -28,7 +28,17 @@ MonoBehaviour:
     bubbleBodyOffset: 0
     isTailDown: 1
     sentence:
-    - "\uB0B4\uAC00 \uAD6C\uD558\uB7EC \uAC08\uAC8C"
+    - "\uADF8\uB807\uAD70."
+    intervalTime: 0.05
+    canSkip: 1
+    autoSkip: 0
+    autoSkipIntervalTime: 0
+  - bubblePosition: {x: 9.6, y: -4, z: 0}
+    bubbleBodyOffset: 0
+    isTailDown: 1
+    sentence:
+    - "\uC5B4\uB5A4 \uBA4B\uC9C4 \uC601\uC6C5\uC774 \uB098\uD0C0\uB098\uC11C"
+    - "\uAE30\uAD00\uC0AC\uB97C \uAD6C\uD574\uC8FC\uACA0\uC9C0??"
     intervalTime: 0.05
     canSkip: 1
     autoSkip: 0
