@@ -1057,6 +1057,7 @@ GameObject:
   m_Component:
   - component: {fileID: 961595158}
   - component: {fileID: 961595159}
+  - component: {fileID: 961595161}
   - component: {fileID: 961595160}
   m_Layer: 0
   m_Name: animationLoot
@@ -1132,6 +1133,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &961595161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961595157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe6a047c97dd26948b95389bf84194a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trainSound: {fileID: 8300000, guid: 22cedef76b593f54296e381b9089e416, type: 3}
 --- !u!1 &1135988369
 GameObject:
   m_ObjectHideFlags: 0
