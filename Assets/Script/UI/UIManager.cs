@@ -1,8 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Collections;
-using TMPro;
 
 /// <summary>
 /// UI 매니저
@@ -71,6 +72,17 @@ public class UIManager : MonoBehaviour
     private bool sideOpen = false;
     private Coroutine sideAnimCoroutine;
 
+    // UI 동작이 비활성화될 Scene 목록
+    private List<string> uiDisableScenes = new List<string>
+    {
+        "MainMenu",
+        "PlayerDeathLoading",
+        "StageLoading_1",
+        "Swomp_3_Cut",
+        "GameStartLoding"
+        // Scene이 추가될 때 여기에 추가할 것
+    };
+
     private bool uiDisabled = false; // 특정 씬에서 UI 동작을 막는 플래그
 
 
@@ -126,15 +138,8 @@ public class UIManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "MainMenu" || scene.name == "PlayerDeathLoading"
-            || scene.name == "StageLoading_1" || scene.name == "Swomp_3_Cut")
-        {
-            uiDisabled = true;   // UIManager는 살아있지만 동작만 막음
-        }
-        else
-        {
-            uiDisabled = false;  // 다른 씬에서는 정상 동작
-        }
+        uiDisabled = uiDisableScenes.Contains(scene.name);
+        // 현재 씬이 UI 비활성화 목록에 존재하면 uiDisabled = true
     }
 
     private void Start()
@@ -282,13 +287,13 @@ public class UIManager : MonoBehaviour
         if (isPaused || currentScene == "MainMenu")
         {
             Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None; // 중앙 고정 해제
+            Cursor.lockState = CursorLockMode.None; // 고정 해제
         }
         else
         {
             // ESC 메뉴 닫혔을 때는 커서 숨김
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.None; // 중앙 고정은 하지 않음
+            Cursor.lockState = CursorLockMode.Confined; // 화면 밖으로 마우스가 빠져나가지 못함.
         }
     }
 
