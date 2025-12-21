@@ -123,7 +123,7 @@ public class UIManager : MonoBehaviour
                 volumePresetButtons[index].onClick.AddListener(() =>
                 {
                     float presetValue = (index + 1) / (float)volumePresetButtons.Length;
-                    SoundManager.instance.SetVolume(presetValue);
+                    AudioManager.instance.SetVolume(presetValue);
                     UpdatePresetButtonImages(index);
                 });
             }
@@ -205,12 +205,12 @@ public class UIManager : MonoBehaviour
         // ÁÂ/¿ì Å°·Î º¼·ý Á¶Àý
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            SoundManager.instance.DecreaseVolume();
+            AudioManager.instance.DecreaseVolume();
             SyncPresetButtonImages();
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            SoundManager.instance.IncreaseVolume();
+            AudioManager.instance.IncreaseVolume();
             SyncPresetButtonImages();
         }
     }
@@ -227,7 +227,7 @@ public class UIManager : MonoBehaviour
 
     private void SyncPresetButtonImages()
     {
-        float currentVolume = SoundManager.instance != null ? SoundManager.instance.GetVolume() : 1f;
+        float currentVolume = AudioManager.instance != null ? AudioManager.instance.GetVolume() : 1f;
         int activeIndex = Mathf.RoundToInt(currentVolume * volumePresetButtons.Length) - 1;
         if (currentVolume <= 0f) activeIndex = -1;
         UpdatePresetButtonImages(activeIndex);
@@ -256,23 +256,23 @@ public class UIManager : MonoBehaviour
         isPaused = !isPaused;
         if (escAnimCoroutine != null) StopCoroutine(escAnimCoroutine);
 
-        if (SoundManager.instance != null && EscSound != null)
+        if (AudioManager.instance != null && EscSound != null)
         {
             float randomPitch = Random.Range(0.9f, 1.1f);
-            SoundManager.instance.Play2DSound(EscSound, 1f, randomPitch);
+            AudioManager.instance.Play2DSound(EscSound, 1f, randomPitch);
         }
 
         if (isPaused)
         {
             Time.timeScale = 0f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(visiblePos, 1f));
-            SoundManager.instance.LowerVolumeForESC();
+            AudioManager.instance.LowerVolumeForESC();
         }
         else
         {
             Time.timeScale = 1f;
             escAnimCoroutine = StartCoroutine(PlayESCAnimation(hiddenPos, 0f));
-            SoundManager.instance.RestoreVolumeAfterESC();
+            AudioManager.instance.RestoreVolumeAfterESC();
         }
 
         UpdateCursorVisibility();

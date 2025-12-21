@@ -383,7 +383,7 @@ public class LumenMovement : MonoBehaviour, I_Attackable
         isDead = true;
         if (firePoint != null) Destroy(firePoint.gameObject);
 
-        SoundManager.instance.PlayEntityHitSound(transform.position);
+        AudioManager.instance.PlayEntityHitSound(transform.position);
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;

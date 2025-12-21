@@ -155,7 +155,7 @@ public class DialogManager : MonoBehaviour
             currentText += fullSentence[i];
             currentBubbleInstance.SetText(currentText);
 
-            SoundManager.instance.PlaySoundAtPosition(currentBubblePos, dialogueTypingSound);
+            AudioManager.instance.PlaySoundAtPosition(currentBubblePos, dialogueTypingSound);
 
             yield return new WaitForSeconds(intervalTime);
         }

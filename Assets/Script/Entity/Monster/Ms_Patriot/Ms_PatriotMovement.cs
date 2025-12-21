@@ -315,7 +315,7 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
         Ms_PatriotProjectile ep = Instantiate(projectile, firePoint.position, Quaternion.identity).GetComponent<Ms_PatriotProjectile>();
         ep.SetFacing((Vector2)transform.position + (Vector2.right * (isFacingRight ? 99999 : -99999 )));
 
-        SoundManager.instance.PlaySoundAtPosition(transform.position, fireSound);
+        AudioManager.instance.PlaySoundAtPosition(transform.position, fireSound);
     }
 
     bool IsPlayerInRange()
@@ -400,7 +400,7 @@ public class Ms_PatriotMovement : MonoBehaviour, I_Attackable
         if (isDead) return;
         isDead = true;
 
-        SoundManager.instance.PlayEntityHitSound(transform.position);
+        AudioManager.instance.PlayEntityHitSound(transform.position);
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;

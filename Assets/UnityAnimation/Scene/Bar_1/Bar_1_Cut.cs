@@ -26,6 +26,6 @@ public class Bar_1_Cut : MonoBehaviour
                 break;
         }
 
-        if (clip != null) SoundManager.instance.PlaySoundAtPosition(camPos, clip, 0.5f);
+        if (clip != null) AudioManager.instance.PlaySoundAtPosition(camPos, clip, 0.5f);
     }
 }

@@ -260,7 +260,7 @@ public class SpencerManager : MonoBehaviour
     public void PlayTeleportSound(bool isStart, Vector3 pos)
     {
         float peatch = isStart ? Random.Range(2f, 1.2f) : Random.Range(1f, 1f);
-        SoundManager.instance.PlaySoundAtPositionWithPitch(pos, teleportSound, peatch);
+        AudioManager.instance.PlaySoundAtPositionWithPitch(pos, teleportSound, peatch);
     }
 
     void Death()

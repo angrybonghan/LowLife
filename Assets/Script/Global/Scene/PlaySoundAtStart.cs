@@ -15,11 +15,11 @@ public class PlaySoundAtStart : MonoBehaviour
 
         if (is3D)
         {
-            SoundManager.instance.PlaySoundAtPosition(soundPosition, soundClip);
+            AudioManager.instance.PlaySoundAtPosition(soundPosition, soundClip);
         }
         else
         {
-            SoundManager.instance.Play2DSound(soundClip);
+            AudioManager.instance.Play2DSound(soundClip);
         }
     }
 }

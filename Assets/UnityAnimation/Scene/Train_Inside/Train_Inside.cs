@@ -9,6 +9,6 @@ public class Train_Inside : MonoBehaviour
     public void PlayGlassBreakSound()
     {
         Vector3 camPos = Camera.main.transform.position;
-        if (glassBreakSound != null) SoundManager.instance.PlaySoundAtPosition(camPos, glassBreakSound, 0.5f);
+        if (glassBreakSound != null) AudioManager.instance.PlaySoundAtPosition(camPos, glassBreakSound, 0.5f);
     }
 }

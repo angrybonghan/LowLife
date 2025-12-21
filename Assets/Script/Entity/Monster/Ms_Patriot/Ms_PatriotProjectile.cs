@@ -93,7 +93,7 @@ public class Ms_PatriotProjectile : MonoBehaviour, I_Projectile
 
         int randomIndex = Random.Range(0, explosionSound.Length);
         AudioClip clip = explosionSound[randomIndex];
-        SoundManager.instance.PlaySoundAtPosition(transform.position, clip);
+        AudioManager.instance.PlaySoundAtPosition(transform.position, clip);
 
 
         Collider2D[] hitTargets = Physics2D.OverlapCircleAll(

@@ -97,12 +97,12 @@ public class TNTbox : MonoBehaviour, I_Attackable
 
     public void PlayExplosionSound()
     {
-        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, explosionSound);
+        AudioManager.instance.PlayRandomSoundAtPosition(transform.position, explosionSound);
     }
 
     public void PlayBeepSound()
     {
-        SoundManager.instance.PlaySoundAtPosition(transform.position, beepSound);
+        AudioManager.instance.PlaySoundAtPosition(transform.position, beepSound);
     }
 
     public void ExplosionEnd()

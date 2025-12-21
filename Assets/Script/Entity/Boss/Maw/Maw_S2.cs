@@ -58,7 +58,7 @@ public class Maw_S2 : MonoBehaviour, I_MawSkill, I_Attackable
             yield return Co_Jump();
         }
 
-        SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, landSound, 0.75f);
+        AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, landSound, 0.75f);
 
         anim.SetTrigger("stun");
         yield return new WaitForSeconds(stunDuration);
@@ -75,7 +75,7 @@ public class Maw_S2 : MonoBehaviour, I_MawSkill, I_Attackable
         anim.SetTrigger("turnabout");
         yield return new WaitUntil(() => IsGrounded());
         anim.SetTrigger("land");
-        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, landSound);
+        AudioManager.instance.PlayRandomSoundAtPosition(transform.position, landSound);
         CameraMovement.PositionShaking(0.3f, 0.05f, 0.3f);
         yield return new WaitForSeconds(jumpInterval);
     }
@@ -89,7 +89,7 @@ public class Maw_S2 : MonoBehaviour, I_MawSkill, I_Attackable
             GetRandom(minVerticalJumpPower, maxVerticalJumpPower
             ));
 
-        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, jumpSound);
+        AudioManager.instance.PlayRandomSoundAtPosition(transform.position, jumpSound);
     }
 
     void LookPos(float targetX)

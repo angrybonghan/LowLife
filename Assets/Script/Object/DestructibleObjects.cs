@@ -37,7 +37,7 @@ public class DestructibleObjects : MonoBehaviour, I_Destructible
 
         if (clipToPlay != null)
         {
-            SoundManager.instance.PlaySoundAtPosition(transform.position, clipToPlay);
+            AudioManager.instance.PlaySoundAtPosition(transform.position, clipToPlay);
         }
     }
 }

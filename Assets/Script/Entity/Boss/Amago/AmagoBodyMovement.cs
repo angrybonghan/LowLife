@@ -103,7 +103,7 @@ public class AmagoBodyMovement : MonoBehaviour
         if (speed <= 0) return;
 
         float pitch = Random.value;
-        SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, footStep, pitch);
+        AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, footStep, pitch);
     }
 
     public void ReloadBodyAnimtion()

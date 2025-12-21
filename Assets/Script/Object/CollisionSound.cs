@@ -8,6 +8,6 @@ public class CollisionSound : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, sounds);
+        AudioManager.instance.PlayRandomSoundAtPosition(transform.position, sounds);
     }
 }

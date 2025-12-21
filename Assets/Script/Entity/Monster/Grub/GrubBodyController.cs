@@ -62,7 +62,7 @@ public class GrubBodyController : MonoBehaviour
             body.Dead(direction * fallingOutPower, deathDuration);
         }
 
-        SoundManager.instance.PlayEntityHitSound(transform.position);
+        AudioManager.instance.PlayEntityHitSound(transform.position);
 
         AchievementManager.Instance?.OnEnemyKilled(enemyType);
         Destroy(gameObject);

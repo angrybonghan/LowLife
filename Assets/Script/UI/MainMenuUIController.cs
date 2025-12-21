@@ -71,7 +71,7 @@ public class MainMenuUIController : MonoBehaviour
         if (volumeUpButton != null)
             volumeUpButton.onClick.AddListener(() =>
             {
-                SoundManager.instance.IncreaseVolume();
+                AudioManager.instance.IncreaseVolume();
                 SyncPresetButtonImages();
             });
 
@@ -79,7 +79,7 @@ public class MainMenuUIController : MonoBehaviour
         if (volumeDownButton != null)
             volumeDownButton.onClick.AddListener(() =>
             {
-                SoundManager.instance.DecreaseVolume();
+                AudioManager.instance.DecreaseVolume();
                 SyncPresetButtonImages();
             });
 
@@ -92,7 +92,7 @@ public class MainMenuUIController : MonoBehaviour
                 volumePresetButtons[index].onClick.AddListener(() =>
                 {
                     float presetValue = (index + 1) / (float)volumePresetButtons.Length;
-                    SoundManager.instance.SetVolume(presetValue);
+                    AudioManager.instance.SetVolume(presetValue);
                     UpdatePresetButtonImages(index);
                 });
             }
@@ -143,12 +143,12 @@ public class MainMenuUIController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            SoundManager.instance.DecreaseVolume();
+            AudioManager.instance.DecreaseVolume();
             SyncPresetButtonImages();
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            SoundManager.instance.IncreaseVolume();
+            AudioManager.instance.IncreaseVolume();
             SyncPresetButtonImages();
         }
     }
@@ -225,9 +225,9 @@ public class MainMenuUIController : MonoBehaviour
 
     public void OnButtonClick(int buttonIndex)
     {
-        if (SoundManager.instance != null)
+        if (AudioManager.instance != null)
         {
-            SoundManager.instance.PlayRandom2DSound(buttonClickSounds, 1f, 1f);
+            AudioManager.instance.PlayRandom2DSound(buttonClickSounds, 1f, 1f);
         }
 
         if (buttonIndex >= 0 && buttonIndex < popups.Length)
@@ -353,9 +353,9 @@ public class MainMenuUIController : MonoBehaviour
     {
         float currentVolume = 0f;
 
-        if (SoundManager.instance != null)
+        if (AudioManager.instance != null)
         {
-            currentVolume = SoundManager.instance.GetVolume();
+            currentVolume = AudioManager.instance.GetVolume();
         }
 
         // 기본 계산

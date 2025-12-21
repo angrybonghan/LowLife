@@ -134,7 +134,7 @@ public class ShieldRecoveryOrb : MonoBehaviour
             {
                 PlayerController.instance.AddDamageToShield(-shieldRecoveryAmount);
                 float randomPitch = Random.Range(0.5f, 1.2f);
-                SoundManager.instance.PlaySoundAtPositionWithPitch(transform.position, gainSound, randomPitch);
+                AudioManager.instance.PlaySoundAtPositionWithPitch(transform.position, gainSound, randomPitch);
                 Destroy(gameObject);
             }
             else

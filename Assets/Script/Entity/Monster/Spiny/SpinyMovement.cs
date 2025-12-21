@@ -294,7 +294,7 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
         if (isAttacking || isDead) return;
         isDead = true;
 
-        SoundManager.instance.PlayEntityHitSound(transform.position);
+        AudioManager.instance.PlayEntityHitSound(transform.position);
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;
@@ -318,7 +318,7 @@ public class SpinyMovement : MonoBehaviour, I_Attackable
         {
             int randomIndex = Random.Range(0, invincibleHit.Length);
             AudioClip clip = invincibleHit[randomIndex];
-            SoundManager.instance.PlaySoundAtPosition(transform.position, clip);
+            AudioManager.instance.PlaySoundAtPosition(transform.position, clip);
             return false;
         }
 

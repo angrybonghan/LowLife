@@ -549,14 +549,14 @@ public class AmbushMovement : MonoBehaviour, I_Attackable
 
     void PlayPelloffSound()
     {
-        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, pelloffSound);
+        AudioManager.instance.PlayRandomSoundAtPosition(transform.position, pelloffSound);
     }
 
     void Dead(Transform attackerTransform)
     {
         isDead = true;
 
-        SoundManager.instance.PlayEntityHitSound(transform.position);
+        AudioManager.instance.PlayEntityHitSound(transform.position);
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;

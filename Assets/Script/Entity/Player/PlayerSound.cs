@@ -49,10 +49,10 @@ public class PlayerSound : MonoBehaviour
                 clip = GetMaterialFootstepSound();
                 break;
             case playerSoundType.Throw:
-                clip = SoundManager.instance.GetRandomSound(throwSound);
+                clip = AudioManager.instance.GetRandomSound(throwSound);
                 break;
             case playerSoundType.QuickTrun:
-                clip = SoundManager.instance.GetRandomSound(quickTrunSound);
+                clip = AudioManager.instance.GetRandomSound(quickTrunSound);
                 break;
             case playerSoundType.Stick:
                 clip = stickSound;
@@ -64,10 +64,10 @@ public class PlayerSound : MonoBehaviour
                 clip = dashSound;
                 break;
             case playerSoundType.Cloth:
-                clip = SoundManager.instance.GetRandomSound(cloth);
+                clip = AudioManager.instance.GetRandomSound(cloth);
                 break;
             case playerSoundType.BigCloth:
-                clip = SoundManager.instance.GetRandomSound(bigCloth);
+                clip = AudioManager.instance.GetRandomSound(bigCloth);
                 break;
             case playerSoundType.ShieldLerp:
                 clip = shieldLerp;
@@ -78,7 +78,7 @@ public class PlayerSound : MonoBehaviour
             case playerSoundType.Block:
                 clip = shieldBlockSound;
                 float pitch = Random.Range(0.8f, 1.2f);
-                SoundManager.instance.PlaySoundAtPositionWithPitch(transform.position, clip, pitch);
+                AudioManager.instance.PlaySoundAtPositionWithPitch(transform.position, clip, pitch);
                 return;
             case playerSoundType.Death:
                 clip = deathSound;
@@ -90,7 +90,7 @@ public class PlayerSound : MonoBehaviour
 
         if (clip != null)
         {
-            SoundManager.instance.PlaySoundAtPosition(transform.position, clip);
+            AudioManager.instance.PlaySoundAtPosition(transform.position, clip);
         }
     }
 

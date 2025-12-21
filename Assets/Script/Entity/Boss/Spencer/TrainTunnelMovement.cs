@@ -155,9 +155,9 @@ public class TrainTunnelMovement : MonoBehaviour
 
     IEnumerator PlayTunnelEnterSound()
     {
-        SoundManager.instance.PlaySoundAtPosition(Vector3.zero, tunnelEnterSound);
+        AudioManager.instance.PlaySoundAtPosition(Vector3.zero, tunnelEnterSound);
         yield return new WaitForSeconds(0.35f);
-        SoundManager.instance.PlayLoopBgm(tunnelLoopSound, "TrainTunnelLoop", 1.2f, 0.35f);
+        AudioManager.instance.PlayLoopBgm(tunnelLoopSound, "TrainTunnelLoop", 1.2f, 0.35f);
     }
 
     public void EndTunnel()
@@ -172,8 +172,8 @@ public class TrainTunnelMovement : MonoBehaviour
             speedLineRoutine = null;
         }
 
-        SoundManager.instance.StopSound("TrainTunnelLoop");
-        SoundManager.instance.PlaySoundAtPosition(Vector3.zero, tunnelExitSound);
+        AudioManager.instance.StopSound("TrainTunnelLoop");
+        AudioManager.instance.PlaySoundAtPosition(Vector3.zero, tunnelExitSound);
         RandomTreeSpawner.instance.canSpawn = true;
     }
 

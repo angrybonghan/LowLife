@@ -68,7 +68,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
             maxArmMoveSpeed = 0.3f;
         }
 
-        SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, gunOutSounds, Random.Range(0.5f, 1.5f));
+        AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, gunOutSounds, Random.Range(0.5f, 1.5f));
     }
 
 
@@ -114,7 +114,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
             proj.shrinkTime = 0.1f;
             proj.laserThickness = 0.1f;
 
-            SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, revolverFireSounds, Random.Range(0.5f, 1.5f));
+            AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, revolverFireSounds, Random.Range(0.5f, 1.5f));
             CameraMovement.PositionShaking(0.5f, 0.05f, 0.2f);
         }
         else if (weaponNumber == 1)
@@ -124,7 +124,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
                 Instantiate(shotgun, firePoint.position, Quaternion.identity).LookPos(aimPoint.position);
             }
 
-            SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, shotgunFireSounds, Random.Range(0.5f, 1.5f));
+            AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, shotgunFireSounds, Random.Range(0.5f, 1.5f));
             CameraMovement.PositionShaking(0.75f, 0.05f, 0.2f);
         }
         else
@@ -132,7 +132,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
             Ms_PatriotProjectile proj = Instantiate(roket, firePoint.position, Quaternion.identity);
             proj.SetFacing(aimPoint.position);
 
-            SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, roketFireSounds, Random.Range(0.5f, 1.5f));
+            AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, roketFireSounds, Random.Range(0.5f, 1.5f));
             CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
         }
     }

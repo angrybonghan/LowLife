@@ -63,7 +63,7 @@ public class Spencer_SS1 : MonoBehaviour, I_Attackable
     {
         for (int i = 0; i < 6; i++)
         {
-            SoundManager.instance.PlayRandomClipAtPointWithPitch(transform.position, reloadSound, Random.Range(0.5f, 1.5f));
+            AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, reloadSound, Random.Range(0.5f, 1.5f));
         }
     }
 }

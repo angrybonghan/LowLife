@@ -39,7 +39,7 @@ public class SmallSwampProjectile : MonoBehaviour
     private void Start()
     {
         currentDispersionSpeed = dispersionSpeed * Random.Range(-1f, 1f);
-        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, swampShootSound);
+        AudioManager.instance.PlayRandomSoundAtPosition(transform.position, swampShootSound);
     }
 
     private void Update()
@@ -99,7 +99,7 @@ public class SmallSwampProjectile : MonoBehaviour
             MawManager.instance.allSwamp.Add(newSwamp);
         }
 
-        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, swampLandSound);
+        AudioManager.instance.PlayRandomSoundAtPosition(transform.position, swampLandSound);
         Destroy(gameObject);
     }
 

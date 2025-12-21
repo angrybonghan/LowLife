@@ -10,7 +10,7 @@ public class ShamblerSound : MonoBehaviour
     public void PlaySound(ShamblerSoundType type)
     {
         AudioClip clip = GetSound(type);
-        SoundManager.instance.PlaySoundAtPosition(transform.position, clip);
+        AudioManager.instance.PlaySoundAtPosition(transform.position, clip);
     }
 
     AudioClip GetSound(ShamblerSoundType type)

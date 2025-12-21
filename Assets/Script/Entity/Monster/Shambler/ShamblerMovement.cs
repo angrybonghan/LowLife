@@ -429,7 +429,7 @@ public class ShamblerMovement : MonoBehaviour, I_Attackable
             }
             else
             {
-                SoundManager.instance.PlayEntityHitSound(transform.position);
+                AudioManager.instance.PlayEntityHitSound(transform.position);
             }
         }
         else

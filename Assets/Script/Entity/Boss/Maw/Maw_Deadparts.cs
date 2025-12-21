@@ -36,7 +36,7 @@ public class Maw_Deadparts : MonoBehaviour
 
         StartCoroutine(DeadpartSequence());
 
-        SoundManager.instance.PlaySoundAtPosition(transform.position, deadSound);
+        AudioManager.instance.PlaySoundAtPosition(transform.position, deadSound);
     }
 
 

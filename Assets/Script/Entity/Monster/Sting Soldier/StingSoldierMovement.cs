@@ -414,7 +414,7 @@ public class StingSoldierMovement : MonoBehaviour, I_Attackable
         if (isDead) return;
         isDead = true;
 
-        SoundManager.instance.PlayEntityHitSound(transform.position);
+        AudioManager.instance.PlayEntityHitSound(transform.position);
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;
