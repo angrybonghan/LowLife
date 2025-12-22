@@ -226,12 +226,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        //ESC중 일 때 입력 방지
-        if (UIManager.Instance != null && UIManager.Instance.IsPaused)
-        {
-            return;
-        }
-
         UpdateStates(); // 상태 업데이트 (코요테 포함)
         PlayerControlDisableHandler();  // 조작 중단 시간 계산
 

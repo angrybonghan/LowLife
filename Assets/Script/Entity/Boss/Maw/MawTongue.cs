@@ -71,7 +71,7 @@ public class MawTongue : MonoBehaviour
             targetPos.y = floorY;
             isAttacking = true;
             MoveTo(targetPos, attackTime);
-            AudioManager.instance.PlaySoundAtPosition(transform.position, attackSound);
+            AudioManager.Instance.Play3DSound(attackSound, transform.position);
             yield return new WaitForSeconds(attackTime);
 
             isAttacking = false;
@@ -80,7 +80,7 @@ public class MawTongue : MonoBehaviour
             targetPos.y = backoffY;
             anim.SetTrigger("attack");
             MoveTo(targetPos, backoffTime);
-            AudioManager.instance.PlaySoundAtPosition(transform.position, backOffSound);
+            AudioManager.Instance.Play3DSound(backOffSound, transform.position);
             yield return new WaitForSeconds(backoffTime);
 
             anim.SetTrigger("default");

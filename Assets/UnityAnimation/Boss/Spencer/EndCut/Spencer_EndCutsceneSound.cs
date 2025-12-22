@@ -2,7 +2,7 @@ using UnityEngine;
 
 public enum SpencerEndCutSoundType { firing, teleport, spiderWeb , pickUp, parry }
 
-public class Spencer_EndCut : MonoBehaviour
+public class Spencer_EndCutsceneSound : MonoBehaviour
 {
     [Header("รั ฐüทร")]
     public AudioClip firingSound;
@@ -21,7 +21,6 @@ public class Spencer_EndCut : MonoBehaviour
     public void PlaySound(SpencerEndCutSoundType type)
     {
         AudioClip clip = null;
-        Vector3 camPos = Camera.main.transform.position;
 
         switch (type)
         {
@@ -42,6 +41,6 @@ public class Spencer_EndCut : MonoBehaviour
                 break;
         }
 
-        if (clip != null) AudioManager.instance.PlaySoundAtPosition(camPos, clip, 0.5f);
+        if (clip != null) AudioManager.Instance.Play2DSound(clip, "Spencer_EndCutsceneSound", 0.5f);
     }
 }

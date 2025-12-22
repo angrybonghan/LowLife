@@ -79,6 +79,7 @@ public class AudioManager : MonoBehaviour
         float volumeMultiple = 1.0f, float pitch = 1.0f, bool isLoop = false)
     {
         AudioClip clip = GetRandomSound(clips);
+        if (clip == null) return;
         Playsound(clip, point, soundName, volumeMultiple, pitch, true, isLoop);
     }
 
@@ -92,6 +93,7 @@ public class AudioManager : MonoBehaviour
         float volumeMultiple = 1.0f, float pitch = 1.0f, bool isLoop = false)
     {
         AudioClip clip = GetRandomSound(clips);
+        if (clip == null) return;
         Playsound(clip, Vector3.zero, soundName, volumeMultiple, pitch, false, isLoop);
     }
 

@@ -9,11 +9,11 @@ public class End_Trainsound : MonoBehaviour
 
     void Start()
     {
-        AudioManager.instance.PlayLoopBgm(trainSound, soundName);
+        AudioManager.Instance.Play2DSound(trainSound, soundName);
     }
 
     public void StopTrainSound()
     {
-        AudioManager.instance.StopSound(soundName);
+        AudioManager.Instance.StopSound(soundName, 2);
     }
 }

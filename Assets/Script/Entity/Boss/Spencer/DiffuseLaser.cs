@@ -64,7 +64,7 @@ public class DiffuseLaser : MonoBehaviour
     {
         if (timeToFire > 0)
         {
-            AudioManager.instance.PlaySoundAtPosition(transform.position, aimingSound);
+            AudioManager.Instance.Play3DSound(aimingSound, transform.position);
 
             spriteRenderer.color = lockOnColor;
             float elapsedTime = 0f;
@@ -127,8 +127,8 @@ public class DiffuseLaser : MonoBehaviour
                 }
             }
         }
-
-        AudioManager.instance.PlaySoundAtPositionWithPitch(transform.position, fireSound, Random.Range(0.9f, 1.1f));
+        float pitch = Random.Range(0.9f, 1.1f);
+        AudioManager.Instance.Play3DSound(fireSound, transform.position, "fireSound", 1, pitch);
         CameraMovement.PositionShaking(0.4f, 0.05f, 0.1f);
         StartCoroutine(Co_ShrinkAndDestroy());
     }

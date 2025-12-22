@@ -13,11 +13,6 @@ public class InteractionManager : MonoBehaviour
     [Header("UI")]
     public GameObject triggerUI; // 상호작용 UI
 
-    [Header("선행 퀘스트")]
-    public string prerequisiteQuestID; // 선행 퀘스트 ID
-    public bool allowInteractionWithoutPrerequisite = false;
-    // true면 선행 퀘스트 미완료여도 상호작용 가능, false면 불가능
-
     bool canInteraction = true;
     bool isPlayerInRange = false;
     bool hasUI = false;
@@ -47,17 +42,6 @@ public class InteractionManager : MonoBehaviour
             }
         }
         if (!canInteraction || !isPlayerInRange) return;
-
-        // 선행 퀘스트 체크
-        if (!string.IsNullOrEmpty(prerequisiteQuestID))
-        {
-            var state = QuestManager.Instance.GetQuestState(prerequisiteQuestID);
-            if (state != QuestState.Completed && !allowInteractionWithoutPrerequisite)
-            {
-                // 선행 퀘스트 미완료 + 허용하지 않음 -> 상호작용 불가
-                return;
-            }
-        }
 
         if (canHoldInput ? Input.GetKey(interactionKey) : Input.GetKeyDown(interactionKey))
         {

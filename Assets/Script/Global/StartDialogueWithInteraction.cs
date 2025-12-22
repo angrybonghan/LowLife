@@ -3,12 +3,6 @@ using UnityEngine;
 
 public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_DialogueCallback
 {
-    [Header("NPC ID")]
-    public string npcID;
-
-    [Header("퀘스트 연결")]
-    public string questID;
-
     [Header("대화")]
     public DialogueSO defaultDialogue; // 선행 퀘스트 미완료 시 보여줄 대화
     public DialogueSO questDialogue;   // 퀘스트 진행용 대화
@@ -40,18 +34,6 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
     [Header("스프라이트 플레이어 설정")]
     public bool stopSpritePlayerAtStart = false;
 
-    private void Start()
-    {
-        if (npcRenderer != null && endDialogueSprite != null && !string.IsNullOrEmpty(npcID))
-        {
-            int talked = PlayerPrefs.GetInt("NPC_" + npcID + "_Talked", 0);
-            if (talked == 1)
-            {
-                npcRenderer.sprite = endDialogueSprite;
-            }
-        }
-    }
-
     public void InInteraction()
     {
         if (stopSpritePlayerAtStart)
@@ -66,79 +48,11 @@ public class StartDialogueWithInteraction : MonoBehaviour, I_Interactable, I_Dia
         if (npcRenderer != null && startDialogueSprite != null)
             npcRenderer.sprite = startDialogueSprite;
 
-        QuestDataSO quest = null;
-        if (!string.IsNullOrEmpty(questID))
-            quest = QuestManager.Instance.GetQuestData(questID);
-
-        if (quest != null && !string.IsNullOrEmpty(quest.prerequisiteQuestID))
-        {
-            var preState = QuestManager.Instance.GetQuestState(quest.prerequisiteQuestID);
-            if (preState != QuestState.Completed)
-            {
-                if (defaultDialogue != null)
-                    DialogManager.instance.StartDialogue(defaultDialogue, gameObject);
-
-                PlayerController.canControl = false;
-                return;
-            }
-        }
-
-        if (quest != null && questDialogue != null)
-            DialogManager.instance.StartDialogue(questDialogue, gameObject);
-        else if (defaultDialogue != null)
-            DialogManager.instance.StartDialogue(defaultDialogue, gameObject);
-
         PlayerController.canControl = false;
     }
 
     public void OnDialogueEnd()
     {
-        if (!string.IsNullOrEmpty(npcID))
-            AchievementManager.Instance?.OnTalkToNPC(npcID);
-
-        if (!string.IsNullOrEmpty(questID))
-        {
-            var quest = QuestManager.Instance.GetQuestData(questID);
-            if (quest != null)
-            {
-                if (string.IsNullOrEmpty(quest.prerequisiteQuestID) ||
-                    QuestManager.Instance.GetQuestState(quest.prerequisiteQuestID) == QuestState.Completed)
-                {
-                    QuestManager.Instance.StartQuest(questID);
-
-                    if (quest.questType == QuestType.Dialogue)
-                        QuestManager.Instance.CompleteQuest(quest);
-
-                    FindObjectOfType<UIManager>()?.UpdateQuestText();
-                }
-            }
-        }
-
-        if (!string.IsNullOrEmpty(rewardItemID) && rewardItemCount > 0)
-        {
-            if (ItemDatabase.Instance != null)
-            {
-                ItemDatabase.Instance.AddItem(rewardItemID, rewardItemCount);
-                Debug.Log($"[아이템 획득] {rewardItemID} x{rewardItemCount}");
-                UIManager.Instance?.UpdateQuestText();
-            }
-            else
-            {
-                Debug.LogWarning("[아이템 획득 실패] ItemDatabase가 존재하지 않습니다.");
-            }
-        }
-
-        if (npcRenderer != null && endDialogueSprite != null)
-        {
-            npcRenderer.sprite = endDialogueSprite;
-
-            if (!string.IsNullOrEmpty(npcID))
-            {
-                PlayerPrefs.SetInt("NPC_" + npcID + "_Talked", 1);
-                PlayerPrefs.Save();
-            }
-        }
-
         StartCoroutine(DialogueEndFunc());
     }
 

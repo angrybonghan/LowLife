@@ -296,7 +296,7 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
             yield return new WaitForSeconds(aimingTime);
             isAiming = false;
             anim.SetTrigger("fire");
-            AudioManager.instance.PlaySoundAtPosition(transform.position, fireSound);
+            AudioManager.Instance.Play3DSound(fireSound, transform.position);
             Attack();
             yield return new WaitForSeconds(reloadTime);
 
@@ -308,7 +308,7 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
 
     public void PlayReloadSound()
     {
-        AudioManager.instance.PlaySoundAtPosition(transform.position, reloadSound);
+        AudioManager.Instance.Play3DSound(reloadSound, transform.position);
     }
 
     void Attack()
@@ -454,7 +454,7 @@ public class Ms_ColeMovement : MonoBehaviour, I_Attackable
         if (isDead) return;
         isDead = true;
 
-        AudioManager.instance.PlayEntityHitSound(transform.position);
+        AudioLibrary.Instance.PlaySound(AudioLibrarySoundType.EntityHit, transform.position);
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;

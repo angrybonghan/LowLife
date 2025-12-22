@@ -2,7 +2,7 @@ using UnityEngine;
 
 public enum Bar_1_SoundType { firing, block }
 
-public class Bar_1_Cut : MonoBehaviour
+public class Bar_1_CutsceneSound : MonoBehaviour
 {
     [Header("รั")]
     public AudioClip gunShotSound;
@@ -14,7 +14,6 @@ public class Bar_1_Cut : MonoBehaviour
     public void PlaySound(Bar_1_SoundType type)
     {
         AudioClip clip = null;
-        Vector3 camPos = Camera.main.transform.position;
 
         switch (type)
         {
@@ -26,6 +25,6 @@ public class Bar_1_Cut : MonoBehaviour
                 break;
         }
 
-        if (clip != null) AudioManager.instance.PlaySoundAtPosition(camPos, clip, 0.5f);
+        if (clip != null) AudioManager.Instance.Play2DSound(clip, "", 0.5f);
     }
 }

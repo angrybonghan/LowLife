@@ -11,33 +11,13 @@ public class DestructibleObjects : MonoBehaviour, I_Destructible
 
     public void OnAttack()
     {
-        PlayRandomDestructionSound();
-        Destruction();
+        AudioManager.Instance.PlayRandom3DSound(destructionSound, transform.position);
+        if (deadPartPrefab != null) Instantiate(deadPartPrefab, transform.position, transform.localRotation);
+        Destroy(gameObject);
     }
 
     public bool CanDestructible()
     {
         return canDistroy;
-    }
-
-    void Destruction()
-    {
-        if (deadPartPrefab != null) Instantiate(deadPartPrefab, transform.position, transform.localRotation);
-        
-        Destroy(gameObject);
-    }
-
-    public void PlayRandomDestructionSound()
-    {
-        if (destructionSound == null || destructionSound.Length == 0) return;
-
-        int randomIndex = Random.Range(0, destructionSound.Length);
-
-        AudioClip clipToPlay = destructionSound[randomIndex];
-
-        if (clipToPlay != null)
-        {
-            AudioManager.instance.PlaySoundAtPosition(transform.position, clipToPlay);
-        }
     }
 }

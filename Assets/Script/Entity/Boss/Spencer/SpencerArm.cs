@@ -68,7 +68,8 @@ public class SpencerArm : MonoBehaviour, I_Attackable
             maxArmMoveSpeed = 0.3f;
         }
 
-        AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, gunOutSounds, Random.Range(0.5f, 1.5f));
+        float pitch = Random.Range(0.5f, 1.5f);
+        AudioManager.Instance.PlayRandom3DSound(gunOutSounds, transform.position, "gunOutSound", 1, pitch);
     }
 
 
@@ -106,6 +107,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
     public void SummonProjectile()
     {
         if (gunDrop) return;
+        float pitch = Random.Range(0.5f, 1.5f);
 
         if (weaponNumber == 0)
         {
@@ -114,7 +116,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
             proj.shrinkTime = 0.1f;
             proj.laserThickness = 0.1f;
 
-            AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, revolverFireSounds, Random.Range(0.5f, 1.5f));
+            AudioManager.Instance.PlayRandom3DSound(revolverFireSounds, transform.position, "revolverFireSound", 1, pitch);
             CameraMovement.PositionShaking(0.5f, 0.05f, 0.2f);
         }
         else if (weaponNumber == 1)
@@ -124,7 +126,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
                 Instantiate(shotgun, firePoint.position, Quaternion.identity).LookPos(aimPoint.position);
             }
 
-            AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, shotgunFireSounds, Random.Range(0.5f, 1.5f));
+            AudioManager.Instance.PlayRandom3DSound(shotgunFireSounds, transform.position, "shotgunFireSound", 1, pitch);
             CameraMovement.PositionShaking(0.75f, 0.05f, 0.2f);
         }
         else
@@ -132,7 +134,7 @@ public class SpencerArm : MonoBehaviour, I_Attackable
             Ms_PatriotProjectile proj = Instantiate(roket, firePoint.position, Quaternion.identity);
             proj.SetFacing(aimPoint.position);
 
-            AudioManager.instance.PlayRandomClipAtPointWithPitch(transform.position, roketFireSounds, Random.Range(0.5f, 1.5f));
+            AudioManager.Instance.PlayRandom3DSound(roketFireSounds, transform.position, "roketFireSound", 1, pitch);
             CameraMovement.PositionShaking(1f, 0.05f, 0.2f);
         }
     }

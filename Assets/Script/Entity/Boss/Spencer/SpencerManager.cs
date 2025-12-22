@@ -259,13 +259,12 @@ public class SpencerManager : MonoBehaviour
 
     public void PlayTeleportSound(bool isStart, Vector3 pos)
     {
-        float peatch = isStart ? Random.Range(2f, 1.2f) : Random.Range(1f, 1f);
-        AudioManager.instance.PlaySoundAtPositionWithPitch(pos, teleportSound, peatch);
+        float pitch = isStart ? Random.Range(2f, 1.2f) : Random.Range(1f, 1f);
+        AudioManager.Instance.Play3DSound(teleportSound, pos, "teleportSound", 1, pitch);
     }
 
     void Death()
     {
-        QuestManager.Instance.OnBossKilled(this.enemyType);
         AchievementManager.Instance?.OnEnemyKilled(enemyType);
 
         ScreenTransition.ScreenTransitionGoto("Train_Boss_EndCut", "nope", Color.black, 0, 0, 0f, 0.2f, 0);

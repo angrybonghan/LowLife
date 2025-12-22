@@ -10,7 +10,7 @@ public class AmagoDestructible : MonoBehaviour
 
     public void Destroy(Vector3 AttackerPos)
     {
-        AudioManager.instance.PlayRandomSoundAtPosition(transform.position, destructionSound);
+        AudioManager.Instance.PlayRandom3DSound(destructionSound, transform.position);
         if (deadParticle != null) Instantiate(deadParticle, transform.position, transform.localRotation);
         Destroy(gameObject);
     }

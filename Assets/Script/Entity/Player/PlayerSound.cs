@@ -49,10 +49,10 @@ public class PlayerSound : MonoBehaviour
                 clip = GetMaterialFootstepSound();
                 break;
             case playerSoundType.Throw:
-                clip = AudioManager.instance.GetRandomSound(throwSound);
+                clip = AudioManager.GetRandomSound(throwSound);
                 break;
             case playerSoundType.QuickTrun:
-                clip = AudioManager.instance.GetRandomSound(quickTrunSound);
+                clip = AudioManager.GetRandomSound(quickTrunSound);
                 break;
             case playerSoundType.Stick:
                 clip = stickSound;
@@ -64,10 +64,10 @@ public class PlayerSound : MonoBehaviour
                 clip = dashSound;
                 break;
             case playerSoundType.Cloth:
-                clip = AudioManager.instance.GetRandomSound(cloth);
+                clip = AudioManager.GetRandomSound(cloth);
                 break;
             case playerSoundType.BigCloth:
-                clip = AudioManager.instance.GetRandomSound(bigCloth);
+                clip = AudioManager.GetRandomSound(bigCloth);
                 break;
             case playerSoundType.ShieldLerp:
                 clip = shieldLerp;
@@ -78,7 +78,7 @@ public class PlayerSound : MonoBehaviour
             case playerSoundType.Block:
                 clip = shieldBlockSound;
                 float pitch = Random.Range(0.8f, 1.2f);
-                AudioManager.instance.PlaySoundAtPositionWithPitch(transform.position, clip, pitch);
+                AudioManager.Instance.Play3DSound(clip, transform.position, "shieldBlockSound", 1, pitch);
                 return;
             case playerSoundType.Death:
                 clip = deathSound;
@@ -90,7 +90,7 @@ public class PlayerSound : MonoBehaviour
 
         if (clip != null)
         {
-            AudioManager.instance.PlaySoundAtPosition(transform.position, clip);
+            AudioManager.Instance.Play3DSound(clip, transform.position);
         }
     }
 

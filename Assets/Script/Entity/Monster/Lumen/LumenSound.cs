@@ -17,7 +17,7 @@ public class LumenSound : MonoBehaviour
     public void PlaySound(LumenSoundType type)
     {
         AudioClip clip = GetSound(type);
-        AudioManager.instance.PlaySoundAtPosition(transform.position, clip);
+        AudioManager.Instance.Play3DSound(clip, transform.position);
     }
 
     AudioClip GetSound(LumenSoundType type)

@@ -77,7 +77,8 @@ public class Spencer_S3 : MonoBehaviour, I_Attackable
         SpencerWebProjectile proj = Instantiate(projectile, projectilePos, Quaternion.identity);
         proj.DontLookPos(transform.position);
 
-        AudioManager.instance.PlaySoundAtPositionWithPitch(transform.position, attackSound, Random.Range(0.8f, 1.2f));
+        float pitch = Random.Range(0.8f, 1.2f);
+        AudioManager.Instance.Play3DSound(attackSound, transform.position, "attackSound", 1, pitch);
         CameraMovement.PositionShaking(0.1f, 0.05f, attackInterval);
     }
 

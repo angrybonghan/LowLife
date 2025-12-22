@@ -254,7 +254,7 @@ public class RashMovement : MonoBehaviour, I_Attackable
         if (isDead) return;
         isDead = true;
 
-        AudioManager.instance.PlayEntityHitSound(transform.position);
+        AudioLibrary.Instance.PlaySound(AudioLibrarySoundType.EntityHit, transform.position);
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;

@@ -133,8 +133,8 @@ public class ShieldRecoveryOrb : MonoBehaviour
             if (hit.collider.gameObject.CompareTag("Player"))
             {
                 PlayerController.instance.AddDamageToShield(-shieldRecoveryAmount);
-                float randomPitch = Random.Range(0.5f, 1.2f);
-                AudioManager.instance.PlaySoundAtPositionWithPitch(transform.position, gainSound, randomPitch);
+                float pitch = Random.Range(0.5f, 1.2f);
+                AudioManager.Instance.Play3DSound(gainSound, transform.position, "gainSound", 1, pitch);
                 Destroy(gameObject);
             }
             else

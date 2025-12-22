@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public enum MawEndCutSoundType { stuck, smash, headRoll }
-public class Maw_EndCut : MonoBehaviour
+public class Maw_EndCutSound : MonoBehaviour
 {
     [Header("¶¥¿¡ ¹ÚÈû")]
     public AudioClip stuckSound;
@@ -30,6 +30,6 @@ public class Maw_EndCut : MonoBehaviour
                 break;
         }
 
-        if (clip != null) AudioManager.instance.PlaySoundAtPosition(camPos, clip, 0.5f);
+        if (clip != null) AudioManager.Instance.Play3DSound(clip, camPos, "MawEndCutSound", 0.5f);
     }
 }
