@@ -257,6 +257,13 @@ public class SpencerManager : MonoBehaviour
         }
     }
 
+    public void SetHalfHP()
+    {
+        if (halfHP) return;
+        halfHP = true;
+        currentHP = maxHP / 2;
+    }
+
     public void PlayTeleportSound(bool isStart, Vector3 pos)
     {
         float peatch = isStart ? Random.Range(2f, 1.2f) : Random.Range(1f, 1f);

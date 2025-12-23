@@ -19,6 +19,9 @@ public class MawManager : MonoBehaviour
     public Maw_S3 S3;
     public Maw_S4 S4;
 
+    [Header("서브 스킬셋")]
+    public Maw_SS0 SS0;
+
     [Header("사망")]
     public Maw_Deadparts deathMaw;
 
@@ -44,6 +47,7 @@ public class MawManager : MonoBehaviour
     int totalSkillsUsed = 0;
     float swampPositionCenter;
     bool halfHP = false;
+    bool swapedHalf = false;
 
 
     private void Awake()
@@ -104,7 +108,12 @@ public class MawManager : MonoBehaviour
 
         lastSkillNumber = skillNumber;
         I_MawSkill sk = null;
-        if (skillNumber == 1)
+        if (skillNumber == 0)
+        {
+            Maw_SS0 sk0 = Instantiate(SS0, skillPos, Quaternion.identity);
+            sk = sk0;
+        }
+        else if (skillNumber == 1)
         {
             Maw_S1 sk1 = Instantiate(S1, skillPos, Quaternion.identity);
             sk = sk1;
@@ -192,6 +201,12 @@ public class MawManager : MonoBehaviour
 
     int GetNextSkillNumber()
     {
+        if (swapedHalf)
+        {
+            swapedHalf = false;
+            return 0;
+        }
+
         int nextNumber = Random.Range(1, skillCount);
 
         if (nextNumber >= lastSkillNumber)
@@ -269,8 +284,18 @@ public class MawManager : MonoBehaviour
 
         if (!halfHP)
         {
-            halfHP = 2 * currentHP <= maxHP;
+            if (2 * currentHP <= maxHP)
+            {
+                swapedHalf = halfHP = true;
+            }
         }
+    }
+
+    public void SetHalfHP()
+    {
+        if (halfHP) return;
+        swapedHalf = halfHP = true;
+        currentHP = maxHP / 2;
     }
 
     public void Death()

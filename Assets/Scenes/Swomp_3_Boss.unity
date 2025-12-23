@@ -13759,7 +13759,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcb8ebaec32f37b48a37e34d90860caf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockMouseAtStart: 1
 --- !u!114 &1249245446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15218,6 +15217,7 @@ MonoBehaviour:
   S2: {fileID: 2944991955404404464, guid: 732e5f261d13b2e46a0d766cfbb7aa30, type: 3}
   S3: {fileID: 7452213104021569305, guid: df31b76672eae1d42a8e0a62644b58dd, type: 3}
   S4: {fileID: 4998118943604423422, guid: 323ecd508ed5fcc4aa7f0801ab8f7a10, type: 3}
+  SS0: {fileID: 3529042252510256082, guid: afe4bd2750d645348ae1fbd8a708c17e, type: 3}
   deathMaw: {fileID: 1136879478402465935, guid: 8bfaa68d18b695245b18b86ef0417a4a, type: 3}
   centerX: 35
   swampPositionInterval: 1

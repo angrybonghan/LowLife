@@ -39,19 +39,27 @@ public class Cheat : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.RightBracket))
-        {
-            GotoNextScene();
-        }
+        if (ScreenTransition.Instance != null)
+            if (!ScreenTransition.isTransitioning)
+            {
+                if (Input.GetKeyDown(KeyCode.RightBracket))
+                {
+                    GotoNextScene();
+                }
+                else if (Input.GetKeyDown(KeyCode.LeftBracket))
+                {
+                    GotoPreviousScene();
+                }
+            }
 
         if (Input.GetKeyDown(KeyCode.I))
         {
-            TimeManager.SetTimeScale(1f);
+            TimeManager.SetTimeScale(0.5f);
         }
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            TimeManager.SetTimeScale(1.5f);
+            TimeManager.SetTimeScale(1f);
         }
 
         if (Input.GetKeyDown(KeyCode.P))
@@ -59,6 +67,10 @@ public class Cheat : MonoBehaviour
             TimeManager.SetTimeScale(2f);
         }
 
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            MakeBossHalfHP();
+        }
     }
 
     void GotoNextScene()
@@ -78,5 +90,41 @@ public class Cheat : MonoBehaviour
             }
         }
     }
-        
+
+    void GotoPreviousScene()
+    {
+        string currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+        if (disableScenes.Contains(currentSceneName)) return;
+
+        for (int i = 0; i < SceneList.Length; i++)
+        {
+            if (SceneList[i] == currentSceneName)
+            {
+                int prevIndex = (i - 1 + SceneList.Length) % SceneList.Length;
+                string prevSceneName = SceneList[prevIndex];
+
+                ScreenTransition.ScreenTransitionGoto(prevSceneName, "none", Color.black, 0f, 0.4f, 0f, 0.4f, 0f);
+                break;
+            }
+        }
+    }
+
+    void MakeBossHalfHP()
+    {
+        MawManager maw = FindFirstObjectByType<MawManager>();
+        if (maw != null)
+        {
+            maw.SetHalfHP();
+            return;
+        }
+
+        SpencerManager spencer = FindFirstObjectByType<SpencerManager>();
+
+        if (spencer != null)
+        {
+            spencer.SetHalfHP();
+        }
+    }
+
 }

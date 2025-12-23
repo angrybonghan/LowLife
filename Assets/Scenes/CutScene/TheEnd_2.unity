@@ -1217,7 +1217,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 5}
+  m_SizeDelta: {x: 20, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1589631002
 MonoBehaviour:
@@ -1239,10 +1239,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uCD1D\uAD04\n\n\uC774\uC2B9\uD604\n\n\n\uD504\uB85C\uADF8\uB798\uBC0D\n\n\uC774\uC2DC\uD604
-    | \uD669\uC218\uC5F0\n\n\n\uC544\uD2B8\n\n\uC774\uC2B9\uD604 | \uC774\uC2DC\uD604\n\n\n\uC0AC\uC6B4\uB4DC
-    \uB514\uC790\uC778\n\n\uD55C\uC0C1\uB3C4 | \uC774\uC2DC\uD604 | \uC774\uC2B9\uD604\n\n\n\uAE30\uD68D\n\n\uC774\uC2B9\uD604
-    | \uC774\uD0DC\uD604 | \uC774\uC2DC\uD604\n\n\n\uD50C\uB808\uC774\uD574 \uC8FC\uC154\uC11C\n\uAC10\uC0AC\uD569\uB2C8\uB2E4!"
+  m_text: "<LowLife>\n\n\n\uD504\uB85C\uADF8\uB798\uBC0D\n\n\uC774\uC2DC\uD604\n\n\n\uC544\uD2B8\n\n\uC774\uC2B9\uD604
+    | \uC774\uC2DC\uD604\n\n\n\uC0AC\uC6B4\uB4DC \uB514\uC790\uC778\n\n\uC774\uC2B9\uD604
+    | \uC774\uC2DC\uD604\n\n\n\uAE30\uD68D\n\n\uC774\uC2B9\uD604 | \uC774\uC2DC\uD604\n\n\n\uD50C\uB808\uC774\uD574
+    \uC8FC\uC154\uC11C\n\uAC10\uC0AC\uD569\uB2C8\uB2E4!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 19778ebed01ae8b4996f00a96fe40ebf, type: 2}
   m_sharedMaterial: {fileID: 1934848496972627334, guid: 19778ebed01ae8b4996f00a96fe40ebf, type: 2}
