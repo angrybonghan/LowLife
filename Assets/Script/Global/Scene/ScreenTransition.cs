@@ -99,8 +99,6 @@ public class ScreenTransition : MonoBehaviour
 
         if (LoadingTime <= 0f)
         {
-            SaveCurrentSceneData();
-
             SceneManager.LoadScene(SceneName);
             yield return null;
 
@@ -108,8 +106,6 @@ public class ScreenTransition : MonoBehaviour
         }
         else
         {
-            SaveCurrentSceneData();
-
             SceneManager.LoadScene(LoadingSceneName);
             yield return null;
 
@@ -127,8 +123,6 @@ public class ScreenTransition : MonoBehaviour
         yield return new WaitForSeconds(LoadingTime);
 
         while (asyncLoad.progress < 0.9f) yield return null;
-
-        SaveCurrentSceneData();
 
         asyncLoad.allowSceneActivation = true;
         yield return null;
@@ -210,19 +204,5 @@ public class ScreenTransition : MonoBehaviour
             }
         }
         image.color = new Color(image.color.r, image.color.g, image.color.b, targetAlpha);
-    }
-
-    // 현재 씬과 퀘스트 상태 저장 (죽었을 때는 건너뜀)
-    private void SaveCurrentSceneData()
-    {
-        if (!shouldSaveData) return;
-
-        string currentStage = SceneManager.GetActiveScene().name;
-        SaveSystemJSON.DataSaveStage(currentStage);
-        SaveSystemJSON.DataSaveQuests(QuestManager.Instance);
-
-        string saveTime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        PlayerPrefs.SetString("LastQuestSaveTime", saveTime);
-        PlayerPrefs.Save();
     }
 }

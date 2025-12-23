@@ -53,7 +53,7 @@ public class DialogManager : MonoBehaviour
 
         if (dialogueBubblePrefab != null)
         {
-            currentBubbleInstance = Instantiate(dialogueBubblePrefab);
+            currentBubbleInstance = Instantiate(dialogueBubblePrefab, Vector3.one * 10191019, Quaternion.identity);
         }
         else
         {
@@ -155,7 +155,7 @@ public class DialogManager : MonoBehaviour
             currentText += fullSentence[i];
             currentBubbleInstance.SetText(currentText);
 
-            SoundManager.instance.PlaySoundAtPosition(currentBubblePos, dialogueTypingSound);
+            AudioManager.Instance.Play3DSound(dialogueTypingSound, currentBubblePos);
 
             yield return new WaitForSeconds(intervalTime);
         }

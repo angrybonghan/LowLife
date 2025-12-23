@@ -43,9 +43,6 @@ public class TimeManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (UIManager.Instance != null && UIManager.Instance.IsPaused)
-            return;
-
         Time.timeScale = nomalTimeScale * timedSlowMotionValue * fadeTimeScaleValue * setTimeScaleValue;
     }
 
@@ -59,9 +56,6 @@ public class TimeManager : MonoBehaviour
     /// </summary>
     public static void SetTimeScale(float value)
     {
-        if (UIManager.Instance != null && UIManager.Instance.IsPaused)
-            return;
-
         instance.setTimeScaleValue = value;
     }
 
@@ -70,9 +64,6 @@ public class TimeManager : MonoBehaviour
     /// </summary>
     public static void StartTimedSlowMotion(float duration, float multiplierValue)
     {
-        if (UIManager.Instance != null && UIManager.Instance.IsPaused)
-            return;
-
         instance.timedSlowMotionValue = multiplierValue * instance.nomalTimeScale;
         instance.StartCoroutine(instance.Co_StartTimedSlowMotion(duration));
     }
@@ -91,8 +82,6 @@ public class TimeManager : MonoBehaviour
     /// </summary>
     public static void FadeTimeScale(float duration, float startTimeScale, float timeScale)
     {
-        if (UIManager.Instance != null && UIManager.Instance.IsPaused)
-            return;
 
         timeScale = Mathf.Max(timeScale, 0);
         instance.fadeTimeScaleValue = Mathf.Max(startTimeScale, 0);

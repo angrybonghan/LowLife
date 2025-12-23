@@ -46,7 +46,7 @@ public class BeadMovement : MonoBehaviour, I_Attackable
         isDead = true;
 
         SummonOrb();
-        SoundManager.instance.PlaySoundAtPosition(transform.position, deathSound);
+        AudioManager.Instance.Play3DSound(deathSound, transform.position);
 
         Vector2 direction = (transform.position - attackerTransform.position).normalized;
         rb.velocity = Vector2.zero;

@@ -65,7 +65,7 @@ public class Maw_S4 : MonoBehaviour, I_MawSkill, I_Attackable
         anim.SetTrigger("drop");
 
         yield return new WaitUntil(() => IsGrounded());
-        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, landSound);
+        AudioManager.Instance.PlayRandom3DSound(landSound, transform.position);
         anim.SetTrigger("land");
     }
 
@@ -81,7 +81,7 @@ public class Maw_S4 : MonoBehaviour, I_MawSkill, I_Attackable
         fallDownPos.x += transform.position.x >= centerX ? -5f : 5f;
         fallDownPos.y = targetY;
 
-        SoundManager.instance.PlayRandomSoundAtPosition(transform.position, jumpSound);
+        AudioManager.Instance.PlayRandom3DSound(jumpSound, transform.position);
     }
 
     public void EndAttack()

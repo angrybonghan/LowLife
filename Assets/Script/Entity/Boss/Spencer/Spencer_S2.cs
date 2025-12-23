@@ -96,7 +96,8 @@ public class Spencer_S2 : MonoBehaviour, I_Attackable
 
     public void PlayGunshotSound()
     {
-        SoundManager.instance.PlaySoundAtPositionWithPitch(transform.position, gunshotSounds, Random.Range(0.5f, 1.5f));
+        float pitch = Random.Range(0.5f, 1.5f);
+        AudioManager.Instance.Play3DSound(gunshotSounds, transform.position, "gunshotSound", 1, pitch);
         CameraMovement.PositionShaking(0.2f, 0.025f, bulletInterval);
     }
 

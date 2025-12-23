@@ -36,7 +36,7 @@ public class Maw_Deadparts : MonoBehaviour
 
         StartCoroutine(DeadpartSequence());
 
-        SoundManager.instance.PlaySoundAtPosition(transform.position, deadSound);
+        AudioManager.Instance.Play3DSound(deadSound, transform.position);
     }
 
 
@@ -44,7 +44,6 @@ public class Maw_Deadparts : MonoBehaviour
     {
         yield return new WaitUntil(() => IsGrounded());
 
-        QuestManager.Instance.OnBossKilled(this.enemyType);
         AchievementManager.Instance?.OnEnemyKilled(enemyType);
         anim.SetTrigger("land");
     }

@@ -104,9 +104,6 @@ public class AchievementManager : MonoBehaviour
         ach.isUnlocked = true;
         Debug.Log($"[업적 달성] {ach.title} - {ach.description}");
 
-        // UI 팝업 표시 (제목 + 설명 전달)
-        UIManager.Instance?.ShowAchievementUnlocked(ach.title, ach.description);
-
         // 이벤트 발생 → 업적 창 자동 갱신
         OnAchievementUnlocked?.Invoke();
     }
