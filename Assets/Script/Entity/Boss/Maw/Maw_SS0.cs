@@ -51,7 +51,7 @@ public class Maw_SS0 : MonoBehaviour, I_MawSkill
 
     public void PlayGrowlSound()
     {
-        SoundManager.instance.PlaySoundAtPosition(transform.position, growlSound);
+        AudioManager.Instance.Play3DSound(growlSound, transform.position);
     }
 
     public void EndAnimation()
