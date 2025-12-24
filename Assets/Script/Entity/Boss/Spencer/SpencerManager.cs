@@ -45,6 +45,7 @@ public class SpencerManager : MonoBehaviour
     int lastSkillNumber = -1;
     float originalPlayerSpeed;
     float currentSlownessSpeed;
+    bool swapedHalf;
     Vector2 currentSkillPos;
     GameObject currentSkillInstance;
     GameObject webObject;
@@ -148,6 +149,12 @@ public class SpencerManager : MonoBehaviour
 
     int GetNextSkillNumber()
     {
+        if (swapedHalf)
+        {
+            swapedHalf = false;
+            return 4;
+        }
+
         if (lastSkillNumber == -1) return Random.Range(1, skillCount + 1);
 
         int nextNumber = Random.Range(1, skillCount);
@@ -251,7 +258,7 @@ public class SpencerManager : MonoBehaviour
         {
             if (currentHP * 2 <= maxHP)
             {
-                halfHP = true;
+                swapedHalf = halfHP = true;
                 skillInterval = 0.3f;
             }
         }
@@ -260,7 +267,7 @@ public class SpencerManager : MonoBehaviour
     public void SetHalfHP()
     {
         if (halfHP) return;
-        halfHP = true;
+        swapedHalf = halfHP = true;
         currentHP = maxHP / 2;
     }
 
