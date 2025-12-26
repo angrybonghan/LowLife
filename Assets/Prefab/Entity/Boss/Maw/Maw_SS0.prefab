@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d1d3fdc41c41a54d93e967dc44f9560, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  growlSound: {fileID: 0}
+  growlSound: {fileID: 8300000, guid: e94f108a028b5664095ee52bb7510135, type: 3}
   particlePos: {fileID: 4559186773095216334}
   particlePrefab: {fileID: 3047535617433408227, guid: 159dfb7431a104b48bbeff1b68673737, type: 3}
   particleInterval: 0.1
